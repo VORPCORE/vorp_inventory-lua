@@ -2,6 +2,6 @@
 
 this is a WORK IN PROGRESS project is not usable. 
 
-## DONT USE 
+this needs to be updated using the lattest inventory.
 
 
