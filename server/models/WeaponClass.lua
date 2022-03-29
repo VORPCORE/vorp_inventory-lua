@@ -1,75 +1,75 @@
-Weapon = {}
+VORPWeapon = {}
 
-Weapon.name = nil
-Weapon.id = nil
-Weapon.propietary = nil
-Weapon.charId = nil
-Weapon.used = false
-Weapon.used2 = false
-Weapon.ammo = {}
-Weapon.components = {}
+VORPWeapon.name = nil
+VORPWeapon.id = nil
+VORPWeapon.propietary = nil
+VORPWeapon.charId = nil
+VORPWeapon.used = false
+VORPWeapon.used2 = false
+VORPWeapon.ammo = {}
+VORPWeapon.components = {}
 
-Weapon:setUsed = function (isUsed)
+VORPWeapon.setUsed = function (isUsed)
 	self.used = isUsed
 end
 
-Weapon:getUsed = function ()
+VORPWeapon.getUsed = function ()
 	return self.used
 end
 
-Weapon:setUsed2 = function (isUsed)
+VORPWeapon.setUsed2 = function (isUsed)
 	self.used2 = isUsed
 end
 
-Weapon:getUsed2 = function ()
+VORPWeapon.getUsed2 = function ()
 	return self.used2
 end
 
-Weapon:setPropietary = function (propietary)
+VORPWeapon.setPropietary = function (propietary)
 	self.propietary = propietary
 end
 
-Weapon:getPropietary = function ()
+VORPWeapon.getPropietary = function ()
 	return self.propietary
 end
 
-Weapon:setCharid = function (charId)
+VORPWeapon.setCharid = function (charId)
 	self.charId = charId
 end
 
-Weapon:getCharid = function ()
+VORPWeapon.getCharid = function ()
 	return charId
 end
 
-Weapon:setId = function (id)
+VORPWeapon.setId = function (id)
 	self.id = id
 end
 
-Weapon:getId = function ()
+VORPWeapon.getId = function ()
 	return self.id
 end
 
-Weapon:setName = function (name)
+VORPWeapon.setName = function (name)
 	self.name = name
 end
 
-Weapon:getName = function ()
+VORPWeapon.getName = function ()
 	return self.name
 end
 
-Weapon:getAllAmmo = function ()
+VORPWeapon.getAllAmmo = function ()
 	return self.ammo
 end
 
-Weapon:getAllComponents = function 
+VORPWeapon.getAllComponents = function 
 	return self.components
 end
 
-Weapon:setComponent = function (component)
+VORPWeapon.setComponent = function (component)
 	table.insert(self.components, component)
 end
 
-Weapon:quitComponent = function (component)
+VORPWeapon.quitComponent = function (component)
 	local componentExists = findIndexOf(self.components, component)
 	if componentExists then
 		table.remove(self.componentExists, componentExists)
@@ -78,11 +78,11 @@ Weapon:quitComponent = function (component)
 	return false
 end
 
-Weapon:getAmmo = function (type) 
+VORPWeapon.getAmmo = function (type) 
 	return self.ammo[type]
 end
 
-Weapon:addAmmo = function (type, amount)
+VORPWeapon.addAmmo = function (type, amount)
 	if self.ammo[type] ~= nil then
 		self.ammo[type] = self.ammo[type] + amount
 	else
@@ -91,12 +91,12 @@ Weapon:addAmmo = function (type, amount)
 	exports.ghmattimysql:execute('UPDATE loadout SET ammo = @ammo WHERE id=@id', { ['ammo'] = json.encode(self.getAllAmmo()), ['id'] = self.id}, function(result) end)
 end
 
-Weapon:setAmmo = function (type, amount)
+VORPWeapon.setAmmo = function (type, amount)
 	self.ammo[type] = amount
 	exports.ghmattimysql:execute('UPDATE loadout SET ammo = @ammo WHERE id=@id', { ['ammo'] = json.encode(self.getAllAmmo()), ['id'] = self.id}, function(result) end)
 end
 
-Weapon:subAmmo = function (type, amount)
+VORPWeapon.subAmmo = function (type, amount)
 	if self.ammo[type] ~= nil then
 		self.ammo[type] = self.ammo[type] - amount
 		
@@ -107,7 +107,7 @@ Weapon:subAmmo = function (type, amount)
 	end
 end
 
-function Weapon:New (t)
+function VORPWeapon.New (t)
 	t = t or {}
 	setmetatable(t, self)
 	self.__index = self
