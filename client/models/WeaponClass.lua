@@ -1,13 +1,13 @@
-Weapon = {}
+VORPWeapon = {}
 
-Weapon.name = nil
-Weapon.id = nil
-Weapon.propietary = nil
-Weapon.ammo = {}
-Weapon.used = false
-Weapon.used2 = false
+VORPWeapon.name = nil
+VORPWeapon.id = nil
+VORPWeapon.propietary = nil
+VORPWeapon.ammo = {}
+VORPWeapon.used = false
+VORPWeapon.used2 = false
 
-Weapon:UnequipWeapon = function ()
+VORPWeapon.UnequipWeapon = function ()
 	local hash = GetHashKey(self.name)
 	self.setUsed(false)
 	self.setUsed2(false)
@@ -15,76 +15,76 @@ Weapon:UnequipWeapon = function ()
 	TriggerServerEvent("vorpinventory:setUsedWeapon", id, self.getUsed(), self.getUsed2())
 	self.RemoveWeaponFromPed()
 
-	Utils.cleanAmmo(self.id)
+	VORPUtils.cleanAmmo(self.id)
 end
 
-Weapon:RemoveWeaponFromPed = function ()
+VORPWeapon.RemoveWeaponFromPed = function ()
 	RemoveWeaponFromPed(PlayerPedId(), GetHashKey(self.name), true, 0)
 end
 
-Weapon:loadAmmo = function ()
+VORPWeapon.loadAmmo = function ()
 	-- Completar al final
 end
 
-Weapon:getUsed = function ()
+VORPWeapon.getUsed = function ()
 	return self.used
 end
 
-Weapon:getUsed2 = function ()
+VORPWeapon.getUsed2 = function ()
 	return self.used2 
 end
 
-Weapon:setUsed = function (used)
+VORPWeapon.setUsed = function (used)
 	self.used = used
 	TriggerServerEvent("vorpinventory:setUsedWeapon", self.id, used, self.used2)
 end
 
-Weapon:setUsed2 = function (used2)
+VORPWeapon.setUsed2 = function (used2)
 	self.used2 = used2
 	TriggerServerEvent("vorpinventory:setUsedWeapon", self.id, self.used, used2)
 end
 
-Weapon:getPropietary = function ()
+VORPWeapon.getPropietary = function ()
 	return self.propietary
 end
 
-Weapon:setPropietary = function (propietary)
+VORPWeapon.setPropietary = function (propietary)
 	self.propietary = propietary
 end
 
-Weapon:getId = function ()
+VORPWeapon.getId = function ()
 	return self.id
 end
 
-Weapon:setId = function (id)
+VORPWeapon.setId = function (id)
 	self.id = id
 end
 
-Weapon:getName = function ()
+VORPWeapon.getName = function ()
 	return self.name
 end
 
-Weapon:setName = function (name)
+VORPWeapon.setName = function (name)
 	self.name = name
 end
 
-Weapon:getAllAmmo = function ()
+VORPWeapon.getAllAmmo = function ()
 	return self.ammo
 end
 
-Weapon:getAmmo = function (type)
+VORPWeapon.getAmmo = function (type)
 	if self.ammo[type] ~= nil then
 		return self.ammo[type]
 	end
 	return 0
 end
 
-Weapon:setAmmo = function (type, amount)
+VORPWeapon.setAmmo = function (type, amount)
 	self.ammo[type] = amount
 	TriggerServerEvent("vorpinventory:setWeaponBullets", self.id, type, amount)
 end
 
-Weapon:addAmmo = function (type, amount)
+VORPWeapon.addAmmo = function (type, amount)
 	if self.ammo[type] ~= nil then
 		self.ammo[type] = self.ammo[type] + amount
 	else
@@ -92,7 +92,7 @@ Weapon:addAmmo = function (type, amount)
 	end
 end
 
-Weapon:subAmmo = function (type, amount)
+VORPWeapon.subAmmo = function (type, amount)
 	if self.ammo[type] ~= nil then
 		self.ammo[type] = self.ammo[type] - amount
 
