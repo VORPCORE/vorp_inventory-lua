@@ -12,7 +12,10 @@ Config = {
 
     OpenKey = 0xC1989F95,-- OPEN INV WITH I     if you want B --0x4CC0E2FE - [B]
 
-    PickupKey = "0xF84FA74F", -- Default= RMB
+    PickupKey = "0xF84FA74F", -- Default= RMB 
+    
+    dropPropMoney = "p_moneybag02x", -- prop that will show when you drop money
+    dropPropItem = "P_COTTONBOX01X", -- prop that will show when you drop an item
 
     -- loose items money or weapons on respawn
     DropOnRespawn = {
