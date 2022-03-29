@@ -40,7 +40,7 @@ end
 InventoryService.receiveItem = function (name, amount)
 	if next(UserInventory[name]) ~= nil then
 		UserInventory[name].addCount(amount)
-		NUIService.LoadInv()
+		VORPNui.LoadInv()
 		return
 	end
 	
@@ -53,7 +53,7 @@ InventoryService.receiveItem = function (name, amount)
 		canUse = true,
 		canRemove = DB_Items[name].can_remove
 	})
-	NUIService.LoadInv()
+	VORPNui.LoadInv()
 end
 
 InventoryService.receiveitem2 = function (name, count)
@@ -63,7 +63,7 @@ InventoryService.receiveitem2 = function (name, count)
 		UserInventory[name] = nil
 	end
 
-	NUIService.LoadInv()
+	VORPNui.LoadInv()
 end
 
 InventoryService.receiveWeapon = function (id, propietary, name, ammos)
@@ -86,7 +86,7 @@ InventoryService.receiveWeapon = function (id, propietary, name, ammos)
 		UserWeapons[newWeapon.getId()] = newWeapon
 	end
 
-	NUIService.LoadInv()
+	VORPNui.LoadInv()
 end
 
 InventoryService.onSelectedCharacter = function (charId)
@@ -142,7 +142,7 @@ InventoryService.getLoadout = function (loadout)
 		UserWeapons[newWeapon.getId()] = newWeapon
 
 		if newWeapon.getUsed() then
-			Utils.useWeapon(newWeapon.getId())
+			VORPUtils.useWeapon(newWeapon.getId())
 		end
 	end
 end
