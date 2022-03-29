@@ -1,6 +1,6 @@
-Utils = {}
+VORPUtils = {}
 
-Utils.cleanAmmo = function (id)
+VORPUtils.cleanAmmo = function (id)
 	if next(UserWeapons[id]) ~= nil then
 		SetPedAmmo(PlayerPedId(), GetHashKey(UserWeapons[id].getName()), 0)
 
@@ -10,7 +10,7 @@ Utils.cleanAmmo = function (id)
 	end
 end
 
-Utils.useWeapon = function (id)
+VORPUtils.useWeapon = function (id)
 	if UserWeapons[id].getUsed2() then
 		local weaponHash = GetHashKey(UserWeapons[id].getName())
 		GiveWeaponToPed_2(PlayerPedId(), weaponHash, 0, true, true 3, false, 0.5, 1.0, 752097756, false, 0, false)
@@ -18,7 +18,7 @@ Utils.useWeapon = function (id)
 		SetPedAmmo(PlayerPedId(), weaponHash, 0)
 
 		for _, ammo in pairs(UserWeapons[id].getAllAmmo()) do
-			SetPedAmmoByType(PlayerPedId, GetHashKey(_), ammo)
+			SetPedAmmoByType(PlayerPedId(), GetHashKey(_), ammo)
 			print(GetHashKey(_) .. ": ".. _ .. " " .. ammo)
 		end
 	else
@@ -26,7 +26,7 @@ Utils.useWeapon = function (id)
 	end
 end
 
-Utils.oldUseWeapon = function (id) 
+VORPUtils.oldUseWeapon = function (id) 
 	local weaponHash = GetHashKey(userWeapons[id].getName())
 	
 	GiveWeaponToPed_2(PlayerPedId(), weaponHash, 0, true, true, 2, false, 0.5f, 1.0f, 752097756, false, 0, false);
@@ -41,7 +41,7 @@ Utils.oldUseWeapon = function (id)
     TriggerServerEvent("vorpinventory:setUsedWeapon", id,UserWeapons[id].getUsed(), UserWeapons[id].getUsed2());
 end
 
-Utils.addItems = function (name, amount) 
+VORPUtils.addItems = function (name, amount) 
 	if next(UserInventory[name]) ~= nil then
 		UserInventory[name].addCount(amount)
 	else
@@ -56,7 +56,7 @@ Utils.addItems = function (name, amount)
 	end
 end
 
-Utils.DrawText3D = function (position, text) 
+VORPUtils.DrawText3D = function (position, text) 
 	local _x, _y = GetScreenCoordFromWorldCoord(position.X, position.Y, position.Z)
 
 	SetTextScale(0.35, 0.35)
@@ -69,7 +69,7 @@ Utils.DrawText3D = function (position, text)
 	DrawSprite("generic_textures", "hud_menu_4a", _x, _y + 0.0125, 0.015 + factor, 0.03F, 0.1F, 100, 1, 1, 190, 0)
 end
 
-utils.expandoProcessing = function (object) 
+VORPUtils.expandoProcessing = function (object) 
 	local _obj = {}
 	for _, row in pairs(object) do
 		_obj[_] = row
@@ -77,7 +77,7 @@ utils.expandoProcessing = function (object)
 	return _obj
 end
 
-Utils.getNearestPlayers = function () 
+VORPUtils.getNearestPlayers = function () 
 	local closestDistance = 5.0
 	local playerPed = PlayerPedId()
 	local coords = GetEntityCoords(playerPed)
@@ -100,7 +100,7 @@ Utils.getNearestPlayers = function ()
 end
 
 
-Utils.Publicweapons = {
+VORPUtils.Publicweapons = {
 	{0xC3662B7D,"WEAPON_KIT_CAMERA"},
 	{0xAED4C64C,"WEAPON_MOONSHINEJUG"},
 	{0x3155643F,"WEAPON_MELEE_LANTERN_ELECTRIC"},
@@ -167,7 +167,7 @@ Utils.Publicweapons = {
 
 }
 
-Utils.Publicammo = {
+VORPUtils.Publicammo = {
 	{0x38854A3B,"AMMO_ARROW"},
     {0x5B6ABDF8,"AMMO_ARROW_DYNAMITE"},
     {0xD19E0045,"AMMO_ARROW_FIRE"},
