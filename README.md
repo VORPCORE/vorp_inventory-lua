@@ -1,4 +1,4 @@
-## vorp_inventory lua
+# vorp_inventory lua
 To contribute to the project this is where updates will be posted
  https://github.com/orgs/VORPCORE/projects/2
 
