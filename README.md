@@ -8,6 +8,7 @@ To contribute to the project this is where updates will be posted
 
 - Once everyone agrees to it make comments share ideas etc then it can be merged.
 
+- We can use this discussions page to speak about the developments https://github.com/VORPCORE/vorp_inventory-lua/discussions/categories/q-a
 
 this needs to be updated using the lattest inventory.
 
