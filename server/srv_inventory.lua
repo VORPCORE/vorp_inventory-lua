@@ -24,7 +24,7 @@ end
 function Inventory.AddItem(inventory, name, count)
     if Items.DoesItemExist(name) then
         local pInv = inventory
-        if Inventory.GetCount(pInv) + count <= Config.MaxItemsInInventory.Items then
+        if Inventory.GetCount(pInv) + count <= Config.MaxItemsInInventory.Items then -- this in the inv C# is not working
             
             if Inventory.DoesItemExist(pInv, name) then -- Exist in inventory, not in item list. Not the same as Items.DoesItemExist(name)
                 pInv[name].count = pInv[name].count + count

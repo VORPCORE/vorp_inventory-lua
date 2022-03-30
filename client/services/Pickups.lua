@@ -1,8 +1,7 @@
 --------------------------------------------------------------------------------------------------
 --------------------------------------- PICKUPS --------------------------------------------------
 -- TODO add debug to confing false or true
--- check updated inventory add whats missing or remove what's not needed 
--- not checked yet
+-- check updated inventory add whats messing or remove whats not needed
 
 
 

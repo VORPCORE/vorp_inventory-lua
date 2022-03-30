@@ -7,6 +7,7 @@ gg = {} -- ??
 isProcessingPay = false
 InInventory = false
 
+
 VORPNui.ReloadInventory = function (inventory)
 	SendNUIMessage(inventory)
 	Wait(500)
@@ -14,14 +15,33 @@ VORPNui.ReloadInventory = function (inventory)
 end
 
 
+---------------- NEW UPDATED -------------------------------
+VORPNui.inventoryChecks = function (x,y,mon,gol)
+	local nuistuff  = x 
+    local playerPed = PlayerPedId()
+	SendNUIMessage({
+		action = "changecheck",
+		check  = nuistuff,
+		info   = y,
+	})
+    SendNUIMessage({
+        action      = "updateStatusHud",  -- inventory hud money and gold
+        show        = not IsRadarHidden(),
+        money       = mon,
+        gold        = gol,
+        id          = GetPlayerServerId(NetworkGetEntityOwner(playerPed))
+    })
+end
+------------------------------------------------------------------------
+
 -- CLAN
 VORPNui.OpenClanInventory = function (clanName, clanId)
 	SetNuiFocus(true, true)
 	SendNUIMessage(
 		{
 			action = "display",
-			type = "clan",
-			title = "" .. clanName .. "",
+			type   = "clan",
+			title  = "" .. clanName .. "",
 			clanid = "" .. clanid .. 
 		}
 	)

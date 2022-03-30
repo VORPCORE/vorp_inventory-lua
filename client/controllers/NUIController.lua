@@ -95,6 +95,12 @@ AddEventHandler("vorp_inventory:OpenContainerInventory",VORPNui.OpenContainerInv
 RegisterNetEvent("vorp_inventory:ReloadContainerInventory")
 AddEventHandler("vorp_inventory:ReloadContainerInventory",VORPNui.ReloadInventory)
 
-RegisterNuiCallbackType("TakeFromContainer",VORPNui.NUITakeFromContainer);
+RegisterNuiCallbackType("TakeFromContainer",VORPNui.NUITakeFromContainer)
 
-RegisterNuiCallbackType("MoveToContainer",VORPNui.NUIMoveToContainer);
+RegisterNuiCallbackType("MoveToContainer",VORPNui.NUIMoveToContainer)
+
+-----------------------------------------------------------------------------------------
+------------------------------------- NEW & UPDATED -------------------------------------
+-- inventory checks for money and slots
+RegisterNetEvent("vorp_inventory:getNui")
+AddEventHandler("vorp_inventory:getNui", VORPNui.inventoryChecks) 

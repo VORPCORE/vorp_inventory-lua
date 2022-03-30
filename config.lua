@@ -26,7 +26,7 @@ Config = {
 
     MaxItemsInInventory = {
         Weapons = 6,
-        Items = 50,
+        Items = 50, -- now works
     },
 
 

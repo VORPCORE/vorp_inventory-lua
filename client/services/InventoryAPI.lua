@@ -1,11 +1,11 @@
 DB_Items = {}
-InventoryService = {}
+VORPInventory = {}
 UserWeapons = {}
 UserInventory = {}
 bulletsHash = {}
 
 -- Probably a Thread -- Test the original version
-InventoryService.updateAmmoInWeapon = function ()
+VORPInventory.updateAmmoInWeapon = function ()
 	Wait(500)
 	local playerPed = PlayerPedId()
 	local weaponHash = 0
@@ -37,7 +37,7 @@ InventoryService.updateAmmoInWeapon = function ()
 	end
 end
 
-InventoryService.receiveItem = function (name, amount)
+VORPInventory.receiveItem = function (name, amount)
 	if next(UserInventory[name]) ~= nil then
 		UserInventory[name].addCount(amount)
 		VORPNui.LoadInv()
@@ -56,7 +56,7 @@ InventoryService.receiveItem = function (name, amount)
 	VORPNui.LoadInv()
 end
 
-InventoryService.receiveitem2 = function (name, count)
+VORPInventory.receiveitem2 = function (name, count)
 	UserInventory[name].quitCount(count)
 
 	if UserInventory[name].getCount() <= 0 then
@@ -66,7 +66,7 @@ InventoryService.receiveitem2 = function (name, count)
 	VORPNui.LoadInv()
 end
 
-InventoryService.receiveWeapon = function (id, propietary, name, ammos)
+VORPInventory.receiveWeapon = function (id, propietary, name, ammos)
 	local weaponAmmo = nil
 
 	for type, amount in pairs(ammos) do
@@ -89,7 +89,7 @@ InventoryService.receiveWeapon = function (id, propietary, name, ammos)
 	VORPNui.LoadInv()
 end
 
-InventoryService.onSelectedCharacter = function (charId)
+VORPInventory.onSelectedCharacter = function (charId)
 	SetNuiFocus(true, true)
 	SendNUIMessage("{\"action\": \"hide\"}")
 	print("Loading Inventory")
@@ -98,7 +98,7 @@ InventoryService.onSelectedCharacter = function (charId)
 	TriggerServerEvent("vorpinventory:getInventory")
 end
 
-InventoryService.processItems = function (items)
+VORPInventory.processItems = function (items)
 	DB_Items = {}
 	for _, item in pairs(items) do
 		DB_Items[item.item] = {
@@ -112,7 +112,7 @@ InventoryService.processItems = function (items)
 	end
 end
 
-InventoryService.getLoadout = function (loadout)
+VORPInventory.getLoadout = function (loadout)
 	print(PlayerPedId())
 
 	for _, weapon in pairs(loadout) do
@@ -147,7 +147,7 @@ InventoryService.getLoadout = function (loadout)
 	end
 end
 
-InventoryService.getInventory = function (inventory)
+VORPInventory.getInventory = function (inventory)
 	UserInventory = {}
 	
 	if inventory ~= '' then
