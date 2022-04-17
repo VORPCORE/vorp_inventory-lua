@@ -35,30 +35,16 @@ end
 
 NUIService.CloseInventory = function ()
 	SetNuiFocus(false, false)
-	SendNUIMessage(
-		{
-			action = "hide"
-		}
-	)
+	SendNUIMessage({action= "hide"})
 	InInventory = false
 end
 
 NUIService.OpenHorseInventory = function (horseName, horseId)
 	SetNuiFocus(true, true)
-	SendNuiMessage(
-		{
-			action= "display",
-			type= "horse", 
-			title = horseName,
-			horseId = horseId
-		}
-	)
+	SendNuiMessage({action= "display", type= "horse", title= horseName, horseid= horseId})
 	InInventory = true
-	print("it prints")
 	TriggerEvent("vorp_stables:setClosedInv", true)
 end
-
-
 
 NUIService.NUIMoveToHorse = function (obj)
 	TriggerServerEvent("vorp_stables:MoveToHorse", json.encode(obj))
@@ -85,14 +71,7 @@ end
 
 NUIService.OpenCartInventory = function (cartName, wagonId)
 	SetNuiFocus(true, true)
-	SendNUIMessage(
-		{
-			action= "display",
-			type= "cart",
-			title= "cartName",
-			wagonid = "wagonId"
-		}
-	)
+	SendNUIMessage({action= "display", type= "cart", title= cartName, wagonid= wagonId})
 	InInventory = true
 
 	TriggerEvent("vorp_stables:setClosedInv", true)
@@ -109,14 +88,7 @@ end
 
 NUIService.OpenHouseInventory = function (houseName, houseId)
 	SetNuiFocus(true, true)
-	SendNUIMessage(
-		{
-			action = "display",
-			type = "house",
-			title = "houseName",
-			houseId = "houseId"
-		}
-	)
+	SendNUIMessage({action= "display", type= "house", title= houseName, houseId= houseId})
 	InInventory = true
 end
 
@@ -130,14 +102,7 @@ end
 
 NUIService.OpenHideoutInventory = function (hideoutName, hideoutId)
 	SetNuiFocus(true, true)
-	SendNuiMessage(
-		{
-			action = "display",
-			type = "hideout",
-			title = "hideoutName",
-			hideoutId = "hideoutId"
-		}
-	)
+	SendNuiMessage({action= "display", type= "hideout", title= hideoutName , hideoutId= hideoutId})
 	InInventory = true
 end
 
@@ -366,12 +331,7 @@ end
 
 NUIService.OpenInv = function ()
 	SetNuiFocus(true, true)
-	SendNUIMessage(
-		{
-			action = "display",
-			type = "main"
-		}
-	)
+	SendNUIMessage({action= "display", type= "main"})
 	InInventory = true
 	
 	NUIService.LoadInv()
@@ -379,11 +339,7 @@ end
 
 NUIService.CloseInv = function ()
 	SetNuiFocus(false, false)
-	SendNUIMessage(
-		{
-			action = "hide"
-		}
-	)
+	SendNUIMessage({action= "hide"})
 	InInventory = false
 end
 

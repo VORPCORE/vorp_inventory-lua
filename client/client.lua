@@ -15,5 +15,4 @@ AddEventHandler('syn:getnuistuff', function(x,y,mon,gol)
         gold        = gol,
         id          = GetPlayerServerId(NetworkGetEntityOwner(player))
     })
-    
 end)
