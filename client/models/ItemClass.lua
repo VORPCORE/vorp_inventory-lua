@@ -1,9 +1,3 @@
--------------------------------------------------------------------------
----------------------------- UP TO DATE ---------------------------------
--- SEEMS TO BE FINISHED 
--- NEEDS REVISION
-
-
 Item = {}
 
 Item.count = nil
@@ -15,71 +9,71 @@ Item.canUse = false
 Item.canRemove = false
 
 
-Item:setCount = function (amount)
-	self.count = count
+function Item:setCount(amount)
+	self.count = amount
 end
 
-Item:getCount = function ()
+function Item:getCount()
 	return self.count
 end
 
-Item:quitCount = function (amount)
+function Item:quitCount(amount)
 	self.count = self.count - amount
 end
 
-Item:addCount = function (amount)
+function Item:addCount(amount)
 	self.count = self.count + amount
 end
 
-Item:subCount = function (amount)
+function Item:subCount(amount)
 	self.count = self.count - amount
 end
 
-Item:setLimit = function (limit)
+function Item:setLimit(limit)
 	self.limit = limit
 end
 
-Item:getLimit = function ()
+function Item:getLimit()
 	return self.limit
 end
 
-Item:setLabel = function (label)
+function Item:setLabel(label)
 	self.label = label
 end
 
-Item:getLabel = function ()
+function Item:getLabel()
 	return self.label
 end
 
-Item:setName = function (name)
+function Item:setName(name)
 	self.name = name
 end
 
-Item:getName = function ()
+function Item:getName()
 	return self.name
 end
 
-Item:setType = function (type)
+function Item:setType(type)
 	self.type = type
 end
 
-Item:getType = function ()
+function Item:getType()
 	return self.type
 end
 
-Item:setUsable = function (canUse)
+function Item:setUsable(canUse)
 	self.canUse = canUse
 end
 
-Item:getUsable = function ()
+function Item:getUsable()
 	return self.canUse
 end
 
-Item:setCanRemove = function (canRemove)
+function Item:setCanRemove(canRemove)
 	self.canRemove = canRemove
 end
 
-Item:getCanRemove = function ()
+function Item:getCanRemove()
 	return self.canRemove
 end
 
@@ -89,6 +83,3 @@ function Item:New (t)
 	self.__index = self
 	return t
 end
-
-
-

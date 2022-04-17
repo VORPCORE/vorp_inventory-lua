@@ -1,106 +1,96 @@
-------------------------------------------------------------------------------------
-------------------------- THIS FILE IS UP TO DATE ----------------------------------
--- REVISED BY OUTSIDER 3/29/2022
+RegisterNUICallback('NUIFocusOff', NUIService.NUIFocusOff)
 
-RegisterNUICallback('NUIFocusOff',VORPNui.NUIFocusOff)
+RegisterNUICallback('DropItem', NUIService.NUIDropItem)
 
-RegisterNUICallback('DropItem',VORPNui.NUIDropItem)
+RegisterNUICallback('UseItem', NUIService.NUIUseItem)
 
-RegisterNUICallback('UseItem',VORPNui.NUIUseItem)
+RegisterNUICallback('sound', NUIService.NUISound)
 
-RegisterNUICallback('sound',VORPNui.NUISound)
+RegisterNUICallback('GiveItem', NUIService.NUIGiveItem)
 
-RegisterNUICallback('GiveItem',VORPNui.NUIGiveItem)
+RegisterNUICallback('GetNearPlayers', NUIService.NUIGetNearPlayers)
 
-RegisterNUICallback('GetNearPlayers',VORPNui.NUIGetNearPlayers)
-
-RegisterNUICallback('UnequipWeapon',VORPNui.NUIUnequipWeapon)
+RegisterNUICallback('UnequipWeapon', NUIService.NUIUnequipWeapon)
 
 RegisterNetEvent("vorp_inventory:ProcessingReady")
-AddEventHandler("vorp_inventory:ProcessingReady",VORPNui.setProcessingPayFalse)
+AddEventHandler("vorp_inventory:ProcessingReady", NUIService.setProcessingPayFalse)
 
 RegisterNetEvent("vorp_inventory:CloseInv")
-AddEventHandler("vorp_inventory:CloseInv",VORPNui.CloseInventory)
+AddEventHandler("vorp_inventory:CloseInv", NUIService.CloseInventory)
 
 -- Horse Module
 RegisterNetEvent("vorp_inventory:OpenHorseInventory")
-AddEventHandler("vorp_inventory:OpenHorseInventory",VORPNui.OpenHorseInventory)
+AddEventHandler("vorp_inventory:OpenHorseInventory", NUIService.OpenHorseInventory)
 
 RegisterNetEvent("vorp_inventory:ReloadHorseInventory")
-AddEventHandler("vorp_inventory:ReloadHorseInventory",VORPNui.ReloadInventory)
+AddEventHandler("vorp_inventory:ReloadHorseInventory", NUIService.ReloadInventory)
 
-RegisterNUICallback('TakeFromHorse',VORPNui.NUITakeFromHorse)
+RegisterNUICallback('TakeFromHorse', NUIService.NUITakeFromHorse)
 
-RegisterNUICallback('MoveToHorse',VORPNui.NUIMoveToHorse)
+RegisterNUICallback('MoveToHorse', NUIService.NUIMoveToHorse)
 
 -- Steal
 RegisterNetEvent("vorp_inventory:OpenstealInventory")
-AddEventHandler("vorp_inventory:OpenstealInventory",VORPNui.OpenstealInventory)
+AddEventHandler("vorp_inventory:OpenstealInventory", NUIService.OpenstealInventory)
 
 RegisterNetEvent("vorp_inventory:ReloadstealInventory")
-AddEventHandler("vorp_inventory:ReloadstealInventory",VORPNui.ReloadInventory)
+AddEventHandler("vorp_inventory:ReloadstealInventory", NUIService.ReloadInventory)
 
-RegisterNUICallback('TakeFromsteal',VORPNui.NUITakeFromsteal)
+RegisterNUICallback('TakeFromsteal', NUIService.NUITakeFromsteal)
 
-RegisterNUICallback('MoveTosteal',VORPNui.NUIMoveTosteal)
+RegisterNUICallback('MoveTosteal', NUIService.NUIMoveTosteal)
 
 -- Cart Module
 RegisterNetEvent("vorp_inventory:OpenCartInventory")
-AddEventHandler("vorp_inventory:OpenCartInventory",VORPNui.OpenCartInventory)
+AddEventHandler("vorp_inventory:OpenCartInventory", NUIService.OpenCartInventory)
 
 RegisterNetEvent("vorp_inventory:ReloadCartInventory")
-AddEventHandler("vorp_inventory:ReloadCartInventory",VORPNui.ReloadInventory)
+AddEventHandler("vorp_inventory:ReloadCartInventory", NUIService.ReloadInventory)
 
-RegisterNUICallback('TakeFromCart',VORPNui.NUITakeFromCart)
+RegisterNUICallback('TakeFromCart', NUIService.NUITakeFromCart)
 
-RegisterNUICallback('MoveToCart',VORPNui.NUIMoveToCart)
+RegisterNUICallback('MoveToCart', NUIService.NUIMoveToCart)
 
 -- House Module
 RegisterNetEvent("vorp_inventory:OpenHouseInventory")
-AddEventHandler("vorp_inventory:OpenHouseInventory",VORPNui.OpenHouseInventory)
+AddEventHandler("vorp_inventory:OpenHouseInventory", NUIService.OpenHouseInventory)
 
 RegisterNetEvent("vorp_inventory:ReloadHouseInventory")
-AddEventHandler("vorp_inventory:ReloadHouseInventory",VORPNui.ReloadInventory)
+AddEventHandler("vorp_inventory:ReloadHouseInventory", NUIService.ReloadInventory)
 
-RegisterNUICallback('TakeFromHouse',VORPNui.NUITakeFromHouse)
+RegisterNUICallback('TakeFromHouse', NUIService.NUITakeFromHouse)
 
-RegisterNUICallback('MoveToHouse',VORPNui.NUIMoveToHouse)
+RegisterNUICallback('MoveToHouse', NUIService.NUIMoveToHouse)
 
 --Hideout Module
 RegisterNetEvent("vorp_inventory:OpenHideoutInventory")
-AddEventHandler("vorp_inventory:OpenHideoutInventory",VORPNui.OpenHideoutInventory)
+AddEventHandler("vorp_inventory:OpenHideoutInventory", NUIService.OpenHideoutInventory)
 
 RegisterNetEvent("vorp_inventory:ReloadHideoutInventory")
-AddEventHandler("vorp_inventory:ReloadHideoutInventory",VORPNui.ReloadInventory)
+AddEventHandler("vorp_inventory:ReloadHideoutInventory", NUIService.ReloadInventory)
 
-RegisterNuiCallbackType("TakeFromHideout",VORPNui.NUITakeFromHideout)
+RegisterNuiCallbackType("TakeFromHideout", NUIService.NUITakeFromHideout)
 
-RegisterNuiCallbackType("MoveToHideout",VORPNui.NUIMoveToHideout)
+RegisterNuiCallbackType("MoveToHideout", NUIService.NUIMoveToHideout)
 
 -- Clan Module
 RegisterNetEvent("vorp_inventory:OpenClanInventory")
-AddEventHandler("vorp_inventory:OpenClanInventory",VORPNui.OpenClanInventory)
+AddEventHandler("vorp_inventory:OpenClanInventory", NUIService.OpenClanInventory)
 
 RegisterNetEvent("vorp_inventory:ReloadClanInventory")
-AddEventHandler("vorp_inventory:ReloadClanInventory",VORPNui.ReloadInventory)
+AddEventHandler("vorp_inventory:ReloadClanInventory", NUIService.ReloadInventory)
 
-RegisterNuiCallbackType("TakeFromClan",VORPNui.NUITakeFromClan)
+RegisterNuiCallbackType("TakeFromClan", NUIService.NUITakeFromClan)
 
-RegisterNuiCallbackType("MoveToClan",VORPNui.NUIMoveToClan)
+RegisterNuiCallbackType("MoveToClan", NUIService.NUIMoveToClan)
 
 -- Container Module
 RegisterNetEvent("vorp_inventory:OpenContainerInventory")
-AddEventHandler("vorp_inventory:OpenContainerInventory",VORPNui.OpenContainerInventory)
+AddEventHandler("vorp_inventory:OpenContainerInventory", NUIService.OpenContainerInventory)
 
 RegisterNetEvent("vorp_inventory:ReloadContainerInventory")
-AddEventHandler("vorp_inventory:ReloadContainerInventory",VORPNui.ReloadInventory)
+AddEventHandler("vorp_inventory:ReloadContainerInventory", NUIService.ReloadInventory)
 
-RegisterNuiCallbackType("TakeFromContainer",VORPNui.NUITakeFromContainer)
+RegisterNuiCallbackType("TakeFromContainer", NUIService.NUITakeFromContainer);
 
-RegisterNuiCallbackType("MoveToContainer",VORPNui.NUIMoveToContainer)
-
------------------------------------------------------------------------------------------
-------------------------------------- NEW & UPDATED -------------------------------------
--- inventory checks for money and slots
-RegisterNetEvent("vorp_inventory:getNui")
-AddEventHandler("vorp_inventory:getNui", VORPNui.inventoryChecks) 
+RegisterNuiCallbackType("MoveToContainer", NUIService.NUIMoveToContainer);

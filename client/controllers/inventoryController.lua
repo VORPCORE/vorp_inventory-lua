@@ -1,23 +1,23 @@
 RegisterNetEvent("vorpInventory:giveItemsTable")
-AddEventHandler("vorpInventory:giveItemsTable", VORPInventory.processItems)
+AddEventHandler("vorpInventory:giveItemsTable", InventoryService.processItems)
 
 RegisterNetEvent("vorpInventory:giveInventory")
-AddEventHandler("vorpInventory:giveInventory", VORPInventory.getInventory)
+AddEventHandler("vorpInventory:giveInventory", InventoryService.getInventory)
 
 RegisterNetEvent("vorpInventory:giveLoadout")
-AddEventHandler("vorpInventory:giveLoadout", VORPInventory.getLoadout)
+AddEventHandler("vorpInventory:giveLoadout", InventoryService.getLoadout)
 
 RegisterNetEvent("vorp:SelectedCharacter")
-AddEventHandler("vorp:SelectedCharacter", VORPInventory.onSelectedCharacter)
+AddEventHandler("vorp:SelectedCharacter", InventoryService.onSelectedCharacter)
 
-RegisterNetEvent("vorpinventory:receiveItem")
-AddEventHandler("vorpinventory:receiveItem", VORPInventory.receiveItem)
+RegisterNetEvent("vorpInventory:receiveItem")
+AddEventHandler("vorpInventory:receiveItem", InventoryService.receiveItem)
 
-RegisterNetEvent("vorpinventory:receiveItem2")
-AddEventHandler("vorpinventory:receiveItem2", VORPInventory.receiveItem2)
+RegisterNetEvent("vorpInventory:receiveItem2")
+AddEventHandler("vorpInventory:receiveItem2", InventoryService.receiveItem2)
 
 RegisterNetEvent("vorpinventory:receiveWeapon")
-AddEventHandler("vorpinventory:receiveWeapon", VORPInventory.receiveWeapon)
+AddEventHandler("vorpinventory:receiveWeapon", InventoryService.receiveWeapon)
 
-Citizen.CreateThread(VORPInventory.updateAmmoInWeapon)
+Citizen.CreateThread(InventoryService.updateAmmoInWeapon)
 	
