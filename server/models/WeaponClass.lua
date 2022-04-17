@@ -1,76 +1,76 @@
-VORPWeapon = {}
+Weapon = {}
 
-VORPWeapon.name = nil
-VORPWeapon.id = nil
-VORPWeapon.propietary = nil
-VORPWeapon.charId = nil
-VORPWeapon.used = false
-VORPWeapon.used2 = false
-VORPWeapon.ammo = {}
-VORPWeapon.components = {}
+Weapon.name = nil
+Weapon.id = nil
+Weapon.propietary = nil
+Weapon.charId = nil
+Weapon.used = false
+Weapon.used2 = false
+Weapon.ammo = {}
+Weapon.components = {}
 
-VORPWeapon.setUsed = function (isUsed)
+function Weapon:setUsed(isUsed)
 	self.used = isUsed
 end
 
-VORPWeapon.getUsed = function ()
+function Weapon:getUsed()
 	return self.used
 end
 
-VORPWeapon.setUsed2 = function (isUsed)
+function Weapon:setUsed2(isUsed)
 	self.used2 = isUsed
 end
 
-VORPWeapon.getUsed2 = function ()
+function Weapon:getUsed2()
 	return self.used2
 end
 
-VORPWeapon.setPropietary = function (propietary)
+function Weapon:setPropietary(propietary)
 	self.propietary = propietary
 end
 
-VORPWeapon.getPropietary = function ()
+function Weapon:getPropietary()
 	return self.propietary
 end
 
-VORPWeapon.setCharid = function (charId)
+function Weapon:setCharid(charId)
 	self.charId = charId
 end
 
-VORPWeapon.getCharid = function ()
-	return charId
+function Weapon:getCharid()
+	return self.charId
 end
 
-VORPWeapon.setId = function (id)
+function Weapon:setId(id)
 	self.id = id
 end
 
-VORPWeapon.getId = function ()
+function Weapon:getId()
 	return self.id
 end
 
-VORPWeapon.setName = function (name)
+function Weapon:setName(name)
 	self.name = name
 end
 
-VORPWeapon.getName = function ()
+function Weapon:getName()
 	return self.name
 end
 
-VORPWeapon.getAllAmmo = function ()
+function Weapon:getAllAmmo()
 	return self.ammo
 end
 
-VORPWeapon.getAllComponents = function 
+function Weapon:getAllComponents()
 	return self.components
 end
 
-VORPWeapon.setComponent = function (component)
+function Weapon:setComponent(component)
 	table.insert(self.components, component)
 end
 
-VORPWeapon.quitComponent = function (component)
-	local componentExists = findIndexOf(self.components, component)
+function Weapon:quitComponent(component)
+	local componentExists = FindIndexOf(self.components, component)
 	if componentExists then
 		table.remove(self.componentExists, componentExists)
 		return true
@@ -78,25 +78,25 @@ VORPWeapon.quitComponent = function (component)
 	return false
 end
 
-VORPWeapon.getAmmo = function (type) 
+function Weapon:getAmmo(type) 
 	return self.ammo[type]
 end
 
-VORPWeapon.addAmmo = function (type, amount)
+function Weapon:addAmmo(type, amount)
 	if self.ammo[type] ~= nil then
 		self.ammo[type] = self.ammo[type] + amount
 	else
 		self.ammo[type] = amount
 	end
-	exports.ghmattimysql:execute('UPDATE loadout SET ammo = @ammo WHERE id=@id', { ['ammo'] = json.encode(self.getAllAmmo()), ['id'] = self.id}, function(result) end)
+	exports.ghmattimysql.execute('UPDATE loadout SET ammo = @ammo WHERE id=@id', { ['ammo'] = json.encode(self.getAllAmmo()), ['id'] = self.id}, function(result) end)
 end
 
-VORPWeapon.setAmmo = function (type, amount)
+function Weapon:setAmmo(type, amount)
 	self.ammo[type] = amount
-	exports.ghmattimysql:execute('UPDATE loadout SET ammo = @ammo WHERE id=@id', { ['ammo'] = json.encode(self.getAllAmmo()), ['id'] = self.id}, function(result) end)
+	exports.ghmattimysql.execute('UPDATE loadout SET ammo = @ammo WHERE id=@id', { ['ammo'] = json.encode(self.getAllAmmo()), ['id'] = self.id}, function(result) end)
 end
 
-VORPWeapon.subAmmo = function (type, amount)
+function Weapon:subAmmo(type, amount)
 	if self.ammo[type] ~= nil then
 		self.ammo[type] = self.ammo[type] - amount
 		
@@ -107,14 +107,14 @@ VORPWeapon.subAmmo = function (type, amount)
 	end
 end
 
-function VORPWeapon.New (t)
+function Weapon:New (t)
 	t = t or {}
 	setmetatable(t, self)
 	self.__index = self
 	return t
 end
 
-local findIndexOf = function (table, value)
+function FindIndexOf(table, value)
 	for k,v in pairs(table) do
 		if v == value then
 			return k

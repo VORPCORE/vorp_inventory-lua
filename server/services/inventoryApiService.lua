@@ -24,7 +24,7 @@ InventoryAPI.SaveInventoryItemsSupport = function (source)
 	end
 end
 
-InventoryAPI.canCarryAmountWeapons = function (source, amount, cb)
+InventoryAPI.canCarryAmountWeapons = function (amount, cb)
 	local _source = source
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter 
 	local identifier = sourceCharacter.identifier
@@ -42,7 +42,7 @@ InventoryAPI.canCarryAmountWeapons = function (source, amount, cb)
 	end
 end
 
-InventoryAPI.canCarryAmountItem = function (source, amount, cb)
+InventoryAPI.canCarryAmountItem = function (amount, cb)
 	local _source = source
 	local identifier = GetPlayerIdentifiers(_source)[1]
 
@@ -58,17 +58,17 @@ InventoryAPI.canCarryAmountItem = function (source, amount, cb)
 	end
 end
 
-InventoryAPI.canCarryItem = function (source, itemName, amount, cb)
+InventoryAPI.canCarryItem = function (itemName, amount, cb)
 	local _source = source
 	local identifier = GetPlayerIdentifiers(_source)[1]
 
 	if next(svItems[itemName]) ~= nil then
-		local limit = svItems[itemname].getLimit()
+		local limit = svItems[itemname]:getLimit()
 
 		if limit ~= -1 then
 			if next(UsersInventories[identifier]) ~= nil then
 				if next(UsersInventories[identifier][itemName]) ~= nil then
-					local count = UsersInventories[identifier][itemName].getCount()
+					local count = UsersInventories[identifier][itemName]:getCount()
 					local total = count + amount
 					
 					if total <= limit then
@@ -136,11 +136,11 @@ InventoryAPI.canCarryItem = function (source, itemName, amount, cb)
 	end
 end
 
-InventoryAPI.getInventory = function (source, cb)
+InventoryAPI.getInventory = function (cb)
 	local _source = source
 	local identifier = GetPlayerIdentifiers(_source)[1]
 
-	if next(UsersInventories[identifier]) ~= nil then
+	if UsersInventories[identifier] ~= nil then
 		local playerItems = {}
 
 		for _, item in pairs(UsersInventories[identifier]) do
@@ -175,8 +175,9 @@ InventoryAPI.useItem = function (source, itemName, args)
 end
 
 InventoryAPI.registerUsableItem = function (name, cb)
-	cb(UsableItemsFunctions[name])
-	print(GetCurrentResourceName() .. ": Function callback of item: "..name.. " registered!")
+	UsableItemsFunctions[name] = cb
+
+	--print(GetCurrentResourceName() .. ": Function callback of item: "..name.. " registered!") this works
 end
 
 InventoryAPI.getUserWeapon = function (player, weaponId, cb)
@@ -196,7 +197,7 @@ InventoryAPI.getUserWeapon = function (player, weaponId, cb)
 	cb(weapon)
 end
 
-InventoryAPI.getUserWeapons = function (player, cb)
+InventoryAPI.getUserWeapons = function (cb)
 	local _source = source
 	local sourceCharacter = getUser(_source).getUsedCharacter
 	local identifier = sourceCharacter.identifier
@@ -219,55 +220,55 @@ InventoryAPI.getUserWeapons = function (player, cb)
 	cb(userWeapons)
 end
 
-InventoryAPI.getWeaponBullets = function (player, weaponId, cb)
+InventoryAPI.getWeaponBullets = function (weaponId, cb)
 	local _source = source
 	local identifier = GetPlayerIdentifiers(_source)[1]
 
 	if next(UsersWeapons[weaponId]) ~= nil then
-		if UsersWeapons[weaponId].getPropietary() == identifier then
-			cb(UsersWeapons[weaponId].getAllAmmo())
+		if UsersWeapons[weaponId]:getPropietary() == identifier then
+			cb(UsersWeapons[weaponId]:getAllAmmo())
 		end
 	end
 end
 
-InventoryAPI.addBullets = function (player, weaponId, bulletType, amount)
+InventoryAPI.addBullets = function (weaponId, bulletType, amount)
 	local _source = source
 	local identifier = GetPlayerIdentifiers(_source)[1]
 
 	if next(UsersWeapons[weaponId]) ~= nil then
-		if UsersWeapons[weaponId].getPropietary() == identifier then
-			UsersWeapons[weaponId].addAmmo(bulletType, amount)
+		if UsersWeapons[weaponId]:getPropietary() == identifier then
+			UsersWeapons[weaponId]:addAmmo(bulletType, amount)
 			TriggerClientEvent("vorpCoreClient:addBullets", _source, weaponId, bulletType, amount)
 		end
 	end
 end
 
-InventoryAPI.subBullets = function (player, weaponId, bulletType, amount)
+InventoryAPI.subBullets = function (weaponId, bulletType, amount)
 	local _source = source
 	local identifier = GetPlayerIdentifiers(_source)[1]
 
 	if next(UsersWeapons[weaponId]) ~= nil then
-		if UsersWeapons[weaponId].getPropietary() == identifier then
-			UsersWeapons[weaponId].subAmmo(bulletType, amount)
+		if UsersWeapons[weaponId]:getPropietary() == identifier then
+			UsersWeapons[weaponId]:subAmmo(bulletType, amount)
 			TriggerClientEvent("vorpCoreClient:subBullets", _source, bulletType, amount)
 		end
 	end
 end
 
-InventoryAPI.getItems = function (source, item, cb)
+InventoryAPI.getItems = function (item, cb)
 	local _source = source
 	local identifier = GetPlayerIdentifiers(_source)[1]
 
 	if next(UsersInventories[identifier]) ~= nil then
 		if next(UsersInventories[identifier][item]) ~= nil then
-			cb(UsersInventories[identifier][item].getCount())
+			cb(UsersInventories[identifier][item]:getCount())
 		else
 			cb(0)
 		end
 	end
 end
 
-InventoryAPI.addItem = function (source, name, amount)
+InventoryAPI.addItem = function (name, amount)
 	local _source = source
 	local sourceUser = Core.getUser(_source)
 	
@@ -291,16 +292,16 @@ InventoryAPI.addItem = function (source, name, amount)
 		return
 	end
 
-	local sourceItemLimit = svItems[name].getLimit()
+	local sourceItemLimit = svItems[name]:getLimit()
 	local sourceInventoryItemCount = InventoryAPI.getUserTotalCount(identifier) + amount
 	
 	if next(UsersInventories[identifier][name]) == nil then 
 		if amount > sourceItemLimit and sourceInventoryItemCount > Config.MaxItems and Config.MaxItems ~= 0 and svItems[sourceItemLimit] ~= -1 then
 			return
 		else
-			local itemLabel = svItems[name].getLabel()
-			local itemType = svItems[name].getType()
-			local itemCanRemove = svItems[name].getCanRemove()
+			local itemLabel = svItems[name]:getLabel()
+			local itemType = svItems[name]:getType()
+			local itemCanRemove = svItems[name]:getCanRemove()
 
 			UsersInventories[identifier][name] = Item:New({
 				count = amount,
@@ -311,11 +312,11 @@ InventoryAPI.addItem = function (source, name, amount)
 				usable = true,
 				canRemove = itemCanRemove
 			})
-			goto afterAddingItem
 		end
 	end
 	
-	local sourceItemCount = UsersInventories[identifier][name].getCount()
+	local sourceItemCount = UsersInventories[identifier][name]:getCount()
+	goto afterAddingItem
 
 	if sourceItemCount + amount > sourceItemLimit and sourceItemLimit ~= -1 then
 		return
@@ -331,26 +332,26 @@ InventoryAPI.addItem = function (source, name, amount)
 		end
 	end
 
-	UsersInventories[identifier][name].addCount(amount)
+	UsersInventories[identifier][name]:addCount(amount)
 
 	:: afterAddingItem ::
 
 	if UsersInventories[identifier][name] == nil then
-	rClientEvent("vorp:Tip", Config.Lang["fullInventory"], 2000)
+	TriggerClientEvent("vorp:Tip", _source, _U("fullInventory"), 2000)
 		return
 	end
 
-	local itemLimit = UsersInventories[identifier][name].getLimit()
-	local itemLabel = UsersInventories[identifier][name].getLabel()
-	local itemType = UsersInventories[identifier][name].getType()
-	local itemUsable = UsersInventories[identifier][name].getLimit()
-	local itemCanRemove = UsersInventories[identifier][name].getCanRemove()
+	local itemLimit = UsersInventories[identifier][name]:getLimit()
+	local itemLabel = UsersInventories[identifier][name]:getLabel()
+	local itemType = UsersInventories[identifier][name]:getType()
+	local itemUsable = UsersInventories[identifier][name]:getLimit()
+	local itemCanRemove = UsersInventories[identifier][name]:getCanRemove()
 
-	TriggerClientEvent("vorpCoreClient:addItem", _source, amount, itemLimit, itemLabel, itemName, itemType, itemUsable, itemCanRemove)
+	TriggerClientEvent("vorpCoreClient:addItem", _source, amount, itemLimit, itemLabel, name, itemType, itemUsable, itemCanRemove)
 	InventoryAPI.SaveInventoryItemsSupport(_source)
 end
 
-InventoryAPI.subItem = function (source, name, amount)
+InventoryAPI.subItem = function (name, amount)
 	local _source = source
 	local identifier = GetPlayerIdentifiers(_source)[1]
 
@@ -361,16 +362,16 @@ InventoryAPI.subItem = function (source, name, amount)
 
 	if next(UsersInventories[identifier]) ~= nil then
 		if next(UsersInventories[identifier][name]) ~= nil then 
-			local sourceItemCount = UsersInventories[identifier][name].getCount()
+			local sourceItemCount = UsersInventories[identifier][name]:getCount()
 
 			if amount <= sourceItemCount then
-				UsersInventories[identifier][name].quitCount(amount)
+				UsersInventories[identifier][name]:quitCount(amount)
 				InventoryAPI.SaveInventoryItemsSupport(_source)
 			end
 			
 			TriggerClientEvent("vorpCoreClient:subItem", _source, name, sourceItemCount)
 			
-			if UsersInventories[identifier][name].getCount() then
+			if UsersInventories[identifier][name]:getCount() then
 				UsersInventories[identifier][name] = nil
 			end
 			InventoryAPI.SaveInventoryItemsSupport(_source)
@@ -431,7 +432,7 @@ InventoryAPI.registerWeapon = function (target, name, ammos)
 	end)
 end
 
-InventoryAPI.giveWeapon = function (source, weaponId, target)
+InventoryAPI.giveWeapon = function (weaponId, target)
 	local _source = source
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local sourceIdentifier = sourceCharacter.identifier
@@ -459,12 +460,12 @@ InventoryAPI.giveWeapon = function (source, weaponId, target)
 	end
 
 	if next(UsersWeapons[weaponId]) ~= nil then
-		UsersWeapons[weaponId].setPropietary(identifier)
-		UsersWeapons[weaponId].setCharId(charIdentifier)
+		UsersWeapons[weaponId]:setPropietary(identifier)
+		UsersWeapons[weaponId]:setCharId(charIdentifier)
 
-		local weaponPropietary = UsersWeapons[weaponId].getPropietary()
-		local weaponName = UsersWeapons[weaponId].getName()
-		local weaponAmmo = UsersWeapons[weaponId].getAllAmmo()
+		local weaponPropietary = UsersWeapons[weaponId]:getPropietary()
+		local weaponName = UsersWeapons[weaponId]:getName()
+		local weaponAmmo = UsersWeapons[weaponId]:getAllAmmo()
 
 		exports.ghmattimysql.execute("UPDATE loadout SET identifier = @identifier AND charidentifier = @charid WHERE id = @id", {
 			['identifier'] = sourceIdentifier,
@@ -477,14 +478,14 @@ InventoryAPI.giveWeapon = function (source, weaponId, target)
 	end
 end
 
-InventoryAPI.subWeapon = function (source, weaponId)
+InventoryAPI.subWeapon = function (weaponId)
 	local _source = source
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local identifier = sourceCharacter.identifier
 	local charId = sourceCharacter.charIdentifier
 
 	if next(UsersWeapons[weaponId] ~= nil) then
-		UsersWeapons[weaponId].setPropietary('')
+		UsersWeapons[weaponId]:setPropietary('')
 
 		exports.ghmattimysql.execute("UPDATE loadout SET identifier = @identifier, charidentifier = @charid WHERE id = @id", {
 				['identifier'] = identifier,
@@ -499,7 +500,7 @@ end
 InventoryAPI.getUserTotalCount = function (identifier)
 	local userTotalItemCount = 0
 	for _, item in pairs(UsersInventories[identifier]) do
-		userTotalItemCount = userTotalItemCount + item.getCount()
+		userTotalItemCount = userTotalItemCount + item:getCount()
 	end
 	return userTotalItemCount
 end
@@ -507,7 +508,7 @@ end
 InventoryAPI.getUserTotalCountWeapons = function (identifier, charId)
 	local userTotalWeaponCount = 0
 	for _, weapon in pairs(UsersWeapons) do
-		if weapon.getPropietary() == identifier and weapon.getCharId() == charid then
+		if weapon:getPropietary() == identifier and weapon:getCharId() == charId then
 			userTotalWeaponCount = userTotalWeaponCount + 1
 		end
 	end

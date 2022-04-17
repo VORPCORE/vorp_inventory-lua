@@ -1,93 +1,43 @@
-VORPInventory = {}
+InventoryService = {}
 ItemPickUps = {}
 MoneyPickUps = {}
+Core = {}
 
------------------------------- NEW AND UPDATED ------------------------------------------
-VorpCore = {}
-
-TriggerEvent("getCore",function(core)
-    VorpCore = core
+Citizen.CreateThread(function()
+    TriggerEvent("getCore", function(core)
+        Core = core;
+    end)
 end)
 
-------------------- EXPORTS -------------------------------------------------------------
-
-VorpInv = exports.vorp_inventory:vorp_inventoryApi()
-
---------------------- CONFIG ------------------------------------------------------------
-
-local itemLimit = Config.MaxItemsInInventory.Items -- added item limit to config
-
-
------------------------ UPDATED ---------------------------------------------------------
-VORPInventory.getLabelFromId = function (id, item2, cb)
-	local _source = id
-	local inventory = VorpInv.getUserInventory(_source)
-	local label = "not found"
-	for i,item in ipairs(inventory) do
-		if item.name == item2 then 
-			label = item.label
-		break end
-	end
-	cb(label) 
-end
-
-VORPInventory.getSlots = function()
-	local _source = tonumber(source)
-    local eq = 0
-	local stufftosend = tonumber(slot_check)
-    local part2 = itemLimit -- INV ITEM LIMIT ALLOWED
-    local User = VorpCore.getUser(_source).getUsedCharacter --GET USER
-    local money = User.money -- FOR INV NUI
-    local gold = User.gold -- FOR INV NUI
-
-    if _source ~= 0 and _source >= 1 and _source ~= nil then
-        eq = VorpInv.getUserInventory(_source)
-    else
-        print("source player ".._source)
-    end
-    local test = eq
-    local slot_check = 0
-    if test ~= nil then
-        for i = 1, #test do
-            slot_check = slot_check + test[i].count
-        end
-    else
-    slot_check = 0
-    end
-   
-    TriggerClientEvent("vorp_inventory:getNui", _source, stufftosend, part2, money, gold)
-end
--------------------------------------------------------------------------------------------------
-
-
-
-VORPInventory.dropMoney = function (source, amount) 
+InventoryService.DropMoney = function (amount) 
 	local _source = source
 	local userCharacter = Core.getUser(_source).getUsedCharacter
 	local userMoney = userCharacter.money	
 	
 	if amount <= 0 then
-		TriggerClientEvent("vorp:TipRight", _source, Config.Lang["TryExploits"], 3000)
-	elseif sourceMoney < amount then
-		TriggerClientEvent("vorp:TipRight", _source, Config.Lang["NotEnoughMoney"], 3000)
+		TriggerClientEvent("vorp:TipRight", _source, _U("TryExploits"), 3000)
+	elseif userMoney < amount then
+		TriggerClientEvent("vorp:TipRight", _source, _U("NotEnoughMoney"), 3000)
 	else
 		userCharacter.removeCurrency(0, amount)
+
 		TriggerClientEvent("vorpInventory:createMoneyPickup", _source, amount)
 	end
 end
 
-VORPInventory.dropAllMoney = function (source) 
+InventoryService.DropAllMoney = function () 
 	local _source = source
 	local userCharacter = Core.getUser(_source).getUsedCharacter
 	local userMoney = userCharacter.money
 
 	if userMoney > 0 then
 		userCharacter.removeCurrency(0, userMoney)
+
 		TriggerClientEvent("vorp:createMoneyPickup", _source, sourceMoney)
 	end
 end
 
-VORPInventory.giveMoneyToPlayer = function (source, target, amount) 
+InventoryService.giveMoneyToPlayer = function (target, amount) 
 	local _source = source
 	local _target = target
 
@@ -97,34 +47,34 @@ VORPInventory.giveMoneyToPlayer = function (source, target, amount)
 	local sourceMoney = sourceCharacter.money
 	
 	if amount <= 0 then
-		TriggerClientEvent("vorp:TipRight", _source, Config.Lang["TryExploits"], 3000)
+		TriggerClientEvent("vorp:TipRight", _source, _U("TryExploits"), 3000)
 		Wait(3000)
-		TriggerClientEvent("vorp_inventory:ProcessingReady")
+		TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
 	elseif sourceMoney < amount then
-		TriggerClientEvent("vorp:TipRight", _source, Config.Lang["NotEnoughMoney"], 3000)
+		TriggerClientEvent("vorp:TipRight", _source, _U("NotEnoughMoney"), 3000)
 		Wait(3000)
-		TriggerClientEvent("vorp_inventory:ProcessingReady")
+		TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
 	else
 		sourceCharacter.removeCurrency(0, amount)
 		targetCharacter.addCurrency(0, amount)
 		
-		TriggerClientEvent("vorp:TipRight", _source, string.format(Config.Lang["YouPaid"], amount, targetCharacter.firstname .. " " .. targetCharacter.lastname), 3000)
-		TriggerClientEvent("vorp:TipRight", _target, string.format(Config.Lang["YouReceived"], amount, sourceCharacter.firstname .. " " .. sourceCharacter.lastname), 3000)
+		TriggerClientEvent("vorp:TipRight", _source, string.format(_U("YouPaid"), amount, targetCharacter.firstname .. " " .. targetCharacter.lastname), 3000)
+		TriggerClientEvent("vorp:TipRight", _target, string.format(_U("YouReceived"), amount, sourceCharacter.firstname .. " " .. sourceCharacter.lastname), 3000)
 		Wait(3000)
-		TriggerClientEvent("vorp_inventory:ProcessingReady")
+		TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
 	end
 end
 
-VORPInventory.setWeaponBullets = function (source, weaponId, type, amount) 
+InventoryService.setWeaponBullets = function (weaponId, type, amount) 
 	if next(UsersWeapons[weaponId]) ~= nil then
-		UsersWeapons[weaponId].setAmmo(type, amount)
+		UsersWeapons[weaponId]:setAmmo(type, amount)
 	end
 end
 
-VORPInventory.SaveInventoryItemsSupport = function (source) 
+InventoryService.SaveInventoryItemsSupport = function () 
 	local _source = source
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
-	local indentifier = sourceCharacter.identifier
+	local identifier = sourceCharacter.identifier
 	local charId = sourceCharacter.charIdentifier
 	local characterInventory = {}
 
@@ -144,7 +94,7 @@ VORPInventory.SaveInventoryItemsSupport = function (source)
 	end
 end
 
-VORPInventory.usedWeapon = function (source, id, _used, _used2) 
+InventoryService.usedWeapon = function (id, _used, _used2) 
 	local used = 0
 	local used2 = 0
 
@@ -159,88 +109,88 @@ VORPInventory.usedWeapon = function (source, id, _used, _used2)
 	end)
 end
 
-VORPInventory.subItem = function (source, name, amount) 
-	local _source = source 
+InventoryService.subItem = function (target, name, amount) 
+	local _source = target 
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local identifier = sourceCharacter.identifier
 
 	if next(UsersInventories[identifier]) ~= nil then
 		if next(UsersInventories[identifier][name]) ~= nil then
-			if amount <= UsersInventories[identifier][name].getCount() then
-				UsersInventories[identifier][name].quitCount(amount)
+			if amount <= UsersInventories[identifier][name]:getCount() then
+				UsersInventories[identifier][name]:quitCount(amount)
 			end
 			
-			if UsersInventories[identifier][name].getCount() == 0 then
+			if UsersInventories[identifier][name]:getCount() == 0 then
 				UsersInventories[identifier][name] = nil
 			end
-			VORPInventory.SaveInventoryItemsSupport(_source)
+			InventoryService.SaveInventoryItemsSupport()
 		end
 	end
 end
 
-VORPInventory.addItem = function (source, name, amount) 
-	local _source = source
+InventoryService.addItem = function (target, name, amount) 
+	local _source = target
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local identifier = sourceCharacter.identifier
 
 	if next(UsersInventories[identifier]) ~= nil then
 		if next(UsersInventories[identifier][name]) ~= nil then
 			if amount > 0 then
-				UsersInventories[identifier][name].addCount(amount)
-				VORPInventory.SaveInventoryItemsSupport(_source)
+				UsersInventories[identifier][name]:addCount(amount)
+				InventoryService.SaveInventoryItemsSupport()
 			end
 		else
 			if next(svItems[name]) ~= nil then
 				UsersInventories[identifier][name] = Item:New({
 					count = amount,
-					limit = svItems[name].getLimit(),
-					label = svItems[name].getLabel(),
+					limit = svItems[name]:getLimit(),
+					label = svItems[name]:getLabel(),
 					name = name,
 					type = "item_inventory",
-					canUse = svItems[name].getCanUse(),
-					canRemove = svItems[name].getCanRemove() 
+					canUse = svItems[name]:getCanUse(),
+					canRemove = svItems[name]:getCanRemove() 
 				})
-				VORPInventory.SaveInventoryItemsSupport(_source)
+				InventoryService.SaveInventoryItemsSupport()
 			end
 		end
 	end
 end
 
-VORPInventory.addWeapon = function (source, weaponId) 
-	local _source = source
+InventoryService.addWeapon = function (target, weaponId) 
+	local _source = target
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local identifier = sourceCharacter.identifier
 	local charId = sourceCharacter.charIdentifier
 	
 	if next(UsersWeapons[weaponId]) ~= nil then
-		UsersWeapons[weaponId].setPropietary(identifier)
+		UsersWeapons[weaponId]:setPropietary(identifier)
 		exports.ghmattimysql:execute('UPDATE loadout SET identifier = @identifier, charidentifier = @charid WHERE id = @id', { 
 			['identifier'] = identifier, 
-			['charid'] = used2,
+			['charid'] = charId,
 			['id'] = weaponId
 		}, function() 
 		end)
 	end
 end
 
-VORPInventory.subWeapon = function (source, weaponId) 
-	local _source = source 
+InventoryService.subWeapon = function (target, weaponId) 
+	local _source = target 
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local identifier = sourceCharacter.identifier
 	local charId = sourceCharacter.charIdentifier
 	
 	if next(UsersWeapons[weaponId]) ~= nil then	
-		UsersWeapons[weaponId].setPropietary('')
+		UsersWeapons[weaponId]:setPropietary('')
 		
 		exports.ghmattimysql:execute('UPDATE loadout SET identifier = @identifier, charidentifier = @charid WHERE id = @id', { 
-			['identifier'] = UsersWeapons[weaponId].getPropietary(),
-			['charid'] = charidentifier,
+			['identifier'] = identifier,
+			['charid'] = charId,
 			['id'] = weaponId
 		}, function() end)
 	end
 end
 
-VORPInventory.onPickup = function (source, obj) 
+InventoryService.onPickup = function (obj) 
 	local _source = source 
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local identifier = sourceCharacter.identifier
@@ -253,35 +203,34 @@ VORPInventory.onPickup = function (source, obj)
 		if ItemPickUps[obj].weaponid == 1 then
 
 			if next(UsersInventories[identifier]) ~= nil then
-
-				if svItems[name].getLimit() ~= -1 then
+				if svItems[name]:getLimit() ~= -1 then
 				
 					if next(UsersInventories[identifier][name]) ~= nil then
-						local sourceItemCount = UsersInventories[identifier][name].getCount()
-						local totalAmount = amount = sourceItemCount
+						local sourceItemCount = UsersInventories[identifier][name]:getCount()
+						local totalAmount = amount + sourceItemCount
 
-						if svItems[name].getLimit() < totalAmount then
-							TriggerClientEvent(player, "vorp:TipRight", Config.Lang["fullInventory"], 2000)
+						if svItems[name]:getLimit() < totalAmount then
+							TriggerClientEvent(player, "vorp:TipRight", _U("fullInventory"), 2000)
 							return
 						end
 					end
 				end
 
-				if Config.MaxItems ~= 0 then
+				if Config.MaxItemsInInventory.Items ~= 0 then
 					local sourceInventoryItemCount = InventoryAPI.getUserTotalCount(identifier)
 					sourceInventoryItemCount = sourceInventoryItemCount + amount 
 
-					if sourceInventoryItemCount > Config.MaxItems then
-						TriggerClientEvent("vorp:TipRight", _source, Config.Lang[fullInventory], 2000)
+					if sourceInventoryItemCount > Config.MaxItemsInInventory.Items then
+						TriggerClientEvent("vorp:TipRight", _source, _U(fullInventory), 2000)
 						return
 					end
 				end
 
-				VORPInventory.addItem(_source, name, amount)
+				InventoryService.addItem(_source, name, amount)
 
-				TriggerClientEvent("vorpInventory:sharePickUpClient", -1, name, ItemPickUps[obj].obj, amount, ItemPickUps[obj].coords, 2, ItemPickUps[obj].weaponId)
+				TriggerClientEvent("vorpInventory:sharePickUpClient", _source, name, ItemPickUps[obj].obj, amount, ItemPickUps[obj].coords, 2, ItemPickUps[obj].weaponId)
 
-				TriggerClientEvent("vorpInventory:removePickUpClient", -1, ItemPickUps[obj].obj)
+				TriggerClientEvent("vorpInventory:removePickupClient", _source, ItemPickUps[obj].obj) -- FIXME cache probleme mdr
 
 				TriggerClientEvent("vorpInventory:receiveItem", _source, name, amount)
 
@@ -290,19 +239,19 @@ VORPInventory.onPickup = function (source, obj)
 				ItemPickUps[obj] = nil
 			end
 		else
-			if Config.MaxWeapons ~= 0 then
+			if Config.MaxItemsInInventory.Weapons ~= 0 then
 				local sourceInventoryWeaponCount = InventoryAPI.getUserTotalCountWeapons(identifier, charId)
 				sourceInventoryWeaponCount = sourceInventoryWeaponCount + 1
 
-				if sourceInventoryWeaponCount <= Config.MaxWeapons then
+				if sourceInventoryWeaponCount <= Config.MaxItemsInInventory.Weapon then
 					local weaponId = ItemPickUps[obj].weaponId
 					local weaponObj = ItemPickUps[obj].obj
-					VORPInventory.addWeapon(_source, weaponId)
+					InventoryService.addWeapon(weaponId)
 
 					TriggerEvent("syn_weapons:onpickup", weaponId)
 					TriggerClientEvent("vorpInventory:sharePickupClient", name, obj)
 					TriggerClientEvent("vorpInventory:receiveWeapon", _source, weaponId, 
-					UsersWeapons[weaponId].getPropietary(), UsersWeapons[weaponId].getName(), UsersWeapons[weaponId].getAllAmmo())
+					UsersWeapons[weaponId]:getPropietary(), UsersWeapons[weaponId]:getName(), UsersWeapons[weaponId]:getAllAmmo())
 					TriggerClientEvent("vorpInventory:playerAnim", obj)
 					ItemPickUps[obj] = nil
 				end
@@ -311,9 +260,8 @@ VORPInventory.onPickup = function (source, obj)
 	end
 end
 
-VORPInventory.onPickupMoney = function (source, obj) 
+InventoryService.onPickupMoney = function (obj) 
 	local _source = source
-	local identifier = GetPlayerIdentifiers(_source)[1]
 
 	if next(MoneyPickUps[obj]) ~= nil then
 		local moneyObj = MoneyPickUps[obj].obj
@@ -321,15 +269,17 @@ VORPInventory.onPickupMoney = function (source, obj)
 		local moneyCoords = MoneyPickUps[obj].coords
 
 		TriggerClientEvent("vorpInventory:shareMoneyPickupClient", _source, moneyObj, moneyAmount, moneyCoords, 2)
-		TriggerClientEvent("vorpInventory:removePickUpClient", moneyObj)
-		TriggerClientEvent("vorpInventory:playerAnim", moneyObj)
-		TriggerEvent("vorp:addMoney", source, 0, moneyAmount)
+		TriggerClientEvent("vorpInventory:removePickupClient", _source, moneyObj)
+		TriggerClientEvent("vorpInventory:playerAnim", _source, moneyObj)
+		TriggerEvent("vorp:addMoney", _source, 0, moneyAmount)
+
 		MoneyPickUps[obj] = nil
 	end
 end
 
-VORPInventory.sharePickupServer = function (name, obj, amount, position, weaponId) 
-	TriggerClientEvent("vorpInventory:sharePickupClient", name, obj, amount, position, 1, weaponId)
+InventoryService.sharePickupServer = function (name, obj, amount, position, weaponId) 
+	local _source = source
+	TriggerClientEvent("vorpInventory:sharePickupClient", _source, name, obj, amount, position, 1, weaponId)
 
 	ItemPickUps[obj] = {
 		name = name,
@@ -341,8 +291,9 @@ VORPInventory.sharePickupServer = function (name, obj, amount, position, weaponI
 	}
 end
 
-VORPInventory.shareMoneyPickupServer = function (obj, amount, position) 
-	TriggerClientEvent("vorpInventory:shareMoneyPickupClient", obj, amount, position, 1)
+InventoryService.shareMoneyPickupServer = function (obj, amount, position) 
+	local _source = source
+	TriggerClientEvent("vorpInventory:shareMoneyPickupClient", _source, obj, amount, position, 1)
 	MoneyPickUps[obj] = {
 		name = "Dollars",
 		obj = obj,
@@ -353,35 +304,35 @@ VORPInventory.shareMoneyPickupServer = function (obj, amount, position)
 end
 
 
-VORPInventory.DropWeapon = function (source, weaponId) 
+InventoryService.DropWeapon = function (weaponId) 
 	local _source = source
-	VORPInventory.subWeapon(_source, weaponId)
-	TriggerClientEvent("vorpInventory:createPickup", UsersWeapons[weaponId].getName(), 1, weaponId)
+	InventoryService.subWeapon(weaponId)
+	TriggerClientEvent("vorpInventory:createPickup", _source, UsersWeapons[weaponId]:getName(), 1, weaponId)
 end
 
-VORPInventory.DropItem = function (source, itemName, amount) end
+InventoryService.DropItem = function (itemName, amount)
 	local _source = source 
-	VORPInventory.subItem(_source, itemName, amount)
-	TriggerClientEvent("vorpInventory:createPickup", itemName, amount, 1)
+	InventoryService.subItem(_source, itemName, amount)
+	TriggerClientEvent("vorpInventory:createPickup", _source, itemName, amount, 1)
 end
 
-VORPInventory.GiveWeapon = function (source, weaponId, target) 
+InventoryService.GiveWeapon = function (weaponId, target) 
 	local _source = source
 	local _target = target
 
 	if next(UsersWeapons[weaponId]) ~= nil then
-		VORPInventory.subWeapon(_source, weaponId)
-		VORPInventory.addWeapon(_target, weaponId)
+		InventoryService.subWeapon(_source, weaponId)
+		InventoryService.addWeapon(_target, weaponId)
 
-		local propietary = UsersWeapons[weaponId].getPropietary()
-		local name = UsersWeapons[weaponId].getName()
-		local allAmmo = UsersWeapons[weaponId].getAllAmmo()
+		local propietary = UsersWeapons[weaponId]:getPropietary()
+		local name = UsersWeapons[weaponId]:getName()
+		local allAmmo = UsersWeapons[weaponId]:getAllAmmo()
 
 		TriggerClientEvent("vorpInventory:receiveWeapon", _target, weaponId, propietary, name, allAmmo)
 	end
 end
 
-VORPInventory.GiveItem = function (source, itemName, amount, target) 
+InventoryService.GiveItem = function (itemName, amount, target) 
 	local give = true
 	local _source = source
 	local _target = target
@@ -390,46 +341,46 @@ VORPInventory.GiveItem = function (source, itemName, amount, target)
 	local targetIdentifier = GetPlayerIdentifiers(_target)[1]
 
 	if next(UsersInventories[sourceIdentifier]) == nil or next(UsersInventories[targetIdentifier]) == nil or next(UsersInventories[sourceIdentifier][itemName]) == nil then
-		TriggerClientEvent("vorp:TipRight", _source, Config.Lang['itemerror'], 2000)
+		TriggerClientEvent("vorp:TipRight", _source, _U('itemerror'), 2000)
 		return
 	end
 
-	local sourceItemAmount = UsersInventories[sourceIdentifier][itemName].getCount() 
-	local targetItemAmount = UsersInventories[targetIdentifier][itemName].getCount() 
-	local targetItemLimit = UsersInventories[targetIdentifier][itemName].getLimit() 
+	local sourceItemAmount = UsersInventories[sourceIdentifier][itemName]:getCount() 
+	local targetItemAmount = UsersInventories[targetIdentifier][itemName]:getCount() 
+	local targetItemLimit = UsersInventories[targetIdentifier][itemName]:getLimit() 
 	local targetInventoryItemCount = InventoryAPI.getUserTotalCount(targetIdentifier)
 	
 	if sourceItemAmount < amount then
-		TriggerClientEvent("vorp:TipRight", _source, Config.Lang["itemerror"], 2000)
-		TriggerClientEvent("vorp:TipRight", _target, Config.Lang["itemerror"], 2000)
+		TriggerClientEvent("vorp:TipRight", _source, _U("itemerror"), 2000)
+		TriggerClientEvent("vorp:TipRight", _target, _U("itemerror"), 2000)
 		return
 	end
 
 	if targetItemAmount + amount > targetItemLimit or targetInventoryItemCount + amount > Config.MaxItems then
-		TriggerClientEvent("vorp:TipRight", _source, Config.Lang['fullinventory'], 2000)
-		TriggerClientEvent("vorp:TipRight", _target, Config.Lang['fullinventory'], 2000)
+		TriggerClientEvent("vorp:TipRight", _source, _U('fullinventory'), 2000)
+		TriggerClientEvent("vorp:TipRight", _target, _U('fullinventory'), 2000)
 		return
 	end
 
-	VORPInventory.addItem(_target, itemName, amount)
-	VORPInventory.subItem(_source, itemName, amount)
+	InventoryService.addItem(_target, itemName, amount)
+	InventoryService.subItem(_source, itemName, amount)
 
 	TriggerClientEvent("vorpInventory:receiveItem", _target, itemName, amount)
 	TriggerClientEvent("vorpInventory:receiveItem2", _source, itemName, amount)
 
-	TriggerClientEvent("vorp:TipRight", _source, Config.Lang["yougaveitem"], 2000)
-	TriggerClientEvent("vorp:TipRight", _target, Config.Lang["youreceiveditem"], 2000)
+	TriggerClientEvent("vorp:TipRight", _source, _U("yougaveitem"), 2000)
+	TriggerClientEvent("vorp:TipRight", _target, _U("youreceiveditem"), 2000)
 end
 
-VORPInventory.getItemsTable = function (source) 
+InventoryService.getItemsTable = function () 
 	local _source = source
 
 	if next(DB_Items) ~= nil then
-		TriggerClientEvent("vorpInventory:giveItemsTable", DB_Items)
+		TriggerClientEvent("vorpInventory:giveItemsTable", _source, DB_Items)
 	end
 end
 
-VORPInventory.getInventory = function (source) 
+InventoryService.getInventory = function () 
 	local _source = source
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local sourceIdentifier = sourceCharacter.identifier
@@ -440,9 +391,10 @@ VORPInventory.getInventory = function (source)
 	local characterWeapons = {}
 
 	if next(sourceInventory) ~= nil then
-		for _, item in pairs(DB_Items) do
-			if next(sourceInventory[item.item]) ~= nil then
-				local newItem = Items:New({
+		for _, item in pairs(DB_Items) do -- TODO reverse loop: Iterate on inventory item instead of DB_items. Should save some iterations
+
+			if sourceInventory[item.item] ~= nil then
+				local newItem = Item:New({
 					count = tonumber(sourceInventory[item.item]),
 					limit = item.limit,
 					label = item.label,
@@ -455,9 +407,9 @@ VORPInventory.getInventory = function (source)
 			end
 		end
 	end
-	UsersInventories[identifier] = characterInventory
+	UsersInventories[sourceIdentifier] = characterInventory
 	
-	TriggerClientEvent("vorpInventory:giveInventory", sourceInventory)
+	TriggerClientEvent("vorpInventory:giveInventory", _source, json.encode(sourceInventory))
 
 	exports.ghmattimysql:execute('SELECT * FROM loadout WHERE identifier = @identifier AND charidentifier = @charid', { 
 			['identifier'] = sourceIdentifier,
@@ -489,9 +441,7 @@ VORPInventory.getInventory = function (source)
 				})
 				UsersWeapons[newWeapon.getId()] = newWeapon
 			end
-			TriggerClientEvent("vorpInventory:giveLoadout", result)
+			TriggerClientEvent("vorpInventory:giveLoadout", _source, result)
 		end
 	end)
-
-
 end

@@ -46,5 +46,5 @@ AddEventHandler("vorpCore:getUserWeapon", InventoryAPI.getUserWeapon)
 RegisterServerEvent("vorpCore:registerUsableItem")
 AddEventHandler("vorpCore:registerUsableItem", InventoryAPI.registerUsableItem)
 
-RegisterServerEvent("vorpCore:use")
-AddEventHandler("vorpCore:use", InventoryAPI.useItem)
+RegisterServerEvent("vorp_inventory:useItem")
+AddEventHandler("vorp_inventory:useItem", InventoryAPI.useItem)

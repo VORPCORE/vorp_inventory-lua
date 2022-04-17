@@ -1,26 +1,27 @@
-local DB_Items = {}
-local UsersInventories = {}
-local UsersWeapons = {}
-local svItems = {}
+DB_Items = {}
+UsersInventories = {}
+UsersWeapons = {}
+svItems = {}
 
 local LoadDatabase = function ()
 	exports.ghmattimysql:execute('SELECT * FROM items', { }, function(result) 
 		if next(result) ~= nil then
 			DB_Items = result
 			for _, db_item in pairs(result) do
-				local item = Items:New({
-					item = db_item.item
-					label = db_item.label
-					limit = db_item.limit
-					type = db_item.type
-					canUse = db_item.canUse 
+				local item = Item:New({
+					item = db_item.item,
+					label = db_item.label,
+					limit = db_item.limit,
+					type = db_item.type,
+					canUse = db_item.canUse ,
 					canRemove = db_item.canRemove
 				})
-				table.insert(svItems, item)
+				svItems[item.item] = item
+				--DB_Items[item.item] = item
 			end
 		end
 	end)
-	exports.ghmattimysql:execute('SELECT * FROM looadout', { }, function(result) 
+	exports.ghmattimysql:execute('SELECT * FROM loadout', { }, function(result) 
 		if next(result) ~= nil then
 			for _, db_weapon in pairs (result) do
 				local ammo = json.decode(db_weapon.ammo)
@@ -42,18 +43,22 @@ local LoadDatabase = function ()
 				end
 
 				local weapon = Weapon:New({
-					Weapon.id = db_weapon.id
-					Weapon.propietary = db_weapon.identifier
-					Weapon.name = db_weapon.name
-					Weapon.ammo = ammo
-					Weapon.components = components
-					Weapon.used = used
-					Weapon.used2 = used2
-					Weapon.charId = charId
+					id = db_weapon.id,
+					propietary = db_weapon.identifier,
+					name = db_weapon.name,
+					ammo = ammo,
+					components = comp,
+					used = used,
+					used2 = used2,
+					charId = charId
 				})
 
-				UsersWeapons[weapon.getId()] = weapon
+				UsersWeapons[weapon:getId()] = weapon
 			end
 		end
 	end)
 end
+
+Citizen.CreateThread(function()
+    LoadDatabase()
+end)
