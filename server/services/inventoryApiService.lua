@@ -31,8 +31,8 @@ InventoryAPI.canCarryAmountWeapons = function (amount, cb)
 	local charId = sourceCharacter.charidentifier
 	local sourceInventoryWeaponCount = InventoryAPI.getUserTotalCountWeapons(identifier, charId) + amount
 
-	if Config.MaxItemsInInventory.ItemsInInventory.Weapons ~= -1 then
-		if sourceInventoryWeaponCount <= Config.MaxItemsInInventory.ItemsInInventory.Weapons then
+	if Config.MaxItemsInInventory.Weapons ~= -1 then
+		if sourceInventoryWeaponCount <= Config.MaxItemsInInventory.Weapons then
 			cb(true)
 		else
 			cb(false)
@@ -46,9 +46,9 @@ InventoryAPI.canCarryAmountItem = function (amount, cb)
 	local _source = source
 	local identifier = GetPlayerIdentifiers(_source)[1]
 
-	if (UsersInventories[identifier]) ~= nil and Config.MaxItemsInInventory.ItemsInInventory.Items ~= -1 then
+	if (UsersInventories[identifier]) ~= nil and Config.MaxItemsInInventory.Items ~= -1 then
 		local sourceInventoryItemCount = InventoryAPI.getUserTotalCount(identifier) + amount
-		if sourceInventoryItemCount <= Config.MaxItemsInInventory.ItemsInInventory.Items then
+		if sourceInventoryItemCount <= Config.MaxItemsInInventory.Items then
 			cb(true)
 		else
 			cb(false)
@@ -72,7 +72,7 @@ InventoryAPI.canCarryItem = function (itemName, amount, cb)
 					local total = count + amount
 					
 					if total <= limit then
-						if Config.MaxItemsInInventory.ItemsInInventory.Items ~= -1 then
+						if Config.MaxItemsInInventory.Items ~= -1 then
 							local sourceInventoryItemCount = InventoryAPI.getUserTotalCount(identifier) + amount
 
 							if sourceInventoryItemCount <= Config.MaxItemsInInventory.Items then
@@ -541,7 +541,7 @@ InventoryAPI.onNewCharacter = function (playerId)
 
 	-- Attempt to add all starter items/weapons from the Config.lua
 	for key, value in pairs(Config.startItems) do
-		
+
 		Error.print("print:"..key..""..value.."")
 		TriggerEvent("vorpCore:addItem", tostring(key), tonumber(value))
 	end
