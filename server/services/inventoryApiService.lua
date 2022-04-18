@@ -397,11 +397,11 @@ InventoryAPI.subItem = function(player, name, amount)
 			end
 
 
+			TriggerClientEvent("vorpCoreClient:subItem", _source, name, UsersInventories[identifier][name]:getCount())
+
 			if UsersInventories[identifier][name]:getCount() == 0 then
 				UsersInventories[identifier][name] = nil
 			end
-
-			TriggerClientEvent("vorpCoreClient:subItem", _source, name, UsersInventories[identifier][name]:getCount())
 			InventoryAPI.SaveInventoryItemsSupport(_source)
 		end
 	end
@@ -438,11 +438,7 @@ InventoryAPI.registerWeapon = function(target, name, ammos, components)
 		end
 	end
 
-	if ammos ~= nil then
-		for _, value in pairs(ammos) do
-			ammo[_] = value:getCount()
-		end
-	end
+
 
 	if components ~= nil then
 		for key, value in pairs(components) do
@@ -498,7 +494,7 @@ InventoryAPI.giveWeapon = function(player, weaponId, target)
 
 	if (UsersWeapons[weaponId]) ~= nil then
 		UsersWeapons[weaponId]:setPropietary(sourceIdentifier)
-        UsersWeapons[weaponId]:setCharId(sourceCharId)
+		UsersWeapons[weaponId]:setCharId(sourceCharId)
 
 		local weaponPropietary = UsersWeapons[weaponId]:getPropietary()
 		local weaponName = UsersWeapons[weaponId]:getName()
