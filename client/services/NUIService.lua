@@ -1,9 +1,9 @@
 NUIService = {}
 gg = {} -- ??
-isProcessingPay = false
+local isProcessingPay = false
 InInventory = false
 
-NUIService.ReloadInventory = function (inventory)
+NUIService.ReloadInventory = function(inventory)
 	SendNUIMessage(json.decode(inventory))
 	Wait(500)
 	NUIService.LoadInv()
@@ -11,115 +11,115 @@ end
 
 -- OpenContainerInventory
 
-NUIService.OpenClanInventory = function (clanName, clanId)
+NUIService.OpenClanInventory = function(clanName, clanId)
 	SetNuiFocus(true, true)
-	SendNUIMessage({action= "display", type= "clan", title= "" .. clanName .. "", clanid= clanId})
+	SendNUIMessage({ action = "display", type = "clan", title = "" .. clanName .. "", clanid = clanId })
 	InInventory = true
 end
 
-NUIService.NUIMoveToClan = function (obj)
+NUIService.NUIMoveToClan = function(obj)
 	TriggerServerEvent("syn_clan:MoveToClan", json.encode(obj))
 end
 
-NUIService.NUITakeFromClan = function (obj)
+NUIService.NUITakeFromClan = function(obj)
 	TriggerServerEvent("syn_clan:TakeFromClan", json.encode(obj))
 end
 
-NUIService.NUIMoveToContainer = function (obj)
+NUIService.NUIMoveToContainer = function(obj)
 	TriggerServerEvent("syn_Container:MoveToContainer", json.encode(obj))
 end
 
-NUIService.NUITakeFromContainer = function (obj)
+NUIService.NUITakeFromContainer = function(obj)
 	TriggerServerEvent("syn_Container:TakeFromContainer", json.encode(obj))
 end
 
-NUIService.CloseInventory = function ()
+NUIService.CloseInventory = function()
 	SetNuiFocus(false, false)
-	SendNUIMessage({action= "hide"})
+	SendNUIMessage({ action = "hide" })
 	InInventory = false
 end
 
-NUIService.OpenHorseInventory = function (horseTitle, horseId)
+NUIService.OpenHorseInventory = function(horseTitle, horseId)
 	SetNuiFocus(true, true)
-	SendNUIMessage({action= "display", type= "horse", title= horseTitle, horseid= horseId})
+	SendNUIMessage({ action = "display", type = "horse", title = horseTitle, horseid = horseId })
 	InInventory = true
 	TriggerEvent("vorp_stables:setClosedInv", true)
 end
 
-NUIService.NUIMoveToHorse = function (obj)
+NUIService.NUIMoveToHorse = function(obj)
 	TriggerServerEvent("vorp_stables:MoveToHorse", json.encode(obj))
 end
 
-NUIService.NUITakeFromHorse = function (obj)
+NUIService.NUITakeFromHorse = function(obj)
 	TriggerServerEvent("vorp_stables:TakeFromHorse", json.encode(obj))
 end
 
-NUIService.OpenstealInventory = function (stealName, stealId)
+NUIService.OpenstealInventory = function(stealName, stealId)
 	SetNuiFocus(false, false)
-	SendNUIMessage({action= "display", type=  "steal", title= stealName, stealId= stealId})
+	SendNUIMessage({ action = "display", type = "steal", title = stealName, stealId = stealId })
 	InInventory = true
 	TriggerEvent("vorp_stables:setClosedInv", true)
 end
 
-NUIService.NUIMoveTosteal = function (obj)
+NUIService.NUIMoveTosteal = function(obj)
 	TriggerServerEvent("syn_search:MoveTosteal", json.encode(obj))
 end
 
-NUIService.NUITakeFromsteal = function (obj)
+NUIService.NUITakeFromsteal = function(obj)
 	TriggerServerEvent("syn_search:TakeFromsteal", json.encode(obj))
 end
 
-NUIService.OpenCartInventory = function (cartName, wagonId)
+NUIService.OpenCartInventory = function(cartName, wagonId)
 	SetNuiFocus(true, true)
-	SendNUIMessage({action= "display", type= "cart", title= cartName, wagonid= wagonId})
+	SendNUIMessage({ action = "display", type = "cart", title = cartName, wagonid = wagonId })
 	InInventory = true
 
 	TriggerEvent("vorp_stables:setClosedInv", true)
 end
 
-NUIService.NUIMoveToCart = function (obj)
+NUIService.NUIMoveToCart = function(obj)
 	TriggerServerEvent("vorp_stables:MoveToCart", json.encode(obj))
 end
 
-NUIService.NUITakeFromCart = function (obj)
+NUIService.NUITakeFromCart = function(obj)
 	TriggerServerEvent("vorp_stables:TakeFromCart", json.encode(obj))
 end
 
 
-NUIService.OpenHouseInventory = function (houseName, houseId)
+NUIService.OpenHouseInventory = function(houseName, houseId)
 	SetNuiFocus(true, true)
-	SendNUIMessage({action= "display", type= "house", title= houseName, houseId= houseId})
+	SendNUIMessage({ action = "display", type = "house", title = houseName, houseId = houseId })
 	InInventory = true
 end
 
-NUIService.NUIMoveToHouse = function (obj)
+NUIService.NUIMoveToHouse = function(obj)
 	TriggerServerEvent("vorp_housing:MoveToHouse", json.encode(obj))
 end
 
-NUIService.NUITakeFromHouse = function (obj)
+NUIService.NUITakeFromHouse = function(obj)
 	TriggerServerEvent("vorp_housing:TakeFromHouse", json.encode(obj))
 end
 
-NUIService.OpenHideoutInventory = function (hideoutName, hideoutId)
+NUIService.OpenHideoutInventory = function(hideoutName, hideoutId)
 	SetNuiFocus(true, true)
-	SendNUIMessage({action= "display", type= "hideout", title= hideoutName , hideoutId= hideoutId})
+	SendNUIMessage({ action = "display", type = "hideout", title = hideoutName, hideoutId = hideoutId })
 	InInventory = true
 end
 
-NUIService.NUIMoveToHideout = function (obj)
+NUIService.NUIMoveToHideout = function(obj)
 	TriggerServerEvent("syn_underground:MoveToHideout", json.encode(obj))
 end
 
-NUIService.NUITakeFromHideout = function (obj)
+NUIService.NUITakeFromHideout = function(obj)
 	TriggerServerEvent("syn_underground:TakeFromHideout", json.encode(obj))
 end
 
-NUIService.setProcessingPayFalse = function ()
+NUIService.setProcessingPayFalse = function()
 	isProcessingPay = false
 end
 
-NUIService.NUIUnequipWeapon = function (obj)
-	local data = json.decode(obj)
+NUIService.NUIUnequipWeapon = function(obj)
+	local data = obj
 
 	if UserWeapons[tonumber(data.id)] ~= nil then
 		UserWeapons[tonumber(data.id)]:UnequipWeapon()
@@ -128,8 +128,8 @@ NUIService.NUIUnequipWeapon = function (obj)
 	NUIService.LoadInv()
 end
 
-NUIService.NUIGetNearPlayers = function (obj)
-	local playerPed = PlayerPedId()
+NUIService.NUIGetNearPlayers = function(obj)
+	--local playerPed = PlayerPedId()
 	local nearestPlayers = Utils.getNearestPlayers()
 	local isAnyPlayerFound = false
 	local closePlayersArr = {}
@@ -179,8 +179,8 @@ NUIService.NUIGetNearPlayers = function (obj)
 	SendNUIMessage(json.encode(nuiReturn))
 end
 
-NUIService.NUIGiveItem = function (obj)
-	local playerPed = PlayerPedId()
+NUIService.NUIGiveItem = function(obj)
+	--local playerPed = PlayerPedId()
 	local nearestPlayers = Utils.getNearestPlayers()
 
 	local data = Utils.expandoProcessing(obj)
@@ -216,7 +216,7 @@ NUIService.NUIGiveItem = function (obj)
 	end
 end
 
-NUIService.NUIDropItem = function (obj)
+NUIService.NUIDropItem = function(obj)
 	local aux = Utils.expandoProcessing(obj)
 	local itemName = aux.item
 	local type = aux.type
@@ -228,7 +228,7 @@ NUIService.NUIDropItem = function (obj)
 
 	if type == "item_standard" then
 		if aux.number ~= nil and aux.number ~= '' then
-			if  qty > 0 and UserInventory[itemName]:getCount() >= qty then
+			if qty > 0 and UserInventory[itemName]:getCount() >= qty then
 				TriggerServerEvent("vorpinventory:serverDropItem", itemName, qty)
 				UserInventory[itemName]:quitCount(qty)
 				if UserInventory[itemName]:getCount() == 0 then
@@ -242,7 +242,7 @@ NUIService.NUIDropItem = function (obj)
 		TriggerServerEvent("vorpinventory:serverDropWeapon", aux.id)
 
 		if UserWeapons[aux.id] ~= nil then
-			local weapon = UserWeapons[aux.id]	
+			local weapon = UserWeapons[aux.id]
 
 			if weapon:getUsed() then
 				weapon:setUsed(false)
@@ -256,49 +256,49 @@ NUIService.NUIDropItem = function (obj)
 	NUIService.LoadInv()
 end
 
-NUIService.NUIUseItem = function (data)
+NUIService.NUIUseItem = function(data)
 	if data["type"] == "item_standard" then
 		TriggerServerEvent("vorp_inventory:useItem", data["item"])
 	elseif data["type"] == "item_weapon" then
 		local _, weaponHash = GetCurrentPedWeapon(PlayerPedId(), false, 0, false)
-        local weaponId = tonumber(data["id"])
-        local isWeaponARevolver = Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(UserWeapons[weaponId]:getName()))
-        local isWeaponAPistol = Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(UserWeapons[weaponId]:getName()))
-        local weaponName = Citizen.InvokeNative(0x89CF5FF3D363311E, weaponHash)
+		local weaponId = tonumber(data["id"])
+		local isWeaponARevolver = Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(UserWeapons[weaponId]:getName()))
+		local isWeaponAPistol = Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(UserWeapons[weaponId]:getName()))
+		local weaponName = Citizen.InvokeNative(0x89CF5FF3D363311E, weaponHash)
 
-        -- Check if the weapon used is a pistol or a revolver and ped is not unarmed.
-        if (isWeaponARevolver or isWeaponAPistol) and weaponName ~= "UNARMED" then
-            local isWeaponUsedARevolver = Citizen.InvokeNative(0xC212F1D05A8232BB, weaponHash)
-            local isWeaponUsedAPistol = Citizen.InvokeNative(0xDDC64F5E31EEDAB6, weaponHash)
+		-- Check if the weapon used is a pistol or a revolver and ped is not unarmed.
+		if (isWeaponARevolver or isWeaponAPistol) and weaponName ~= "UNARMED" then
+			local isWeaponUsedARevolver = Citizen.InvokeNative(0xC212F1D05A8232BB, weaponHash)
+			local isWeaponUsedAPistol = Citizen.InvokeNative(0xDDC64F5E31EEDAB6, weaponHash)
 
-            if isWeaponUsedAPistol or isWeaponUsedARevolver then
-                UserWeapons[weaponId]:setUsed2(true)
-                UserWeapons[weaponId]:loadAmmo()
-                UserWeapons[weaponId]:loadComponents()
-                UserWeapons[weaponId]:setUsed(true)
-                TriggerServerEvent("syn_weapons:weaponused", data)
-            end
-        elseif not UserWeapons[weaponId]:getUsed() and not Citizen.InvokeNative(0x8DECB02F88F428BC, PlayerPedId(), GetHashKey(UserWeapons[weaponId]:getName()), 0, true) then
-                UserWeapons[weaponId]:loadAmmo()
-                UserWeapons[weaponId]:loadComponents()
-                UserWeapons[weaponId]:setUsed(true)
-                TriggerServerEvent("syn_weapons:weaponused", data)
-        end
-        NUIService.LoadInv()
+			if isWeaponUsedAPistol or isWeaponUsedARevolver then
+				UserWeapons[weaponId]:setUsed2(true)
+				UserWeapons[weaponId]:loadAmmo()
+				UserWeapons[weaponId]:loadComponents()
+				UserWeapons[weaponId]:setUsed(true)
+				TriggerServerEvent("syn_weapons:weaponused", data)
+			end
+		elseif not UserWeapons[weaponId]:getUsed() and not Citizen.InvokeNative(0x8DECB02F88F428BC, PlayerPedId(), GetHashKey(UserWeapons[weaponId]:getName()), 0, true) then
+			UserWeapons[weaponId]:loadAmmo()
+			UserWeapons[weaponId]:loadComponents()
+			UserWeapons[weaponId]:setUsed(true)
+			TriggerServerEvent("syn_weapons:weaponused", data)
+		end
+		NUIService.LoadInv()
 	end
 end
 
-NUIService.NUISound = function (obj)
+NUIService.NUISound = function(obj)
 	PlaySoundFrontend("BACK", "RDRO_Character_Creator_Sounds", true, 0)
 end
 
-NUIService.NUIFocusOff = function (obj)
+NUIService.NUIFocusOff = function(obj)
 	NUIService.CloseInv()
 	TriggerEvent("vorp_stables:setClosedInv", false)
 	TriggerEvent("syn:closeinv")
 end
 
-NUIService.OnKey = function ()
+NUIService.OnKey = function()
 	if IsControlJustReleased(1, Config.openKey) and IsInputDisabled(0) then
 		if InInventory then
 			NUIService.CloseInv()
@@ -310,13 +310,13 @@ NUIService.OnKey = function ()
 	end
 end
 
-NUIService.LoadInv = function ()
+NUIService.LoadInv = function()
 	local weapon = {}
 	local items = {}
 	gg = {}
-	
+
 	TriggerServerEvent("vorpinventory:check_slots")
-	
+
 
 	for _, currentItem in pairs(UserInventory) do
 		local item = {}
@@ -331,13 +331,13 @@ NUIService.LoadInv = function ()
 		table.insert(gg, item)
 	end
 
-	for _, currentWeapon in  pairs(UserWeapons) do
+	for _, currentWeapon in pairs(UserWeapons) do
 		local weapon = {}
 		weapon.count = currentWeapon:getAllAmmo()
 		weapon.limit = -1
 		weapon.label = currentWeapon:getLabel() -- Citizen.InvokeNative(0x89CF5FF3D363311E, GetHashKey(currentWeapon:getName()))
 		weapon.name = currentWeapon:getName()
-		weapon.hash = GetHashKey(currentWeapon:getName()) 
+		weapon.hash = GetHashKey(currentWeapon:getName())
 		weapon.type = "item_weapon"
 		weapon.usable = true
 		weapon.canRemove = true
@@ -353,30 +353,30 @@ NUIService.LoadInv = function ()
 	SendNUIMessage(items)
 end
 
-NUIService.OpenInv = function ()
+NUIService.OpenInv = function()
 	SetNuiFocus(true, true)
-	SendNUIMessage({action= "display", type= "main"})
+	SendNUIMessage({ action = "display", type = "main" })
 	InInventory = true
-	
+
 	NUIService.LoadInv()
 end
 
-NUIService.CloseInv = function ()
+NUIService.CloseInv = function()
 	SetNuiFocus(false, false)
-	SendNUIMessage({action= "hide"})
+	SendNUIMessage({ action = "hide" })
 	InInventory = false
 end
 
 -- Main loop
 Citizen.CreateThread(function()
-    while true do
-        if IsControlJustReleased(0, Config.OpenKey) and IsInputDisabled(0) then
-            if InInventory then
-                NUIService.CloseInv()
-            else
-                NUIService.OpenInv()
-            end
-        end
-        Wait(1)
-    end
+	while true do
+		if IsControlJustReleased(0, Config.OpenKey) and IsInputDisabled(0) then
+			if InInventory then
+				NUIService.CloseInv()
+			else
+				NUIService.OpenInv()
+			end
+		end
+		Wait(1)
+	end
 end)
