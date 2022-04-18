@@ -249,9 +249,10 @@ InventoryService.onPickup = function (obj)
 					InventoryService.addWeapon(_source, weaponId)
 
 					TriggerEvent("syn_weapons:onpickup", weaponId)
-					TriggerClientEvent("vorpInventory:sharePickupClient", name, obj)
+					TriggerClientEvent("vorpInventory:sharePickUpClient", _source, name, weaponObj, 1, ItemPickUps[obj].coords, 2, weaponId)
+					TriggerClientEvent("vorpInventory:removePickupClient", _source, weaponObj)
 					TriggerClientEvent("vorpInventory:receiveWeapon", _source, weaponId, UsersWeapons[weaponId]:getPropietary(), UsersWeapons[weaponId]:getName(), UsersWeapons[weaponId]:getAllAmmo())
-					TriggerClientEvent("vorpInventory:playerAnim", obj)
+					TriggerClientEvent("vorpInventory:playerAnim", _source, obj)
 					ItemPickUps[obj] = nil
 				end
 			end
@@ -382,6 +383,11 @@ end
 InventoryService.getInventory = function () 
 	local _source = source
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
+
+	if sourceCharacter == nil then
+		return
+	end
+	
 	local sourceIdentifier = sourceCharacter.identifier
 	local sourceCharId = sourceCharacter.charIdentifier
 	local sourceInventory = json.decode(sourceCharacter.inventory)
