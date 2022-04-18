@@ -1,3 +1,4 @@
+
 InventoryAPI = {}
 UsableItemsFunctions = {}
 
@@ -205,6 +206,7 @@ InventoryAPI.getUserWeapons = function (player, cb)
 	local _source = player
 	local sourceCharacter = getUser(_source).getUsedCharacter
 	local identifier = sourceCharacter.identifier
+	print(identifier)
 	local charidentifier = sourceCharacter.charIdentifier
 
 	local userWeapons = {}
@@ -399,19 +401,25 @@ InventoryAPI.subItem = function (player, name, amount)
 	end
 end
 
-InventoryAPI.registerWeapon = function (target, name, ammos, componants)
+InventoryAPI.registerWeapon = function (target, name, ammos, components)
 	local _target = target
+
 	local targetUser = Core.getUser(_target)
+	
 	local targetCharacter
+	
 	local targetIdentifier
+
 	local targetCharId
+	
 	local ammo = {}
-	local componant = {}
+	local component = {}
 	
 	if (targetUser) ~= nil then
 		targetCharacter = targetUser.getUsedCharacter
-		targetIdentifier = targetUser.identifier
-		targetCharId = targetUser.charIdentifier
+		targetIdentifier = targetUser.getIdentifier()
+		targetCharId = targetCharacter.charIdentifier
+	
 	end
 
 	if Config.MaxItemsInInventory.Weapons ~= 0 then
@@ -431,18 +439,18 @@ InventoryAPI.registerWeapon = function (target, name, ammos, componants)
 		end
 	end
 
-	if (componants) ~= nil then
-		for _, value in pairs(componants) do
-			componant[_] = value
+	if (components) ~= nil then
+		for _, value in pairs(components) do
+			component[_] = value
 		end
 	end
 
-	exports.ghmattimysql:execute("INSERT INTO loadout (identifier, charidentifier, name, ammo, components) VALUES (@identifier, @charid, @name, @ammo, @components", {
+	exports.ghmattimysql:execute("INSERT INTO loadout (identifier, charidentifier, name, ammo, components) VALUES (@identifier, @charid, @name, @ammo, @components)", {
 		['identifier'] = targetIdentifier,
 		['charid'] = targetCharId,
 		['name'] = name,
 		['ammo'] = json.encode(ammo),
-		['components'] = json.encode(componant)
+		['components'] = json.encode(component)
 	}, function (result) 
 		local weaponId = result.insertId
 		local newWeapon = Weapon:New({
