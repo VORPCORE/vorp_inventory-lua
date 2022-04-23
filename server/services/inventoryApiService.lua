@@ -29,7 +29,8 @@ InventoryAPI.canCarryAmountWeapons = function(player, amount, cb)
 	local _source = player
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local identifier = sourceCharacter.identifier
-	local charId = sourceCharacter.charIdentifier
+	local charId = sourceCharacter.charIdentifie
+
 	local sourceInventoryWeaponCount = InventoryAPI.getUserTotalCountWeapons(identifier, charId) + amount
 
 	if Config.MaxItemsInInventory.Weapons ~= -1 then
@@ -180,7 +181,7 @@ InventoryAPI.registerUsableItem = function(name, cb)
 	UsableItemsFunctions[name] = cb
 	if Config.Debug then
 		Wait(9000) -- so it doesn't print everywhere in the console
-		Error.print("These items[^3" .. name .. "^7] ^2Are Registered!^7")
+		Log.print("Callback for item[^3" .. name .. "^7] ^2Registered!^7")
 	end
 end
 
@@ -238,7 +239,6 @@ InventoryAPI.getWeaponBullets = function(player, cb, weaponId)
 end
 
 InventoryAPI.addBullets = function(player, weaponId, bulletType, amount)
-	print('add bullets')
 	local _source = player
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local identifier = sourceCharacter.identifier
@@ -293,7 +293,7 @@ InventoryAPI.addItem = function(player, name, amount)
 
 	if svItems[name] == nil then
 		if Config.Debug then
-			Error.Warning("Item: [^2" .. name .. "^7] ^1 do not exist on Database please add this item on ^7 Table Items")
+			Log.Warning("Item: [^2" .. name .. "^7] ^1 do not exist on Database please add this item on ^7 Table Items")
 		end
 		return
 	end
@@ -386,7 +386,7 @@ InventoryAPI.subItem = function(player, name, amount)
 
 	if svItems[name] == nil then
 		if Config.Debug then
-			Error.Warning("Item: [^2" .. name .. "^7] ^1 do not exist on Database please add this item on ^7 Table Items")
+			Log.Warning("Item: [^2" .. name .. "^7] ^1 do not exist on Database please add this item on ^7 Table Items")
 		end
 		return
 	end
@@ -437,7 +437,7 @@ InventoryAPI.registerWeapon = function(target, name, ammos, components)
 
 		if targetTotalWeaponCount > Config.MaxItemsInInventory.Weapons then
 			if Config.Debug then
-				Error.Warning(targetCharacter.firstname .. " " .. targetCharacter.lastname .. " ^1Can't carry more weapons^7")
+				Log.Warning(targetCharacter.firstname .. " " .. targetCharacter.lastname .. " ^1Can't carry more weapons^7")
 			end
 			return
 		end
@@ -499,7 +499,7 @@ InventoryAPI.giveWeapon = function(player, weaponId, target)
 
 		if sourceTotalWeaponCount > Config.MaxItemsInInventory.Weapons then
 			if Config.Debug then
-				Error.print(sourceCharacter.firstname .. " " .. sourceCharacter.lastname .. " ^1Can't carry more weapons^7")
+				Log.print(sourceCharacter.firstname .. " " .. sourceCharacter.lastname .. " ^1Can't carry more weapons^7")
 			end
 			return
 		end
@@ -537,7 +537,7 @@ InventoryAPI.subWeapon = function(player, weaponId)
 		UsersWeapons[weaponId]:setPropietary('')
 
 		exports.ghmattimysql:execute("UPDATE loadout SET identifier = @identifier, charidentifier = @charid WHERE id = @id", {
-			['identifier'] = identifier,
+			['identifier'] = '',
 			['charid'] = charId,
 			['id'] = weaponId
 		}, function() end)
@@ -570,7 +570,7 @@ InventoryAPI.onNewCharacter = function(playerId)
 
 	if player == nil then
 		if Config.Debug then
-			Error.print("Player [^2" .. playerId .. "^7] ^1 was not found^7")
+			Log.print("Player [^2" .. playerId .. "^7] ^1 was not found^7")
 		end
 		return
 	end

@@ -69,29 +69,6 @@ InventoryService.setWeaponBullets = function(weaponId, type, amount)
 	end
 end
 
-InventoryService.SaveInventoryItemsSupport = function()
-	local _source = source
-	local sourceCharacter = Core.getUser(_source).getUsedCharacter
-	local identifier = sourceCharacter.identifier
-	local charId = sourceCharacter.charIdentifier
-	local characterInventory = {}
-
-	if UsersInventories[identifier] ~= nil then
-		for _, item in pairs(UsersInventories[identifier]) do
-			characterInventory[_] = item
-		end
-
-		if characterInventory ~= nil then
-			exports.ghmattimysql:execute('UPDATE characters SET inventory = @inventory WHERE identifier = @identifier AND charidentifier = @charid', {
-				['inventory'] = json.encode(characterInventory),
-				['identifier'] = identifier,
-				['charidentifier'] = charId
-			}, function()
-			end)
-		end
-	end
-end
-
 InventoryService.usedWeapon = function(id, _used, _used2)
 	local used = 0
 	local used2 = 0
@@ -121,7 +98,7 @@ InventoryService.subItem = function(target, name, amount)
 			if UsersInventories[identifier][name]:getCount() == 0 then
 				UsersInventories[identifier][name] = nil
 			end
-			InventoryService.SaveInventoryItemsSupport()
+			InventoryAPI.SaveInventoryItemsSupport(_source)
 		end
 	end
 end
@@ -135,7 +112,7 @@ InventoryService.addItem = function(target, name, amount)
 		if UsersInventories[identifier][name] ~= nil then
 			if amount > 0 then
 				UsersInventories[identifier][name]:addCount(amount)
-				InventoryService.SaveInventoryItemsSupport()
+				InventoryAPI.SaveInventoryItemsSupport(_source)
 			end
 		else
 			if svItems[name] ~= nil then
@@ -148,7 +125,7 @@ InventoryService.addItem = function(target, name, amount)
 					canUse = svItems[name]:getCanUse(),
 					canRemove = svItems[name]:getCanRemove()
 				})
-				InventoryService.SaveInventoryItemsSupport()
+				InventoryAPI.SaveInventoryItemsSupport(_source)
 			end
 		end
 	end
@@ -324,7 +301,12 @@ InventoryService.GiveWeapon = function(weaponId, target)
 		local name = UsersWeapons[weaponId]:getName()
 		local allAmmo = UsersWeapons[weaponId]:getAllAmmo()
 
+		--NOTIFY
+		TriggerClientEvent("vorp:TipRight", _source, _U("youGaveWeapon"), 2000)
+		TriggerClientEvent("vorp:TipRight", _target, _U("youReceivedWeapon"), 2000)
+
 		TriggerClientEvent("vorpInventory:receiveWeapon", _target, weaponId, propietary, name, allAmmo)
+
 	end
 end
 
@@ -346,7 +328,7 @@ InventoryService.GiveItem = function(itemName, amount, target)
 		TriggerClientEvent("vorp:TipRight", _source, _U("itemerror"), 2000)
 
 		if Config.Debug then
-			Error.error("ServerGiveItem: User " .. sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname .. '#' .. _source .. ' ' .. 'inventory item ' .. itemName .. ' not found')
+			Log.error("ServerGiveItem: User " .. sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname .. '#' .. _source .. ' ' .. 'inventory item ' .. itemName .. ' not found')
 		end
 	end
 
@@ -373,7 +355,7 @@ InventoryService.GiveItem = function(itemName, amount, target)
 
 	if not canGiveItemToTarget then
 		TriggerClientEvent("vorp:TipRight", _source, _U('fullInventoryGive'), 2000)
-		TriggerClientEvent("vorp:TipRight", _target, _U('fullinventory'), 2000)
+		TriggerClientEvent("vorp:TipRight", _target, _U('fullInventory'), 2000)
 		return
 	end
 
@@ -392,7 +374,7 @@ InventoryService.GiveItem = function(itemName, amount, target)
 			})
 		else
 			if Config.Debug then
-				Error.error("ServerGiveItem: Server items does not contain " .. itemName .. ".")
+				Log.error("ServerGiveItem: Server items does not contain " .. itemName .. ".")
 			end
 			return
 		end
@@ -410,6 +392,7 @@ InventoryService.GiveItem = function(itemName, amount, target)
 	TriggerClientEvent("vorpInventory:receiveItem", _target, itemName, amount)
 	TriggerClientEvent("vorpInventory:removeItem", _source, itemName, amount)
 
+	--NOTIFY
 	TriggerClientEvent("vorp:TipRight", _source, _U("yougaveitem"), 2000)
 	TriggerClientEvent("vorp:TipRight", _target, _U("YouReceivedItem"), 2000)
 	TriggerEvent("vorpinventory:itemlog", _source, _target, itemName, amount)
@@ -438,7 +421,7 @@ InventoryService.getInventory = function()
 	local characterInventory = {}
 
 	if sourceInventory ~= nil then
-		for _, item in pairs(DB_Items) do -- TODO reverse loop: Iterate on inventory item instead of DB_items. Should save some iterations
+		for _, item in pairs(DB_Items) do -- TODO reverse loop: Iterate on inventory item instead of DB_items. Should save some iterations STILL TODO?
 			if sourceInventory[item.item] ~= nil then
 				local newItem = Item:New({
 					count = tonumber(sourceInventory[item.item]),
@@ -476,16 +459,18 @@ InventoryService.getInventory = function()
 					if weapon.used == 1 then used = true end
 					if weapon.used2 == 1 then used2 = true end
 
-					local newWeapon = Weapon:New({
-						id = weapon.id,
-						propietary = weapon.identifier,
-						name = weapon.name,
-						ammo = weaponAmmo,
-						used = used,
-						used2 = used2,
-						charId = sourceCharId,
-					})
-					UsersWeapons[newWeapon:getId()] = newWeapon
+					if weapon.dropped == nil or weapon.dropped == 0 then
+						local newWeapon = Weapon:New({
+							id = weapon.id,
+							propietary = weapon.identifier,
+							name = weapon.name,
+							ammo = weaponAmmo,
+							used = used,
+							used2 = used2,
+							charId = sourceCharId,
+						})
+						UsersWeapons[newWeapon:getId()] = newWeapon
+					end
 				end
 				TriggerClientEvent("vorpInventory:giveLoadout", _source, result)
 			end
