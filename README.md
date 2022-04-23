@@ -1,5 +1,4 @@
-# Inventory System for VORP Core (made in Lua)
-> :warning: This is Work In Progress ! Some functionnalities are not implemented yet
+# Inventory System for VORPCore in Lua
 
 ## Requirements
 - [VORP Core](https://github.com/VORPCORE/VORP-Core/releases)
@@ -21,30 +20,26 @@
 * It also has usable items.
 * KLS.
 
+## future features
+- metadata
+- tooltip on items hover
+- hand craft button to craft simple things like `roll cigars`
+
+## Development 
+
+- check VORP [trello](https://trello.com/b/wMq4yOrP/vorp-inventory-lua) where development can be tracked 
 
 ![image](https://user-images.githubusercontent.com/87246847/156600012-3901dac7-73f8-4577-a8f5-9a60d7e3150b.png)
 <img width="354" alt="image" src="https://user-images.githubusercontent.com/87246847/156600211-cc3fc70f-60bb-4884-971a-1d2ad4fdb8ad.png">
+<img width="187" alt="image" src="https://user-images.githubusercontent.com/87246847/164942058-a174d9cb-8563-43fc-84cf-e9b0b1d9aa65.png">
 
-
-## API For Lua
-For importing the API on top of your server resource file
-```vorpInventory = exports.vorp_inventory:vorp_inventoryApi()```
-this will return a table for simply using the inventory
-* Uses:
-* Quit weapon
-``` vorpInventory.subWeapon(source,weaponId)```
-* Create and give new Weapon with the name of the weapon in capital letters
-``` vorpInventory.addWeapon(source,weaponName)```
-* Add an item with quantity
-``` vorpInventory.addItem(source,item,cuantity)```
-* Sub item with quantity
-``` vorpInventory.subItem(source,item,subCuantity)```
-* Returns the item quantity
-``` vorpInventory.getItemCuantity(source,item)```
 
 ## Wiki
 [Wiki VORP Inventory](http://docs.vorpcore.com:3000/vorp-inventory)
 
 ## Credits
 
-Credits to Vorp Team for creating the C# version
+- To [Val3ro](https://github.com/Val3ro) for the initial work.
+- To [Emollit](https://github.com/Emolitt) and [Outsider](https://github.com/outsider31000) for the final work.
+
+also to the creators and [Local9](https://github.com/Local9) for the C# version that this inventory was based on 
