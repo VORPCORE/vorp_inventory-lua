@@ -1,12 +1,14 @@
 ----------------------------------------------------------------------------------------------------
------------------------------------ VORP INVENTORY CONFIG ------------------------------------------
--- LUA*
+--------------------------------------- CONFIG -----------------------------------------------------
+-- VORP INVENTORY LUA*
 
 Config  = {
+
+  Debug = true, -- if your server is live set this to false.  to true only if you are testing things
   
   defaultlang = "en_lang",
 
-   --[ I ] OPEN INVENTORY
+   --{ I } OPEN INVENTORY
   OpenKey = 0xC1989F95, 
 
   --RMB mouse PROMPT PICKUP
@@ -22,14 +24,14 @@ Config  = {
     gaveitem = "item transfer",
     gave = " transfered ",
     to = " to ",
-    withid = "      with the weapon ID: ",
+    withid = " with the weapon ID: ",
   },
 
   -- NEED TO TEST
   DropOnRespawn  = {
-    Money   = false,
-    Weapons = false,
-    Items  = false
+    Money   = true,
+    Weapons = true,
+    Items  = true
   },
 
   -- HOW MANY WEAPONS AND ITEMS ALLOWED PER PLAYER
@@ -41,16 +43,12 @@ Config  = {
  
   -- FIRST JOIN
   startItems  = {
-    {
-      consumable_raspberrywater = 2, --ITEMS SAME NAME AS IN DATABASE
-      ammorevolvernormal = 1 --AMMO SAME NAME AS I NTHE DATABASE
-    }
+    consumable_raspberrywater = 2, --ITEMS SAME NAME AS IN DATABASE
+    ammorevolvernormal = 1 --AMMO SAME NAME AS I NTHE DATABASE
   },
 
   startWeapons = {
-    {
-      WEAPON_MELEE_KNIFE = {{}} --WEAPON HASH NAME
-    }
+    WEAPON_MELEE_KNIFE = {{}} --WEAPON HASH NAME
   },
 
 
