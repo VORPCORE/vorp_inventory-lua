@@ -11,7 +11,6 @@ InventoryApiService.addItem = function (count, limit, label, name, type, canUse,
     if UserInventory[name] ~= nil then
         UserInventory[name]:addCount(count)
     else
-        print('adding new item: ' .. label)
         UserInventory[name] = Item:New({
             count = count,
             limit = limit,
@@ -54,7 +53,7 @@ end
 ---@param qty number
 InventoryApiService.addWeaponBullets = function (weaponId, bulletType, qty)
     if UserWeapons[weaponId] ~= nil then
-        UserWeapons[weaponId]:addAmmo(qty, bulletType)
+        UserWeapons[weaponId]:addAmmo(bulletType, qty)
         if UserWeapons[weaponId]:getUsed() then
             SetPedAmmoByType(PlayerPedId(), GetHashKey(bulletType), UserWeapons[weaponId]:getAmmo(bulletType))
         end
@@ -67,7 +66,7 @@ end
 ---@param qty number
 InventoryApiService.subWeaponBullets = function (weaponId, bulletType, qty)
     if UserWeapons[weaponId] ~= nil then
-        UserWeapons[weaponId]:subAmmo(qty, bulletType)
+        UserWeapons[weaponId]:subAmmo(bulletType, qty)
         if UserWeapons[weaponId]:getUsed() then
             SetPedAmmoByType(PlayerPedId(), GetHashKey(bulletType), UserWeapons[weaponId]:getAmmo(bulletType))
         end

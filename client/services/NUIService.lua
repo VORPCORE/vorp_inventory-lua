@@ -175,7 +175,7 @@ NUIService.NUIGetNearPlayers = function (obj)
 	nuiReturn.type = item.type
 	nuiReturn.what = item.what
 
-	SendNUIMessage(json.encode(nuiReturn))
+	SendNUIMessage(nuiReturn)
 end
 
 NUIService.NUIGiveItem = function (obj)
@@ -194,19 +194,18 @@ NUIService.NUIGiveItem = function (obj)
 				if data2.type == "item_money" then
 					if isProcessingPay then return end
 					isProcessingPay = true
-					TriggerServerEvent("vorp_inventory:giveMoneyToPlayer", target, data2.count)
-				end
-
-				if data2.type ~= "item_money" and data2.id == 0 then
+					TriggerServerEvent("vorpinventory:giveMoneyToPlayer", target, tonumber(data2.count))
+				elseif tonumber(data2.id) == 0 then
 					local amount = tonumber(data2.count)
 
 					if amount > 0 and UserInventory[itemName]:getCount() >= amount then
 						TriggerServerEvent("vorpinventory:serverGiveItem", itemName, amount, target, 1)
+					else
+						-- TODO error message: Invalid amount of item
 					end
-				end
-
-				if data2.type ~= "item_money" and data2.id ~= 0 then
+				else
 					TriggerServerEvent("vorpinventory:serverGiveWeapon2", tonumber(data2.id), target)
+					TriggerServerEvent("vorpinventory:weaponlog", target, data2)
 				end
 
 				NUIService.LoadInv()
@@ -264,8 +263,8 @@ NUIService.NUIUseItem = function (data)
         local isWeaponARevolver = Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(UserWeapons[weaponId]:getName()))
         local isWeaponAPistol = Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(UserWeapons[weaponId]:getName()))
         -- local weaponName = Citizen.InvokeNative(0x6D3AC61694A791C5, weaponHash)
-		local isArmed = Citizen.InvokeNative(0xCB690F680A3EA971, PlayerPedId(), 1)
-		
+		local isArmed = Citizen.InvokeNative(0xCB690F680A3EA971, PlayerPedId(), 4)
+
         -- Check if the weapon used is a pistol or a revolver and ped is not unarmed.
         if (isWeaponARevolver or isWeaponAPistol) and isArmed then
             local isWeaponUsedARevolver = Citizen.InvokeNative(0xC212F1D05A8232BB, weaponHash)
@@ -332,7 +331,7 @@ NUIService.LoadInv = function ()
 
 	for _, currentWeapon in  pairs(UserWeapons) do
 		local weapon = {}
-		weapon.count = 0 -- TODO Replace by number of ammo (all types or one specific tipe ?)
+		weapon.count = currentWeapon:getTotalAmmoCount() -- TODO Replace by number of ammo (all types or one specific tipe ?)
 		weapon.limit = -1
 		weapon.label = currentWeapon:getLabel() -- Citizen.InvokeNative(0x89CF5FF3D363311E, GetHashKey(currentWeapon:getName()))
 		weapon.name = currentWeapon:getName()

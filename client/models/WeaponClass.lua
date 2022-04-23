@@ -41,7 +41,7 @@ function Weapon:loadAmmo()
 		end
 		SetPedAmmo(PlayerPedId(), GetHashKey(self.name), 0)
 		for key, value in pairs(self.ammo) do
-			SetPedAmmoByType(PlayerPedId(), GetHashKey(self.name), value)
+			SetPedAmmoByType(PlayerPedId(), GetHashKey(key), value)
 		end
 	end
 end
@@ -122,6 +122,14 @@ function Weapon:getAmmo(type)
 	return 0
 end
 
+function Weapon:getTotalAmmoCount()
+	local count = 0
+	for _, value in pairs(self.ammo) do
+		count = count + value
+	end
+	return count
+end
+
 function Weapon:setAmmo(type, amount)
 	self.ammo[type] = tonumber(amount)
 	TriggerServerEvent("vorpinventory:setWeaponBullets", self.id, type, amount)
@@ -129,18 +137,19 @@ end
 
 function Weapon:addAmmo(type, amount)
 	if self.ammo[type] ~= nil then
-		self.ammo[type] = self.ammo[type] + amount
+		self.ammo[type] = self.ammo[type] + tonumber(amount)
 	else
-		self.ammo[type] = amount
+		self.ammo[type] = tonumber(amount)
 	end
 end
 
 function Weapon:subAmmo(type, amount)
 	if self.ammo[type] ~= nil then
-		self.ammo[type] = self.ammo[type] - amount
+		self.ammo[type] = self.ammo[type] - tonumber(amount)
 
 		if self.ammo[type] <= 0 then
-			self.ammo[type] = nil
+			Utils.TableRemoveByKey(self.ammo, type)
+			--self.ammo[type] = nil
 		end
 	end
 end

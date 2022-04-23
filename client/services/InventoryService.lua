@@ -5,39 +5,6 @@ UserWeapons = {}
 UserInventory = {}
 bulletsHash = {}
 
--- Probably a Thread -- Test the original version
-InventoryService.updateAmmoInWeapon = function ()
-	Wait(500)
-	local playerPed = PlayerPedId()
-	local weaponHash = 0
-
-	if GetCurrentPedWeapon(playerPed, weaponHash, false, 0, false) then
-		local weaponName = Citizen.InvokeNative(0x89CF5FF3D363311E, weaponHash)
-
-		if string.find(weaponName, "UNARMED") then return end
-
-		local weaponAmmo = {}
-		local currentWeapon = nil
-
-		for _, weapon in pairs(UserWeapons) do
-			if string.find(weaponName, weapon:getName()) and weapon:getUsed() then
-				weaponAmmo = weapon:getAllAmmo()
-				currentWeapon = weapon
-			end
-		end
-
-		if currentWeapon == nil then return end
-
-		for type, amount in pairs(weaponAmmo) do
-			local ammoAmount = Citizen.InvokeNative(0x39D22031557946C1, playerPed, GetHashKey(type))
-
-			if ammoAmount ~= amount then
-				currentWeapon:setAmmo(type, ammoAmount)
-			end
-		end
-	end
-end
-
 InventoryService.receiveItem = function (name, amount)
 	if UserInventory[name] ~= nil then
 		UserInventory[name]:addCount(amount)
@@ -57,11 +24,12 @@ InventoryService.receiveItem = function (name, amount)
 	NUIService.LoadInv()
 end
 
-InventoryService.receiveitem2 = function (name, count)
+InventoryService.removeItem = function (name, count)
 	UserInventory[name]:quitCount(count)
 
 	if UserInventory[name]:getCount() <= 0 then
-		UserInventory[name] = nil
+		--UserInventory[name] = nil
+		Utils.TableRemoveByKey(UserInventory, name)
 	end
 
 	NUIService.LoadInv()
@@ -73,6 +41,7 @@ InventoryService.receiveWeapon = function (id, propietary, name, ammos)
 	for type, amount in pairs(ammos) do
 		weaponAmmo[type] = tonumber(amount)
 	end
+
 
 	if UserWeapons[id] == nil then
 		local newWeapon = Weapon:New({
@@ -128,20 +97,22 @@ InventoryService.getLoadout = function (loadout)
 		if weapon.used == 1 then weaponUsed = true end
 		if weapon.used2 == 1 then weaponUsed2 = true end
 
-		local newWeapon = Weapon:New({
-			id = tonumber(weapon.id),
-			identifier = weapon.identifier,
-			label = Utils.GetWeaponLabel(weapon.name),
-			name = weapon.name,
-			ammo = weaponAmmo,
-			used = weaponUsed,
-			used2 = weaponUsed2
-		})
-
-		UserWeapons[newWeapon:getId()] = newWeapon
-
-		if newWeapon:getUsed() then
-			Utils.useWeapon(newWeapon:getId())
+		if weapon.dropped == nil or weapon.dropped == 0 then
+			local newWeapon = Weapon:New({
+				id = tonumber(weapon.id),
+				identifier = weapon.identifier,
+				label = Utils.GetWeaponLabel(weapon.name),
+				name = weapon.name,
+				ammo = weaponAmmo,
+				used = weaponUsed,
+				used2 = weaponUsed2
+			})
+	
+			UserWeapons[newWeapon:getId()] = newWeapon
+	
+			if newWeapon:getUsed() then
+				Utils.useWeapon(newWeapon:getId())
+			end
 		end
 	end
 end
@@ -177,3 +148,25 @@ InventoryService.getInventory = function (inventory)
 		end
 	end
 end
+
+
+-- Threads
+Citizen.CreateThread(function()
+	while true do
+		Wait(500)
+
+		local isArmed = Citizen.InvokeNative(0xCB690F680A3EA971, PlayerPedId(), 4)
+		
+		if isArmed then
+			for _, weapon in pairs(UserWeapons) do
+				if weapon:getUsed() then
+					local ammo = weapon:getAllAmmo()
+					for ammoName, _ in pairs(ammo) do
+						local ammoQty = Citizen.InvokeNative(0x39D22031557946C1, PlayerPedId(), GetHashKey(ammoName))
+						weapon:setAmmo(ammoName, ammoQty)
+					end
+				end
+			end
+		end
+	end
+end)
