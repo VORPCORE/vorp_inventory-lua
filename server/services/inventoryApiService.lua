@@ -484,11 +484,11 @@ InventoryAPI.giveWeapon = function(player, weaponId, target)
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local sourceIdentifier = sourceCharacter.identifier
 	local sourceCharId = sourceCharacter.charIdentifier
-	local _target = target
+	local _target = tonumber(target)
 	local targetisPlayer = false
 
 	for _, pl in pairs(GetPlayers()) do
-		if pl == _target then
+		if tonumber(pl) == _target then
 			targetisPlayer = true
 			break
 		end
@@ -498,6 +498,7 @@ InventoryAPI.giveWeapon = function(player, weaponId, target)
 		local sourceTotalWeaponCount = InventoryAPI.getUserTotalCountWeapons(sourceIdentifier, sourceCharId) + 1
 
 		if sourceTotalWeaponCount > Config.MaxItemsInInventory.Weapons then
+			TriggerClientEvent("vorp:TipRight", _source, "Can't carry more weapons", 2000)
 			if Config.Debug then
 				Log.print(sourceCharacter.firstname .. " " .. sourceCharacter.lastname .. " ^1Can't carry more weapons^7")
 			end
@@ -520,9 +521,11 @@ InventoryAPI.giveWeapon = function(player, weaponId, target)
 		}, function() end)
 
 		if targetisPlayer then
+			TriggerClientEvent("vorp:TipRight", _target, _U("youGaveWeapon"), 2000)
 			TriggerClientEvent("vorpCoreClient:subWeapon", _target, weaponId)
 		end
-
+		
+		TriggerClientEvent("vorp:TipRight", _source, _U("youReceivedWeapon"), 2000)
 		TriggerClientEvent("vorpInventory:receiveWeapon", _source, weaponId, weaponPropietary, weaponName, weaponAmmo)
 	end
 end

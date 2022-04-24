@@ -185,7 +185,7 @@ InventoryService.onPickup = function(obj)
 						local totalAmount = amount + sourceItemCount
 
 						if svItems[name]:getLimit() < totalAmount then
-							TriggerClientEvent(_source, "vorp:TipRight", _U("fullInventory"), 2000)
+							TriggerClientEvent("vorp:TipRight", _source, _U("fullInventory"), 2000)
 							return
 						end
 					end
@@ -196,7 +196,7 @@ InventoryService.onPickup = function(obj)
 					sourceInventoryItemCount = sourceInventoryItemCount + amount
 
 					if sourceInventoryItemCount > Config.MaxItemsInInventory.Items then
-						TriggerClientEvent("vorp:TipRight", _source, _U(fullInventory), 2000)
+						TriggerClientEvent("vorp:TipRight", _source, _U("fullInventory"), 2000)
 						return
 					end
 				end
@@ -212,8 +212,7 @@ InventoryService.onPickup = function(obj)
 			end
 		else
 			if Config.MaxItemsInInventory.Weapons ~= 0 then
-				local sourceInventoryWeaponCount = InventoryAPI.getUserTotalCountWeapons(identifier, charId)
-				sourceInventoryWeaponCount = sourceInventoryWeaponCount + 1
+				local sourceInventoryWeaponCount = InventoryAPI.getUserTotalCountWeapons(identifier, charId) + 1
 
 				if sourceInventoryWeaponCount <= Config.MaxItemsInInventory.Weapons then
 					local weaponId = ItemPickUps[obj].weaponid
@@ -226,6 +225,8 @@ InventoryService.onPickup = function(obj)
 					TriggerClientEvent("vorpInventory:receiveWeapon", _source, weaponId, UsersWeapons[weaponId]:getPropietary(), UsersWeapons[weaponId]:getName(), UsersWeapons[weaponId]:getAllAmmo())
 					TriggerClientEvent("vorpInventory:playerAnim", _source, obj)
 					ItemPickUps[obj] = nil
+				else
+					TriggerClientEvent("vorp:TipRight", _source,  _U("fullInventoryWeapon"), 2000)
 				end
 			end
 		end
@@ -294,19 +295,7 @@ InventoryService.GiveWeapon = function(weaponId, target)
 	local _target = target
 
 	if UsersWeapons[weaponId] ~= nil then
-		InventoryService.subWeapon(_source, weaponId)
-		InventoryService.addWeapon(_target, weaponId)
-
-		local propietary = UsersWeapons[weaponId]:getPropietary()
-		local name = UsersWeapons[weaponId]:getName()
-		local allAmmo = UsersWeapons[weaponId]:getAllAmmo()
-
-		--NOTIFY
-		TriggerClientEvent("vorp:TipRight", _source, _U("youGaveWeapon"), 2000)
-		TriggerClientEvent("vorp:TipRight", _target, _U("youReceivedWeapon"), 2000)
-
-		TriggerClientEvent("vorpInventory:receiveWeapon", _target, weaponId, propietary, name, allAmmo)
-
+		InventoryAPI.giveWeapon(_target, weaponId, _source)
 	end
 end
 
