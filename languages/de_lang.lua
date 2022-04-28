@@ -4,17 +4,16 @@
 
 Locales["de_lang"] = {
 
-    fullInventory     = "Du trägst zu viel Gewicht, du kannst nichts anderes bekommen",
-    fullInventoryGive = "Diese Person trägt zu viel Gewicht, du kannst dieser Person nicht mehr Dinge geben",
-    fullInventoryWeapon = "Du kannst keine weitere Waffe mehr aufnehmen",
-    TryExploits       = "Versuchen Sie nicht, das System zu überlisten",
-    TakeFromFloor     = "Aufsammeln",
+    fullInventory     = "Du kannst nicht noch mehr tragen",
+    fullInventoryGive = "Diese Person hat die Taschen voll, du kannst ihr nichts geben",
+    TryExploits       = "Versuche nicht, das System zu überlisten!",
+    TakeFromFloor     = "Aufheben",
     NotEnoughMoney    = "Du hast nicht genug Geld",
-    YouPaid           = "Du hast %d$ an %s bezahlt",
-    YouReceived       = "Du hast %d$ von %s erhalten",
-    YouReceivedItem   = "Du hast einen Artikel erhalten",
-    yougaveitem       = "Du hast einen Artikel verschenkt ",
-    itemerror         = "Ungültig ",
-	youReceivedWeapon = "Du hast eine Waffe bekommen",
-    yougaveWeapon     = "Du hast eine Waffe gegeben"
+    YouPaid           = "Du gibst %d$ an %s",
+    YouReceived       = "Du hast %d$ bekomm von %s",
+    YouReceivedItem   = "Du hast etwas bekommen",
+    yougaveitem       = "Du hast etwas weitergegeben",
+    itemerror         = "Ungültig",
+    youReceivedWeapon = "Du hast eine Waffe erhalten",
+    youGaveWeapon     = "Du hast eine Waffe weitergegeben"
 }
