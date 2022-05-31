@@ -1,3 +1,5 @@
+<1.0.4>
+- Added Validation Check to disallow Floats (decimals)
 <1.0.3>
 - fixed duplication items when spamclick users name when giving items
 - update server/services/ inventoryService.lua file 
