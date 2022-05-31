@@ -146,10 +146,11 @@
                              dialog.close();           
                                        return;
                                     }
-                                    if ((type != "gold" && type != "money") && !isInt(value)) {
-                                        dialog.close(); 
-                                        return;
-                                    }
+                                    if (type !== "gold" && type !== "money") {
+                                        if (!isInt(value)) {
+                                            return;
+                                        }
+                                    };
                                     $.post("http://vorp_inventory/TakeFromHorse", JSON.stringify({
                                         item: itemData,
                                         type: type,
@@ -187,10 +188,11 @@
                              dialog.close();           
                                        return;
                                     }
-                                    if ((type != "gold" && type != "money") && !isInt(value)) {
-                                        dialog.close(); 
-                                        return;
-                                    }
+                                    if (type !== "gold" && type !== "money") {
+                                        if (!isInt(value)) {
+                                            return;
+                                        }
+                                    };
                                     $.post("http://vorp_inventory/TakeFromCart", JSON.stringify({
                                         item: itemData,
                                         type: type,
@@ -231,10 +233,11 @@
                              dialog.close();           
                                        return;
                                     }
-                                    if ((type != "gold" && type != "money") && !isInt(value)) {
-                                        dialog.close(); 
-                                        return;
-                                    }
+                                    if (type !== "gold" && type !== "money") {
+                                        if (!isInt(value)) {
+                                            return;
+                                        }
+                                    };
                                     $.post("http://vorp_inventory/TakeFromHouse", JSON.stringify({
                                         item: itemData,
                                         type: type,
@@ -273,10 +276,11 @@
                              dialog.close();           
                                        return;
                                     }
-                                    if ((type != "gold" && type != "money") && !isInt(value)) {
-                                        dialog.close(); 
-                                        return;
-                                    }
+                                    if (type !== "gold" && type !== "money") {
+                                        if (!isInt(value)) {
+                                            return;
+                                        }
+                                    };
                                     $.post("http://vorp_inventory/TakeFromHideout", JSON.stringify({
                                         item: itemData,
                                         type: type,
@@ -315,10 +319,11 @@
                              dialog.close();           
                                        return;
                                     }
-                                    if ((type != "gold" && type != "money") && !isInt(value)) {
-                                        dialog.close(); 
-                                        return;
-                                    }
+                                    if (type !== "gold" && type !== "money") {
+                                        if (!isInt(value)) {
+                                            return;
+                                        }
+                                    };
                                     $.post("http://vorp_inventory/TakeFromClan", JSON.stringify({
                                         item: itemData,
                                         type: type,
@@ -358,10 +363,11 @@
                              dialog.close();           
                                        return;
                                     }                
-                                    if ((type != "gold" && type != "money") && !isInt(value)) {
-                                        dialog.close(); 
-                                        return;
-                                    }                     
+                                    if (type !== "gold" && type !== "money") {
+                                        if (!isInt(value)) {
+                                            return;
+                                        }
+                                    };                     
                                     $.post("http://vorp_inventory/TakeFromsteal", JSON.stringify({
                                         item: itemData,
                                         type: type,
@@ -400,10 +406,11 @@
                                         dialog.close();           
                                        return;
                                     }
-                                    if ((type != "gold" && type != "money") && !isInt(value)) {
-                                        dialog.close(); 
-                                        return;
-                                    }
+                                    if (type !== "gold" && type !== "money") {
+                                        if (!isInt(value)) {
+                                            return;
+                                        }
+                                    };
                                     $.post("http://vorp_inventory/TakeFromContainer", JSON.stringify({
                                         item: itemData,
                                         type: type,
@@ -452,10 +459,11 @@
                                     dialog.close();           
                                        return;
                                     }
-                                    if ((type != "gold" && type != "money") && !isInt(value)) {
-                                        dialog.close(); 
-                                        return;
-                                    }
+                                    if (type !== "gold" && type !== "money") {
+                                        if (!isInt(value)) {
+                                            return;
+                                        }
+                                    };
                                     $.post("http://vorp_inventory/MoveToHorse", JSON.stringify({
                                         item: itemData,
                                         type: type,
@@ -494,10 +502,11 @@
                                     dialog.close();           
                                        return;
                                     }
-                                    if ((type != "gold" && type != "money") && !isInt(value)) {
-                                        dialog.close(); 
-                                        return;
-                                    }
+                                    if (type !== "gold" && type !== "money") {
+                                        if (!isInt(value)) {
+                                            return;
+                                        }
+                                    };
                                     $.post("http://vorp_inventory/MoveToCart", JSON.stringify({
                                         item: itemData,
                                         type: type,
@@ -536,10 +545,11 @@
                                         dialog.close();           
                                        return;
                                     }
-                                    if ((type != "gold" && type != "money") && !isInt(value)) {
-                                        dialog.close(); 
-                                        return;
-                                    }
+                                    if (type !== "gold" && type !== "money") {
+                                        if (!isInt(value)) {
+                                            return;
+                                        }
+                                    };
                                     $.post("http://vorp_inventory/MoveToHouse", JSON.stringify({
                                         item: itemData,
                                         type: type,
@@ -577,10 +587,11 @@
                                         dialog.close();           
                                        return;
                                     }
-                                    if ((type != "gold" && type != "money") && !isInt(value)) {
-                                        dialog.close(); 
-                                        return;
-                                    }
+                                    if (type !== "gold" && type !== "money") {
+                                        if (!isInt(value)) {
+                                            return;
+                                        }
+                                    };
                                     $.post("http://vorp_inventory/MoveToHideout", JSON.stringify({
                                         item: itemData,
                                         type: type,
@@ -619,10 +630,11 @@
                                         dialog.close();           
                                        return;
                                     }
-                                    if ((type != "gold" && type != "money") && !isInt(value)) {
-                                        dialog.close(); 
-                                        return;
-                                    }
+                                    if (type !== "gold" && type !== "money") {
+                                        if (!isInt(value)) {
+                                            return;
+                                        }
+                                    };
                                     $.post("http://vorp_inventory/MoveToClan", JSON.stringify({
                                         item: itemData,
                                         type: type,
@@ -661,10 +673,11 @@
                                         dialog.close();           
                                        return;
                                     }
-                                    if ((type != "gold" && type != "money") && !isInt(value)) {
-                                        dialog.close(); 
-                                        return;
-                                    }
+                                    if (type !== "gold" && type !== "money") {
+                                        if (!isInt(value)) {
+                                            return;
+                                        }
+                                    };
                                     $.post("http://vorp_inventory/MoveTosteal", JSON.stringify({
                                         item: itemData,
                                         type: type,
@@ -703,10 +716,11 @@
                                      dialog.close();           
                                        return;
                                     }
-                                    if ((type != "gold" && type != "money") && !isInt(value)) {
-                                        dialog.close(); 
-                                        return;
-                                    }
+                                    if (type !== "gold" && type !== "money") {
+                                        if (!isInt(value)) {
+                                            return;
+                                        }
+                                    };
                                     $.post("http://vorp_inventory/MoveToContainer", JSON.stringify({
                                         item: itemData,
                                         type: type,
@@ -951,10 +965,11 @@
                              dialog.close();
                             return;
                         }
-                        if ((type != "gold" && type != "money") && !isInt(value)) {
-                            dialog.close(); 
-                            return;
-                        }
+                        if (type !== "gold" && type !== "money") {
+                            if (!isInt(value)) {
+                                return;
+                            }
+                        };
                         $.post("http://vorp_inventory/DropItem", JSON.stringify({
                             item: item,
                             type: type,
@@ -990,10 +1005,11 @@
                             dialog.close(); 
                             return;
                         }
-                        if ((type != "gold" && type != "money") && !isInt(value)) {
-                            dialog.close(); 
-                            return;
-                        }
+                        if (type !== "gold" && type !== "money") {
+                            if (!isInt(value)) {
+                                return;
+                            }
+                        };
                         $.post("http://vorp_inventory/GetNearPlayers", JSON.stringify({
                             type: type,
                             what: "give",
@@ -1027,9 +1043,13 @@
                 },
                 validate: function(value, item, type) {
                     if (!value ) {
-                        
                         return;
                     }
+                    if (type !== "gold" && type !== "money") {
+                        if (!isInt(value)) {
+                            return;
+                        }
+                    };
                     $.post("http://vorp_inventory/GetNearPlayers", JSON.stringify({
                         type: type,
                         what: "give",
