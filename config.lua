@@ -10,10 +10,10 @@ Config  = {
   defaultlang = "en_lang",
 
    --{ I } OPEN INVENTORY
-  OpenKey = 0xC1989F95, 
+  OpenKey = 0xA8E3F467, -- F1
 
   --RMB mouse PROMPT PICKUP
-  PickupKey = 0xF84FA74F, 
+  PickupKey = 0xF84FA74F, -- Click LM
 
   -- LOGS 
   webhookavatar = "https://cdn3.iconfinder.com/data/icons/hand/500/Hand_give_thumbs_finger-512.png",
@@ -30,14 +30,14 @@ Config  = {
 
   -- NEED TO TEST
   DropOnRespawn  = {
-    Money   = true,
-    Weapons = true,
-    Items  = true
+    Money   = false,
+    Weapons = false,
+    Items  = false
   },
 
   -- HOW MANY WEAPONS AND ITEMS ALLOWED PER PLAYER
   MaxItemsInInventory  = {
-    Weapons = 6,
+    Weapons = 3,
     Items = 50,
   },
 
