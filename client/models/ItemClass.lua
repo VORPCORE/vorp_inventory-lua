@@ -14,7 +14,7 @@ function Item:setCount(amount)
 end
 
 function Item:getCount()
-	return self.count
+	return math.floor(self.count)
 end
 
 function Item:quitCount(amount)
