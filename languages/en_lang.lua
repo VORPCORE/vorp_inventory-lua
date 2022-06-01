@@ -4,10 +4,10 @@
 
 Locales["en_lang"] = {
 
-    fullInventory     = "You are carrying too many items!",
-    fullInventoryGive = "Looks like their pockets are full...",
-    fullInventoryWeapon = "You are carrying too many weapons!",
-    TryExploits       = "The watchfull eye knows all, don't try that again",
+    fullInventory     = "You are carrying to much weight, you cant receive anything else",
+    fullInventoryGive = "That person is carrying to much weight, you can`t give that person more things",
+    fullInventoryWeapon = "You are carrying to much weapons, you cant receive anything else",
+    TryExploits       = "Don`t try to outsmart the system",
     TakeFromFloor     = "Pickup",
     NotEnoughMoney    = "You don`t have enough money",
     YouPaid           = "You have paid %s$ to %s",
