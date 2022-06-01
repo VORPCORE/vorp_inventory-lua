@@ -10,7 +10,7 @@ Config  = {
   defaultlang = "en_lang",
 
    --{ I } OPEN INVENTORY
-  OpenKey = 0xA8E3F467, -- F1
+  OpenKey = 0xC1989F95, -- I
 
   --RMB mouse PROMPT PICKUP
   PickupKey = 0xF84FA74F, -- Click LM
