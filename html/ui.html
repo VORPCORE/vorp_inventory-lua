@@ -49,6 +49,9 @@
     <script type="text/javascript" src="js/jquery.dialog.min.js"></script>
 
     <script type="text/javascript">
+        function isInt(n) {
+            return n != "" && !isNaN(n) && Math.round(n) == n;
+        }
         var isOpen = false;
 
         var type = "normal";
@@ -136,19 +139,23 @@
                                     type: "number",
                                     autofocus: "true"
                                 },
+
                                 validate: function (value, item, type) {
                                     if (!value) {
                                         dialog.close()
                                         return;
                                     }
 
-                                    $.post("http://vorp_inventory/TakeFromHorse", JSON
-                                        .stringify({
-                                            item: itemData,
-                                            type: type,
-                                            number: value,
-                                            horse: horseid
-                                        }));
+                                    if (!isInt(value)) {
+                                        return;
+                                    }
+
+                                    $.post("http://vorp_inventory/TakeFromHorse", JSON.stringify({
+                                        item: itemData,
+                                        type: type,
+                                        number: value,
+                                        horse: horseid
+                                    }));
 
                                 }
                             });
@@ -175,19 +182,23 @@
                                     type: "number",
                                     autofocus: "true"
                                 },
+
                                 validate: function (value, item, type) {
                                     if (!value) {
                                         dialog.close()
                                         return;
                                     }
 
-                                    $.post("http://vorp_inventory/TakeFromCart", JSON
-                                        .stringify({
-                                            item: itemData,
-                                            type: type,
-                                            wagon: wagonid,
-                                            number: value
-                                        }));
+                                    if (!isInt(value)) {
+                                        return;
+                                    }
+
+                                    $.post("http://vorp_inventory/TakeFromCart", JSON.stringify({
+                                        item: itemData,
+                                        type: type,
+                                        wagon: wagonid,
+                                        number: value
+                                    }));
 
 
 
@@ -222,13 +233,16 @@
                                         return;
                                     }
 
-                                    $.post("http://vorp_inventory/TakeFromHouse", JSON
-                                        .stringify({
-                                            item: itemData,
-                                            type: type,
-                                            number: value,
-                                            house: houseId
-                                        }));
+                                    if (!isInt(value)) {
+                                        return;
+                                    }
+
+                                    $.post("http://vorp_inventory/TakeFromHouse", JSON.stringify({
+                                        item: itemData,
+                                        type: type,
+                                        number: value,
+                                        house: houseId
+                                    }));
 
 
                                 }
@@ -262,13 +276,16 @@
                                         return;
                                     }
 
-                                    $.post("http://vorp_inventory/TakeFromHideout", JSON
-                                        .stringify({
-                                            item: itemData,
-                                            type: type,
-                                            number: value,
-                                            hideout: hideoutId
-                                        }));
+                                    if (!isInt(value)) {
+                                        return;
+                                    }
+
+                                    $.post("http://vorp_inventory/TakeFromHideout", JSON.stringify({
+                                        item: itemData,
+                                        type: type,
+                                        number: value,
+                                        hideout: hideoutId
+                                    }));
 
 
                                 }
@@ -299,6 +316,10 @@
                                 validate: function (value, item, type) {
                                     if (!value) {
                                         dialog.close()
+                                        return;
+                                    }
+
+                                    if (!isInt(value)) {
                                         return;
                                     }
 
@@ -341,6 +362,11 @@
                                         dialog.close()
                                         return;
                                     }
+
+                                    if (!isInt(value)) {
+                                        return;
+                                    }
+
                                     $.post("http://vorp_inventory/TakeFromsteal", JSON
                                         .stringify({
                                             item: itemData,
@@ -378,6 +404,10 @@
                                 validate: function (value, item, type) {
                                     if (!value) {
                                         dialog.close()
+                                        return;
+                                    }
+
+                                    if (!isInt(value)) {
                                         return;
                                     }
 
@@ -430,13 +460,17 @@
                                         dialog.close()
                                         return;
                                     }
-                                    $.post("http://vorp_inventory/MoveToHorse", JSON
-                                        .stringify({
-                                            item: itemData,
-                                            type: type,
-                                            number: value,
-                                            horse: horseid
-                                        }));
+
+                                    if (!isInt(value)) {
+                                        return;
+                                    }
+
+                                    $.post("http://vorp_inventory/MoveToHorse", JSON.stringify({
+                                        item: itemData,
+                                        type: type,
+                                        number: value,
+                                        horse: horseid
+                                    }));
 
 
                                 }
@@ -471,13 +505,16 @@
                                         return;
                                     }
 
-                                    $.post("http://vorp_inventory/MoveToCart", JSON
-                                        .stringify({
-                                            item: itemData,
-                                            type: type,
-                                            wagon: wagonid,
-                                            number: value
-                                        }));
+                                    if (!isInt(value)) {
+                                        return;
+                                    }
+
+                                    $.post("http://vorp_inventory/MoveToCart", JSON.stringify({
+                                        item: itemData,
+                                        type: type,
+                                        wagon: wagonid,
+                                        number: value
+                                    }));
 
                                 }
                             });
@@ -510,13 +547,17 @@
                                         dialog.close()
                                         return;
                                     }
-                                    $.post("http://vorp_inventory/MoveToHouse", JSON
-                                        .stringify({
-                                            item: itemData,
-                                            type: type,
-                                            number: value,
-                                            house: houseId
-                                        }));
+
+                                    if (!isInt(value)) {
+                                        return;
+                                    }
+
+                                    $.post("http://vorp_inventory/MoveToHouse", JSON.stringify({
+                                        item: itemData,
+                                        type: type,
+                                        number: value,
+                                        house: houseId
+                                    }));
 
                                 }
                             });
@@ -549,13 +590,16 @@
                                         return;
                                     }
 
-                                    $.post("http://vorp_inventory/MoveToHideout", JSON
-                                        .stringify({
-                                            item: itemData,
-                                            type: type,
-                                            number: value,
-                                            hideout: hideoutId
-                                        }));
+                                    if (!isInt(value)) {
+                                        return;
+                                    }
+
+                                    $.post("http://vorp_inventory/MoveToHideout", JSON.stringify({
+                                        item: itemData,
+                                        type: type,
+                                        number: value,
+                                        hideout: hideoutId
+                                    }));
 
                                 }
                             });
@@ -589,13 +633,16 @@
                                         return;
                                     }
 
-                                    $.post("http://vorp_inventory/MoveToClan", JSON
-                                        .stringify({
-                                            item: itemData,
-                                            type: type,
-                                            number: value,
-                                            clan: clanid
-                                        }));
+                                    if (!isInt(value)) {
+                                        return;
+                                    }
+
+                                    $.post("http://vorp_inventory/MoveToClan", JSON.stringify({
+                                        item: itemData,
+                                        type: type,
+                                        number: value,
+                                        clan: clanid
+                                    }));
 
                                 }
                             });
@@ -626,6 +673,10 @@
                                 validate: function (value, item, type) {
                                     if (!value) {
                                         dialog.close()
+                                        return;
+                                    }
+
+                                    if (!isInt(value)) {
                                         return;
                                     }
 
@@ -666,6 +717,10 @@
                                 validate: function (value, item, type) {
                                     if (!value) {
                                         dialog.close()
+                                        return;
+                                    }
+
+                                    if (!isInt(value)) {
                                         return;
                                     }
 
