@@ -104,6 +104,10 @@ exports('vorp_inventoryApi',function()
     self.CloseInv = function(source) -- TODO NOT IMPLEMENTED
         TriggerClientEvent("vorp_inventory:CloseInv",source)
     end
+
+    self.OpenInv = function(source)
+        TriggerClientEvent("vorp_inventory:OpenInv",source)
+    end
     
     return self
 end)
