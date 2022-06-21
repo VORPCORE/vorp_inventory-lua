@@ -161,7 +161,7 @@ exports('vorp_inventoryApi',function()
         TriggerEvent("vorpCore:canCarryWeapons", source, player, amount, cb)
     end
 
-    self.CloseInv = function(source) -- TODO NOT IMPLEMENTED
+    self.CloseInv = function(source) 
         TriggerClientEvent("vorp_inventory:CloseInv",source)
     end
 
