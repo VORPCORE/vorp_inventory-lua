@@ -158,7 +158,7 @@ exports('vorp_inventoryApi',function()
     end
 
     self.canCarryWeapons = function(source, amount, cb)
-        TriggerEvent("vorpCore:canCarryWeapons", source, player, amount, cb)
+        TriggerEvent("vorpCore:canCarryWeapons", source, amount, cb)
     end
 
     self.CloseInv = function(source) 
