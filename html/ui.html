@@ -32,7 +32,19 @@
         </div>
 
 
-        
+        <div id="transaction-loader">
+            <div class="wrap-model">
+                <div class="revolver">
+                    <section class="revolver-part"></section>
+                    <section class="revolver-part"></section>
+                    <section class="revolver-part"></section>
+                    <section class="revolver-part"></section>
+                    <section class="revolver-part"></section>
+                    <section class="revolver-part"></section>
+                </div>
+                <div id="loading-text"></div>
+            </div>
+        </div>
     </div>
     <div id="secondInventoryHud">
         <div id="titleHorse"></div>
@@ -112,8 +124,6 @@
 
         window.addEventListener('message', function (event) {
 
-
-
             if (event.data.action == "updateStatusHud") {
 
                 if (event.data.money || event.data.money === 0) {
@@ -132,6 +142,8 @@
                 }
 
             }
+
+            
         });
 
         $("document").ready(function () {
@@ -779,7 +791,17 @@
             });
 
             window.addEventListener("message", function (event) {
-
+                if (event.data.action == "transaction") {
+                    let t = event.data.type
+                    if(t == 'started') {
+                        let displaytext = event.data.text
+                        $('#loading-text').html(displaytext)
+                        $('#transaction-loader').show()
+                    }
+                    if(t == 'completed') {
+                        $('#transaction-loader').hide()
+                    }
+                }
 
                 if (event.data.action == "changecheck") {
                     checkxy = event.data.check

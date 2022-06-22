@@ -371,6 +371,16 @@ NUIService.CloseInv = function ()
 	InInventory = false
 end
 
+NUIService.transactionStarted = function (displaytext)
+	SetNuiFocus(true, false)
+	SendNUIMessage({action= "transaction", type= "started", text=_U("TransactionLoading")})
+end
+
+NUIService.transactionComplete = function ()
+	SetNuiFocus(true, true)
+	SendNUIMessage({action= "transaction", type= "completed"})
+end
+
 -- Main loop
 Citizen.CreateThread(function()
     while true do

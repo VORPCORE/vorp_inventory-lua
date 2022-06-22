@@ -359,6 +359,7 @@ end
 InventoryService.GiveItem = function(itemName, amount, target)
 	local _source = source
 	if not inprocessing(_source) then
+		TriggerClientEvent("vorp_inventory:transactionStarted", _source)
 		table.insert(processinguser, _source)
 		local _target = target
 		if Core.getUser(_source) == nil or Core.getUser(_target) == nil then
@@ -373,13 +374,14 @@ InventoryService.GiveItem = function(itemName, amount, target)
 
 		if UsersInventories[sourceIdentifier] == nil or UsersInventories[targetIdentifier] == nil or UsersInventories[sourceIdentifier][itemName] == nil then
 			TriggerClientEvent("vorp:TipRight", _source, _U('itemerror'), 2000)
+			TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
 			trem(_source)
 			return
 		end
 
 		if UsersInventories[sourceIdentifier][itemName] == nil then
 			TriggerClientEvent("vorp:TipRight", _source, _U("itemerror"), 2000)
-
+			
 			if Config.Debug then
 				Log.error("ServerGiveItem: User " .. sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname .. '#' .. _source .. ' ' .. 'inventory item ' .. itemName .. ' not found')
 			end
@@ -409,6 +411,8 @@ InventoryService.GiveItem = function(itemName, amount, target)
 		if not canGiveItemToTarget then
 			TriggerClientEvent("vorp:TipRight", _source, _U('fullInventoryGive'), 2000)
 			TriggerClientEvent("vorp:TipRight", _target, _U('fullInventory'), 2000)
+			TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
+
 			trem(_source)
 			return
 		end
@@ -430,6 +434,7 @@ InventoryService.GiveItem = function(itemName, amount, target)
 				if Config.Debug then
 					Log.error("ServerGiveItem: Server items does not contain " .. itemName .. ".")
 				end
+				TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
 				trem(_source)
 				return
 			end
@@ -455,6 +460,9 @@ InventoryService.GiveItem = function(itemName, amount, target)
 		TriggerClientEvent("vorp:TipRight", _source, "you gave " .. amount .. " of " .. ItemsLabel .. "", 2000)
 		TriggerClientEvent("vorp:TipRight", _target, "you gave " .. amount .. " of " .. ItemsLabel .. "", 2000)
 		TriggerEvent("vorpinventory:itemlog", _source, _target, itemName, amount)
+
+		TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
+
 		trem(_source)
 	end
 end
