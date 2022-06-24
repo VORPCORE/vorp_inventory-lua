@@ -228,7 +228,8 @@ InventoryService.addItem = function(target, name, amount)
 					name = name,
 					type = "item_inventory",
 					canUse = svItems[name]:getCanUse(),
-					canRemove = svItems[name]:getCanRemove()
+					canRemove = svItems[name]:getCanRemove(),
+					desc = svItems[name]:getDesc()
 				})
 				InventoryAPI.SaveInventoryItemsSupport(_source)
 			end
@@ -529,7 +530,8 @@ InventoryService.GiveItem = function(itemName, amount, target)
 					name = itemName,
 					type = "item_inventory",
 					canUse = svItems[itemName]:getCanUse(),
-					canRemove = svItems[itemName]:getCanRemove()
+					canRemove = svItems[itemName]:getCanRemove(),
+					desc = svItems[itemName]:getDesc()
 				})
 			else
 				if Config.Debug then
@@ -601,6 +603,7 @@ InventoryService.getInventory = function()
 					type = item.type,
 					canUse = item.usable,
 					canRemove = item.can_remove,
+					desc = item.desc,
 				})
 				characterInventory[item.item] = newItem
 			end

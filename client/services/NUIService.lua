@@ -341,6 +341,7 @@ NUIService.LoadInv = function ()
 		item.type = currentItem:getType()
 		item.usable = currentItem:getUsable()
 		item.canRemove = currentItem:getCanRemove()
+		item.desc = currentItem:getDesc()
 
 		table.insert(items, item)
 	end
@@ -355,6 +356,7 @@ NUIService.LoadInv = function ()
 		weapon.type = "item_weapon"
 		weapon.usable = true
 		weapon.canRemove = true
+		weapon.desc = Config.DescWeapons
 		weapon.id = currentWeapon:getId()
 		weapon.used = currentWeapon:getUsed()
 

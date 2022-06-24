@@ -9,6 +9,9 @@ Config  = {
   
   defaultlang = "en_lang",
   
+    -- DESCRIPTION WEAPONS 
+    DescWeapons = "WEAPONS DESC IN CONFIG",
+
     -- GOLD ITEM LIKE DOLLARS
     UseGoldItem = false, -- IF TRUE YOU HAVE GOLD IN INVENTORY LIKE DOLLARS
     -- CHANGE IN html/js/config.js TOO !!!

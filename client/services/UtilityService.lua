@@ -55,7 +55,8 @@ Utils.addItems = function(name, amount)
 			label = DB_Items[name].label,
 			type = "item_standard",
 			canUse = true,
-			canRemove = DB_Items[name].can_remove
+			canRemove = DB_Items[name].can_remove,
+			desc = DB_Items[name].desc
 		})
 	end
 end
