@@ -1103,6 +1103,34 @@
 
         }
 
+        function giveGetHowManyGold() {
+            dialog.prompt({
+                title: "Quantity",
+                button: "Accept",
+                required: true,
+                item: "gold",
+                type: "item_gold",
+                input: {
+                    type: "number",
+                    autofocus: "true"
+                },
+                validate: function(value, item, type) {
+                    if (!value) {
+                        dialog.close()
+                        return;
+                    }
+                    $.post("http://vorp_inventory/GetNearPlayers", JSON.stringify({
+                        type: type,
+                        what: "give",
+                        item: item,
+                        count: value
+                    }));
+                    return true;
+                }
+            });
+
+        }
+
         function closeInventory() {
             $.post("http://vorp_inventory/NUIFocusOff", JSON.stringify({}));
             isOpen = false;
@@ -1250,6 +1278,60 @@
 
             isOpen = true;
             initDivMouseOver()
+            
+        if (Config.UseGoldItem) {
+                  
+                  //AddGold
+                  var g_item = "gold";
+                  var g_label = "Gold";
+                  var g_desc = "DESC GOLD IN HTML FILE"
+      
+      
+                  $("#inventoryElement").append("<div data-label='" + g_label +
+                      "' style='background-image: url(\"img/items/" + g_item +
+                      ".png\"), url(); background-size: 90px 90px, 90px 90px; background-repeat: no-repeat; background-position: center;' id='item-" +
+                      g_item + "' class='item'><div class='text'></div></div>")
+      
+                  var data = [];
+      
+                  data.push({
+                      text: "Give Gold",
+                      action: function() {
+                          giveGetHowManyGold();
+                      }
+                  });
+      
+                  data.push({
+                      text: "Drop Gold",
+                      action: function() {
+                          dropGetHowMany(g_item, "item_gold", "asd", 0);
+                      }
+                  });
+      
+      
+      
+                  $("#item-" + g_item).contextMenu([data], {
+                      offsetX: 1,
+                      offsetY: 1,
+                  });
+      
+      
+                  $("#item-" + g_item).hover(
+                      function() {
+                          OverSetTitle(g_label);
+                      },
+                      function() {
+                          OverSetTitle(" ");
+                      }
+                  );
+      
+                  $('#item-' + g_item).data('item', g_item);
+                  $('#item-' + g_item).data('inventory', "none");
+      
+                  isOpen = true;
+                  initDivMouseOver()
+              }
+      
         }
 
         function secondInventorySetup(items) {
