@@ -67,38 +67,110 @@ AddEventHandler("vorpinventory:getLabelFromId",function(id, item2, cb)
     cb(label) 
 end)
 
+RegisterServerEvent("vorpinventory:pickupitemlog")
+AddEventHandler("vorpinventory:pickupitemlog", function(_source,itemName, amount, coords)
+    local name = GetPlayerName(_source)
+    local color = 3426654
+    local description = name.." pickup "..itemName.." x "..amount.." in coords "..coords
+    Discord(Config.Language.gaveitem,_source,description, color)
+end)
 
+RegisterServerEvent("vorpinventory:pickupweaponlog")
+AddEventHandler("vorpinventory:pickupweaponlog", function(_source, weaponId, coords)
+    local name = GetPlayerName(_source)
+    local color = 3426654
+    local description = name.." pickup "..weaponId.." in coords "..coords
+    Discord(Config.Language.gaveitem,_source,description, color)
+end)
+
+RegisterServerEvent("vorpinventory:pickupmoneylog")
+AddEventHandler("vorpinventory:pickupmoneylog", function(_source, amount, coords)
+    local name = GetPlayerName(_source)
+    local color = 3426654
+    local description = name.." pickup "..amount.."$ in coords "..coords
+    Discord(Config.Language.gaveitem,_source,description, color)
+end)
+
+RegisterServerEvent("vorpinventory:pickupgoldlog")
+AddEventHandler("vorpinventory:pickupgoldlog", function(_source, amount, coords)
+    local name = GetPlayerName(_source)
+    local color = 3426654
+    local description = name.." pickup "..amount.."G in coords "..coords
+    Discord(Config.Language.gaveitem,_source,description, color)
+end)
 
 RegisterServerEvent("vorpinventory:itemlog")
-AddEventHandler("vorpinventory:itemlog", function(_source,targetHandle,itemName, amount)
+AddEventHandler("vorpinventory:itemlog", function(_source, targetHandle, itemName, amount)
     local name = GetPlayerName(_source)
     local name2 = GetPlayerName(targetHandle)
-    local description = name..Config.Language.gave..amount.." "..itemName..Config.Language.to..name2
-    Discord(Config.Language.gaveitem,_source,description)
+    local color = 3447003
+    local description = name.." gave "..itemName.." x "..amount.." to "..name2
+    Discord(Config.Language.gaveitem,_source,description, color)
 end)
 
 RegisterServerEvent("vorpinventory:weaponlog")
 AddEventHandler("vorpinventory:weaponlog", function(targetHandle, data)
-    local _source = source
     local name = GetPlayerName(_source)
     local name2 = GetPlayerName(targetHandle)
-    local description = name..Config.Language.gave..data.item..Config.Language.to..name2..Config.Language.withid..data.id
-    Discord(Config.Language.gaveitem,_source,description) 
+    local color = 15548997
+    local description = name.." gave "..data.item.." to "..name2
+    Discord(Config.Language.gaveitem,_source,description, color) 
 end)
 
 RegisterServerEvent("vorpinventory:moneylog")
-AddEventHandler("vorpinventory:moneylog", function(_source,targetHandle, amount)
+AddEventHandler("vorpinventory:moneylog", function(_source, targetHandle, amount)
     local name = GetPlayerName(_source)
     local name2 = GetPlayerName(targetHandle)
-    local description = name..Config.Language.gave.." $"..amount.." "..Config.Language.to..name2
-    Discord(Config.Language.gaveitem,_source,description)
+    local color = 5763719
+    local description = name.." gave $"..amount.." to "..name2
+    Discord(Config.Language.gaveitem,_source,description, color)
 end)
 
-function Discord(title,_source,description)
+RegisterServerEvent("vorpinventory:moneydroplog")
+AddEventHandler("vorpinventory:moneydroplog", function(_source, amount)
+    local name = GetPlayerName(_source)
+    local color = 15844367
+    local description = name.." dropped $"..amount
+    Discord(Config.Language.gaveitem,_source,description, color)
+end)
+
+RegisterServerEvent("vorpinventory:goldlog")
+AddEventHandler("vorpinventory:goldlog", function(_source, targetHandle, amount)
+    local name = GetPlayerName(_source)
+    local name2 = GetPlayerName(targetHandle)
+    local color = 5763719
+    local description = name.." gave "..amount.." Gold to "..name2
+    Discord(Config.Language.gaveitem,_source,description, color)
+end)
+
+RegisterServerEvent("vorpinventory:golddroplog")
+AddEventHandler("vorpinventory:golddroplog", function(_source, amount)
+    local name = GetPlayerName(_source)
+    local color = 15844367
+    local description = name.." dropped "..amount.." G"
+    Discord(Config.Language.gaveitem,_source,description, color)
+end)
+
+RegisterServerEvent("vorpinventory:itemdroplog")
+AddEventHandler("vorpinventory:itemdroplog", function(_source, itemName, amount)
+    local name = GetPlayerName(_source)
+    local color = 7419530
+    local description = name.." dropped "..itemName.." x "..amount
+    Discord(Config.Language.gaveitem,_source,description, color)
+end)
+
+RegisterServerEvent("vorpinventory:weapondroplog")
+AddEventHandler("vorpinventory:weapondroplog", function(_source, weaponId)
+    local name = GetPlayerName(_source)
+    local color = 15277667
+    local description = name.." dropped "..weaponId
+    Discord(Config.Language.gaveitem,_source,description, color)
+end)
+
+function Discord(title,_source,description, color)
     local logs = {}
     local name = GetPlayerName(_source)
     local avatar = Config.webhookavatar
-    local color = 3447003
     local discordid
     if Config.discordid then 
       discordid = getIdentity(_source, "discord")
