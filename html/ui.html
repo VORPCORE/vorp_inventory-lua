@@ -1302,8 +1302,10 @@
             isOpen = true;
             initDivMouseOver()
 
-        //AddGold
-        var g_item = "gold";
+        if (Config.UseGoldItem) {
+                  
+            //AddGold
+            var g_item = "gold";
             var g_label = "Gold";
             var g_desc = "DESC GOLD IN HTML FILE"
 
@@ -1360,6 +1362,8 @@
 
             isOpen = true;
             initDivMouseOver()
+        }
+
         }
 
         function secondInventorySetup(items) {

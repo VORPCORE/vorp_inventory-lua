@@ -201,7 +201,7 @@ NUIService.NUIGiveItem = function (obj)
 					if isProcessingPay then return end
 					isProcessingPay = true
 					TriggerServerEvent("vorpinventory:giveMoneyToPlayer", target, tonumber(data2.count))
-				elseif data2.type == "item_gold" then 
+				elseif Config.UseGoldItem and data2.type == "item_gold" then 
 					if isProcessingPay then return end
 					isProcessingPay = true
 					TriggerServerEvent("vorpinventory:giveGoldToPlayer", target, tonumber(data2.count))
@@ -234,8 +234,10 @@ NUIService.NUIDropItem = function (obj)
 		TriggerServerEvent("vorpinventory:serverDropMoney", qty)
 	end
 
-	if type == "item_gold" then 
-		TriggerServerEvent("vorpinventory:serverDropGold", qty)
+	if Config.UseGoldItem then
+		if type == "item_gold" then 
+			TriggerServerEvent("vorpinventory:serverDropGold", qty)
+		end
 	end
 
 	if type == "item_standard" then

@@ -224,7 +224,7 @@ PickupsService.dropAllPlease = function()
 		Wait(200)
 	end
 
-	if Config.DropOnRespawn.Gold then
+	if Config.UseGoldItem and Config.DropOnRespawn.Gold then
 		TriggerServerEvent("vorpinventory:serverDropAllGold")
 		Wait(200)
 	end
@@ -309,7 +309,7 @@ PickupsService.OnWorldPickup = function()
 			if pickup.prompt:HasHoldModeCompleted() then
 				if pickup.isMoney then
 					TriggerServerEvent("vorpinventory:onPickupMoney", pickup.entityId)
-				elseif pickup.isGold then 
+				elseif Config.UseGoldItem and pickup.isGold then 
 					TriggerServerEvent("vorpinventory:onPickupGold", pickup.entityId )
 				else
 					TriggerServerEvent("vorpinventory:onPickup", pickup.entityId)
