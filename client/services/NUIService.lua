@@ -105,20 +105,6 @@ NUIService.NUITakeFromHouse = function (obj)
 	TriggerServerEvent("vorp_housing:TakeFromHouse", json.encode(obj))
 end
 
-NUIService.OpenBankInventory = function (bankName, bankId, capacity)
-	SetNuiFocus(true, true)
-	SendNUIMessage({action= "display", type= "bank", title= bankName, bankId= bankId, capacity= capacity})
-	InInventory = true
-end
-
-NUIService.NUIMoveToBank = function (obj)
-	TriggerServerEvent("rz_bank:MoveToBank", json.encode(obj))
-end
-
-NUIService.NUITakeFromBank = function (obj)
-	TriggerServerEvent("rz_bank:TakeFromBank", json.encode(obj))
-end
-
 NUIService.OpenHideoutInventory = function (hideoutName, hideoutId, capacity)
 	SetNuiFocus(true, true)
 	SendNUIMessage({action= "display", type= "hideout", title= hideoutName , hideoutId= hideoutId, capacity= capacity})
@@ -215,10 +201,6 @@ NUIService.NUIGiveItem = function (obj)
 					if isProcessingPay then return end
 					isProcessingPay = true
 					TriggerServerEvent("vorpinventory:giveMoneyToPlayer", target, tonumber(data2.count))
-				elseif data2.type == "item_gold" then 
-					if isProcessingPay then return end
-					isProcessingPay = true
-					TriggerServerEvent("vorpinventory:giveGoldToPlayer", target, tonumber(data2.count))
 				elseif tonumber(data2.id) == 0 then
 					local amount = tonumber(data2.count)
 
@@ -246,10 +228,6 @@ NUIService.NUIDropItem = function (obj)
 
 	if type == "item_money" then
 		TriggerServerEvent("vorpinventory:serverDropMoney", qty)
-	end
-
-	if type == "item_gold" then 
-		TriggerServerEvent("vorpinventory:serverDropGold", qty)
 	end
 
 	if type == "item_standard" then
@@ -353,7 +331,6 @@ NUIService.LoadInv = function ()
 		item.type = currentItem:getType()
 		item.usable = currentItem:getUsable()
 		item.canRemove = currentItem:getCanRemove()
-		item.desc = currentItem:getDesc()
 
 		table.insert(items, item)
 	end
@@ -368,7 +345,6 @@ NUIService.LoadInv = function ()
 		weapon.type = "item_weapon"
 		weapon.usable = true
 		weapon.canRemove = true
-		weapon.desc = Config.DescWeapons
 		weapon.id = currentWeapon:getId()
 		weapon.used = currentWeapon:getUsed()
 
@@ -393,6 +369,16 @@ NUIService.CloseInv = function ()
 	SetNuiFocus(false, false)
 	SendNUIMessage({action= "hide"})
 	InInventory = false
+end
+
+NUIService.transactionStarted = function (displaytext)
+	SetNuiFocus(true, false)
+	SendNUIMessage({action= "transaction", type= "started", text=_U("TransactionLoading")})
+end
+
+NUIService.transactionComplete = function ()
+	SetNuiFocus(true, true)
+	SendNUIMessage({action= "transaction", type= "completed"})
 end
 
 -- Main loop

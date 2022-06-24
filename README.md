@@ -5,9 +5,6 @@
 - [VORP Inputs](https://github.com/VORPCORE/VORP-Inputs/releases)
 - [VORP Character](https://github.com/VORPCORE/VORP-Character/releases)
 
-## Original File 
-- [VORP Inventory](https://github.com/VORPCORE/vorp_inventory-lua)
-
 ## How to install
 * Download the lastest version of VORP Inventory
 * Copy and paste ```vorp_inventory``` folder to ```resources/vorp_inventory```
@@ -23,14 +20,9 @@
 * It also has usable items.
 * KLS.
 
-## Extra Features
-* All features from vorp_inventory_lua 1.0.7
-* Description of all items in DB
-* Gold item like Dollars (You can give and drop item)
 
-![image](https://i.imgur.com/iJ7Baka.png)
-<img width="354" alt="image" src="https://i.imgur.com/WVXkdJu.png">
-<img width="354" alt="image" src="https://i.imgur.com/ZS6BjWI.png">
+![image](https://user-images.githubusercontent.com/87246847/156600012-3901dac7-73f8-4577-a8f5-9a60d7e3150b.png)
+<img width="354" alt="image" src="https://user-images.githubusercontent.com/87246847/156600211-cc3fc70f-60bb-4884-971a-1d2ad4fdb8ad.png">
 
 
 ## Wiki

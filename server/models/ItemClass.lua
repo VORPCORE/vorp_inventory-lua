@@ -12,7 +12,6 @@ Item.weight = nil
 
 Item.canUse = false 
 Item.canRemove = false
-Item.desc = nil
 Item.dropOnDeath = false 
 
 -- NAME
@@ -106,15 +105,6 @@ end
 
 function Item:getCanRemove() 
 	return self.canRemove
-end
-
--- Desc
-function Item:setDesc(desc) 
-	self.desc = desc
-end
-
-function Item:getDesc() 
-	return self.desc
 end
 
 -- DropOnDeath

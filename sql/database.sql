@@ -25,7 +25,6 @@ CREATE TABLE `items` (
 	`can_remove` TINYINT(1) NOT NULL DEFAULT 1,
 	`type` VARCHAR(50) NULL DEFAULT NULL,
 	`usable` TINYINT(1) NULL DEFAULT NULL,
-	`desc` VARCHAR(5550) NOT NULL DEFAULT 'nice item',
 	PRIMARY KEY (`item`) USING BTREE
 )
 COLLATE='utf8mb4_general_ci'
@@ -36,6 +35,3 @@ ROW_FORMAT=DYNAMIC
 ALTER TABLE `loadout` ADD COLUMN `dropped` INT(11) NOT NULL DEFAULT 0;
 ALTER TABLE `loadout` ADD COLUMN `comps` VARCHAR(5550) NOT NULL DEFAULT '{}';
 ALTER TABLE `loadout` ADD COLUMN `used2` tinyint(4) NOT NULL DEFAULT 0;
-
--- if you need to upgrade desc in items
-ALTER TABLE `items` ADD COLUMN `desc` VARCHAR(5550) NOT NULL DEFAULT 'nice item';

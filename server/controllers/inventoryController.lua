@@ -19,12 +19,6 @@ AddEventHandler("vorpinventory:serverDropMoney", InventoryService.DropMoney)
 RegisterServerEvent("vorpinventory:serverDropAllMoney")
 AddEventHandler("vorpinventory:serverDropAllMoney", InventoryService.DropAllMoney)
 
-RegisterServerEvent("vorpinventory:serverDropGold")
-AddEventHandler("vorpinventory:serverDropGold", InventoryService.DropGold)
-
-RegisterServerEvent("vorpinventory:serverDropAllGold")
-AddEventHandler("vorpinventory:serverDropAllGold", InventoryService.DropAllGold)
-
 RegisterServerEvent("vorpinventory:serverDropWeapon")
 AddEventHandler("vorpinventory:serverDropWeapon", InventoryService.DropWeapon)
 
@@ -34,17 +28,11 @@ AddEventHandler("vorpinventory:sharePickupServer", InventoryService.sharePickupS
 RegisterServerEvent("vorpinventory:shareMoneyPickupServer")
 AddEventHandler("vorpinventory:shareMoneyPickupServer", InventoryService.shareMoneyPickupServer)
 
-RegisterServerEvent("vorpinventory:shareGoldPickupServer")
-AddEventHandler("vorpinventory:shareGoldPickupServer", InventoryService.shareGoldPickupServer)
-
 RegisterServerEvent("vorpinventory:onPickup")
 AddEventHandler("vorpinventory:onPickup", InventoryService.onPickup)
 
 RegisterServerEvent("vorpinventory:onPickupMoney")
 AddEventHandler("vorpinventory:onPickupMoney", InventoryService.onPickupMoney)
-
-RegisterServerEvent("vorpinventory:onPickupGold")
-AddEventHandler("vorpinventory:onPickupGold", InventoryService.onPickupGold)
 
 RegisterServerEvent("vorpinventory:setUsedWeapon")
 AddEventHandler("vorpinventory:setUsedWeapon", InventoryService.usedWeapon)
@@ -54,6 +42,3 @@ AddEventHandler("vorpinventory:setWeaponBullets", InventoryService.setWeaponBull
 
 RegisterServerEvent("vorpinventory:giveMoneyToPlayer")
 AddEventHandler("vorpinventory:giveMoneyToPlayer", InventoryService.giveMoneyToPlayer)
-
-RegisterServerEvent("vorpinventory:giveGoldToPlayer")
-AddEventHandler("vorpinventory:giveGoldToPlayer", InventoryService.giveGoldToPlayer)

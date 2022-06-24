@@ -7,8 +7,7 @@ InventoryApiService = {}
 ---@param type string
 ---@param canUse boolean
 ---@param canRemove boolean
----@param desc string
-InventoryApiService.addItem = function (count, limit, label, name, type, canUse, canRemove, desc )
+InventoryApiService.addItem = function (count, limit, label, name, type, canUse, canRemove)
     if UserInventory[name] ~= nil then
         UserInventory[name]:addCount(count)
     else
@@ -19,8 +18,7 @@ InventoryApiService.addItem = function (count, limit, label, name, type, canUse,
             label = label,
             type = type,
             canUse = canUse,
-            canRemove = canRemove,
-            desc = desc
+            canRemove = canRemove
         })
     end
     NUIService.LoadInv()
