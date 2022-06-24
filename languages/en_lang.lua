@@ -20,6 +20,6 @@ Locales["en_lang"] = {
     weppickup         = "Weapon picked up",
     itempickup        = "Item picked up",
     itempickup2       = "Picked up: ",
-    TransactionLoading= "Loading...",
-    NotEnoughGold    = "You don`t have enough gold"
+    NotEnoughGold    = "You don`t have enough gold",
+    TransactionLoading= "Loading..."  
 }
