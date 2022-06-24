@@ -9,6 +9,9 @@ Config  = {
   
   defaultlang = "en_lang",
   
+  -- DESCRIPTION WEAPONS 
+  DescWeapons = "WEAPONS DESC IN CONFIG",
+
   -- DEATH FUNCTIONS
   DisableDeathInventory = true, -- prevent the ability to access inventory while dead
 

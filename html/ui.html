@@ -18,6 +18,7 @@
         <div id="inventoryElement">
         </div>
         <p id="information"></p>
+        <p id="description"></p>
 
         <div id="cash">
             <a id="money-value"></a>
@@ -89,6 +90,10 @@
 
         function OverSetTitleSecond(title) {
             document.getElementById("information2").innerHTML = title;
+        }
+
+        function OverSetDesc(title) {
+            document.getElementById("description").innerHTML = title;
         }
 
         function secondarySetTitle(title) {
@@ -1227,12 +1232,21 @@
                     }
                 );
 
+                $("#item-" + index).hover(
+                    function () {
+                        OverSetDesc(item.desc);
+                    },
+                    function () {
+                        OverSetDesc(" ");
+                    }
+                );
 
             });
 
             //AddMoney
             var m_item = "money";
             var m_label = "Dollars";
+            var m_desc = "DESC DOLLAR IN HTML FILE"
 
 
             $("#inventoryElement").append("<div data-label='" + m_label +
@@ -1273,6 +1287,15 @@
                 }
             );
 
+            $('#item-' + m_item).hover(
+                function() {
+                        OverSetDesc(m_desc);
+                },
+                function() {
+                    OverSetDesc(" ");
+                }
+            );
+
             $('#item-' + m_item).data('item', m_item);
             $('#item-' + m_item).data('inventory', "none");
 
@@ -1282,6 +1305,7 @@
         //AddGold
         var g_item = "gold";
             var g_label = "Gold";
+            var g_desc = "DESC GOLD IN HTML FILE"
 
 
             $("#inventoryElement").append("<div data-label='" + g_label +
@@ -1322,6 +1346,15 @@
                 }
             );
 
+            $('#item-' + g_item).hover(
+                function() {
+                        OverSetDesc(g_desc);
+                },
+                function() {
+                    OverSetDesc(" ");
+                }
+            );
+
             $('#item-' + g_item).data('item', g_item);
             $('#item-' + g_item).data('inventory', "none");
 
@@ -1350,6 +1383,12 @@
                     },
                     function () {
                         OverSetTitleSecond(" ");
+                    },
+                    function() {
+                        OverSetDesc(item.desc);
+                    },
+                    function() {
+                        OverSetDesc(" ");
                     }
                 );
 

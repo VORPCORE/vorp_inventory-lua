@@ -19,7 +19,8 @@ InventoryService.receiveItem = function (name, amount)
 		name = name,
 		type = "item_standard",
 		canUse = true,
-		canRemove = DB_Items[name].can_remove
+		canRemove = DB_Items[name].can_remove,
+		desc = DB_Items[name].desc
 	})
 	NUIService.LoadInv()
 end
@@ -78,7 +79,8 @@ InventoryService.processItems = function (items)
 			limit = item.limit,
 			can_remove = item.can_remove,
 			type = item.type,
-			usable = item.usable
+			usable = item.usable,
+			desc = item.desc
 		}
 	end
 end
@@ -132,6 +134,7 @@ InventoryService.getInventory = function (inventory)
 				local itemCanRemove = item.can_remove
 				local itemType = item.type
 				local itemCanUse = item.usable
+				local itemDesc = item.desc
 
 				local newItem = Item:New({
 					count = itemAmount,
@@ -140,7 +143,8 @@ InventoryService.getInventory = function (inventory)
 					name = itemName,
 					type = itemType,
 					canUse = itemCanUse,
-					canRemove = itemCanRemove
+					canRemove = itemCanRemove,
+					desc = itemDesc
 				})
 
 				UserInventory[itemName] = newItem
