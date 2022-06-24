@@ -33,7 +33,8 @@ Config  = {
 
   -- NEED TO TEST
   DropOnRespawn  = {
-    Money   = true,
+    Money   = true, 
+    Gold = true,
     Weapons = true,
     Items  = true
   },
