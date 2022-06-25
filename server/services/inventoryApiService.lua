@@ -199,6 +199,7 @@ InventoryAPI.getUserWeapon = function(player, cb, weaponId)
 		weapon.propietary = foundWeapon:getPropietary()
 		weapon.used = foundWeapon:getUsed()
 		weapon.ammo = foundWeapon:getAllAmmo()
+		weapon.desc = foundWeapon:getDesc()
 	end
 
 	cb(weapon)
@@ -219,7 +220,8 @@ InventoryAPI.getUserWeapons = function(player, cb)
 				id = currentWeapon:getId(),
 				propietary = currentWeapon:getPropietary(),
 				used = currentWeapon:getUsed(),
-				ammo = currentWeapon:getAllAmmo()
+				ammo = currentWeapon:getAllAmmo(),
+				desc = currentWeapon:getDesc()
 			}
 			table.insert(userWeapons, weapon)
 		end

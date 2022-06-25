@@ -10,7 +10,7 @@ Config  = {
   defaultlang = "en_lang",
   
     -- DESCRIPTION WEAPONS 
-    DescWeapons = "WEAPONS DESC IN CONFIG",
+    -- DescWeapons = "WEAPONS DESC IN CONFIG", 
 
     -- GOLD ITEM LIKE DOLLARS
     UseGoldItem = false, -- IF TRUE YOU HAVE GOLD IN INVENTORY LIKE DOLLARS
@@ -69,11 +69,13 @@ Config  = {
     {
       
       Name = "Lasso", -- TRANSLATE NAME ONLY
+      Desc = "DESC IN config.lua", -- CHANGE DESCRIPTION ONLY
       HashName = "WEAPON_LASSO",
       WeaponModel  = "w_melee_lasso01"
     },
     {
       Name = "Reinforced Lasso",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_LASSO_REINFORCED",
       WeaponModel  = "",
       AmmoHash = {},
@@ -83,6 +85,7 @@ Config  = {
     },
     {
       Name = "Knife",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_MELEE_KNIFE",
       WeaponModel = "w_melee_knife02",
       AmmoHash = {},
@@ -94,6 +97,7 @@ Config  = {
     },
     {
       Name = "Knife Rustic",
+      Desc = "DESC IN config.lua",
       HashName =" WEAPON_MELEE_KNIFE_RUSTIC",
       WeaponModel = "",
       AmmoHash = {},
@@ -103,6 +107,7 @@ Config  = {
     },
     {
       Name = "Knife Horror",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_MELEE_KNIFE_HORROR",
       WeaponModel = "w_melee_knife02",
       AmmoHash = {},
@@ -114,6 +119,7 @@ Config  = {
     },
     {
       Name = "Knife Civil War",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_MELEE_KNIFE_CIVIL_WAR",
       WeaponModel = "w_melee_knife16",
       AmmoHash = {},
@@ -121,6 +127,7 @@ Config  = {
     },
     {
       Name = "Knife Jawbone",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_MELEE_KNIFE_JAWBONE",
       WeaponModel =" w_melee_knife03",
       AmmoHash = {},
@@ -128,6 +135,7 @@ Config  = {
     },
     {
       Name = "Knife Miner",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_MELEE_KNIFE_MINER",
       WeaponModel = "w_melee_knife14",
       AmmoHash = {},
@@ -135,6 +143,7 @@ Config  = {
     },
     {
       Name = "Knife Vampire",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_MELEE_KNIFE_VAMPIRE",
       WeaponModel = "w_melee_knife18",
       AmmoHash = {},
@@ -142,6 +151,7 @@ Config  = {
     },
     {
       Name = "Cleaver",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_MELEE_CLEAVER",
       WeaponModel = "w_melee_hatchet02",
       AmmoHash = {},
@@ -149,6 +159,7 @@ Config  = {
     },
     {
       Name = "Hachet",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_MELEE_HATCHET",
       WeaponModel = "w_melee_hatchet01",
       AmmoHash = {},
@@ -156,6 +167,7 @@ Config  = {
     },
     {
       Name = "Hachet Double Bit",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_MELEE_HATCHET_DOUBLE_BIT",
       WeaponModel = "w_melee_hatchet06",
       AmmoHash = {},
@@ -163,6 +175,7 @@ Config  = {
     },
     {
       Name = "Hachet Hewing",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_MELEE_HATCHET_HEWING",
       WeaponModel = "w_melee_hatchet05",
       AmmoHash = {},
@@ -170,6 +183,7 @@ Config  = {
     },
     {
       Name = "Hachet Hunter",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_MELEE_HATCHET_HUNTER",
       WeaponModel = "w_melee_hatchet07",
       AmmoHash = {},
@@ -177,6 +191,7 @@ Config  = {
     },
     {
       Name = "Hachet Viking",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_MELEE_HATCHET_VIKING",
       WeaponModel = "w_melee_hatchet04",
       AmmoHash = {},
@@ -184,6 +199,7 @@ Config  = {
     },
     {
       Name = "Tomahawk",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_THROWN_TOMAHAWK",
       WeaponModel = "w_melee_tomahawk01",
       AmmoHash = {
@@ -197,6 +213,7 @@ Config  = {
     },
     {
       Name = "Tomahawk Ancient",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_THROWN_TOMAHAWK_ANCIENT",
       WeaponModel = "w_melee_tomahawk02",
       AmmoHash = {},
@@ -206,6 +223,7 @@ Config  = {
     },
     {
       Name = "Throwing Knifes",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_THROWN_THROWING_KNIVES",
       WeaponModel = "w_melee_knife05",
       AmmoHash = {
@@ -219,6 +237,7 @@ Config  = {
     },
     {
       Name = "Machete",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_MELEE_MACHETE",
       WeaponModel = "w_melee_machete01",
       AmmoHash = {},
@@ -226,6 +245,7 @@ Config  = {
     },
     {
       Name = "Bow",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_BOW",
       WeaponModel = "w_sp_bowarrow",
       AmmoHash = {
@@ -242,6 +262,7 @@ Config  = {
     },
     {
       Name = "Pistol Semi-Auto",
+      Desc = "DESC IN config.lua",
       HashName = 'WEAPON_PISTOL_SEMIAUTO',
       WeaponModel = "w_pistol_semiauto01",
       AmmoHash = {
@@ -269,6 +290,7 @@ Config  = {
     },
     {
       Name = "Pistol Mauser",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_PISTOL_MAUSER",
       WeaponModel = "w_pistol_mauser01",
       AmmoHash = {
@@ -296,6 +318,7 @@ Config  = {
     },
     {
       Name = "Pistol Volcanic",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_PISTOL_VOLCANIC",
       WeaponModel = "w_pistol_volcanic01",
       AmmoHash = {
@@ -322,6 +345,7 @@ Config  = {
     },
     {
       Name = "Pistol M1899",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_PISTOL_M1899",
       WeaponModel = "w_pistol_m189902",
       AmmoHash = {
@@ -349,6 +373,7 @@ Config  = {
     },
     {
       Name = "Revolver Schofield",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_REVOLVER_SCHOFIELD",
       WeaponModel = "w_revolver_schofield01",
       AmmoHash = {
@@ -375,6 +400,7 @@ Config  = {
     },
     {
       Name = "Revolver Navy",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_REVOLVER_NAVY",
       WeaponModel = "w_revolver_navy",
       AmmoHash = {
@@ -404,6 +430,7 @@ Config  = {
     },
     {
       Name = "Revolver Navy Crossover",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_REVOLVER_NAVY_CROSSOVER",
       WeaponModel = "w_revolver_navy", -- need to find model name althoug this is not being used anyways
       AmmoHash = {
@@ -433,6 +460,7 @@ Config  = {
     },
     {
       Name = "Revolver Lemat",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_REVOLVER_LEMAT",
       WeaponModel = "w_revolver_lemat01",
       AmmoHash = {
@@ -459,6 +487,7 @@ Config  = {
     },
     {
       Name = "Revolver Double Action",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_REVOLVER_DOUBLEACTION",
       WeaponModel = "w_revolver_doubleaction01",
       AmmoHash = {
@@ -486,6 +515,7 @@ Config  = {
     },
     {
       Name = "Revolver Cattleman",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_REVOLVER_CATTLEMAN",
       WeaponModel = "w_revolver_cattleman01",
       AmmoHash = {
@@ -513,6 +543,7 @@ Config  = {
     },
     {
       Name = "Revolver Cattleman mexican",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_REVOLVER_CATTLEMAN_MEXICAN",
       WeaponModel = "w_revolver_cattleman02",
       AmmoHash = {
@@ -530,6 +561,7 @@ Config  = {
     },
     {
       Name =  "Varmint Rifle",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_RIFLE_VARMINT",
       WeaponModel = "w_repeater_pumpaction01",
       AmmoHash = {
@@ -553,6 +585,7 @@ Config  = {
     },
     {
       Name = "Winchester Repeater",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_REPEATER_WINCHESTER",
       WeaponModel = "w_repeater_winchester01",
       AmmoHash = {
@@ -576,6 +609,7 @@ Config  = {
     },
     {
       Name = "Henry Reapeater",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_REPEATER_HENRY",
       WeaponModel = "w_repeater_henry01",
       AmmoHash = {
@@ -599,6 +633,7 @@ Config  = {
     },
     {
       Name = "Evans Repeater",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_REPEATER_EVANS",
       WeaponModel = "w_repeater_evans01",
       AmmoHash = {
@@ -622,6 +657,7 @@ Config  = {
     },
     {
       Name = "Carabine Reapeater",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_REPEATER_CARBINE",
       WeaponModel = "w_repeater_carbine01",
       AmmoHash = {
@@ -646,6 +682,7 @@ Config  = {
     },
     {
       Name = "Rolling Block Rifle",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_SNIPERRIFLE_ROLLINGBLOCK",
       WeaponModel = "w_rifle_rollingblock01",
       AmmoHash = {
@@ -675,6 +712,7 @@ Config  = {
     },
     {
       Name = "Carcano Rifle",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_SNIPERRIFLE_CARCANO",
       WeaponModel = "w_rifle_carcano01",
       AmmoHash = {
@@ -706,6 +744,7 @@ Config  = {
     },
     {
       Name = "Springfield Rifle",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_RIFLE_SPRINGFIELD",
       WeaponModel = "w_rifle_springfield01",
       AmmoHash = {
@@ -735,6 +774,7 @@ Config  = {
     },
     {
       Name = "Elephant Rifle",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_RIFLE_ELEPHANT",
       WeaponModel = "weapon_rifle_elephant",
       AmmoHash = {
@@ -752,6 +792,7 @@ Config  = {
     },
     {
       Name = "BoltAction Rifle",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_RIFLE_BOLTACTION",
       WeaponModel = "w_rifle_boltaction01",
       AmmoHash = {
@@ -776,6 +817,7 @@ Config  = {
     },
     {
       Name = "Semi-Auto Shotgun",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_SHOTGUN_SEMIAUTO",
       WeaponModel = "w_shotgun_semiauto01",
       AmmoHash = {
@@ -801,6 +843,7 @@ Config  = {
     },
     {
       Name = "Sawedoff Shotgun",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_SHOTGUN_SAWEDOFF",
       WeaponModel = "w_shotgun_sawed01",
       AmmoHash = {
@@ -827,6 +870,7 @@ Config  = {
     },
     {
       Name = "Repeating Shotgun",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_SHOTGUN_REPEATING",
       WeaponModel = "w_shotgun_repeating01",
       AmmoHash = {
@@ -852,6 +896,7 @@ Config  = {
     },
     {
       Name = "Double Barrel Exotic Shotgun",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_SHOTGUN_DOUBLEBARREL_EXOTIC",
       WeaponModel = "w_shotgun_doublebarrel01",
       AmmoHash = {
@@ -870,6 +915,7 @@ Config  = {
     },
     {
       Name = "Pump Shotgun",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_SHOTGUN_PUMP",
       WeaponModel = "w_shotgun_pumpaction01",
       AmmoHash = {
@@ -898,6 +944,7 @@ Config  = {
     },
     {
       Name = "Double Barrel Shotgun",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_SHOTGUN_DOUBLEBARREL",
       WeaponModel = "w_shotgun_doublebarrel01",
       AmmoHash = {
@@ -926,6 +973,7 @@ Config  = {
     },
     {
       Name = "Camera",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_KIT_CAMERA",
       WeaponModel = "p_camerabox01x",
       AmmoHash = {},
@@ -937,6 +985,7 @@ Config  = {
     },
     {
       Name = "Improved Binoculars",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_KIT_BINOCULARS_IMPROVED",
       WeaponModel = "",
       AmmoHash = {},
@@ -946,6 +995,7 @@ Config  = {
     },
     {
       Name = "Knife Trader",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_MELEE_KNIFE_TRADER",
       WeaponModel = "",
       AmmoHash = {},
@@ -955,6 +1005,7 @@ Config  = {
     },
     {
       Name = "Binoculars",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_KIT_BINOCULARS",
       WeaponModel = "",
       AmmoHash = {},
@@ -964,6 +1015,7 @@ Config  = {
     },
     {
       Name = "Advanced Camera",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_KIT_CAMERA_ADVANCED",
       WeaponModel = "",
       AmmoHash = {},
@@ -973,6 +1025,7 @@ Config  = {
     },
     {
       Name = "Lantern",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_MELEE_LANTERN",
       WeaponModel = "" ,
       AmmoHash = {},
@@ -982,6 +1035,7 @@ Config  = {
     },
     {
       Name = "Davy Lantern",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_MELEE_DAVY_LANTERN",
       WeaponModel = "",
       AmmoHash = {},
@@ -991,6 +1045,7 @@ Config  = {
     },
     {
       Name = "Halloween Lantern",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_MELEE_LANTERN_HALLOWEEN",
       WeaponModel = "",
       AmmoHash = {},
@@ -1000,6 +1055,7 @@ Config  = {
     },
     {
       Name = "Poison Bottle",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_THROWN_POISONBOTTLE",
       WeaponModel = "",
       AmmoHash = {},
@@ -1009,6 +1065,7 @@ Config  = {
     },
     {
       Name = "Metal Detector",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_KIT_METAL_DETECTOR",
       WeaponModel = "",
       AmmoHash = {},
@@ -1018,6 +1075,7 @@ Config  = {
     },
     {
       Name = "Dynamite",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_THROWN_DYNAMITE",
       WeaponModel = "w_throw_dynamite01",
       AmmoHash = {},
@@ -1027,6 +1085,7 @@ Config  = {
     },
     {
       Name = "Molotov",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_THROWN_MOLOTOV",
       WeaponModel = "w_throw_molotov01",
       AmmoHash = {},
@@ -1036,6 +1095,7 @@ Config  = {
     },
     {
       Name = "Improved Bow",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_BOW_IMPROVED",
       WeaponModel = "",
       AmmoHash = {},
@@ -1045,6 +1105,7 @@ Config  = {
     },
     {
       Name = "Machete Collector",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_MELEE_MACHETE_COLLECTOR",
       WeaponModel = "",
       AmmoHash = {},
@@ -1054,6 +1115,7 @@ Config  = {
     },
     {
       Name = "Electric Lantern",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_MELEE_LANTERN_ELECTRIC",
       WeaponModel = "s_interact_lantern03x_pickup",
       AmmoHash = {},
@@ -1063,6 +1125,7 @@ Config  = {
     },
     {
       Name = "Torch",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_MELEE_TORCH",
       WeaponModel = "s_interact_torch",
       AmmoHash = {},
@@ -1072,6 +1135,7 @@ Config  = {
     },
     {
       Name = "Moonshine Jug",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_MOONSHINEJUG_MP",
       WeaponModel = "s_interact_jug_pickup",
       AmmoHash = {},
@@ -1081,6 +1145,7 @@ Config  = {
     },
     {
       Name = "Bolas",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_THROWN_BOLAS",
       WeaponModel = "",
       AmmoHash = {},
@@ -1090,6 +1155,7 @@ Config  = {
     },
     {
       Name = "Bolas Hawkmoth",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_THROWN_BOLAS_HAWKMOTH",
       WeaponModel = "",
       AmmoHash = {},
@@ -1099,6 +1165,7 @@ Config  = {
     },
     {
       Name = "Bolas Ironspiked",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_THROWN_BOLAS_IRONSPIKED",
       WeaponModel = "",
       AmmoHash = {},
@@ -1108,6 +1175,7 @@ Config  = {
     },
     {
       Name = "Bolas Intertwined",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_THROWN_BOLAS_INTERTWINED",
       WeaponModel = "",
       AmmoHash = {},
@@ -1117,6 +1185,7 @@ Config  = {
     },
     {
       Name = "Fishing Rod",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_FISHINGROD",
       WeaponModel = "w_melee_fishingpole02",
       AmmoHash = {},
@@ -1124,6 +1193,7 @@ Config  = {
     },
     {
       Name = "Machete Horror",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_MACHETE_HORROR",
       WeaponModel = "",
       AmmoHash = {},
@@ -1131,6 +1201,7 @@ Config  = {
     },
     {
       Name = "Lantern Haloween",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_MELEE_LANTERN_HALOWEEN",
       WeaponModel = "" ,
       AmmoHash = {},

@@ -52,7 +52,8 @@ InventoryService.receiveWeapon = function (id, propietary, name, ammos)
 			label = Utils.GetWeaponLabel(name),
 			ammo = weaponAmmo,
 			used = false,
-			used2 = false
+			used2 = false,
+			desc = Utils.GetWeaponDesc(name)
 		})
 
 		UserWeapons[newWeapon:getId()] = newWeapon
@@ -107,7 +108,8 @@ InventoryService.getLoadout = function (loadout)
 				name = weapon.name,
 				ammo = weaponAmmo,
 				used = weaponUsed,
-				used2 = weaponUsed2
+				used2 = weaponUsed2,
+				desc = Utils.GetWeaponDesc(weapon.name)
 			})
 	
 			UserWeapons[newWeapon:getId()] = newWeapon

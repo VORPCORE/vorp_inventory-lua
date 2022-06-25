@@ -100,6 +100,15 @@ Utils.GetWeaponLabel = function(hash)
 	return hash
 end
 
+Utils.GetWeaponDesc = function(hash)
+	for k, v in pairs(Config.Weapons) do
+		if v.HashName == hash then
+			return v.Desc
+		end
+	end
+	return hash
+end
+
 function Utils.TableRemoveByKey(table, key)
 	local element = table[key]
 	table[key] = nil
