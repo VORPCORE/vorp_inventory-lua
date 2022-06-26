@@ -560,13 +560,13 @@ InventoryAPI.giveWeapon = function(player, weaponId, target)
 		if targetisPlayer then
 			--TriggerClientEvent("vorp:TipRight", _target, _U("youGaveWeapon"), 2000)
 			TriggerClientEvent('vorp:ShowAdvancedRightNotification', _target, _U("youGaveWeapon"), "inventory_items", weaponName,
-				4000, "COLOR_PURE_WHITE")
+				"COLOR_PURE_WHITE",4000)
 			TriggerClientEvent("vorpCoreClient:subWeapon", _target, weaponId)
 		end
 
 		--TriggerClientEvent("vorp:TipRight", _source, _U("youReceivedWeapon"), 2000)
 		TriggerClientEvent('vorp:ShowAdvancedRightNotification', _source, _U("youReceivedWeapon"), "inventory_items",
-			weaponName, 4000, "COLOR_PURE_WHITE")
+			weaponName,"COLOR_PURE_WHITE", 4000)
 		TriggerClientEvent("vorpInventory:receiveWeapon", _source, weaponId, weaponPropietary, weaponName, weaponAmmo)
 	end
 end
