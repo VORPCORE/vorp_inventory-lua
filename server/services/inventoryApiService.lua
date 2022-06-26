@@ -155,7 +155,8 @@ InventoryAPI.getInventory = function(player, cb)
 				type = item:getType(),
 				count = item:getCount(),
 				limit = item:getLimit(),
-				usable = item:getCanUse()
+				usable = item:getCanUse(),
+				desc = item:getDesc()
 			}
 			table.insert(playerItems, newItem)
 		end
@@ -198,6 +199,7 @@ InventoryAPI.getUserWeapon = function(player, cb, weaponId)
 		weapon.propietary = foundWeapon:getPropietary()
 		weapon.used = foundWeapon:getUsed()
 		weapon.ammo = foundWeapon:getAllAmmo()
+		weapon.desc = foundWeapon:getDesc()
 	end
 
 	cb(weapon)
@@ -218,7 +220,8 @@ InventoryAPI.getUserWeapons = function(player, cb)
 				id = currentWeapon:getId(),
 				propietary = currentWeapon:getPropietary(),
 				used = currentWeapon:getUsed(),
-				ammo = currentWeapon:getAllAmmo()
+				ammo = currentWeapon:getAllAmmo(),
+				desc = currentWeapon:getDesc()
 			}
 			table.insert(userWeapons, weapon)
 		end
@@ -346,6 +349,7 @@ InventoryAPI.addItem = function(player, name, amount)
 			local itemLabel = svItems[name]:getLabel()
 			local itemType = svItems[name]:getType()
 			local itemCanRemove = svItems[name]:getCanRemove()
+			local itemDesc = svItems[name]:getDesc()
 
 			if Config.MaxItemsInInventory.Items ~= -1 then
 				if sourceInventoryItemCount <= Config.MaxItemsInInventory.Items then
@@ -356,7 +360,8 @@ InventoryAPI.addItem = function(player, name, amount)
 						name = name,
 						type = itemType,
 						usable = true,
-						canRemove = itemCanRemove
+						canRemove = itemCanRemove,
+						desc = itemDesc
 					})
 					added = true
 				end
@@ -368,7 +373,8 @@ InventoryAPI.addItem = function(player, name, amount)
 					name = name,
 					type = itemType,
 					usable = true,
-					canRemove = itemCanRemove
+					canRemove = itemCanRemove,
+					desc = itemDesc
 				})
 				added = true
 			end
@@ -381,8 +387,9 @@ InventoryAPI.addItem = function(player, name, amount)
 		local itemType = UsersInventories[identifier][name]:getType()
 		local itemUsable = UsersInventories[identifier][name]:getLimit()
 		local itemCanRemove = UsersInventories[identifier][name]:getCanRemove()
+		local itemDesc = UsersInventories[identifier][name]:getDesc()
 
-		TriggerClientEvent("vorpCoreClient:addItem", _source, amount, itemLimit, itemLabel, name, itemType, itemUsable, itemCanRemove)
+		TriggerClientEvent("vorpCoreClient:addItem", _source, amount, itemLimit, itemLabel, name, itemType, itemUsable, itemCanRemove, itemDesc)
 		InventoryAPI.SaveInventoryItemsSupport(_source)
 	else
 		TriggerClientEvent("vorp:Tip", _source, _U("fullInventory"), 2000)

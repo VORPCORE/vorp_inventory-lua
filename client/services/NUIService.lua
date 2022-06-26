@@ -201,6 +201,10 @@ NUIService.NUIGiveItem = function (obj)
 					if isProcessingPay then return end
 					isProcessingPay = true
 					TriggerServerEvent("vorpinventory:giveMoneyToPlayer", target, tonumber(data2.count))
+				elseif Config.UseGoldItem and data2.type == "item_gold" then 
+					if isProcessingPay then return end
+					isProcessingPay = true
+					TriggerServerEvent("vorpinventory:giveGoldToPlayer", target, tonumber(data2.count))
 				elseif tonumber(data2.id) == 0 then
 					local amount = tonumber(data2.count)
 
@@ -228,6 +232,12 @@ NUIService.NUIDropItem = function (obj)
 
 	if type == "item_money" then
 		TriggerServerEvent("vorpinventory:serverDropMoney", qty)
+	end
+
+	if Config.UseGoldItem then
+		if type == "item_gold" then 
+			TriggerServerEvent("vorpinventory:serverDropGold", qty)
+		end
 	end
 
 	if type == "item_standard" then
@@ -331,6 +341,7 @@ NUIService.LoadInv = function ()
 		item.type = currentItem:getType()
 		item.usable = currentItem:getUsable()
 		item.canRemove = currentItem:getCanRemove()
+		item.desc = currentItem:getDesc()
 
 		table.insert(items, item)
 	end
@@ -347,6 +358,7 @@ NUIService.LoadInv = function ()
 		weapon.canRemove = true
 		weapon.id = currentWeapon:getId()
 		weapon.used = currentWeapon:getUsed()
+		weapon.desc = currentWeapon:getDesc()
 
 		table.insert(items, weapon)
 	end
