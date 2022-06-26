@@ -81,7 +81,7 @@ Config = {
     {
       Name = "Knife Rustic",
       Desc = "DESC IN config.lua",
-      HashName = " WEAPON_MELEE_KNIFE_RUSTIC",
+      HashName = "WEAPON_MELEE_KNIFE_RUSTIC",
     },
     {
       Name = "Knife Horror",
