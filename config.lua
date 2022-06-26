@@ -35,10 +35,10 @@ Config  = {
     withid = " with the weapon ID: ",
   },
 
-  -- NEED TO TEST
+  -- be aware puting to true may crash people when they die.
   DropOnRespawn  = {
     Money   = true,
-    Gold = true, -- TRUE ONLY IF UseGoldItem = true
+    Gold = false, -- TRUE ONLY IF UseGoldItem = true
     Weapons = true,
     Items  = true
   },
