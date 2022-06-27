@@ -66,24 +66,25 @@ Config = {
     "WEAPON_KIT_BINOCULARS",
     "WEAPON_FISHINGROD",
     "WEAPON_KIT_CAMERA",
-    "WEAPON_kIT_CAMERA_ADVANCED",
+    "WEAPON_KIT_CAMERA_ADVANCED",
     "WEAPON_MELEE_LANTERN",
     "WEAPON_MELEE_DAVY_LANTERN",
     "WEAPON_MELEE_LANTERN_HALLOWEEN",
     "WEAPON_KIT_METAL_DETECTOR",
     "WEAPON_MELEE_HAMMER",
+    "WEAPON_MELEE_TORCH",
   },
 
   --DON'T TOUCH BESIDES NAME OF WEAPON
   Weapons = {
     {
-      Name     = "Lasso", -- TRANSLATE NAME ONLY
-      Desc     = "DESC IN config.lua", -- CHANGE DESCRIPTION ONLY
+      Name = "Lasso", -- TRANSLATE NAME ONLY
+      Desc = "DESC IN config.lua", -- CHANGE DESCRIPTION ONLY
       HashName = "WEAPON_LASSO", -- DONT TOUCH
     },
     {
-      Name     = "Reinforced Lasso",
-      Desc     = "DESC IN config.lua",
+      Name = "Reinforced Lasso",
+      Desc = "DESC IN config.lua",
       HashName = "WEAPON_LASSO_REINFORCED",
     },
     {
@@ -165,7 +166,6 @@ Config = {
       Name = "Throwing Knifes",
       Desc = "DESC IN config.lua",
       HashName = "WEAPON_THROWN_THROWING_KNIVES",
-
     },
     {
       Name = "Machete",
@@ -236,25 +236,21 @@ Config = {
       Name = "Varmint Rifle",
       Desc = "DESC IN config.lua",
       HashName = "WEAPON_RIFLE_VARMINT",
-
     },
     {
       Name = "Winchester Repeater",
       Desc = "DESC IN config.lua",
       HashName = "WEAPON_REPEATER_WINCHESTER",
-
     },
     {
       Name = "Henry Reapeater",
       Desc = "DESC IN config.lua",
       HashName = "WEAPON_REPEATER_HENRY",
-
     },
     {
       Name = "Evans Repeater",
       Desc = "DESC IN config.lua",
       HashName = "WEAPON_REPEATER_EVANS",
-
     },
     {
       Name = "Carabine Reapeater",
@@ -310,7 +306,6 @@ Config = {
       Name = "Pump Shotgun",
       Desc = "DESC IN config.lua",
       HashName = "WEAPON_SHOTGUN_PUMP",
-
     },
     {
       Name = "Double Barrel Shotgun",
@@ -371,13 +366,11 @@ Config = {
       Name = "Dynamite",
       Desc = "DESC IN config.lua",
       HashName = "WEAPON_THROWN_DYNAMITE",
-
     },
     {
       Name = "Molotov",
       Desc = "DESC IN config.lua",
       HashName = "WEAPON_THROWN_MOLOTOV",
-
     },
     {
       Name = "Improved Bow",
@@ -403,7 +396,6 @@ Config = {
       Name = "Moonshine Jug",
       Desc = "DESC IN config.lua",
       HashName = "WEAPON_MOONSHINEJUG_MP",
-
     },
     {
       Name = "Bolas",
@@ -419,13 +411,11 @@ Config = {
       Name = "Bolas Ironspiked",
       Desc = "DESC IN config.lua",
       HashName = "WEAPON_THROWN_BOLAS_IRONSPIKED",
-
     },
     {
       Name = "Bolas Intertwined",
       Desc = "DESC IN config.lua",
       HashName = "WEAPON_THROWN_BOLAS_INTERTWINED",
-
     },
     {
       Name = "Fishing Rod",
@@ -438,9 +428,9 @@ Config = {
       HashName = "WEAPON_MACHETE_HORROR",
     },
     {
-      Name = "Lantern Haloween",
+      Name = "Hammer",
       Desc = "DESC IN config.lua",
-      HashName = "WEAPON_MELEE_LANTERN_HALOWEEN",
+      HashName = "WEAPON_MELEE_HAMMER",
 
     }
   }
