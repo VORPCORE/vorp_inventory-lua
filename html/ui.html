@@ -346,6 +346,49 @@
                             }));
 
                         }
+                    } else if (type === "bank" && itemInventory === "second") {
+                        disableInventory(500);
+                        if (itemData.type != "item_weapon") {
+                            dialog.prompt({
+                                title: "Quantita",
+                                button: "Conferma",
+                                required: true,
+                                item: itemData,
+                                type: itemData.type,
+                                input: {
+                                    type: "number",
+                                    autofocus: "true"
+                                },
+                                validate: function (value, item, type) {
+                                    if (!value) {
+                                        dialog.close()
+                                        return;
+                                    }
+
+                                    if (!isInt(value)) {
+                                        return;
+                                    }
+
+                                    $.post("http://vorp_inventory/TakeFromBank", JSON.stringify({
+                                        item: itemData,
+                                        type: type,
+                                        number: value,
+                                        bank: bankId
+                                    }));
+
+
+                                }
+                            });
+                        } else {
+
+                            $.post("http://vorp_inventory/TakeFromBank", JSON.stringify({
+                                item: itemData,
+                                type: itemData.type,
+                                number: 1,
+                                bank: bankId
+                            }));
+
+                        }
                     } else if (type === "clan" && itemInventory === "second") {
                         disableInventory(500);
                         if (itemData.type != "item_weapon") {
@@ -659,6 +702,48 @@
                             }));
 
                         }
+                    } else if (type === "bank" && itemInventory === "main") {
+                        disableInventory(500);
+                        if (itemData.type != "item_weapon") {
+                            dialog.prompt({
+                                title: "Quantita",
+                                button: "Conferma",
+                                required: true,
+                                item: itemData,
+                                type: itemData.type,
+                                input: {
+                                    type: "number",
+                                    autofocus: "true"
+                                },
+                                validate: function (value, item, type) {
+                                    if (!value) {
+                                        dialog.close()
+                                        return;
+                                    }
+
+                                    if (!isInt(value)) {
+                                        return;
+                                    }
+
+                                    $.post("http://vorp_inventory/MoveToBank", JSON.stringify({
+                                        item: itemData,
+                                        type: type,
+                                        number: value,
+                                        bank: bankId
+                                    }));
+
+                                }
+                            });
+                        } else {
+
+                            $.post("http://vorp_inventory/MoveToBank", JSON.stringify({
+                                item: itemData,
+                                type: itemData.type,
+                                number: 1,
+                                bank: bankId
+                            }));
+
+                        }
 
                     } else if (type === "clan" && itemInventory === "main") {
                         disableInventory(500);
@@ -854,6 +939,10 @@
                     if (event.data.type == "hideout") {
                         hideoutId = event.data.hideoutId;
                         initiateSecondaryInventory(hideoutId, event.data.title, event.data.capacity)
+                    }
+                    if (event.data.type == "bank") {
+                        bankId = event.data.bankId;
+                        initiateSecondaryInventory(bankId, event.data.title, event.data.capacity)
                     }
                     if (event.data.type == "clan") {
                         clanid = event.data.clanid;

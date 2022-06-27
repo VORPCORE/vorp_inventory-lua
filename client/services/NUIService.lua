@@ -106,13 +106,27 @@ NUIService.NUITakeFromHouse = function(obj)
 	TriggerServerEvent("vorp_housing:TakeFromHouse", json.encode(obj))
 end
 
-NUIService.OpenHideoutInventory = function(hideoutName, hideoutId, capacity)
+NUIService.OpenBankInventory = function(bankName, bankId, capacity)
 	SetNuiFocus(true, true)
-	SendNUIMessage({ action = "display", type = "hideout", title = hideoutName, hideoutId = hideoutId, capacity = capacity })
+	SendNUIMessage({ action = "display", type = "bank", title = bankName, bankId = bankId, capacity = capacity })
 	InInventory = true
 end
 
-NUIService.NUIMoveToHideout = function(obj)
+NUIService.NUIMoveToBank = function (obj)
+	TriggerServerEvent("vorp_bank:MoveToBank", json.encode(obj))
+end
+
+NUIService.NUITakeFromBank = function (obj)
+	TriggerServerEvent("vorp_bank:TakeFromBank", json.encode(obj))
+end
+
+NUIService.OpenHideoutInventory = function (hideoutName, hideoutId, capacity)
+	SetNuiFocus(true, true)
+	SendNUIMessage({action= "display", type= "hideout", title= hideoutName , hideoutId= hideoutId, capacity= capacity})
+	InInventory = true
+end
+
+NUIService.NUIMoveToHideout = function (obj)
 	TriggerServerEvent("syn_underground:MoveToHideout", json.encode(obj))
 end
 
