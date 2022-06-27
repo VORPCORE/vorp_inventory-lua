@@ -598,15 +598,28 @@ InventoryAPI.getUserTotalCount = function(identifier)
 	return userTotalItemCount
 end
 
+function contains(table, element)
+    if table ~= 0 then 
+        for k, v in pairs(table) do
+            if string.upper(v) == string.upper(element) then
+                return true
+            end
+        end
+    end
+return false
+end
 InventoryAPI.getUserTotalCountWeapons = function(identifier, charId)
 	local userTotalWeaponCount = 0
 	for _, weapon in pairs(UsersWeapons) do
 		if weapon:getPropietary() == identifier and weapon:getCharId() == charId then
-			userTotalWeaponCount = userTotalWeaponCount + 1
+			if not contains(Config.notweapons, weapon:getName()) then 
+				userTotalWeaponCount = userTotalWeaponCount + 1
+			end
 		end
 	end
 	return userTotalWeaponCount
 end
+
 
 InventoryAPI.onNewCharacter = function(playerId)
 	Wait(5000)
