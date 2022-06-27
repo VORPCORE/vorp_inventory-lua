@@ -436,7 +436,6 @@ end
 
 InventoryAPI.registerWeapon = function(target, name, ammos, components)
 	local _target = target
-	print(name)
 	local targetUser = Core.getUser(_target)
 	local targetCharacter
 	local targetIdentifier
