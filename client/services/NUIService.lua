@@ -106,27 +106,13 @@ NUIService.NUITakeFromHouse = function(obj)
 	TriggerServerEvent("vorp_housing:TakeFromHouse", json.encode(obj))
 end
 
-NUIService.OpenBankInventory = function(bankName, bankId, capacity)
+NUIService.OpenHideoutInventory = function(hideoutName, hideoutId, capacity)
 	SetNuiFocus(true, true)
-	SendNUIMessage({ action = "display", type = "bank", title = bankName, bankId = bankId, capacity = capacity })
+	SendNUIMessage({ action = "display", type = "hideout", title = hideoutName, hideoutId = hideoutId, capacity = capacity })
 	InInventory = true
 end
 
-NUIService.NUIMoveToBank = function (obj)
-	TriggerServerEvent("vorp_bank:MoveToBank", json.encode(obj))
-end
-
-NUIService.NUITakeFromBank = function (obj)
-	TriggerServerEvent("vorp_bank:TakeFromBank", json.encode(obj))
-end
-
-NUIService.OpenHideoutInventory = function (hideoutName, hideoutId, capacity)
-	SetNuiFocus(true, true)
-	SendNUIMessage({action= "display", type= "hideout", title= hideoutName , hideoutId= hideoutId, capacity= capacity})
-	InInventory = true
-end
-
-NUIService.NUIMoveToHideout = function (obj)
+NUIService.NUIMoveToHideout = function(obj)
 	TriggerServerEvent("syn_underground:MoveToHideout", json.encode(obj))
 end
 
@@ -359,7 +345,7 @@ NUIService.NUIUseItem = function(data)
 				addWardrobeInventoryItem("CLOTHING_ITEM_M_OFFHAND_000_TINT_004", 0xF20B6B4A)
 				addWardrobeInventoryItem("UPGRADE_OFFHAND_HOLSTER", 0x39E57B01)
 				UserWeapons[weaponId]:setUsed2(true)
-				UserWeapons[weaponId]:loadAmmo()
+				UserWeapons[weaponId]:equipwep()
 				UserWeapons[weaponId]:loadComponents()
 				UserWeapons[weaponId]:setUsed(true)
 				TriggerServerEvent("syn_weapons:weaponused", data)
@@ -370,7 +356,7 @@ NUIService.NUIUseItem = function(data)
 			notdual = true 
         end
 		if notdual then 
-			UserWeapons[weaponId]:loadAmmo()
+			UserWeapons[weaponId]:equipwep()
             UserWeapons[weaponId]:loadComponents()
             UserWeapons[weaponId]:setUsed(true)
             TriggerServerEvent("syn_weapons:weaponused", data)

@@ -65,17 +65,6 @@ RegisterNUICallback('TakeFromHouse', NUIService.NUITakeFromHouse)
 
 RegisterNUICallback('MoveToHouse', NUIService.NUIMoveToHouse)
 
--- Bank Module
-RegisterNetEvent("vorp_inventory:OpenBankInventory")
-AddEventHandler("vorp_inventory:OpenBankInventory", NUIService.OpenBankInventory)
-
-RegisterNetEvent("vorp_inventory:ReloadBankInventory")
-AddEventHandler("vorp_inventory:ReloadBankInventory", NUIService.ReloadInventory)
-
-RegisterNUICallback('TakeFromBank', NUIService.NUITakeFromBank)
-
-RegisterNUICallback('MoveToBank', NUIService.NUIMoveToBank)
-
 --Hideout Module
 RegisterNetEvent("vorp_inventory:OpenHideoutInventory")
 AddEventHandler("vorp_inventory:OpenHideoutInventory", NUIService.OpenHideoutInventory)
