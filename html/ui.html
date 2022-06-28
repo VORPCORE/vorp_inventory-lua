@@ -106,13 +106,15 @@
 
         function secondarySetCapacity(cap) {
             secondaryCapacityAvailable = true
+            $(".capacity").show();
+
             document.getElementById('capacity-value').innerHTML = cap
             secondarySetCurrentCapacity('0')
         }
 
         function hideSecondaryCapacity() {
             secondaryCapacityAvailable = false
-            $(".capacity").remove();
+            $(".capacity").hide();
         }
 
         function initiateSecondaryInventory(id, title, capacity) {
