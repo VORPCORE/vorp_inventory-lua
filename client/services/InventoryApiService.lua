@@ -53,13 +53,14 @@ end
 ---@param weaponId number
 ---@param bulletType string
 ---@param qty number
-InventoryApiService.addWeaponBullets = function (weaponId, bulletType, qty)
-    if UserWeapons[weaponId] ~= nil then
+InventoryApiService.addWeaponBullets = function (bulletType, qty)
+    SetPedAmmoByType(PlayerPedId(), GetHashKey(bulletType), qty)
+    --[[ if UserWeapons[weaponId] ~= nil then
         UserWeapons[weaponId]:addAmmo(bulletType, qty)
         if UserWeapons[weaponId]:getUsed() then
             SetPedAmmoByType(PlayerPedId(), GetHashKey(bulletType), UserWeapons[weaponId]:getAmmo(bulletType))
         end
-    end
+    end ]]
     NUIService.LoadInv()
 end
 
@@ -89,7 +90,7 @@ InventoryApiService.addComponent = function (weaponId, component)
         UserWeapons[weaponId]:setComponent(component)
         if UserWeapons[weaponId]:getUsed() then
             Citizen.InvokeNative(0x4899CB088EDF59B8, PlayerPedId(), GetHashKey(UserWeapons[weaponId]:getName()), true, 0)
-            UserWeapons[weaponId]:loadAmmo()
+            UserWeapons[weaponId]:equipwep()
             UserWeapons[weaponId]:loadComponents()
         end
     end
@@ -108,7 +109,7 @@ InventoryApiService.subComponent = function (weaponId, component)
         UserWeapons[weaponId]:quitComponent(component)
         if UserWeapons[weaponId]:getUsed() then
             Citizen.InvokeNative(0x4899CB088EDF59B8, PlayerPedId(), GetHashKey(UserWeapons[weaponId]:getName()), true, 0)
-            UserWeapons[weaponId]:loadAmmo()
+            UserWeapons[weaponId]:equipwep()
             UserWeapons[weaponId]:loadComponents()
         end
     end

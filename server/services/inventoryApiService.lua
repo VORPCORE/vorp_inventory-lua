@@ -145,7 +145,6 @@ InventoryAPI.getInventory = function(player, cb)
 	local _source = player
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local identifier = sourceCharacter.identifier
-
 	if UsersInventories[identifier] then
 		local playerItems = {}
 
@@ -163,6 +162,7 @@ InventoryAPI.getInventory = function(player, cb)
 		end
 		cb(playerItems)
 	end
+
 end
 
 InventoryAPI.useItem = function(itemName, args)
@@ -239,17 +239,66 @@ InventoryAPI.getWeaponBullets = function(player, cb, weaponId)
 	end
 end
 
-InventoryAPI.addBullets = function(player, weaponId, bulletType, amount)
+allplayersammo = {}
+AddEventHandler('playerDropped', function (reason)
+	local _source = source
+	allplayersammo[_source] = nil
+end)
+RegisterServerEvent("vorpinventory:getammoinfo")
+AddEventHandler("vorpinventory:getammoinfo", function()
+	local _source = source
+	if allplayersammo[_source] ~= nil then 
+		TriggerClientEvent("vorpinventory:recammo",_source,allplayersammo[_source])
+	end
+end)
+
+RegisterServerEvent("vorpinventory:updateammo")
+AddEventHandler("vorpinventory:updateammo", function(ammoinfo)
+	local _source = source
+	allplayersammo[_source] = ammoinfo
+	exports.ghmattimysql:execute("UPDATE characters Set ammo=@ammo WHERE charidentifier=@charidentifier", { ['charidentifier'] = ammoinfo["charidentifier"], ['ammo'] = json.encode(ammoinfo["ammo"]) })
+end)
+
+InventoryAPI.LoadAllAmmo = function()
+	local _source = source
+	local sourceCharacter = Core.getUser(_source).getUsedCharacter
+	local charidentifier = sourceCharacter.charIdentifier
+	exports.ghmattimysql:execute('SELECT ammo FROM characters WHERE charidentifier = @charidentifier ' , {['charidentifier'] = charidentifier}, function(result)
+		local ammo = json.decode(result[1].ammo)
+		allplayersammo[_source] = {charidentifier=charidentifier,ammo = ammo}
+		if next(ammo) ~= nil then 
+			for k,v in pairs(ammo) do
+				local ammocount = tonumber(v)
+				if ammocount > 0 then 
+					TriggerClientEvent("vorpCoreClient:addBullets", _source, k, ammocount)
+				end
+			end
+		end
+	end)
+end
+
+InventoryAPI.addBullets = function(player, bulletType, amount)
 	local _source = player
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
-	local identifier = sourceCharacter.identifier
+	local charidentifier = sourceCharacter.charIdentifier
 
-	if UsersWeapons[weaponId] then
+	exports.ghmattimysql:execute('SELECT ammo FROM characters WHERE charidentifier = @charidentifier ' , {['charidentifier'] = charidentifier}, function(result)
+		local ammo = json.decode(result[1].ammo)
+		if ammo[bulletType] ~= nil then 
+			ammo[bulletType] = ammo[bulletType] + amount
+		else
+			ammo[bulletType] = amount
+		end
+		allplayersammo[_source]["ammo"] = ammo
+		TriggerClientEvent("vorpCoreClient:addBullets", _source, bulletType, ammo[bulletType])
+		exports.ghmattimysql:execute("UPDATE characters Set ammo=@ammo WHERE charidentifier=@charidentifier", { ['charidentifier'] = charidentifier, ['ammo'] = json.encode(ammo) })
+	end)
+	--[[ if UsersWeapons[weaponId] then
 		if UsersWeapons[weaponId]:getPropietary() == identifier then
 			UsersWeapons[weaponId]:addAmmo(bulletType, amount)
 			TriggerClientEvent("vorpCoreClient:addBullets", _source, weaponId, bulletType, amount)
 		end
-	end
+	end ]]
 end
 
 InventoryAPI.subBullets = function(weaponId, bulletType, amount)
@@ -513,7 +562,6 @@ InventoryAPI.registerWeapon = function(target, name, ammos, components)
 end
 
 InventoryAPI.giveWeapon = function(player, weaponId, target)
-	print(weaponId)
 	local _source = player
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local sourceIdentifier = sourceCharacter.identifier

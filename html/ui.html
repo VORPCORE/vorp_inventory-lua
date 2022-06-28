@@ -107,7 +107,6 @@
         function secondarySetCapacity(cap) {
             secondaryCapacityAvailable = true
             $(".capacity").show();
-
             document.getElementById('capacity-value').innerHTML = cap
             secondarySetCurrentCapacity('0')
         }
@@ -137,12 +136,12 @@
                     $("#money-value").text(event.data.money.toFixed(2) + " ");
 
                 }
+                if (Config.UseGoldItem) {
+                    if (event.data.gold || event.data.gold === 0) {
+                        $("#gold-value").text(event.data.gold.toFixed(2) + " ");
 
-                if (event.data.gold || event.data.gold === 0) {
-                    $("#gold-value").text(event.data.gold.toFixed(2) + " ");
-
+                    }
                 }
-
                 if (event.data.id) {
                     $("#id-value").text("ID " + event.data.id);
 
@@ -345,49 +344,6 @@
                                 type: itemData.type,
                                 number: 1,
                                 hideout: hideoutId
-                            }));
-
-                        }
-                    } else if (type === "bank" && itemInventory === "second") {
-                        disableInventory(500);
-                        if (itemData.type != "item_weapon") {
-                            dialog.prompt({
-                                title: "Quantita",
-                                button: "Conferma",
-                                required: true,
-                                item: itemData,
-                                type: itemData.type,
-                                input: {
-                                    type: "number",
-                                    autofocus: "true"
-                                },
-                                validate: function (value, item, type) {
-                                    if (!value) {
-                                        dialog.close()
-                                        return;
-                                    }
-
-                                    if (!isInt(value)) {
-                                        return;
-                                    }
-
-                                    $.post("http://vorp_inventory/TakeFromBank", JSON.stringify({
-                                        item: itemData,
-                                        type: type,
-                                        number: value,
-                                        bank: bankId
-                                    }));
-
-
-                                }
-                            });
-                        } else {
-
-                            $.post("http://vorp_inventory/TakeFromBank", JSON.stringify({
-                                item: itemData,
-                                type: itemData.type,
-                                number: 1,
-                                bank: bankId
                             }));
 
                         }
@@ -704,48 +660,6 @@
                             }));
 
                         }
-                    } else if (type === "bank" && itemInventory === "main") {
-                        disableInventory(500);
-                        if (itemData.type != "item_weapon") {
-                            dialog.prompt({
-                                title: "Quantita",
-                                button: "Conferma",
-                                required: true,
-                                item: itemData,
-                                type: itemData.type,
-                                input: {
-                                    type: "number",
-                                    autofocus: "true"
-                                },
-                                validate: function (value, item, type) {
-                                    if (!value) {
-                                        dialog.close()
-                                        return;
-                                    }
-
-                                    if (!isInt(value)) {
-                                        return;
-                                    }
-
-                                    $.post("http://vorp_inventory/MoveToBank", JSON.stringify({
-                                        item: itemData,
-                                        type: type,
-                                        number: value,
-                                        bank: bankId
-                                    }));
-
-                                }
-                            });
-                        } else {
-
-                            $.post("http://vorp_inventory/MoveToBank", JSON.stringify({
-                                item: itemData,
-                                type: itemData.type,
-                                number: 1,
-                                bank: bankId
-                            }));
-
-                        }
 
                     } else if (type === "clan" && itemInventory === "main") {
                         disableInventory(500);
@@ -941,10 +855,6 @@
                     if (event.data.type == "hideout") {
                         hideoutId = event.data.hideoutId;
                         initiateSecondaryInventory(hideoutId, event.data.title, event.data.capacity)
-                    }
-                    if (event.data.type == "bank") {
-                        bankId = event.data.bankId;
-                        initiateSecondaryInventory(bankId, event.data.title, event.data.capacity)
                     }
                     if (event.data.type == "clan") {
                         clanid = event.data.clanid;
@@ -1243,12 +1153,18 @@
                     count = count + " / " + item
                         .limit; /*   count = count + "" ;   if you want to disable the count max items add this instead. */
                 }
-
-                $("#inventoryElement").append("<div data-label='" + item.label +
+                if (item.type != "item_weapon") {
+                    $("#inventoryElement").append("<div data-label='" + item.label +
                     "' style='background-image: url(\"img/items/" + item.name.toLowerCase() +
                     ".png\"), url(); background-size: 90px 90px, 90px 90px; background-repeat: no-repeat; background-position: center;' id='item-" +
                     index + "' class='item'><div class='count'>" + count +
                     "</div><div class='text'></div></div>")
+                }else{
+                    $("#inventoryElement").append("<div data-label='" + item.label +
+                    "' style='background-image: url(\"img/items/" + item.name.toLowerCase() +
+                    ".png\"), url(); background-size: 90px 90px, 90px 90px; background-repeat: no-repeat; background-position: center;' id='item-" +
+                    index + "' class='item'></div></div>")
+                }
 
                 $('#item-' + index).data('item', item);
                 $('#item-' + index).data('inventory', "main");

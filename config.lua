@@ -9,6 +9,19 @@ Config = {
 
   defaultlang = "en_lang",
 
+  -- items that dont get added up torwards your max weapon count 
+  notweapons = {
+    "WEAPON_KIT_BINOCULARS_IMPROVED",
+    "WEAPON_KIT_BINOCULARS",
+    "WEAPON_FISHINGROD",
+    "WEAPON_KIT_CAMERA",
+    "WEAPON_kIT_CAMERA_ADVANCED",
+    "WEAPON_MELEE_LANTERN",
+    "WEAPON_MELEE_DAVY_LANTERN",
+    "WEAPON_MELEE_LANTERN_HALLOWEEN",
+    "WEAPON_KIT_METAL_DETECTOR",
+    "WEAPON_MELEE_HAMMER",
+  },
   -- GOLD ITEM LIKE DOLLARS
   UseGoldItem = false, -- IF TRUE YOU HAVE GOLD IN INVENTORY LIKE DOLLARS
   -- CHANGE IN html/js/config.js TOO !!!
@@ -24,8 +37,8 @@ Config = {
 
   -- LOGS
   webhookavatar = "https://cdn3.iconfinder.com/data/icons/hand/500/Hand_give_thumbs_finger-512.png",
-  webhook = "https://discord.com/api/webhooks/952537644259221544/EdqpLMoDJJx0b-eXJJn3m4cOUhktW21YY2nr-8pq8XEbsMZYEYbL8t6LO5dIzavr9tzE",
-  discordid = false, -- turn to true if ur using discord whitelist
+  webhook = "",
+  discordid = true, -- turn to true if ur using discord whitelist
 
   -- WEBHOOK LANGUAGE
   Language = {
@@ -37,16 +50,16 @@ Config = {
 
   -- NEED TO TEST
   DropOnRespawn = {
-    Money   = true,
+    Money   = false,
     Gold    = false, -- TRUE ONLY IF UseGoldItem = true
-    Weapons = true,
-    Items   = true
+    Weapons = false,
+    Items   = false
   },
 
   -- HOW MANY WEAPONS AND ITEMS ALLOWED PER PLAYER
   MaxItemsInInventory = {
     Weapons = 6,
-    Items = 50,
+    Items = 200,
   },
 
 
@@ -59,152 +72,149 @@ Config = {
   startWeapons = {
     WEAPON_MELEE_KNIFE = {} --WEAPON HASH NAME
   },
-  
-  -- items that dont get added up torwards your max weapon count 
-  notweapons = {
-    "WEAPON_KIT_BINOCULARS_IMPROVED",
-    "WEAPON_KIT_BINOCULARS",
-    "WEAPON_FISHINGROD",
-    "WEAPON_KIT_CAMERA",
-    "WEAPON_KIT_CAMERA_ADVANCED",
-    "WEAPON_MELEE_LANTERN",
-    "WEAPON_MELEE_DAVY_LANTERN",
-    "WEAPON_MELEE_LANTERN_HALLOWEEN",
-    "WEAPON_KIT_METAL_DETECTOR",
-    "WEAPON_MELEE_HAMMER",
-    "WEAPON_MELEE_TORCH",
+
+  Ammotypes = { 
+    ["416676503"] = {"AMMO_PISTOL","AMMO_PISTOL_EXPRESS","AMMO_PISTOL_EXPRESS_EXPLOSIVE","AMMO_PISTOL_HIGH_VELOCITY","AMMO_PISTOL_SPLIT_POINT"},
+    ["-594562071"] = {"AMMO_REPEATER","AMMO_REPEATER_EXPRESS","AMMO_REPEATER_EXPRESS_EXPLOSIVE","AMMO_REPEATER_HIGH_VELOCITY","AMMO_REPEATER_SPLIT_POINT"},
+    ["-1101297303"] = {"AMMO_REVOLVER","AMMO_REVOLVER_EXPRESS","AMMO_REVOLVER_EXPRESS_EXPLOSIVE","AMMO_REVOLVER_HIGH_VELOCITY","AMMO_REVOLVER_SPLIT_POINT","AMMO_SHOTGUN","AMMO_SHOTGUN_BUCKSHOT_INCENDIARY","AMMO_SHOTGUN_EXPRESS_EXPLOSIVE","AMMO_SHOTGUN_SLUG"},
+    ["970310034"] = {"AMMO_RIFLE","AMMO_RIFLE_ELEPHANT","AMMO_RIFLE_EXPRESS","AMMO_RIFLE_EXPRESS_EXPLOSIVE","AMMO_RIFLE_HIGH_VELOCITY","AMMO_RIFLE_SPLIT_POINT","AMMO_22","AMMO_22_TRANQUILIZER"},
+    ["-1212426201"] = {"AMMO_RIFLE","AMMO_RIFLE_EXPRESS","AMMO_RIFLE_EXPRESS_EXPLOSIVE","AMMO_RIFLE_HIGH_VELOCITY","AMMO_RIFLE_SPLIT_POINT"},
+    ["860033945"] = {"AMMO_SHOTGUN","AMMO_SHOTGUN_BUCKSHOT_INCENDIARY","AMMO_SHOTGUN_EXPRESS_EXPLOSIVE","AMMO_SHOTGUN_SLUG"},
+    ["-1241684019"] = {"AMMO_ARROW","AMMO_ARROW_DYNAMITE","AMMO_ARROW_FIRE","AMMO_ARROW_IMPROVED","AMMO_ARROW_SMALL_GAME","AMMO_ARROW_POISON"},
+    ["1548507267"] = {"AMMO_THROWING_KNIVES","AMMO_TOMAHAWK","AMMO_POISONBOTTLE","AMMO_BOLAS","AMMO_BOLAS_HAWKMOTH","AMMO_BOLAS_INTERTWINED","AMMO_BOLAS_IRONSPIKED","AMMO_DYNAMITE","AMMO_DYNAMITE_VOLATILE","AMMO_MOLOTOV","AMMO_MOLOTOV_VOLATILE"}
   },
 
   --DON'T TOUCH BESIDES NAME OF WEAPON
   Weapons = {
     {
-      Name = "Lasso", -- TRANSLATE NAME ONLY
-      Desc = "DESC IN config.lua", -- CHANGE DESCRIPTION ONLY
+      Name     = "Lasso", -- TRANSLATE NAME ONLY
+      Desc     = "An annoyingly useful rope", -- CHANGE DESCRIPTION ONLY
       HashName = "WEAPON_LASSO", -- DONT TOUCH
     },
     {
-      Name = "Reinforced Lasso",
-      Desc = "DESC IN config.lua",
+      Name     = "Reinforced Lasso",
+      Desc     = "A super annoyingly useful role",
       HashName = "WEAPON_LASSO_REINFORCED",
     },
     {
       Name = "Knife",
-      Desc = "DESC IN config.lua",
+      Desc = "Knife used mainly for skinning animals",
       HashName = "WEAPON_MELEE_KNIFE",
     },
     {
       Name = "Knife Rustic",
-      Desc = "DESC IN config.lua",
+      Desc = "old looking knife, could it be still useful ?",
       HashName = "WEAPON_MELEE_KNIFE_RUSTIC",
     },
     {
       Name = "Knife Horror",
-      Desc = "DESC IN config.lua",
+      Desc = "This knife was used to do plenty of unpleasant things",
       HashName = "WEAPON_MELEE_KNIFE_HORROR",
     },
     {
       Name = "Knife Civil War",
-      Desc = "DESC IN config.lua",
+      Desc = "A knife with a lot of history",
       HashName = "WEAPON_MELEE_KNIFE_CIVIL_WAR",
     },
     {
       Name = "Knife Jawbone",
-      Desc = "DESC IN config.lua",
+      Desc = "A knife made of ancient bones",
       HashName = "WEAPON_MELEE_KNIFE_JAWBONE",
     },
     {
       Name = "Knife Miner",
-      Desc = "DESC IN config.lua",
+      Desc = "Miners bestfriend",
       HashName = "WEAPON_MELEE_KNIFE_MINER",
     },
     {
       Name = "Knife Vampire",
-      Desc = "DESC IN config.lua",
+      Desc = "They cant be real...",
       HashName = "WEAPON_MELEE_KNIFE_VAMPIRE",
     },
     {
       Name = "Cleaver",
-      Desc = "DESC IN config.lua",
+      Desc = "Scary looking but useful",
       HashName = "WEAPON_MELEE_CLEAVER",
     },
     {
       Name = "Hachet",
-      Desc = "DESC IN config.lua",
+      Desc = "A piece of wood with a blade",
       HashName = "WEAPON_MELEE_HATCHET",
     },
     {
       Name = "Hachet Double Bit",
-      Desc = "DESC IN config.lua",
+      Desc = "A Piece of wood with twice the blade",
       HashName = "WEAPON_MELEE_HATCHET_DOUBLE_BIT",
     },
     {
       Name = "Hachet Hewing",
-      Desc = "DESC IN config.lua",
+      Desc = "Some say this hatchet is magical",
       HashName = "WEAPON_MELEE_HATCHET_HEWING",
     },
     {
       Name = "Hachet Hunter",
-      Desc = "DESC IN config.lua",
+      Desc = "A Hunters bestfriend",
       HashName = "WEAPON_MELEE_HATCHET_HUNTER",
     },
     {
       Name = "Hachet Viking",
-      Desc = "DESC IN config.lua",
+      Desc = "Smells of fish and salt",
       HashName = "WEAPON_MELEE_HATCHET_VIKING",
     },
     {
       Name = "Tomahawk",
-      Desc = "DESC IN config.lua",
+      Desc = "A weapon befitting a warrior",
       HashName = "WEAPON_THROWN_TOMAHAWK",
     },
     {
       Name = "Tomahawk Ancient",
-      Desc = "DESC IN config.lua",
+      Desc = "This one is Ancient",
       HashName = "WEAPON_THROWN_TOMAHAWK_ANCIENT",
     },
     {
       Name = "Throwing Knifes",
-      Desc = "DESC IN config.lua",
+      Desc = "Folks love playing with these",
       HashName = "WEAPON_THROWN_THROWING_KNIVES",
+
     },
     {
       Name = "Machete",
-      Desc = "DESC IN config.lua",
+      Desc = "Useful in the jungle",
       HashName = "WEAPON_MELEE_MACHETE",
     },
     {
       Name = "Bow",
-      Desc = "DESC IN config.lua",
+      Desc = "A Simple but effective weapon",
       HashName = "WEAPON_BOW",
     },
     {
       Name = "Pistol Semi-Auto",
-      Desc = "DESC IN config.lua",
+      Desc = "repeating single-chamber handgun",
       HashName = 'WEAPON_PISTOL_SEMIAUTO',
     },
     {
       Name = "Pistol Mauser",
-      Desc = "DESC IN config.lua",
+      Desc = "semi-automatic pistol that was originally produced by German arms manufacturer Mauser",
       HashName = "WEAPON_PISTOL_MAUSER",
     },
     {
       Name = "Pistol Volcanic",
-      Desc = "DESC IN config.lua",
+      Desc = " an improved version of the Rocket Ball ammunition",
       HashName = "WEAPON_PISTOL_VOLCANIC",
     },
     {
       Name = "Pistol M1899",
-      Desc = "DESC IN config.lua",
+      Desc = "its magazine-loaded ammunition allows for a swift reload",
       HashName = "WEAPON_PISTOL_M1899",
     },
     {
       Name = "Revolver Schofield",
-      Desc = "DESC IN config.lua",
+      Desc = "single-action, cartridge-firing, top-break revolver",
       HashName = "WEAPON_REVOLVER_SCHOFIELD",
     },
     {
       Name = "Revolver Navy",
-      Desc = "DESC IN config.lua",
+      Desc = "cap and ball revolver that was designed by Samuel Colt",
       HashName = "WEAPON_REVOLVER_NAVY",
     },
     {
@@ -214,222 +224,238 @@ Config = {
     },
     {
       Name = "Revolver Lemat",
-      Desc = "DESC IN config.lua",
+      Desc = "a revolver that is also a shotgun",
       HashName = "WEAPON_REVOLVER_LEMAT",
     },
     {
       Name = "Revolver Double Action",
-      Desc = "DESC IN config.lua",
+      Desc = "has a trigger that both cocks the hammer and releases it in one pull ",
       HashName = "WEAPON_REVOLVER_DOUBLEACTION",
     },
     {
       Name = "Revolver Cattleman",
-      Desc = "DESC IN config.lua",
+      Desc = "A cowboys bestfriend",
       HashName = "WEAPON_REVOLVER_CATTLEMAN",
     },
     {
       Name = "Revolver Cattleman mexican",
-      Desc = "DESC IN config.lua",
+      Desc = "a different flavor",
       HashName = "WEAPON_REVOLVER_CATTLEMAN_MEXICAN",
     },
     {
       Name = "Varmint Rifle",
-      Desc = "DESC IN config.lua",
+      Desc = "A rifle useful for hunting critters",
       HashName = "WEAPON_RIFLE_VARMINT",
+
     },
     {
       Name = "Winchester Repeater",
-      Desc = "DESC IN config.lua",
+      Desc = "lever-action repeating rifles manufactured by the Winchester Repeating Arms Company",
       HashName = "WEAPON_REPEATER_WINCHESTER",
+
     },
     {
       Name = "Henry Reapeater",
-      Desc = "DESC IN config.lua",
+      Desc = " lever-action tubular magazine rifle",
       HashName = "WEAPON_REPEATER_HENRY",
+
     },
     {
       Name = "Evans Repeater",
-      Desc = "DESC IN config.lua",
+      Desc = "a lever-action repeating rifle designed by Warren R. Evans as a high capacity rifle",
       HashName = "WEAPON_REPEATER_EVANS",
+
     },
     {
       Name = "Carabine Reapeater",
-      Desc = "DESC IN config.lua",
+      Desc = "A reliable and popular repeating rifle, the Buck Carbine provides medium damage and a decent firing rate",
       HashName = "WEAPON_REPEATER_CARBINE",
     },
     {
       Name = "Rolling Block Rifle",
-      Desc = "DESC IN config.lua",
+      Desc = "Remington Rolling Block is a family of breech-loading rifles",
       HashName = "WEAPON_SNIPERRIFLE_ROLLINGBLOCK",
     },
     {
       Name = "Carcano Rifle",
-      Desc = "DESC IN config.lua",
+      Desc = "The Carcano is an Italian, bolt action rifle",
       HashName = "WEAPON_SNIPERRIFLE_CARCANO",
     },
     {
       Name = "Springfield Rifle",
-      Desc = "DESC IN config.lua",
+      Desc = "Army's standard issue rifle",
       HashName = "WEAPON_RIFLE_SPRINGFIELD",
     },
     {
       Name = "Elephant Rifle",
-      Desc = "DESC IN config.lua",
+      Desc = "Best Weapon for a hunter looking to take down large prey",
       HashName = "WEAPON_RIFLE_ELEPHANT",
     },
     {
       Name = "BoltAction Rifle",
-      Desc = "DESC IN config.lua",
+      Desc = "manual firearm action that is operated by directly manipulating the bolt",
       HashName = "WEAPON_RIFLE_BOLTACTION",
     },
     {
       Name = "Semi-Auto Shotgun",
-      Desc = "DESC IN config.lua",
+      Desc = "a repeating shotgun with a semi-automatic action, capable of automatically chambering a new shell",
       HashName = "WEAPON_SHOTGUN_SEMIAUTO",
     },
     {
       Name = "Sawedoff Shotgun",
-      Desc = "DESC IN config.lua",
+      Desc = "shotgun with a shorter gun barre",
       HashName = "WEAPON_SHOTGUN_SAWEDOFF",
     },
     {
       Name = "Repeating Shotgun",
-      Desc = "DESC IN config.lua",
+      Desc = "The Lancaster Repeating Shotgun",
       HashName = "WEAPON_SHOTGUN_REPEATING",
     },
     {
       Name = "Double Barrel Exotic Shotgun",
-      Desc = "DESC IN config.lua",
+      Desc = "exotic-rarity variant of the Double Barrel Shotgun",
       HashName = "WEAPON_SHOTGUN_DOUBLEBARREL_EXOTIC",
     },
     {
       Name = "Pump Shotgun",
-      Desc = "DESC IN config.lua",
+      Desc = "repeating firearm action that is operated manually by moving a sliding handguard",
       HashName = "WEAPON_SHOTGUN_PUMP",
+
     },
     {
       Name = "Double Barrel Shotgun",
-      Desc = "DESC IN config.lua",
+      Desc = "break-action shotgun with two parallel barrels, allowing two single shots to be fired in quick succession",
       HashName = "WEAPON_SHOTGUN_DOUBLEBARREL",
     },
     {
       Name = "Camera",
-      Desc = "DESC IN config.lua",
+      Desc = "a journalists bestfriend",
       HashName = "WEAPON_KIT_CAMERA",
     },
     {
       Name = "Improved Binoculars",
-      Desc = "DESC IN config.lua",
+      Desc = "See things clearly !",
       HashName = "WEAPON_KIT_BINOCULARS_IMPROVED",
     },
     {
       Name = "Knife Trader",
-      Desc = "DESC IN config.lua",
+      Desc = "a traders bestfriend",
       HashName = "WEAPON_MELEE_KNIFE_TRADER",
     },
     {
       Name = "Binoculars",
-      Desc = "DESC IN config.lua",
+      Desc = "lets you see far things",
       HashName = "WEAPON_KIT_BINOCULARS",
     },
     {
       Name = "Advanced Camera",
-      Desc = "DESC IN config.lua",
+      Desc = "a camera thats slightly technologicaly better",
       HashName = "WEAPON_KIT_CAMERA_ADVANCED",
     },
     {
       Name = "Lantern",
-      Desc = "DESC IN config.lua",
+      Desc = "lets you see better in the dark",
       HashName = "WEAPON_MELEE_LANTERN",
     },
     {
       Name = "Davy Lantern",
-      Desc = "DESC IN config.lua",
+      Desc = "safety lamp for use in flammable atmospheres",
       HashName = "WEAPON_MELEE_DAVY_LANTERN",
     },
     {
       Name = "Halloween Lantern",
-      Desc = "DESC IN config.lua",
+      Desc = "made with a real human skull",
       HashName = "WEAPON_MELEE_LANTERN_HALLOWEEN",
     },
     {
       Name = "Poison Bottle",
-      Desc = "DESC IN config.lua",
+      Desc = "who knows whats in this thing",
       HashName = "WEAPON_THROWN_POISONBOTTLE",
     },
     {
       Name = "Metal Detector",
-      Desc = "DESC IN config.lua",
+      Desc = "helps you find valuables",
       HashName = "WEAPON_KIT_METAL_DETECTOR",
     },
     {
       Name = "Dynamite",
-      Desc = "DESC IN config.lua",
+      Desc = "boomstick",
       HashName = "WEAPON_THROWN_DYNAMITE",
+
     },
     {
       Name = "Molotov",
-      Desc = "DESC IN config.lua",
+      Desc = "an arsonists bestfriend",
       HashName = "WEAPON_THROWN_MOLOTOV",
+
     },
     {
       Name = "Improved Bow",
-      Desc = "DESC IN config.lua",
+      Desc = "a bow with better accuracy",
       HashName = "WEAPON_BOW_IMPROVED",
     },
     {
       Name = "Machete Collector",
-      Desc = "DESC IN config.lua",
+      Desc = "every collector needs one",
       HashName = "WEAPON_MELEE_MACHETE_COLLECTOR",
     },
     {
       Name = "Electric Lantern",
-      Desc = "DESC IN config.lua",
+      Desc = "a marvel of technology",
       HashName = "WEAPON_MELEE_LANTERN_ELECTRIC",
     },
     {
       Name = "Torch",
-      Desc = "DESC IN config.lua",
+      Desc = "your basic stick on fire",
       HashName = "WEAPON_MELEE_TORCH",
     },
     {
       Name = "Moonshine Jug",
-      Desc = "DESC IN config.lua",
+      Desc = "those are very fun",
       HashName = "WEAPON_MOONSHINEJUG_MP",
+
     },
     {
       Name = "Bolas",
-      Desc = "DESC IN config.lua",
+      Desc = "every badass cowboy needs one",
       HashName = "WEAPON_THROWN_BOLAS",
     },
     {
       Name = "Bolas Hawkmoth",
-      Desc = "DESC IN config.lua",
+      Desc = "a bola with a twist",
       HashName = "WEAPON_THROWN_BOLAS_HAWKMOTH",
     },
     {
       Name = "Bolas Ironspiked",
-      Desc = "DESC IN config.lua",
+      Desc = "a more edgy bola",
       HashName = "WEAPON_THROWN_BOLAS_IRONSPIKED",
+
     },
     {
       Name = "Bolas Intertwined",
-      Desc = "DESC IN config.lua",
+      Desc = "a stronger bola",
       HashName = "WEAPON_THROWN_BOLAS_INTERTWINED",
+
     },
     {
       Name = "Fishing Rod",
-      Desc = "DESC IN config.lua",
+      Desc = "whats better than catching fish",
       HashName = "WEAPON_FISHINGROD",
     },
     {
       Name = "Machete Horror",
-      Desc = "DESC IN config.lua",
+      Desc = "this one scares people",
       HashName = "WEAPON_MACHETE_HORROR",
     },
     {
+      Name = "Lantern Haloween",
+      Desc = "made with a real human skull",
+      HashName = "WEAPON_MELEE_LANTERN_HALOWEEN",
+
+    },
+    {
       Name = "Hammer",
-      Desc = "DESC IN config.lua",
+      Desc = "Richards Hammer!",
       HashName = "WEAPON_MELEE_HAMMER",
 
     }

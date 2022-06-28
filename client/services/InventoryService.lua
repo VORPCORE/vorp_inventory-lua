@@ -61,7 +61,6 @@ InventoryService.receiveWeapon = function (id, propietary, name, ammos)
 	end
 
 end
-
 InventoryService.onSelectedCharacter = function (charId)
 	SetNuiFocus(false, false)
 	SendNUIMessage({action= "hide"})
@@ -69,6 +68,10 @@ InventoryService.onSelectedCharacter = function (charId)
 	TriggerServerEvent("vorpinventory:getItemsTable")
 	Wait(300)
 	TriggerServerEvent("vorpinventory:getInventory")
+	Wait(5000)
+	TriggerServerEvent("vorpCore:LoadAllAmmo")
+	print("ammo loaded")
+	TriggerEvent("vorpinventory:loaded")
 end
 
 InventoryService.processItems = function (items)
@@ -156,23 +159,3 @@ InventoryService.getInventory = function (inventory)
 end
 
 
--- Threads
-Citizen.CreateThread(function()
-	while true do
-		Wait(500)
-
-		local isArmed = Citizen.InvokeNative(0xCB690F680A3EA971, PlayerPedId(), 4)
-		
-		if isArmed then
-			for _, weapon in pairs(UserWeapons) do
-				if weapon:getUsed() then
-					local ammo = weapon:getAllAmmo()
-					for ammoName, _ in pairs(ammo) do
-						local ammoQty = Citizen.InvokeNative(0x39D22031557946C1, PlayerPedId(), GetHashKey(ammoName))
-						weapon:setAmmo(ammoName, ammoQty)
-					end
-				end
-			end
-		end
-	end
-end)
