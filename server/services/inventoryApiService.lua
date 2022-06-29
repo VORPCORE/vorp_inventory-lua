@@ -244,6 +244,10 @@ AddEventHandler('playerDropped', function (reason)
 	local _source = source
 	allplayersammo[_source] = nil
 end)
+RegisterServerEvent("vorpinventory:removeammo") -- new event
+AddEventHandler("vorpinventory:removeammo", function(player)
+	allplayersammo[player]["ammo"] = {}
+end)
 RegisterServerEvent("vorpinventory:getammoinfo")
 AddEventHandler("vorpinventory:getammoinfo", function()
 	local _source = source
@@ -281,7 +285,6 @@ InventoryAPI.addBullets = function(player, bulletType, amount)
 	local _source = player
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local charidentifier = sourceCharacter.charIdentifier
-
 	exports.ghmattimysql:execute('SELECT ammo FROM characters WHERE charidentifier = @charidentifier ' , {['charidentifier'] = charidentifier}, function(result)
 		local ammo = json.decode(result[1].ammo)
 		if ammo[bulletType] ~= nil then 
