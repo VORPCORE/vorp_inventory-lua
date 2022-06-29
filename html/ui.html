@@ -1388,12 +1388,14 @@
                 gunbelt_item + "' class='item'><div class='text'></div></div>")
             var data = [];
             for (const [ind, tab] of Object.entries(allplayerammo)) {
-                data.push({
-                text: `${ammolabels[ind]} : ${tab}`,
-                action: function () {
-                    giveammotoplayer(ind);
+                if (tab > 0) {
+                    data.push({
+                        text: `${ammolabels[ind]} : ${tab}`,
+                        action: function () {
+                            giveammotoplayer(ind);
+                        }
+                    });
                 }
-            });
             }
             $("#item-" + gunbelt_item).contextMenu([data], {
                 offsetX: 1,
