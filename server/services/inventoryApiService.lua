@@ -239,7 +239,7 @@ InventoryAPI.getWeaponBullets = function(player, cb, weaponId)
 	end
 end
 
-allplayersammo = {}
+ local allplayersammo = {}
 AddEventHandler('playerDropped', function (reason)
 	local _source = source
 	allplayersammo[_source] = nil
@@ -263,6 +263,10 @@ AddEventHandler("vorpinventory:servergiveammo", function(ammotype, amount, targe
 	local _source = source
 	local player1ammo =  allplayersammo[_source]["ammo"][ammotype]
 	local player2ammo =  allplayersammo[target]["ammo"][ammotype]
+		
+        if allplayersammo[target]["ammo"][ammotype] == nil then
+		allplayersammo[target]["ammo"][ammotype] = 0
+	end
 	if player1ammo == nil or player2ammo == nil then 
 		TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
 		return
