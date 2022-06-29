@@ -21,5 +21,9 @@ Locales["en_lang"] = {
     itempickup        = "Item picked up",
     itempickup2       = "Picked up: ",
     NotEnoughGold     = "You don`t have enough gold",
-    TransactionLoading= "Loading..."
+    TransactionLoading= "Loading...",
+    notenoughammo = "You Dont Have Enough Ammo",
+    fullammo = "Cant carry more of this ammo",
+    transferedammo = "You Gave Ammo: ",
+    recammo = "You Recieved Ammo: ",
 }

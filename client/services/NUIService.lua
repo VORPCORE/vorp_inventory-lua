@@ -106,6 +106,20 @@ NUIService.NUITakeFromHouse = function(obj)
 	TriggerServerEvent("vorp_housing:TakeFromHouse", json.encode(obj))
 end
 
+NUIService.OpenBankInventory = function(bankName, bankId, capacity)
+	SetNuiFocus(true, true)
+	SendNUIMessage({ action = "display", type = "bank", title = bankName, bankId = bankId, capacity = capacity })
+	InInventory = true
+end
+
+NUIService.NUIMoveToBank = function (obj)
+	TriggerServerEvent("vorp_bank:MoveToBank", json.encode(obj))
+end
+
+NUIService.NUITakeFromBank = function (obj)
+	TriggerServerEvent("vorp_bank:TakeFromBank", json.encode(obj))
+end
+
 NUIService.OpenHideoutInventory = function(hideoutName, hideoutId, capacity)
 	SetNuiFocus(true, true)
 	SendNUIMessage({ action = "display", type = "hideout", title = hideoutName, hideoutId = hideoutId, capacity = capacity })
@@ -206,6 +220,15 @@ NUIService.NUIGiveItem = function(obj)
 					if isProcessingPay then return end
 					isProcessingPay = true
 					TriggerServerEvent("vorpinventory:giveGoldToPlayer", target, tonumber(data2.count))
+				elseif data2.type == "item_ammo" then 
+					if isProcessingPay then return end
+					isProcessingPay = true
+					local amount = tonumber(data2.count)
+					local ammotype = data2.item 
+					local maxcount = Config.maxammo[ammotype]
+					if amount > 0 and maxcount >= amount then 
+						TriggerServerEvent("vorpinventory:servergiveammo", ammotype, amount, target,maxcount)
+					end
 				elseif tonumber(data2.id) == 0 then
 					local amount = tonumber(data2.count)
 
