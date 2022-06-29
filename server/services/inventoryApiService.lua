@@ -3,13 +3,13 @@ UsableItemsFunctions = {}
 local allplayersammo = {}
 
 local function contains(table, element)
-    if table ~= 0 then
-        for k, v in pairs(table) do
-            if string.upper(v) == string.upper(element) then
-                return true
-            end
-        end
-    end
+	if table ~= 0 then
+		for k, v in pairs(table) do
+			if string.upper(v) == string.upper(element) then
+				return true
+			end
+		end
+	end
 	return false
 end
 
@@ -140,7 +140,7 @@ InventoryAPI.getInventory = function(player, cb)
 
 		for _, item in pairs(UsersInventories[identifier]) do
 			local newItem = {
-				id= item:getId(),
+				id = item:getId(),
 				label = item:getLabel(),
 				name = item:getName(),
 				metadata = item:getMetadata(),
@@ -215,7 +215,7 @@ InventoryAPI.getWeaponBullets = function(player, cb, weaponId)
 	end
 end
 
-AddEventHandler('playerDropped', function (reason)
+AddEventHandler('playerDropped', function(reason)
 	local _source = source
 	allplayersammo[_source] = nil
 end)
@@ -223,51 +223,53 @@ RegisterServerEvent("vorpinventory:removeammo") -- new event
 AddEventHandler("vorpinventory:removeammo", function(player)
 	local _source = player
 	allplayersammo[_source]["ammo"] = {}
-	TriggerClientEvent("vorpinventory:updateuiammocount",_source,allplayersammo[_source]["ammo"])
+	TriggerClientEvent("vorpinventory:updateuiammocount", _source, allplayersammo[_source]["ammo"])
 end)
 RegisterServerEvent("vorpinventory:getammoinfo")
 AddEventHandler("vorpinventory:getammoinfo", function()
 	local _source = source
-	if allplayersammo[_source] ~= nil then 
-		TriggerClientEvent("vorpinventory:recammo",_source,allplayersammo[_source])
+	if allplayersammo[_source] ~= nil then
+		TriggerClientEvent("vorpinventory:recammo", _source, allplayersammo[_source])
 	end
 end)
 
 RegisterServerEvent("vorpinventory:servergiveammo")
-AddEventHandler("vorpinventory:servergiveammo", function(ammotype, amount, target,maxcount)
+AddEventHandler("vorpinventory:servergiveammo", function(ammotype, amount, target, maxcount)
 	local _source = source
-	local player1ammo =  allplayersammo[_source]["ammo"][ammotype]
-	local player2ammo =  allplayersammo[target]["ammo"][ammotype]
-		
-        if allplayersammo[target]["ammo"][ammotype] == nil then
+	local player1ammo = allplayersammo[_source]["ammo"][ammotype]
+	local player2ammo = allplayersammo[target]["ammo"][ammotype]
+
+	if allplayersammo[target]["ammo"][ammotype] == nil then
 		allplayersammo[target]["ammo"][ammotype] = 0
 	end
-	if player1ammo == nil or player2ammo == nil then 
+	if player1ammo == nil or player2ammo == nil then
 		TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
 		return
 	end
-	if 0 > (player1ammo - amount) then 
+	if 0 > (player1ammo - amount) then
 		TriggerClientEvent("vorp:Tip", _source, _U("notenoughammo"), 2000)
 		TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
 		return
-	elseif (player2ammo+amount) > maxcount then 
+	elseif (player2ammo + amount) > maxcount then
 		TriggerClientEvent("vorp:Tip", _source, _U("fullammoyou"), 2000)
 		TriggerClientEvent("vorp:Tip", target, _U("fullammo"), 2000)
 		TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
 		return
 	end
-	allplayersammo[_source]["ammo"][ammotype] = allplayersammo[_source]["ammo"][ammotype] - amount 
+	allplayersammo[_source]["ammo"][ammotype] = allplayersammo[_source]["ammo"][ammotype] - amount
 	allplayersammo[target]["ammo"][ammotype] = allplayersammo[target]["ammo"][ammotype] + amount
 	local charidentifier = allplayersammo[_source]["charidentifier"]
 	local charidentifier2 = allplayersammo[target]["charidentifier"]
-	exports.ghmattimysql:execute("UPDATE characters Set ammo=@ammo WHERE charidentifier=@charidentifier", { ['charidentifier'] = charidentifier, ['ammo'] = json.encode(allplayersammo[_source]["ammo"]) })
-	exports.ghmattimysql:execute("UPDATE characters Set ammo=@ammo WHERE charidentifier=@charidentifier", { ['charidentifier'] = charidentifier2, ['ammo'] = json.encode(allplayersammo[target]["ammo"]) })
-	TriggerClientEvent("vorpinventory:updateuiammocount",_source,allplayersammo[_source]["ammo"])
-	TriggerClientEvent("vorpinventory:updateuiammocount",target,allplayersammo[target]["ammo"])
-	TriggerClientEvent("vorpinventory:setammotoped",_source,allplayersammo[_source]["ammo"])
-	TriggerClientEvent("vorpinventory:setammotoped",target,allplayersammo[target]["ammo"])
-	TriggerClientEvent("vorp:Tip", _source, _U("transferedammo")..Config.Ammolabels[ammotype].." : "..amount, 2000)
-	TriggerClientEvent("vorp:Tip", target, _U("recammo")..Config.Ammolabels[ammotype].." : "..amount, 2000)
+	exports.ghmattimysql:execute("UPDATE characters Set ammo=@ammo WHERE charidentifier=@charidentifier",
+		{ ['charidentifier'] = charidentifier, ['ammo'] = json.encode(allplayersammo[_source]["ammo"]) })
+	exports.ghmattimysql:execute("UPDATE characters Set ammo=@ammo WHERE charidentifier=@charidentifier",
+		{ ['charidentifier'] = charidentifier2, ['ammo'] = json.encode(allplayersammo[target]["ammo"]) })
+	TriggerClientEvent("vorpinventory:updateuiammocount", _source, allplayersammo[_source]["ammo"])
+	TriggerClientEvent("vorpinventory:updateuiammocount", target, allplayersammo[target]["ammo"])
+	TriggerClientEvent("vorpinventory:setammotoped", _source, allplayersammo[_source]["ammo"])
+	TriggerClientEvent("vorpinventory:setammotoped", target, allplayersammo[target]["ammo"])
+	TriggerClientEvent("vorp:Tip", _source, _U("transferedammo") .. Config.Ammolabels[ammotype] .. " : " .. amount, 2000)
+	TriggerClientEvent("vorp:Tip", target, _U("recammo") .. Config.Ammolabels[ammotype] .. " : " .. amount, 2000)
 	TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
 end)
 
@@ -275,20 +277,22 @@ RegisterServerEvent("vorpinventory:updateammo")
 AddEventHandler("vorpinventory:updateammo", function(ammoinfo)
 	local _source = source
 	allplayersammo[_source] = ammoinfo
-	exports.ghmattimysql:execute("UPDATE characters Set ammo=@ammo WHERE charidentifier=@charidentifier", { ['charidentifier'] = ammoinfo["charidentifier"], ['ammo'] = json.encode(ammoinfo["ammo"]) })
+	exports.ghmattimysql:execute("UPDATE characters Set ammo=@ammo WHERE charidentifier=@charidentifier",
+		{ ['charidentifier'] = ammoinfo["charidentifier"], ['ammo'] = json.encode(ammoinfo["ammo"]) })
 end)
 
 InventoryAPI.LoadAllAmmo = function()
 	local _source = source
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local charidentifier = sourceCharacter.charIdentifier
-	exports.ghmattimysql:execute('SELECT ammo FROM characters WHERE charidentifier = @charidentifier ' , {['charidentifier'] = charidentifier}, function(result)
+	exports.ghmattimysql:execute('SELECT ammo FROM characters WHERE charidentifier = @charidentifier ',
+		{ ['charidentifier'] = charidentifier }, function(result)
 		local ammo = json.decode(result[1].ammo)
-		allplayersammo[_source] = {charidentifier=charidentifier,ammo = ammo}
-		if next(ammo) ~= nil then 
-			for k,v in pairs(ammo) do
+		allplayersammo[_source] = { charidentifier = charidentifier, ammo = ammo }
+		if next(ammo) ~= nil then
+			for k, v in pairs(ammo) do
 				local ammocount = tonumber(v)
-				if ammocount > 0 then 
+				if ammocount > 0 then
 					TriggerClientEvent("vorpCoreClient:addBullets", _source, k, ammocount)
 				end
 			end
@@ -301,17 +305,19 @@ InventoryAPI.addBullets = function(player, bulletType, amount)
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local identifier = sourceCharacter.identifier
 	local charidentifier = sourceCharacter.charIdentifier
-	exports.ghmattimysql:execute('SELECT ammo FROM characters WHERE charidentifier = @charidentifier ' , {['charidentifier'] = charidentifier}, function(result)
+	exports.ghmattimysql:execute('SELECT ammo FROM characters WHERE charidentifier = @charidentifier ',
+		{ ['charidentifier'] = charidentifier }, function(result)
 		local ammo = json.decode(result[1].ammo)
-		if ammo[bulletType] ~= nil then 
+		if ammo[bulletType] ~= nil then
 			ammo[bulletType] = ammo[bulletType] + amount
 		else
 			ammo[bulletType] = amount
 		end
 		allplayersammo[_source]["ammo"] = ammo
-		TriggerClientEvent("vorpinventory:updateuiammocount",_source,allplayersammo[_source]["ammo"])
+		TriggerClientEvent("vorpinventory:updateuiammocount", _source, allplayersammo[_source]["ammo"])
 		TriggerClientEvent("vorpCoreClient:addBullets", _source, bulletType, ammo[bulletType])
-		exports.ghmattimysql:execute("UPDATE characters Set ammo=@ammo WHERE charidentifier=@charidentifier", { ['charidentifier'] = charidentifier, ['ammo'] = json.encode(ammo) })
+		exports.ghmattimysql:execute("UPDATE characters Set ammo=@ammo WHERE charidentifier=@charidentifier",
+			{ ['charidentifier'] = charidentifier, ['ammo'] = json.encode(ammo) })
 	end)
 
 	--[[ if UsersWeapons[weaponId] then
@@ -381,7 +387,6 @@ InventoryAPI.addItem = function(player, name, amount, metadata)
 	end
 
 	SvUtils.ProcessUser(_source)
-	
 
 	metadata = SharedUtils.MergeTables(svItems[name].metadata, metadata or {})
 
@@ -442,7 +447,7 @@ InventoryAPI.addItem = function(player, name, amount, metadata)
 	else -- Item does not exist in inventory
 		if Config.MaxItemsInInventory.Items ~= -1 then
 			if sourceInventoryItemCount <= Config.MaxItemsInInventory.Items then
-				DbService.CreateItem(charIdentifier, svItems[name]:getId(), amount, metadata, function (craftedItem)
+				DbService.CreateItem(charIdentifier, svItems[name]:getId(), amount, metadata, function(craftedItem)
 					item = Item:New({
 						id = craftedItem.id,
 						count = amount,
@@ -461,7 +466,7 @@ InventoryAPI.addItem = function(player, name, amount, metadata)
 				return
 			end
 		else
-			DbService.CreateItem(charIdentifier, svItems[name]:getId(), amount, metadata, function (craftedItem)
+			DbService.CreateItem(charIdentifier, svItems[name]:getId(), amount, metadata, function(craftedItem)
 				item = Item:New({
 					id = craftedItem.id,
 					count = amount,
@@ -509,7 +514,7 @@ InventoryAPI.subItem = function(player, name, amount, metadata)
 		if Config.Debug then
 			Log.Warning("Item: [^2" .. name .. "^7] ^1 do not exist on Database please add this item on ^7 Table Items")
 		end
-		SvUtils.Trem(_source, false)
+		SvUtils.Trem(_source)
 		return
 	end
 
@@ -664,13 +669,13 @@ InventoryAPI.giveWeapon = function(player, weaponId, target)
 		if targetisPlayer then
 			--TriggerClientEvent("vorp:TipRight", _target, _U("youGaveWeapon"), 2000)
 			TriggerClientEvent('vorp:ShowAdvancedRightNotification', _target, _U("youGaveWeapon"), "inventory_items", weaponName,
-				"COLOR_PURE_WHITE",4000)
+				"COLOR_PURE_WHITE", 4000)
 			TriggerClientEvent("vorpCoreClient:subWeapon", _target, weaponId)
 		end
 
 		--TriggerClientEvent("vorp:TipRight", _source, _U("youReceivedWeapon"), 2000)
 		TriggerClientEvent('vorp:ShowAdvancedRightNotification', _source, _U("youReceivedWeapon"), "inventory_items",
-			weaponName,"COLOR_PURE_WHITE", 4000)
+			weaponName, "COLOR_PURE_WHITE", 4000)
 		TriggerClientEvent("vorpInventory:receiveWeapon", _source, weaponId, weaponPropietary, weaponName, weaponAmmo)
 	end
 end
