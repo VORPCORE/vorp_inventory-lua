@@ -9,13 +9,14 @@ local LoadDatabase = function ()
 			DB_Items = result
 			for _, db_item in pairs(result) do
 				local item = Item:New({
+					id = db_item.id,
 					item = db_item.item,
+					metadata = db_item.metadata,
 					label = db_item.label,
 					limit = db_item.limit,
 					type = db_item.type,
 					canUse = db_item.usable,
 					canRemove = db_item.can_remove,
-					desc = db_item.desc
 				})
 				svItems[item.item] = item
 				--DB_Items[item.item] = item

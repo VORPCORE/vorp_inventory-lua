@@ -76,7 +76,6 @@ RegisterNUICallback('TakeFromBank', NUIService.NUITakeFromBank)
 
 RegisterNUICallback('MoveToBank', NUIService.NUIMoveToBank)
 
-
 --Hideout Module
 RegisterNetEvent("vorp_inventory:OpenHideoutInventory")
 AddEventHandler("vorp_inventory:OpenHideoutInventory", NUIService.OpenHideoutInventory)
@@ -112,8 +111,7 @@ RegisterNUICallback("MoveToContainer", NUIService.NUIMoveToContainer);
 
 -- Transactions
 RegisterNetEvent("vorp_inventory:transactionStarted")
-AddEventHandler("vorp_inventory:transactionStarted", NUIService.transactionStarted)
+AddEventHandler("vorp_inventory:transactionStarted", NUIService.TransactionStarted)
 
 RegisterNetEvent("vorp_inventory:transactionCompleted")
-AddEventHandler("vorp_inventory:transactionCompleted", NUIService.transactionComplete)
-
+AddEventHandler("vorp_inventory:transactionCompleted", NUIService.TransactionComplete)

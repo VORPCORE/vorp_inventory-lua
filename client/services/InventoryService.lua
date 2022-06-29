@@ -5,11 +5,22 @@ UserWeapons = {}
 UserInventory = {}
 bulletsHash = {}
 
-InventoryService.receiveItem = function (name, amount)
-	if UserInventory[name] ~= nil then
-		UserInventory[name]:addCount(amount)
-		NUIService.LoadInv()
-		return
+InventoryService.receiveItem = function (name, id, amount, metadata)
+
+	if UserInventory[id] ~= nil then
+		UserInventory[id]:addCount(amount)
+	else
+		UserInventory[id] = Item:New({
+			id = id,
+			count = amount,
+			limit = DB_Items[name].limit,
+			label = DB_Items[name].label,
+			name = name,
+			metadata = SharedUtils.MergeTables(DB_Items[name].metadata, metadata),
+			type = "item_standard",
+			canUse = true,
+			canRemove = DB_Items[name].can_remove
+		})
 	end
 	
 	UserInventory[name] = Item:New({
@@ -20,20 +31,26 @@ InventoryService.receiveItem = function (name, amount)
 		type = "item_standard",
 		canUse = true,
 		canRemove = DB_Items[name].can_remove,
-		desc = DB_Items[name].desc
 	})
 	NUIService.LoadInv()
 end
 
-InventoryService.removeItem = function (name, count)
-	UserInventory[name]:quitCount(count)
-
-	if UserInventory[name]:getCount() <= 0 then
-		--UserInventory[name] = nil
-		Utils.TableRemoveByKey(UserInventory, name)
+InventoryService.removeItem = function (name, id, count, metadata)
+	if UserInventory[id] == nil then
+		return
 	end
 
-	NUIService.LoadInv()
+	local item = UserInventory[id]
+
+	if item ~= nil then
+		item:quitCount(count)
+
+		if item:getCount() <= 0 then
+			UserInventory[id] = nil
+		end
+
+		NUIService.LoadInv()
+	end
 end
 
 InventoryService.receiveWeapon = function (id, propietary, name, ammos)
@@ -61,6 +78,7 @@ InventoryService.receiveWeapon = function (id, propietary, name, ammos)
 	end
 
 end
+
 InventoryService.onSelectedCharacter = function (charId)
 	SetNuiFocus(false, false)
 	SendNUIMessage({action= "hide"})
@@ -85,7 +103,7 @@ InventoryService.processItems = function (items)
 			can_remove = item.can_remove,
 			type = item.type,
 			usable = item.usable,
-			desc = item.desc
+			metadata = item.metadata
 		}
 	end
 end
@@ -126,37 +144,36 @@ InventoryService.getLoadout = function (loadout)
 end
 
 InventoryService.getInventory = function (inventory)
-	UserInventory = {}
-	
-	if inventory ~= '' then
+	if inventory ~= nil and inventory ~= '' then
+		UserInventory = {}
 		local inventoryItems = json.decode(inventory)
 
-		for _, item in pairs(DB_Items) do -- TODO reverse loop: Iterate on inventory item instead of DB_items. Should save some iterations
-			local itemName = item.item
-			if inventoryItems[itemName] ~= nil then
-				local itemAmount = tonumber(inventoryItems[itemName])
-				local itemLimit = tonumber(item.limit)
-				local itemLabel = item.label
-				local itemCanRemove = item.can_remove
-				local itemType = item.type
-				local itemCanUse = item.usable
-				local itemDesc = item.desc
+		for _, item in pairs(inventoryItems) do
+			if DB_Items[item.item] ~= nil then
+				local dbItem = DB_Items[item.item]
+				local itemAmount = tonumber(item.amount)
+				local itemLimit = tonumber(dbItem.limit)
+				local itemCreatedAt = item.created_at
+				local itemLabel = dbItem.label
+				local itemCanRemove = dbItem.can_remove
+				local itemType = dbItem.type
+				local itemCanUse = dbItem.usable
+				local itemDefaultMetadata = dbItem.metadata
 
 				local newItem = Item:New({
+					id = item.id,
 					count = itemAmount,
 					limit = itemLimit,
 					label = itemLabel,
-					name = itemName,
+					name = item.item,
+					metadata = SharedUtils.MergeTables(itemDefaultMetadata, item.metadata),
 					type = itemType,
 					canUse = itemCanUse,
 					canRemove = itemCanRemove,
-					desc = itemDesc
 				})
 
-				UserInventory[itemName] = newItem
+				UserInventory[item.id] = newItem
 			end
 		end
 	end
 end
-
-
