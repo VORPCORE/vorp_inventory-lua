@@ -23,7 +23,8 @@ Locales["en_lang"] = {
     NotEnoughGold     = "You don`t have enough gold",
     TransactionLoading= "Loading...",
     notenoughammo = "You Dont Have Enough Ammo",
-    fullammo = "Cant carry more of this ammo",
+    fullammoyou = "The person cannot carry any more of that ammo",
+    fullammo = "You cannot carry more of this ammo",
     transferedammo = "You Gave Ammo: ",
     recammo = "You Recieved Ammo: ",
 }
