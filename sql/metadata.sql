@@ -1,26 +1,34 @@
-ALTER TABLE items ADD COLUMN `id` int(11) UNIQUE AUTO_INCREMENT;
+ALTER TABLE items ADD COLUMN `id` int UNIQUE AUTO_INCREMENT;
 ALTER TABLE items ADD COLUMN `metadata` JSON DEFAULT ('{}');
 
-CREATE TABLE IF NOT EXISTS `items_crafted` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `character_id` int(11) NOT NULL REFERENCES characters(charidentifier),
-  `item_id` int(11) NOT NULL REFERENCES items(id),
-  `updated_at` TIMESTAMP DEFAULT now(),
-  `metadata` JSON,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `ID` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE IF NOT EXISTS `character_inventories` (
-  `character_id` int(11) DEFAULT NULL REFERENCES characters(charidentifier),
-  `inventory_type` varchar(100) NOT NULL DEFAULT 'default',
-  `item_crafted_id` int(11) NOT NULL REFERENCES items_crafted(id),
-  `amount` int(11) DEFAULT NULL,
-  `created_at` TIMESTAMP DEFAULT now()
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS items_crafted (
+    id           int auto_increment primary key,
+    character_id int                                 not null,
+    item_id      int                                 not null,
+    updated_at   timestamp default CURRENT_TIMESTAMP not null,
+    metadata     json                                not null,
+    constraint ID unique (id)
+) COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;
 
 -- Create index to speed up request for each character inventory
-CREATE INDEX character_inventory_idx ON character_inventories(character_id, inventory_type);
+CREATE INDEX crafted_item_idx
+    ON items_crafted (character_id);
+
+
+CREATE TABLE IF NOT EXISTS character_inventories
+(
+    character_id    int                                    null,
+    inventory_type  varchar(100) default 'default'         not null,
+    item_crafted_id int                                    not null,
+    amount          int                                    null,
+    created_at      timestamp    default CURRENT_TIMESTAMP null
+) COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;
+
+-- Create index to speed up request for each character inventory
+CREATE INDEX character_inventory_idx
+    ON character_inventories (character_id, inventory_type);
+
 
 -- Convert Json items into separate rows and insert them in items_crafted
 INSERT INTO items_crafted (
@@ -33,10 +41,7 @@ WITH
 SELECT c.charidentifier, i.id, '{}' as metadata FROM i JOIN c
     WHERE JSON_CONTAINS(JSON_KEYS(c.inventory), JSON_QUOTE(i.item), '$');
 
--- Create inndex to speed up request for each character inventory
-CREATE INDEX crafted_item_idx ON items_crafted(character_id);
-
--- Assignamount to newly created items and Assign character and inventory type
+-- Assign amount to newly created items and Assign character and inventory type
 INSERT INTO character_inventories (
                                    character_id,
                                    inventory_type,
@@ -51,5 +56,3 @@ SELECT c.charidentifier, 'default', ic.id, JSON_EXTRACT(c.inventory, CONCAT('$.'
     WHERE JSON_CONTAINS(JSON_KEYS(c.inventory), JSON_QUOTE(i.item), '$')
       AND ic.item_id = i.id AND ic.character_id = c.charidentifier
 GROUP BY c.charidentifier, ic.id, c.inventory;
-
--- (_utf8mb4'{}')
