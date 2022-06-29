@@ -276,7 +276,7 @@ AddEventHandler("vorpinventory:servergiveammo", function(ammotype, amount, targe
 		TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
 		return
 	elseif (player2ammo+amount) > maxcount then 
-		TriggerClientEvent("vorp:Tip", _source, _U("fullammo"), 2000)
+		TriggerClientEvent("vorp:Tip", _source, _U("fullammoyou"), 2000)
 		TriggerClientEvent("vorp:Tip", target, _U("fullammo"), 2000)
 		TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
 		return
