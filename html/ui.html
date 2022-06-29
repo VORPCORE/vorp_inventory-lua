@@ -731,6 +731,7 @@
                                         return;
                                     }
 
+
                                     if (!isInt(value)) {
                                         return;
                                     }
@@ -745,7 +746,6 @@
                                 }
                             });
                         } else {
-
                             $.post("http://vorp_inventory/MoveToBank", JSON.stringify({
                                 item: itemData,
                                 type: itemData.type,
