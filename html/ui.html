@@ -85,6 +85,9 @@
         var secondaryCapacityAvailable = false
         let allplayerammo
         let ammolabels
+
+        var LANGUAGE = {}
+
         function OverSetTitle(title) {
             document.getElementById("information").innerHTML = title;
         }
@@ -131,9 +134,16 @@
 
         window.addEventListener('message', function (event) {
 
+            // Initial entry, setup things like locale
+            if (event.data.action == "initiate") {
+                //BACKHERE
+                LANGUAGE = event.data.language
+            }
+            
             if (event.data.action == "reclabels") {
                 ammolabels = event.data.labels
             }
+
             if (event.data.action == "updateammo") {
                 if (event.data.ammo) {
                     allplayerammo = event.data.ammo
@@ -185,8 +195,8 @@
                         disableInventory(500);
                         if (itemData.type != "item_weapon") {
                             dialog.prompt({
-                                title: "Quantity",
-                                button: "Accept",
+                                title: LANGUAGE.prompttitle,
+                                button: LANGUAGE.promptaccept,
                                 required: true,
                                 item: itemData,
                                 type: itemData.type,
@@ -228,8 +238,8 @@
                         disableInventory(500);
                         if (itemData.type != "item_weapon") {
                             dialog.prompt({
-                                title: "Quantity",
-                                button: "Accept",
+                                title: LANGUAGE.prompttitle,
+                                button: LANGUAGE.promptaccept,
                                 required: true,
                                 item: itemData,
                                 type: itemData.type,
@@ -273,8 +283,8 @@
                         disableInventory(500);
                         if (itemData.type != "item_weapon") {
                             dialog.prompt({
-                                title: "Quantity",
-                                button: "Accept",
+                                title: LANGUAGE.prompttitle,
+                                button: LANGUAGE.promptaccept,
                                 required: true,
                                 item: itemData,
                                 type: itemData.type,
@@ -316,8 +326,8 @@
                         disableInventory(500);
                         if (itemData.type != "item_weapon") {
                             dialog.prompt({
-                                title: "Quantity",
-                                button: "Accept",
+                                title: LANGUAGE.prompttitle,
+                                button: LANGUAGE.promptaccept,
                                 required: true,
                                 item: itemData,
                                 type: itemData.type,
@@ -359,8 +369,8 @@
                         disableInventory(500);
                         if (itemData.type != "item_weapon") {
                             dialog.prompt({
-                                title: "Quantita",
-                                button: "Conferma",
+                                title: LANGUAGE.prompttitle,
+                                button: LANGUAGE.promptaccept,
                                 required: true,
                                 item: itemData,
                                 type: itemData.type,
@@ -403,8 +413,8 @@
                         disableInventory(500);
                         if (itemData.type != "item_weapon") {
                             dialog.prompt({
-                                title: "Quantity",
-                                button: "Accept",
+                                title: LANGUAGE.prompttitle,
+                                button: LANGUAGE.promptaccept,
                                 required: true,
                                 item: itemData,
                                 type: itemData.type,
@@ -447,8 +457,8 @@
                         disableInventory(500);
                         if (itemData.type != "item_weapon") {
                             dialog.prompt({
-                                title: "Quantity",
-                                button: "Accept",
+                                title: LANGUAGE.prompttitle,
+                                button: LANGUAGE.promptaccept,
                                 required: true,
                                 item: itemData,
                                 type: itemData.type,
@@ -491,8 +501,8 @@
                         disableInventory(500);
                         if (itemData.type != "item_weapon") {
                             dialog.prompt({
-                                title: "Quantity",
-                                button: "Accept",
+                                title: LANGUAGE.prompttitle,
+                                button: LANGUAGE.promptaccept,
                                 required: true,
                                 item: itemData,
                                 type: itemData.type,
@@ -545,8 +555,8 @@
                         disableInventory(500);
                         if (itemData.type != "item_weapon") {
                             dialog.prompt({
-                                title: "Quantity",
-                                button: "Accept",
+                                title: LANGUAGE.prompttitle,
+                                button: LANGUAGE.promptaccept,
                                 required: true,
                                 item: itemData,
                                 type: itemData.type,
@@ -589,8 +599,8 @@
                         disableInventory(500);
                         if (itemData.type != "item_weapon") {
                             dialog.prompt({
-                                title: "Quantity",
-                                button: "Accept",
+                                title: LANGUAGE.prompttitle,
+                                button: LANGUAGE.promptaccept,
                                 required: true,
                                 item: itemData,
                                 type: itemData.type,
@@ -632,8 +642,8 @@
                         disableInventory(500);
                         if (itemData.type != "item_weapon") {
                             dialog.prompt({
-                                title: "Quantity",
-                                button: "Accept",
+                                title: LANGUAGE.prompttitle,
+                                button: LANGUAGE.promptaccept,
                                 required: true,
                                 item: itemData,
                                 type: itemData.type,
@@ -674,8 +684,8 @@
                         disableInventory(500);
                         if (itemData.type != "item_weapon") {
                             dialog.prompt({
-                                title: "Quantity",
-                                button: "Accept",
+                                title: LANGUAGE.prompttitle,
+                                button: LANGUAGE.promptaccept,
                                 required: true,
                                 item: itemData,
                                 type: itemData.type,
@@ -712,12 +722,12 @@
                             }));
 
                         }
- } else if (type === "bank" && itemInventory === "main") {
+                    } else if (type === "bank" && itemInventory === "main") {
                         disableInventory(500);
                         if (itemData.type != "item_weapon") {
                             dialog.prompt({
-                                title: "Quantita",
-                                button: "Conferma",
+                                title: LANGUAGE.prompttitle,
+                                button: LANGUAGE.promptaccept,
                                 required: true,
                                 item: itemData,
                                 type: itemData.type,
@@ -758,8 +768,8 @@
                         disableInventory(500);
                         if (itemData.type != "item_weapon") {
                             dialog.prompt({
-                                title: "Quantity",
-                                button: "Accept",
+                                title: LANGUAGE.prompttitle,
+                                button: LANGUAGE.promptaccept,
                                 required: true,
                                 item: itemData,
                                 type: itemData.type,
@@ -801,8 +811,8 @@
                         disableInventory(500);
                         if (itemData.type != "item_weapon") {
                             dialog.prompt({
-                                title: "Quantity",
-                                button: "Accept",
+                                title: LANGUAGE.prompttitle,
+                                button: LANGUAGE.promptaccept,
                                 required: true,
                                 item: itemData,
                                 type: itemData.type,
@@ -845,8 +855,8 @@
                         disableInventory(500);
                         if (itemData.type != "item_weapon") {
                             dialog.prompt({
-                                title: "Quantity",
-                                button: "Accept",
+                                title: LANGUAGE.prompttitle,
+                                button: LANGUAGE.promptaccept,
                                 required: true,
                                 item: itemData,
                                 type: itemData.type,
@@ -913,7 +923,7 @@
                     $(".controls").remove();
 
                     $("#inventoryHud").append(
-                        `<div class='controls'><div class='controls-center'><input type='text' id='search' placeholder='search'/><button id='check'>${checkxy} / ${infoxy}</button></div><button id='close'>Close</button></div></div>`
+                        `<div class='controls'><div class='controls-center'><input type='text' id='search' placeholder='${LANGUAGE.inventorysearch}'/><button id='check'>${checkxy} / ${infoxy}</button></div><button id='close'>${LANGUAGE.inventoryclose}</button></div></div>`
                     );
 
                     $("#search").bind('input', function () {
@@ -1084,8 +1094,8 @@
 
         function selectPlayerToGive(data) {
             dialog.prompt({
-                title: "Select Player",
-                button: "Confirm",
+                title: LANGUAGE.toplayerpromptitle,
+                button: LANGUAGE.toplaterpromptaccept,
                 required: false,
                 item: data,
                 type: data.type,
@@ -1103,8 +1113,8 @@
         function dropGetHowMany(item, type, hash, id) {
             if (type != "item_weapon") {
                 dialog.prompt({
-                    title: "Quantity",
-                    button: "Accept",
+                    title: LANGUAGE.prompttitle,
+                    button: LANGUAGE.promptaccept,
                     required: true,
                     item: item,
                     type: type,
@@ -1141,8 +1151,8 @@
         function giveGetHowMany(item, type, hash, id) {
             if (type != "item_weapon") {
                 dialog.prompt({
-                    title: "Quantity",
-                    button: "Accept",
+                    title: LANGUAGE.prompttitle,
+                    button: LANGUAGE.promptaccept,
                     required: false,
                     item: item,
                     type: type,
@@ -1180,8 +1190,8 @@
 
         function giveGetHowManyMoney() {
             dialog.prompt({
-                title: "Quantity",
-                button: "Accept",
+                title: LANGUAGE.prompttitle,
+                button: LANGUAGE.promptaccept,
                 required: true,
                 item: "money",
                 type: "item_money",
@@ -1208,8 +1218,8 @@
 
         function giveammotoplayer(ammotype) {
             dialog.prompt({
-                title: "Quantity",
-                button: "Accept",
+                title: LANGUAGE.prompttitle,
+                button: LANGUAGE.promptaccept,
                 required: true,
                 item: ammotype,
                 type: "item_ammo",
@@ -1239,8 +1249,8 @@
 
         function giveGetHowManyGold() {
             dialog.prompt({
-                title: "Quantity",
-                button: "Accept",
+                title: LANGUAGE.prompttitle,
+                button: LANGUAGE.promptaccept,
                 required: true,
                 item: "gold",
                 type: "item_gold",
@@ -1379,24 +1389,38 @@
             });
 
             var gunbelt_item = "gunbelt"
-            var gunbelt_label = "Gun belt"
-            var gunbelt_desc = "Your Ammo"
+            var gunbelt_label = LANGUAGE.gunbeltlabel
+            var gunbelt_desc = LANGUAGE.gunbeltdescription
 
             $("#inventoryElement").append("<div data-label='" + gunbelt_label +
                 "' style='background-image: url(\"img/items/" + gunbelt_item +
                 ".png\"), url(); background-size: 90px 90px, 90px 90px; background-repeat: no-repeat; background-position: center;' id='item-" +
                 gunbelt_item + "' class='item'><div class='text'></div></div>")
             var data = [];
-            for (const [ind, tab] of Object.entries(allplayerammo)) {
-                if (tab > 0) {
-                    data.push({
-                        text: `${ammolabels[ind]} : ${tab}`,
-                        action: function () {
-                            giveammotoplayer(ind);
-                        }
-                    });
+            
+            let empty = true
+            if (allplayerammo) {
+                for (const [ind, tab] of Object.entries(allplayerammo)) {
+                    if (tab > 0) {
+                        empty = false
+                        data.push({
+                            text: `${ammolabels[ind]} : ${tab}`,
+                            action: function () {
+                                giveammotoplayer(ind);
+                            }
+                        });
+                    }
                 }
             }
+            
+            if (empty) {
+                data.push({
+                    text: LANGUAGE.empty,
+                    action: function () {}
+                });
+            }
+            
+            
             $("#item-" + gunbelt_item).contextMenu([data], {
                 offsetX: 1,
                 offsetY: 1,
@@ -1427,8 +1451,8 @@
             initDivMouseOver()
             //AddMoney
             var m_item = "money";
-            var m_label = "Dollars";
-            var m_desc = "Your Cash"
+            var m_label = LANGUAGE.inventorymoneylabel
+            var m_desc = LANGUAGE.inventorymoneydescription
 
 
             $("#inventoryElement").append("<div data-label='" + m_label +
@@ -1439,14 +1463,14 @@
             var data = [];
 
             data.push({
-                text: "Give money",
+                text: LANGUAGE.givemoney,
                 action: function () {
                     giveGetHowManyMoney();
                 }
             });
 
             data.push({
-                text: "Drop money",
+                text: LANGUAGE.dropmoney,
                 action: function () {
                     dropGetHowMany(m_item, "item_money", "asd", 0);
                 }
@@ -1486,8 +1510,8 @@
                   
                   //AddGold
                   var g_item = "gold";
-                  var g_label = "Gold";
-                  var g_desc = "Your Gold"
+                  var g_label = LANGUAGE.inventorygoldlabel;
+                  var g_desc = LANGUAGE.inventorygolddescription
       
       
                   $("#inventoryElement").append("<div data-label='" + g_label +
@@ -1496,21 +1520,20 @@
                       g_item + "' class='item'><div class='text'></div></div>")
       
                   var data = [];
-      
+                  
                   data.push({
-                      text: "Give Gold",
+                      text: LANGUAGE.givegold,
                       action: function() {
                           giveGetHowManyGold();
                       }
                   });
       
                   data.push({
-                      text: "Drop Gold",
+                      text: LANGUAGE.dropgold,
                       action: function() {
                           dropGetHowMany(g_item, "item_gold", "asd", 0);
                       }
                   });
-      
       
       
                   $("#item-" + g_item).contextMenu([data], {
