@@ -50,5 +50,7 @@ Locales["en_lang"] = {
     unequip = "unequip",
     use = "use",
     give = "give",
-    drop = "drop"
+    drop = "drop",
+    cantweapons = "You can't carry any more weapons",
+    cantweapons2 = "The person already has too many guns"
 }
