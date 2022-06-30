@@ -507,6 +507,7 @@ end
 
 -- Main loop
 Citizen.CreateThread(function()
+	Wait(5000)
 	NUIService.initiateData()
 
 	while true do
