@@ -43,5 +43,12 @@ Locales["en_lang"] = {
     givemoney = "Give money",
     dropmoney = "Drop money",
     givegold = "Give Gold",
-    dropgold = "Drop Gold"
+    dropgold = "Drop Gold",
+    of = " of ",
+    yougive = "you gave ",
+    youreceive = "you received ",
+    unequip = "unequip",
+    use = "use",
+    give = "give",
+    drop = "drop"
 }
