@@ -6,7 +6,7 @@ function initSecondaryInventoryHandlers() {
 
 
 
-            if (Inv.type === "horse" && itemInventory === "second") {
+            if (type === "horse" && itemInventory === "second") {
                 disableInventory(500);
                 if (itemData.type != "item_weapon") {
                     dialog.prompt({
@@ -30,7 +30,7 @@ function initSecondaryInventoryHandlers() {
                                 return;
                             }
 
-                            if (! isValidating) {
+                            if (!isValidating) {
                                 processEventValidation();
                                 $.post("http://vorp_inventory/TakeFromHorse", JSON.stringify({
                                     item: itemData,
@@ -43,8 +43,8 @@ function initSecondaryInventoryHandlers() {
                         }
                     });
                 } else {
-                    if (! isValidating) {
-                         processEventValidation();
+                    if (!isValidating) {
+                        processEventValidation();
                         $.post("http://vorp_inventory/TakeFromHorse", JSON.stringify({
                             item: itemData,
                             type: itemData.type,
@@ -53,7 +53,7 @@ function initSecondaryInventoryHandlers() {
                         }));
                     }
                 }
-            } else if (Inv.type === "cart" && itemInventory === "second") {
+            } else if (type === "cart" && itemInventory === "second") {
                 disableInventory(500);
                 if (itemData.type != "item_weapon") {
                     dialog.prompt({
@@ -77,7 +77,7 @@ function initSecondaryInventoryHandlers() {
                                 return;
                             }
 
-                            if (! isValidating) {
+                            if (!isValidating) {
                                 processEventValidation();
                                 $.post("http://vorp_inventory/TakeFromCart", JSON.stringify({
                                     item: itemData,
@@ -89,7 +89,7 @@ function initSecondaryInventoryHandlers() {
                         }
                     });
                 } else {
-                    if (! isValidating) {
+                    if (!isValidating) {
                         processEventValidation();
                         $.post("http://vorp_inventory/TakeFromCart", JSON.stringify({
                             item: itemData,
@@ -99,7 +99,7 @@ function initSecondaryInventoryHandlers() {
                         }));
                     }
                 }
-            } else if (Inv.type === "house" && itemInventory === "second") {
+            } else if (type === "house" && itemInventory === "second") {
                 disableInventory(500);
                 if (itemData.type != "item_weapon") {
                     dialog.prompt({
@@ -122,7 +122,7 @@ function initSecondaryInventoryHandlers() {
                                 return;
                             }
 
-                            if (! isValidating) {
+                            if (!isValidating) {
                                 processEventValidation();
                                 $.post("http://vorp_inventory/TakeFromHouse", JSON.stringify({
                                     item: itemData,
@@ -134,7 +134,7 @@ function initSecondaryInventoryHandlers() {
                         }
                     });
                 } else {
-                    if (! isValidating) {
+                    if (!isValidating) {
                         processEventValidation();
                         $.post("http://vorp_inventory/TakeFromHouse", JSON.stringify({
                             item: itemData,
@@ -145,7 +145,7 @@ function initSecondaryInventoryHandlers() {
                     }
 
                 }
-            } else if (Inv.type === "hideout" && itemInventory === "second") {
+            } else if (type === "hideout" && itemInventory === "second") {
                 disableInventory(500);
                 if (itemData.type != "item_weapon") {
                     dialog.prompt({
@@ -190,7 +190,7 @@ function initSecondaryInventoryHandlers() {
                         }));
                     }
                 }
-                 } else if (Inv.type === "bank" && itemInventory === "second") {
+            } else if (type === "bank" && itemInventory === "second") {
                 disableInventory(500);
                 if (itemData.type != "item_weapon") {
                     dialog.prompt({
@@ -234,8 +234,8 @@ function initSecondaryInventoryHandlers() {
                         }));
                     }
                 }
-                
-            } else if (Inv.type === "clan" && itemInventory === "second") {
+
+            } else if (type === "clan" && itemInventory === "second") {
                 disableInventory(500);
                 if (itemData.type != "item_weapon") {
                     dialog.prompt({
@@ -280,7 +280,7 @@ function initSecondaryInventoryHandlers() {
                         }));
                     }
                 }
-            } else if (Inv.type === "steal" && itemInventory === "second") {
+            } else if (type === "steal" && itemInventory === "second") {
                 disableInventory(500);
                 if (itemData.type != "item_weapon") {
                     dialog.prompt({
@@ -325,7 +325,7 @@ function initSecondaryInventoryHandlers() {
                         }));
                     }
                 }
-            } else if (Inv.type === "Container" && itemInventory === "second") {
+            } else if (type === "Container" && itemInventory === "second") {
                 disableInventory(500);
                 if (itemData.type != "item_weapon") {
                     dialog.prompt({
@@ -380,7 +380,7 @@ function initSecondaryInventoryHandlers() {
             itemInventory = ui.draggable.data("inventory");
 
 
-            if (Inv.type === "horse" && itemInventory === "main") {
+            if (type === "horse" && itemInventory === "main") {
                 disableInventory(500);
                 if (itemData.type != "item_weapon") {
                     dialog.prompt({
@@ -423,11 +423,11 @@ function initSecondaryInventoryHandlers() {
                             number: 1,
                             horse: horseid
                         }));
-                }
+                    }
 
                 }
 
-            } else if (Inv.type === "cart" && itemInventory === "main") {
+            } else if (type === "cart" && itemInventory === "main") {
                 disableInventory(500);
                 if (itemData.type != "item_weapon") {
                     dialog.prompt({
@@ -473,7 +473,7 @@ function initSecondaryInventoryHandlers() {
                     }
                 }
 
-            } else if (Inv.type === "house" && itemInventory === "main") {
+            } else if (type === "house" && itemInventory === "main") {
                 disableInventory(500);
                 if (itemData.type != "item_weapon") {
                     dialog.prompt({
@@ -517,7 +517,7 @@ function initSecondaryInventoryHandlers() {
                         }));
                     }
                 }
-            } else if (Inv.type === "hideout" && itemInventory === "main") {
+            } else if (type === "hideout" && itemInventory === "main") {
                 disableInventory(500);
                 if (itemData.type != "item_weapon") {
                     dialog.prompt({
@@ -562,7 +562,7 @@ function initSecondaryInventoryHandlers() {
                         }));
                     }
                 }
-            } else if (Inv.type === "bank" && itemInventory === "main") {
+            } else if (type === "bank" && itemInventory === "main") {
                 disableInventory(500);
                 if (itemData.type != "item_weapon") {
                     dialog.prompt({
@@ -608,7 +608,7 @@ function initSecondaryInventoryHandlers() {
                         }));
                     }
                 }
-            } else if (Inv.type === "clan" && itemInventory === "main") {
+            } else if (type === "clan" && itemInventory === "main") {
                 disableInventory(500);
                 if (itemData.type != "item_weapon") {
                     dialog.prompt({
@@ -654,7 +654,7 @@ function initSecondaryInventoryHandlers() {
                     }
                 }
 
-            } else if (Inv.type === "steal" && itemInventory === "main") {
+            } else if (type === "steal" && itemInventory === "main") {
                 disableInventory(500);
                 if (itemData.type != "item_weapon") {
                     dialog.prompt({
@@ -700,7 +700,7 @@ function initSecondaryInventoryHandlers() {
                     }
                 }
 
-            } else if (Inv.type === "Container" && itemInventory === "main") {
+            } else if (type === "Container" && itemInventory === "main") {
                 disableInventory(500);
                 if (itemData.type != "item_weapon") {
                     dialog.prompt({
@@ -773,10 +773,10 @@ function secondInventorySetup(items) {
             function () {
                 OverSetTitleSecond(" ");
             },
-            function() {
+            function () {
                 OverSetDesc(item.desc);
             },
-            function() {
+            function () {
                 OverSetDesc(" ");
             }
         );
