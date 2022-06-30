@@ -28,7 +28,7 @@ function inventorySetup(items) {
         var data = [];
         if (item.used) {
             data.push({
-                text: "Unequip",
+                text: LANGUAGE.unequip,
                 action: function () {
                     $.post("http://vorp_inventory/UnequipWeapon", JSON.stringify({
                         item: item.name,
@@ -39,7 +39,7 @@ function inventorySetup(items) {
         }
         if (item.used2) {
             data.push({
-                text: "Unequip",
+                text: LANGUAGE.unequip,
                 action: function () {
                     $.post("http://vorp_inventory/UnequipWeapon", JSON.stringify({
                         item: item.name,
@@ -50,7 +50,7 @@ function inventorySetup(items) {
         }
         if (item.usable) {
             data.push({
-                text: "Use",
+                text: LANGUAGE.use,
                 action: function () {
                     $.post("http://vorp_inventory/UseItem", JSON.stringify({
                         item: item.name,
@@ -65,14 +65,14 @@ function inventorySetup(items) {
 
         if (item.canRemove) {
             data.push({
-                text: "Give",
+                text: LANGUAGE.give,
                 action: function () {
                     giveGetHowMany(item.name, item.type, item.hash, item.id);
                 }
             });
 
             data.push({
-                text: "Drop",
+                text: LANGUAGE.drop,
                 action: function () {
                     dropGetHowMany(item.name, item.type, item.hash, item.id);
                 }
