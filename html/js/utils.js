@@ -130,7 +130,7 @@ function selectPlayerToGive(data) {
     });
 }
 
-function dropGetHowMany(item, type, hash, id) {
+function dropGetHowMany(item, type, hash, id, metadata) {
     if (type != "item_weapon") {
         dialog.prompt({
             title: LANGUAGE.prompttitle,
@@ -153,7 +153,8 @@ function dropGetHowMany(item, type, hash, id) {
                 $.post("http://vorp_inventory/DropItem", JSON.stringify({
                     item: item,
                     type: type,
-                    number: value
+                    number: value,
+                    metadata: metadata
                 }));
                 return true;
             }
@@ -168,7 +169,7 @@ function dropGetHowMany(item, type, hash, id) {
     }
 }
 
-function giveGetHowMany(item, type, hash, id) {
+function giveGetHowMany(item, type, hash, id, metadata) {
     if (type != "item_weapon") {
         dialog.prompt({
             title: LANGUAGE.prompttitle,
@@ -192,7 +193,8 @@ function giveGetHowMany(item, type, hash, id) {
                     type: type,
                     what: "give",
                     item: item,
-                    count: value
+                    count: value,
+                    metadata: metadata
                 }));
                 return true;
             }

@@ -67,14 +67,14 @@ function inventorySetup(items) {
             data.push({
                 text: LANGUAGE.give,
                 action: function () {
-                    giveGetHowMany(item.name, item.type, item.hash, item.id);
+                    giveGetHowMany(item.name, item.type, item.hash, item.id, item.metadata);
                 }
             });
 
             data.push({
                 text: LANGUAGE.drop,
                 action: function () {
-                    dropGetHowMany(item.name, item.type, item.hash, item.id);
+                    dropGetHowMany(item.name, item.type, item.hash, item.id, item.metadata);
                 }
             });
         }
@@ -88,7 +88,7 @@ function inventorySetup(items) {
 
         $("#item-" + index).hover(
             function () {
-                OverSetTitle(item.label);
+                OverSetDesc(item.label);
             },
             function () {
                 OverSetTitle(" ");
@@ -97,7 +97,7 @@ function inventorySetup(items) {
 
         $("#item-" + index).hover(
             function () {
-                OverSetDesc(item.desc);
+                OverSetDesc(!!item.metadata.description ? item.metadata.description : item.label);
             },
             function () {
                 OverSetDesc(" ");
