@@ -20,6 +20,7 @@ Locales["it_lang"] = {
     weppickup           = "Arma raccolta",
     itempickup          = "Oggetto raccolto",
     itempickup2         = "Hai raccolto: ",
+    NotEnoughGold     = "You don`t have enough gold",
     TransactionLoading  = "Caricamento...",
     notenoughammo = "Non hai abbastanza munizioni",
     fullammoyou = "La persona non può trasportare più di quelle munizioni",
@@ -42,6 +43,12 @@ Locales["it_lang"] = {
     givemoney = "Dare soldi",
     dropmoney = "Butta soldi",
     givegold = "Dai oro",
-    dropgold = "Lascia cadere l'oro"
-  
+    dropgold = "Lascia cadere l'oro",
+    of = " of ",
+    yougive = "you gave ",
+    youreceive = "you received ",
+    unequip = "unequip",
+    use = "use",
+    give = "give",
+    drop = "drop"  
 }

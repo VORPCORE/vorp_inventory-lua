@@ -3,6 +3,7 @@
 --VORP inventory lua notifications
 
 Locales["fr_lang"] = {
+
     fullInventory     = "Vous portez trop de poids, vous ne pouvez rien recevoir d'autre",
     fullInventoryGive = "Cette personne porte trop de poids, vous ne pouvez pas lui donner plus de choses",
     fullInventoryWeapon = "Vous portez trop d'armes, vous ne pouvez rien recevoir d'autre",
@@ -19,6 +20,7 @@ Locales["fr_lang"] = {
     weppickup         = "Arme ramassée",
     itempickup        = "Article ramassé",
     itempickup2       = "Ramassé: ",
+    NotEnoughGold     = "You don`t have enough gold",
     TransactionLoading= "Attendez...",
     notenoughammo = "Vous n'avez pas assez de munitions",
     fullammoyou = "La personne ne peut plus transporter ces munitions",
@@ -41,5 +43,12 @@ Locales["fr_lang"] = {
     givemoney = "Donner de l'argent",
     dropmoney = "Déposer de l'argent",
     givegold = "Donner de l'or",
-    dropgold = "Laisser tomber l'or"
+    dropgold = "Laisser tomber l'or",
+    of = " of ",
+    yougive = "you gave ",
+    youreceive = "you received ",
+    unequip = "unequip",
+    use = "use",
+    give = "give",
+    drop = "drop"
 }

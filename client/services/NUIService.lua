@@ -497,7 +497,11 @@ NUIService.initiateData = function()
 		inventorygoldlabel =  _U("inventorygoldlabel"),
 		inventorygolddescription =  _U("inventorygolddescription"),
 		givegold = _U("givegold"),
-		dropgold = _U("dropgold")
+		dropgold = _U("dropgold"),
+		unequip = _U("unequip"),
+		use = _U("use"),
+		give = _U("give"),
+		drop = _U("drop")
 	}})
 end
 
