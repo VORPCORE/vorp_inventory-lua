@@ -48,7 +48,7 @@ function inventorySetup(items) {
                 }
             })
         }
-        if (item.usable) {
+        if (item.canUse) {
             data.push({
                 text: LANGUAGE.use,
                 action: function () {
