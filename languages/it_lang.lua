@@ -50,5 +50,7 @@ Locales["it_lang"] = {
     unequip = "unequip",
     use = "use",
     give = "give",
-    drop = "drop"  
+    drop = "drop",
+    cantweapons = "Non puoi portare altre armi",
+    cantweapons2 = "La persona ha già troppe pistole"
 }
