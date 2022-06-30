@@ -55,3 +55,19 @@ AddEventHandler("vorpCore:registerUsableItem", InventoryAPI.registerUsableItem)
 RegisterServerEvent("vorp_NewCharacter")
 AddEventHandler("vorp_NewCharacter", InventoryAPI.onNewCharacter)
 
+--#region Custom Inventory
+
+RegisterServerEvent("vorpCore:registerInventory")
+AddEventHandler("vorpCore:registerInventory", InventoryAPI.registerInventory)
+
+RegisterServerEvent("vorpCore:removeInventory")
+AddEventHandler("vorpCore:removeInventory", InventoryAPI.removeInventory)
+
+RegisterServerEvent("vorpCore:openInventory")
+AddEventHandler("vorpCore:openInventory", InventoryAPI.openInventory)
+
+RegisterServerEvent("vorpCore:closeInventory")
+AddEventHandler("vorpCore:closeInventory", InventoryAPI.closeInventory)
+
+--#endregion
+

@@ -1,5 +1,22 @@
 exports('vorp_inventoryApi',function()
     local self = {}
+
+    self.registerInventory = function(id, name)
+        
+    end
+
+    self.removeInventory = function(id)
+
+    end
+
+    self.openInventory = function(source, id)
+        
+    end
+
+    self.closeInventory = function(source, id)
+        
+    end
+
     self.subWeapon = function(source,weaponid)
         TriggerEvent("vorpCore:subWeapon",source,tonumber(weaponid))
     end

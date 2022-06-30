@@ -11,6 +11,12 @@ end
 
 -- OpenContainerInventory
 
+NUIService.OpenCustomInventory = function(name, id, inventory)
+	SetNuiFocus(true, true)
+	SendNUIMessage({ action = "display", type = "secondary", title = tostring(name), id = tostring(id), capacity = inventory })
+	InInventory = true
+end
+
 NUIService.OpenClanInventory = function(clanName, clanId, capacity)
 	SetNuiFocus(true, true)
 	SendNUIMessage({ action = "display", type = "clan", title = "" .. clanName .. "", clanid = clanId, capacity = capacity })

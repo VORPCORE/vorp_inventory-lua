@@ -21,6 +21,13 @@ AddEventHandler("vorp_inventory:CloseInv", NUIService.CloseInventory)
 RegisterNetEvent("vorp_inventory:OpenInv")
 AddEventHandler("vorp_inventory:OpenInv", NUIService.OpenInv)
 
+--#region Custom Inventory
+
+RegisterNetEvent("vorp_inventory:OpenCustomInv")
+AddEventHandler("vorp_inventory:OpenCustomInv", NUIService.OpenCustomInventory)
+
+--#endregion
+
 -- Horse Module
 RegisterNetEvent("vorp_inventory:OpenHorseInventory")
 AddEventHandler("vorp_inventory:OpenHorseInventory", NUIService.OpenHorseInventory)

@@ -1,6 +1,8 @@
 InventoryAPI = {}
 UsableItemsFunctions = {}
 local allplayersammo = {}
+CustomInventoryInfos = {}
+CustomInventories = {}
 
 local function contains(table, element)
 	if table ~= 0 then
@@ -768,4 +770,44 @@ InventoryAPI.onNewCharacter = function(playerId)
 
 		TriggerEvent("vorpCore:registerWeapon", playerId, key, receivedBullets)
 	end
+end
+
+InventoryAPI.registerInventory = function(id, name)
+	if CustomInventoryInfos[id] ~= nil then
+		return
+	end
+
+	CustomInventoryInfos[id] = {
+		name = name
+	}
+end
+
+InventoryAPI.removeInventory = function(id, name)
+	if CustomInventoryInfos[id] == nil then
+		return
+	end
+
+	CustomInventoryInfos[id] = nil
+	CustomInventories[id] = nil
+end
+
+InventoryAPI.openInventory = function(player, id)
+	local _source = player
+	if CustomInventoryInfos[id] == nil or CustomInventories[id] == nil then
+		return
+	end
+
+	local sourceCharacter = Core.getUser(_source).getUsedCharacter
+	local identifier = sourceCharacter.identifier
+
+	if CustomInventories[id][identifier] ~= nil then
+		TriggerClientEvent("vorp_inventory:OpenCustomInv", _source, CustomInventoryInfos[id])
+	end
+end
+
+InventoryAPI.closeInventory = function(player, id)
+	if CustomInventoryInfos[id] == nil then
+		return
+	end
+
 end
