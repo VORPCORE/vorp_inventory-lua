@@ -50,5 +50,7 @@ Locales["no_lang"] = {
     unequip = "unequip",
     use = "use",
     give = "give",
-    drop = "drop"
+    drop = "drop",
+    cantweapons = "Du kan ikke bære flere våpen",
+    cantweapons2 = "Personen har allerede for mange våpen"
 }
