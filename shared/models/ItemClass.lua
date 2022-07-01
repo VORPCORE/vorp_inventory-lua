@@ -1,6 +1,8 @@
+---@class Item
 Item = {}
 
 Item.id = nil
+Item.item = nil
 Item.name = nil
 Item.label = nil
 Item.type = nil
@@ -13,7 +15,7 @@ Item.limit = nil
 
 Item.weight = nil
 
-Item.canUse = false 
+Item.canUse = false
 Item.canRemove = false
 Item.desc = nil
 Item.dropOnDeath = false
@@ -146,7 +148,8 @@ end
 function Item:getDropOnDeath()
 	return self.dropOnDeath
 end
- 
+
+---@return Item
 function Item:New (t)
 	t = t or {}
 	setmetatable(t, self)

@@ -1,5 +1,20 @@
 DbService = {}
 
+DbService.GetInventory = function (charIdentifier, inventoryId, cb)
+    exports.ghmattimysql:execute("SELECT ic.id, i.item, ci.amount, ic.metadata, ci.created_at FROM items_crafted ic\
+		LEFT JOIN character_inventories ci on ic.id = ci.item_crafted_id\
+		LEFT JOIN items i on ic.item_id = i.id\
+		WHERE ci.inventory_type = @invType\
+		  AND ci.character_id = @charid;", {
+			['invType'] = inventoryId,
+			['charid'] = charIdentifier,
+		}, function (res)
+            if res ~= nil then
+                cb(res)
+            end
+        end)
+end
+
 DbService.GiveItem = function (giverCharIdentifier, receiverCharIdentifier, itemCraftedId)
     Log.print('Giving item to another player')
     exports.ghmattimysql:execute("UPDATE character_inventories SET character_id = @receiver WHERE character_id = @giver AND item_crafted_id = @itemid;", {
@@ -56,7 +71,8 @@ DbService.DeleteItem = function (sourceCharIdentifier, itemCraftedId)
     end)
 end
 
-DbService.CreateItem = function(sourceCharIdentifier, itemId, amount, metadata, cb)
+DbService.CreateItem = function(sourceCharIdentifier, itemId, amount, metadata, cb, invId)
+    invId = invId or "default"
     Log.print('Character[' .. tostring(sourceCharIdentifier) .. '] Create ' .. tostring(amount) .. 'x Item[' .. tostring(itemId) .. ']')
     exports.ghmattimysql:execute("INSERT INTO items_crafted (character_id, item_id, metadata) VALUES (@charid, @itemid, @metadata);", {
         ['charid'] = tonumber(sourceCharIdentifier),
@@ -69,13 +85,14 @@ DbService.CreateItem = function(sourceCharIdentifier, itemId, amount, metadata, 
             ['itemid'] = tonumber(itemId),
             ['metadata'] = json.encode(metadata) -- Check if need to json.encode().
         }, function (result)
-            if result ~= nil and result[1] ~= nil then
-                local item = result[1]
-                local itemCraftedId = item.id    
-                exports.ghmattimysql:execute("INSERT INTO character_inventories (character_id, item_crafted_id, amount) VALUES (@charid, @itemid, @amount);", {
+            if result ~= nil and result[#result] ~= nil then
+                local item = result[#result]
+                local itemCraftedId = item.id
+                exports.ghmattimysql:execute("INSERT INTO character_inventories (character_id, item_crafted_id, amount, inventory_type) VALUES (@charid, @itemid, @amount, @invId);", {
                     ['charid'] = tonumber(sourceCharIdentifier),
                     ['itemid'] = tonumber(itemCraftedId),
-                    ['amount'] = tonumber(amount)
+                    ['amount'] = tonumber(amount),
+                    ['invId'] = invId
                 }, function ()
                     cb({id = itemCraftedId})
                 end)

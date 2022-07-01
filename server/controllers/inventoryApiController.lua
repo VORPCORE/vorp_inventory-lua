@@ -63,11 +63,11 @@ AddEventHandler("vorpCore:registerInventory", InventoryAPI.registerInventory)
 RegisterServerEvent("vorpCore:removeInventory")
 AddEventHandler("vorpCore:removeInventory", InventoryAPI.removeInventory)
 
-RegisterServerEvent("vorpCore:openInventory")
-AddEventHandler("vorpCore:openInventory", InventoryAPI.openInventory)
+RegisterServerEvent("vorpCore:openCustomInventory")
+AddEventHandler("vorpCore:openCustomInventory", InventoryAPI.openCustomInventory)
 
-RegisterServerEvent("vorpCore:closeInventory")
-AddEventHandler("vorpCore:closeInventory", InventoryAPI.closeInventory)
+RegisterServerEvent("vorpCore:closeCustomInventory")
+AddEventHandler("vorpCore:closeCustomInventory", InventoryAPI.closeCustomInventory)
 
 --#endregion
 

@@ -97,7 +97,11 @@ function inventorySetup(items) {
 
         $("#item-" + index).hover(
             function () {
-                OverSetDesc(!!item.metadata.description ? item.metadata.description : item.label);
+                if (item.type !== "item_weapon") {
+                    OverSetDesc(!!item.desc ? item.desc : item.label);
+                } else {
+                    OverSetDesc(!!item.metadata.description ? item.metadata.description : item.label);
+                }
             },
             function () {
                 OverSetDesc(" ");

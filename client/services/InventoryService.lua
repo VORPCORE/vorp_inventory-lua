@@ -1,4 +1,4 @@
-DB_Items = {}
+svItems = {}
 InventoryService = {}
 UserWeapons = {}
 ---@class UserInventory: table<string, Item>
@@ -6,32 +6,23 @@ UserInventory = {}
 bulletsHash = {}
 
 InventoryService.receiveItem = function (name, id, amount, metadata)
-
+	print("receiving item " .. name)
 	if UserInventory[id] ~= nil then
 		UserInventory[id]:addCount(amount)
 	else
 		UserInventory[id] = Item:New({
 			id = id,
 			count = amount,
-			limit = DB_Items[name].limit,
-			label = DB_Items[name].label,
+			limit = svItems[name].limit,
+			label = svItems[name].label,
 			name = name,
-			metadata = SharedUtils.MergeTables(DB_Items[name].metadata, metadata),
+			metadata = SharedUtils.MergeTables(svItems[name].metadata, metadata),
 			type = "item_standard",
 			canUse = true,
-			canRemove = DB_Items[name].can_remove
+			canRemove = svItems[name].can_remove
 		})
 	end
-	
-	UserInventory[name] = Item:New({
-		count = amount,
-		limit = DB_Items[name].limit,
-	        label = DB_Items[name].label,
-		name = name,
-		type = "item_standard",
-		canUse = true,
-		canRemove = DB_Items[name].can_remove,
-	})
+
 	NUIService.LoadInv()
 end
 
@@ -46,6 +37,7 @@ InventoryService.removeItem = function (name, id, count, metadata)
 		item:quitCount(count)
 
 		if item:getCount() <= 0 then
+			print("removing item from inventory")
 			UserInventory[id] = nil
 		end
 
@@ -94,23 +86,15 @@ InventoryService.onSelectedCharacter = function (charId)
 end
 
 InventoryService.processItems = function (items)
-	DB_Items = {}
+	svItems = {}
 	for _, item in pairs(items) do
-		DB_Items[item.item] = {
-			item = item.item,
-			label = item.label,
-			limit = item.limit,
-			can_remove = item.can_remove,
-			type = item.type,
-			usable = item.usable,
-			metadata = item.metadata
-		}
+		svItems[item.item] = Item:New(item)
 	end
 end
 
 InventoryService.getLoadout = function (loadout)
 	for _, weapon in pairs(loadout) do
-		local weaponAmmo = json.decode(weapon.ammo)
+		local weaponAmmo = weapon.ammo
 
 		for type, amount in pairs(weaponAmmo) do
 			weaponAmmo[type] = tonumber(amount)
@@ -122,16 +106,18 @@ InventoryService.getLoadout = function (loadout)
 		if weapon.used == 1 then weaponUsed = true end
 		if weapon.used2 == 1 then weaponUsed2 = true end
 
-		if weapon.dropped == nil or weapon.dropped == 0 then
+		if weapon.currInv == "default" and (weapon.dropped == nil or weapon.dropped == 0) then
 			local newWeapon = Weapon:New({
 				id = tonumber(weapon.id),
 				identifier = weapon.identifier,
 				label = Utils.GetWeaponLabel(weapon.name),
 				name = weapon.name,
 				ammo = weaponAmmo,
+				components = weapon.components,
 				used = weaponUsed,
 				used2 = weaponUsed2,
-				desc = Utils.GetWeaponDesc(weapon.name)
+				desc = Utils.GetWeaponDesc(weapon.name),
+				currInv = weapon.curr_inv
 			})
 	
 			UserWeapons[newWeapon:getId()] = newWeapon
@@ -149,15 +135,15 @@ InventoryService.getInventory = function (inventory)
 		local inventoryItems = json.decode(inventory)
 
 		for _, item in pairs(inventoryItems) do
-			if DB_Items[item.item] ~= nil then
-				local dbItem = DB_Items[item.item]
+			if svItems[item.item] ~= nil then
+				local dbItem = svItems[item.item]
 				local itemAmount = tonumber(item.amount)
 				local itemLimit = tonumber(dbItem.limit)
 				local itemCreatedAt = item.created_at
 				local itemLabel = dbItem.label
-				local itemCanRemove = dbItem.can_remove
+				local itemCanRemove = dbItem.canRemove
 				local itemType = dbItem.type
-				local itemCanUse = dbItem.usable
+				local itemCanUse = dbItem.canUse
 				local itemDefaultMetadata = dbItem.metadata
 
 				local newItem = Item:New({

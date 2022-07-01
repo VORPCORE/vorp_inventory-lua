@@ -4,17 +4,25 @@ InInventory = false
 timerUse = 0
 
 NUIService.ReloadInventory = function(inventory)
+	print('reloading inventory')
 	SendNUIMessage(json.decode(inventory))
 	Wait(500)
 	NUIService.LoadInv()
 end
 
--- OpenContainerInventory
 
 NUIService.OpenCustomInventory = function(name, id, inventory)
 	SetNuiFocus(true, true)
-	SendNUIMessage({ action = "display", type = "secondary", title = tostring(name), id = tostring(id), capacity = inventory })
+	SendNUIMessage({ action = "display", type = "custom", title = tostring(name), id = tostring(id), capacity = inventory })
 	InInventory = true
+end
+
+NUIService.NUIMoveToCustom = function(obj)
+	TriggerServerEvent("vorp_inventory:MoveToCustom", json.encode(obj))
+end
+
+NUIService.NUITakeFromCustom = function(obj)
+	TriggerServerEvent("vorp_inventory:TakeFromCustom", json.encode(obj))
 end
 
 NUIService.OpenClanInventory = function(clanName, clanId, capacity)
@@ -458,6 +466,7 @@ NUIService.LoadInv = function()
 		table.insert(items, weapon)
 	end
 
+	print(json.encode(items))
 	payload.action = "setItems"
 	payload.itemList = items
 

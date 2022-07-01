@@ -56,10 +56,11 @@ end
 Citizen.CreateThread(function()
 	while true do
         Wait(1)
-        if not loaded then 
+        if not loaded then
             DisableControlAction(0, 0xC1989F95, true)
         else
-            Wait(500)
+            DisableControlAction(0, 0xC1989F95, false)
+            return
         end
     end
 end)
@@ -80,7 +81,7 @@ AddEventHandler("vorpinventory:loaded", function()
         action      = "updateammo",
         ammo = playerammo
     })
-    loaded = true 
+    loaded = true
 end)
 
 RegisterNetEvent("vorpinventory:updateuiammocount")

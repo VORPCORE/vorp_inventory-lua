@@ -1,12 +1,24 @@
-DB_Items = {}
-UsersInventories = {}
-UsersWeapons = {}
+---@alias sourceId string
+---@alias itemId string
+---@alias weaponId string
+---@alias invId string
+
+---@type table<invId, table<sourceId, table<itemId, Item>>>
+UsersInventories = {
+	default = {}
+}
+
+---@type table<invId, table<weaponId, Weapon>>
+UsersWeapons = {
+	default = {}
+}
+---@type table<string, Item>
 svItems = {}
 
-local LoadDatabase = function ()
+
+function LoadDatabase()
 	exports.ghmattimysql:execute('SELECT * FROM items', { }, function(result) 
 		if next(result) ~= nil then
-			DB_Items = result
 			for _, db_item in pairs(result) do
 				local item = Item:New({
 					id = db_item.id,
@@ -19,7 +31,7 @@ local LoadDatabase = function ()
 					canRemove = db_item.can_remove,
 				})
 				svItems[item.item] = item
-				--DB_Items[item.item] = item
+				--svItems[item.item] = item
 			end
 		end
 	end)
@@ -53,10 +65,15 @@ local LoadDatabase = function ()
 						components = comp,
 						used = used,
 						used2 = used2,
-						charId = charId
+						charId = charId,
+						currInv = db_weapon.curr_inv
 					})
 	
-					UsersWeapons[weapon:getId()] = weapon
+					if UsersWeapons[db_weapon.curr_inv] == nil then
+						UsersWeapons[db_weapon.curr_inv] = {}
+					end
+
+					UsersWeapons[db_weapon.curr_inv][weapon:getId()] = weapon
 				end
 			end
 		end

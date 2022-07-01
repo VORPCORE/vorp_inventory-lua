@@ -26,6 +26,16 @@ AddEventHandler("vorp_inventory:OpenInv", NUIService.OpenInv)
 RegisterNetEvent("vorp_inventory:OpenCustomInv")
 AddEventHandler("vorp_inventory:OpenCustomInv", NUIService.OpenCustomInventory)
 
+RegisterNetEvent("vorp_inventory:CloseCustomInv")
+AddEventHandler("vorp_inventory:CloseCustomInv", NUIService.CloseInv)
+
+RegisterNUICallback('TakeFromCustom', NUIService.NUITakeFromCustom)
+
+RegisterNUICallback('MoveToCustom', NUIService.NUIMoveToCustom)
+
+RegisterNetEvent("vorp_inventory:ReloadCustomInventory")
+AddEventHandler("vorp_inventory:ReloadCustomInventory", NUIService.ReloadInventory)
+
 --#endregion
 
 -- Horse Module

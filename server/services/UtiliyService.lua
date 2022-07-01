@@ -1,12 +1,15 @@
 SvUtils = {}
 local processingUser = {}
 
-SvUtils.FindItemByNameAndMetadata = function (identifier, name, metadata)
-    if UsersInventories[identifier] == nil then
+
+
+SvUtils.FindItemByNameAndMetadata = function (invId, identifier, name, metadata)
+    local userInventory = UsersInventories[invId][identifier]
+    if userInventory == nil then
         return nil
     end
     
-    for _, item in pairs(UsersInventories[identifier]) do
+    for _, item in pairs(userInventory) do
         if name == item:getName() and SharedUtils.Table_equals(metadata, item:getMetadata()) then
             return item
         end

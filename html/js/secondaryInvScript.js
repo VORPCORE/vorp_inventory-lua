@@ -1,4 +1,5 @@
 function initSecondaryInventoryHandlers() {
+    console.log("Init Items dragndrop handling")
     $('#inventoryElement').droppable({
         drop: function (event, ui) {
             itemData = ui.draggable.data("item");
@@ -6,7 +7,54 @@ function initSecondaryInventoryHandlers() {
 
 
 
-            if (type === "horse" && itemInventory === "second") {
+            if (type === "custom" && itemInventory === "second") {
+                disableInventory(500);
+                if (itemData.type != "item_weapon") {
+                    dialog.prompt({
+                        title: LANGUAGE.prompttitle,
+                        button: LANGUAGE.promptaccept,
+                        required: true,
+                        item: itemData,
+                        type: itemData.type,
+                        input: {
+                            type: "number",
+                            autofocus: "true"
+                        },
+
+                        validate: function (value, item, type) {
+                            if (!value) {
+                                dialog.close()
+                                return;
+                            }
+
+                            if (!isInt(value)) {
+                                return;
+                            }
+
+                            if (! isValidating) {
+                                processEventValidation();
+                                $.post("http://vorp_inventory/TakeFromCustom", JSON.stringify({
+                                    item: itemData,
+                                    type: type,
+                                    number: value,
+                                    id: customId
+                                }));
+                            }
+
+                        }
+                    });
+                } else {
+                    if (! isValidating) {
+                         processEventValidation();
+                        $.post("http://vorp_inventory/TakeFromCustom", JSON.stringify({
+                            item: itemData,
+                            type: itemData.type,
+                            number: 1,
+                            id: customId
+                        }));
+                    }
+                }
+            } else if (type === "horse" && itemInventory === "second") {
                 disableInventory(500);
                 if (itemData.type != "item_weapon") {
                     dialog.prompt({
@@ -234,7 +282,7 @@ function initSecondaryInventoryHandlers() {
                         }));
                     }
                 }
-
+                
             } else if (type === "clan" && itemInventory === "second") {
                 disableInventory(500);
                 if (itemData.type != "item_weapon") {
@@ -380,7 +428,54 @@ function initSecondaryInventoryHandlers() {
             itemInventory = ui.draggable.data("inventory");
 
 
-            if (type === "horse" && itemInventory === "main") {
+            if (type === "custom" && itemInventory === "main") {
+                disableInventory(500);
+                if (itemData.type != "item_weapon") {
+                    dialog.prompt({
+                        title: LANGUAGE.prompttitle,
+                        button: LANGUAGE.promptaccept,
+                        required: true,
+                        item: itemData,
+                        type: itemData.type,
+                        input: {
+                            type: "number",
+                            autofocus: "true"
+                        },
+                        validate: function (value, item, type) {
+                            if (!value) {
+                                dialog.close()
+                                return;
+                            }
+
+                            if (!isInt(value)) {
+                                return;
+                            }
+
+                            if (!isValidating) {
+                                processEventValidation();
+                                $.post("http://vorp_inventory/MoveToCustom", JSON.stringify({
+                                    item: itemData,
+                                    type: type,
+                                    number: value,
+                                    id: customId
+                                }));
+                            }
+                        }
+                    });
+                } else {
+                    if (!isValidating) {
+                        processEventValidation();
+                        $.post("http://vorp_inventory/MoveToCustom", JSON.stringify({
+                            item: itemData,
+                            type: itemData.type,
+                            number: 1,
+                            id: customId
+                        }));
+                }
+
+                }
+
+            } else if (type === "horse" && itemInventory === "main") {
                 disableInventory(500);
                 if (itemData.type != "item_weapon") {
                     dialog.prompt({
@@ -758,11 +853,19 @@ function secondInventorySetup(items) {
     $.each(items, function (index, item) {
         count = item.count;
 
-        $("#secondInventoryElement").append("<div data-label='" + item.label +
+        if (item.type !== "item_weapon") {
+            $("#secondInventoryElement").append("<div data-label='" + item.label +
             "' style='background-image: url(\"img/items/" + item.name.toLowerCase() +
             ".png\"), url(); background-size: 90px 90px, 90px 90px; background-repeat: no-repeat; background-position: center;' id='item-" +
             index + "' class='item'><div class='count'>" + count +
             "</div><div class='text'></div></div>")
+        } else {
+            $("#secondInventoryElement").append("<div data-label='" + item.label +
+            "' style='background-image: url(\"img/items/" + item.name.toLowerCase() +
+            ".png\"), url(); background-size: 90px 90px, 90px 90px; background-repeat: no-repeat; background-position: center;' id='item-" +
+            index + "' class='item'></div></div>")
+        }
+
         $('#item-' + index).data('item', item);
         $('#item-' + index).data('inventory', "second");
 
@@ -773,8 +876,12 @@ function secondInventorySetup(items) {
             function () {
                 OverSetTitleSecond(" ");
             },
-            function () {
-                OverSetDesc(item.desc);
+            function() {
+                if (item.type !== "item_weapon") {
+                    OverSetDesc(!!item.desc ? item.desc : item.label);
+                } else {
+                    OverSetDesc(!!item.metadata.description ? item.metadata.description : item.label);
+                }
             },
             function () {
                 OverSetDesc(" ");

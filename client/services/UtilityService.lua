@@ -66,11 +66,11 @@ Utils.addItems = function(name, id, amount)
 			id = id,
 			count = amount,
 			name = name,
-			limit = DB_Items[name].limit,
-			label = DB_Items[name].label,
+			limit = svItems[name].limit,
+			label = svItems[name].label,
 			type = "item_standard",
 			canUse = true,
-			canRemove = DB_Items[name].can_remove,
+			canRemove = svItems[name].can_remove,
 		})
 	end
 end
@@ -131,8 +131,8 @@ end
 
 function Utils.GetHashreadableLabel(hash, weaponId)
 	if weaponId <= 1 then
-		if DB_Items[hash] ~= nil then
-			return DB_Items[hash].label
+		if svItems[hash] ~= nil then
+			return svItems[hash].label
 		end
 		return hash
 	else
