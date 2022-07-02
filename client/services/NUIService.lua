@@ -230,12 +230,13 @@ NUIService.NUIGiveItem = function(obj)
 	local data2 = Utils.expandoProcessing(data.data)
 
 	for _, player in pairs(nearestPlayers) do
-		if player ~= PlayerId() then
+		--if player ~= PlayerId() then
 			if GetPlayerServerId(player) == tonumber(data.player) then
 				local itemName = data2.item
 				local itemId = data2.id
 				local metadata = data2.metadata
 				local target = tonumber(data.player)
+				print(data2.type)
 
 				if data2.type == "item_money" then
 					if isProcessingPay then return end
@@ -255,7 +256,7 @@ NUIService.NUIGiveItem = function(obj)
 					if amount > 0 and maxcount >= amount then 
 						TriggerServerEvent("vorpinventory:servergiveammo", ammotype, amount, target,maxcount)
 					end
-				elseif tonumber(data2.id) == 0 then
+				elseif data2.type == "item_standard" then
 					local amount = tonumber(data2.count)
 					local item =  UserInventory[itemId]
 					
@@ -271,7 +272,7 @@ NUIService.NUIGiveItem = function(obj)
 
 				NUIService.LoadInv()
 			end
-		end
+		--end
 	end
 end
 

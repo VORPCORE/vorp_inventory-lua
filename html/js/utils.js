@@ -156,6 +156,7 @@ function dropGetHowMany(item, type, hash, id, metadata) {
                     } 
                 $.post("http://vorp_inventory/DropItem", JSON.stringify({
                     item: item,
+                    id: id,
                     type: type,
                     number: value,
                     metadata: metadata
@@ -197,6 +198,7 @@ function giveGetHowMany(item, type, hash, id, metadata) {
                     type: type,
                     what: "give",
                     item: item,
+                    id: id,
                     count: value,
                     metadata: metadata
                 }));

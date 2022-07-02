@@ -665,14 +665,14 @@ InventoryService.GiveItem = function(itemId, amount, target)
 		--NOTIFY
 
 		TriggerClientEvent("vorp:TipRight", _source, "you gave " .. amount .. " of " .. ItemsLabel, 2000)
-		TriggerClientEvent("vorp:TipRight", _target, "you gave " .. amount .. " of " .. ItemsLabel, 2000)
+		TriggerClientEvent("vorp:TipRight", _target, "you received " .. amount .. " " .. ItemsLabel, 2000)
 		TriggerEvent("vorpinventory:itemlog", _source, _target, itemName, amount)
 		SvUtils.Trem(_source)
 	end
 
 	if targetItem ~= nil then
 		targetItem:addCount(amount)
-		DbService.SetItemAmount(targetCharIdentifier, targetItem:getId(), target:getCount())
+		DbService.SetItemAmount(targetCharIdentifier, targetItem:getId(), targetItem:getCount())
 		updateClient()
 	else
 		if svItems[itemName] ~= nil then
