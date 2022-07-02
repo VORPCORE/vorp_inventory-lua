@@ -1,6 +1,44 @@
 SvUtils = {}
 local processingUser = {}
 
+SvUtils.FindAllWeaponsByName = function (invId, identifier, name)
+    local userWeapons = UsersWeapons[invId]
+	local weapons = {}
+
+    if userWeapons == nil then
+        return {}
+    end
+
+    for _, weapon in pairs(userWeapons) do
+        if name == weapon:getName() then
+            weapons[#weapons+1] = weapons
+        end
+    end
+    return weapons
+end
+
+SvUtils.FindAllItemsByName = function (invId, identifier, name)
+    local userInventory = nil
+	local items = {}
+
+	if CustomInventoryInfos[invId].shared then
+		userInventory = UsersInventories[invId]
+	else
+		userInventory = UsersInventories[invId][identifier]
+	end
+
+    if userInventory == nil then
+        return {}
+    end
+
+    for _, item in pairs(userInventory) do
+        if name == item:getName() then
+            items[#items+1] = item
+        end
+    end
+    return items
+end
+
 
 
 SvUtils.FindItemByNameAndMetadata = function (invId, identifier, name, metadata)

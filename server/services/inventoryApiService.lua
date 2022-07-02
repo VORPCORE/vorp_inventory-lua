@@ -5,7 +5,9 @@ CustomInventoryInfos = {
 	default = {
 		name= "Satchel",
 		limit = Config.MaxItemsInInventory.Items,
-		shared = false
+		shared = false,
+		---@type table<string, integer>
+		limitedItems = {}
 	}
 }
 
@@ -785,11 +787,17 @@ InventoryAPI.registerInventory = function(id, name, limit, acceptWeapons, shared
 		name = name,
 		limit = limit,
 		acceptWeapons = acceptWeapons,
-		shared = shared
+		shared = shared,
+		limitedItems = {}
 	}
 	UsersInventories[id] = {}
 	if UsersWeapons[id] == nil then
 		UsersWeapons[id] = {}
+	end
+
+	if Config.Debug then
+		Wait(9000) -- so it doesn't print everywhere in the console
+		Log.print("Custom inventory[^3" .. id .. "^7] ^2Registered!^7")
 	end
 end
 
@@ -801,6 +809,24 @@ InventoryAPI.removeInventory = function(id, name)
 	CustomInventoryInfos[id] = nil
 	UsersInventories[id] = nil
 	UsersWeapons[id] = nil
+
+	if Config.Debug then
+		Wait(9000) -- so it doesn't print everywhere in the console
+		Log.print("Custom inventory[^3" .. id .. "^7] ^2Removed!^7")
+	end
+end
+
+InventoryAPI.setCustomInventoryItemLimit = function(id, itemName, limit)
+	if CustomInventoryInfos[id] == nil or itemName == nil or limit == nil then
+		return
+	end
+
+	CustomInventoryInfos[id].limitedItems[itemName] = limit
+
+	if Config.Debug then
+		Wait(9000) -- so it doesn't print everywhere in the console
+		Log.print("Custom inventory[^3" .. id .. "^7] set item[^3" .. itemName .. "^7] limit to ^2" .. limit .. "^7")
+	end
 end
 
 InventoryAPI.reloadInventory = function(player, id)
@@ -862,7 +888,6 @@ InventoryAPI.openCustomInventory = function(player, id)
 	local capacity = CustomInventoryInfos[id].limit > 0 and tostring(CustomInventoryInfos[id].limit) or 'oo'
 
 	if CustomInventoryInfos[id].shared then
-		print("opening shared inventory")
 		if  UsersInventories[id] ~= nil and #UsersInventories[id] > 0 then
 			TriggerClientEvent("vorp_inventory:OpenCustomInv", _source, CustomInventoryInfos[id].name, id, capacity)
 			InventoryAPI.reloadInventory(_source, id)

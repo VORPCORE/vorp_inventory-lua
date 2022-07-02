@@ -17,6 +17,15 @@ exports('vorp_inventoryApi',function()
         TriggerEvent("vorpCore:closeCustomInventory", source, id)
     end
 
+    self.setInventoryItemLimit = function(id, itemName, limit)
+        TriggerEvent("vorpCore:setInventoryItemLimit", id, itemName, limit)
+    end
+
+    self.setInventoryWeaponLimit = function(id, weaponName, limit) -- same event as setInventoryItemLimit
+        TriggerEvent("vorpCore:setInventoryItemLimit", id, weaponName, limit)
+    end
+
+
     self.subWeapon = function(source,weaponid)
         TriggerEvent("vorpCore:subWeapon",source,tonumber(weaponid))
     end

@@ -69,5 +69,8 @@ AddEventHandler("vorpCore:openCustomInventory", InventoryAPI.openCustomInventory
 RegisterServerEvent("vorpCore:closeCustomInventory")
 AddEventHandler("vorpCore:closeCustomInventory", InventoryAPI.closeCustomInventory)
 
+RegisterServerEvent("vorpCore:setInventoryItemLimit")
+AddEventHandler("vorpCore:setInventoryItemLimit", InventoryAPI.setCustomInventoryItemLimit)
+
 --#endregion
 

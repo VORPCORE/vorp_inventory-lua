@@ -288,7 +288,6 @@ InventoryService.addItem = function(target, invId, name, amount, metadata, cb)
 		if item ~= nil then
 			if amount > 0 then
 				item:addCount(amount)
-				print(item:getOwner())
 				DbService.SetItemAmount(item:getOwner(), item:getId(), item:getCount())
 				cb(item)
 				return
@@ -860,25 +859,52 @@ InventoryService.getInventoryTotalCount = function(identifier, charIdentifier, i
 	return userTotalItemCount
 end
 
-InventoryService.canStoreItem = function(identifier, charIdentifier, invId, name, metadata, amount)
+InventoryService.canStoreWeapon = function(identifier, charIdentifier, invId, name, amount)
 	local invData = CustomInventoryInfos[invId]
-	if svItems[name]:getLimit() ~= -1 then
-		local item = SvUtils.FindItemByNameAndMetadata(invId, identifier, name, metadata)
 
-		if item ~= nil then
-			--local sourceItemCount = UsersInventories[identifier][name]:GetCount()
-			local totalAmount = amount + item:getCount()
+	if invData.limit > 0 then
+		local sourceInventoryItemCount = InventoryService.getInventoryTotalCount(identifier, charIdentifier, invId)
+		sourceInventoryItemCount = sourceInventoryItemCount + amount
 
-			if svItems[item.name]:getLimit() < totalAmount then
-				return false
-			end
+		if sourceInventoryItemCount > invData.limit then
+			return false
 		end
+	end
 
-		if invData.limit > 0 then
-			local sourceInventoryItemCount = InventoryService.getInventoryTotalCount(identifier, charIdentifier, invId)
-			sourceInventoryItemCount = sourceInventoryItemCount + amount
+	if invData.limitedItems[name] ~= nil then
+		local weapons = SvUtils.FindAllWeaponsByName(invId, identifier, name)
+		local weaponCount = #weapons + amount
 
-			if sourceInventoryItemCount > invData.limit then
+		if weaponCount > invData.limitedItems[name] then
+			return false
+		end
+	end
+	return true
+end
+
+InventoryService.canStoreItem = function(identifier, charIdentifier, invId, name, amount)
+	local invData = CustomInventoryInfos[invId]
+
+	if invData.limit > 0 then
+		local sourceInventoryItemCount = InventoryService.getInventoryTotalCount(identifier, charIdentifier, invId)
+		sourceInventoryItemCount = sourceInventoryItemCount + amount
+
+		if sourceInventoryItemCount > invData.limit then
+			return false
+		end
+	end
+
+	if invData.limitedItems[name] ~= nil then
+		local items = SvUtils.FindAllItemsByName(invId, identifier, name)
+
+		if #items ~= 0 then
+			local itemCount = 0
+			for _, item in pairs(items) do
+				itemCount = itemCount + item:getCount()
+			end
+			local totalAmount = amount + itemCount
+
+			if totalAmount > invData.limitedItems[name] then
 				return false
 			end
 		end
@@ -899,7 +925,7 @@ InventoryService.MoveToCustom = function(obj)
 
 	if item.type == "item_weapon" then
 		if CustomInventoryInfos[invId].acceptWeapons then
-			if InventoryService.getInventoryTotalCount(sourceIdentifier, sourceCharIdentifier, invId) < CustomInventoryInfos[invId].limit then
+			if InventoryService.canStoreWeapon(sourceIdentifier, sourceCharIdentifier, invId, item.name, amount) then
 				exports.ghmattimysql:execute("UPDATE loadout SET curr_inv = @invId WHERE charidentifier = @charid AND id = @weaponId;", {
 					['invId'] = invId,
 					['charid'] = sourceCharIdentifier,
@@ -919,7 +945,7 @@ InventoryService.MoveToCustom = function(obj)
 			-- Print Error Client Side: Can't store weapon here
 		end
 	else
-		if InventoryService.canStoreItem(sourceIdentifier, sourceCharIdentifier, invId, item.name, item.metadata, amount) then
+		if InventoryService.canStoreItem(sourceIdentifier, sourceCharIdentifier, invId, item.name, amount) then
 			InventoryService.subItem(_source, "default", item.id, amount)
 			TriggerClientEvent("vorpInventory:removeItem", _source, item.name, item.id, amount)
 			InventoryService.addItem(_source, invId, item.name, amount, item.metadata, function (itemAdded)
