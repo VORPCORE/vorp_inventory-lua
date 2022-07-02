@@ -37,5 +37,5 @@
 
 ## Credits
 - To [Val3ro](https://github.com/Val3ro) for the initial work.
-- to [Emolitt](https://github.com/Emolitt) and [Outsider](https://github.com/outsider31000) for finishing/testing.   
+- to [Emolitt](https://github.com/RomainJolidon) and [Outsider](https://github.com/outsider31000) for finishing/testing.   
 - Credits to Vorp Team for creating the C# version and [Local9](https://github.com/Local9).
