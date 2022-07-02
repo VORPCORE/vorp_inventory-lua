@@ -230,7 +230,7 @@ NUIService.NUIGiveItem = function(obj)
 	local data2 = Utils.expandoProcessing(data.data)
 
 	for _, player in pairs(nearestPlayers) do
-		--if player ~= PlayerId() then
+		if player ~= PlayerId() then
 			if GetPlayerServerId(player) == tonumber(data.player) then
 				local itemName = data2.item
 				local itemId = data2.id
@@ -272,7 +272,7 @@ NUIService.NUIGiveItem = function(obj)
 
 				NUIService.LoadInv()
 			end
-		--end
+		end
 	end
 end
 

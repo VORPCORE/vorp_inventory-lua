@@ -307,7 +307,7 @@ InventoryAPI.LoadAllAmmo = function()
 		if next(ammo) ~= nil then
 			for k, v in pairs(ammo) do
 				local ammocount = tonumber(v)
-				if ammocount > 0 then
+				if ammocount ~= nil and ammocount > 0 then
 					TriggerClientEvent("vorpCoreClient:addBullets", _source, k, ammocount)
 				end
 			end

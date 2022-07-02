@@ -713,7 +713,6 @@ InventoryService.GiveItem = function(itemId, amount, target)
 			end
 		end
 
-		InventoryAPI.SaveInventoryItemsSupport(_target)
 		item:quitCount(amount)
 
 		if item:getCount() == 0 then
