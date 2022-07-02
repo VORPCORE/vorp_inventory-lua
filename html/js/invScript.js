@@ -88,7 +88,7 @@ function inventorySetup(items) {
 
         $("#item-" + index).hover(
             function () {
-                OverSetDesc(item.label);
+                OverSetTitle(item.label);
             },
             function () {
                 OverSetTitle(" ");
@@ -98,9 +98,9 @@ function inventorySetup(items) {
         $("#item-" + index).hover(
             function () {
                 if (item.type !== "item_weapon") {
-                    OverSetDesc(!!item.desc ? item.desc : item.label);
-                } else {
                     OverSetDesc(!!item.metadata.description ? item.metadata.description : item.label);
+                } else {
+                    OverSetDesc(!!item.desc ? item.desc : item.label);
                 }
             },
             function () {

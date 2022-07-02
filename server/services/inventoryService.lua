@@ -821,44 +821,94 @@ InventoryService.getInventory = function()
 	end
 end
 
+InventoryService.getInventoryTotalCount = function(identifier, charIdentifier, invId)
+	invId = invId ~= nil and invId or "default"
+	local userTotalItemCount = 0
+	local userInventory = UsersInventories[invId][identifier]
+	local userWeapons = UsersWeapons[invId]
+	for _, item in pairs(userInventory) do
+		userTotalItemCount = userTotalItemCount + item:getCount()
+	end
+	for _, weapon in pairs(userWeapons) do
+		if weapon.charId == charIdentifier then
+			userTotalItemCount = userTotalItemCount + 1
+		end
+	end
+	return userTotalItemCount
+end
+
+InventoryService.canStoreItem = function(identifier, charIdentifier, invId, name, metadata, amount)
+	local invData = CustomInventoryInfos[invId]
+	if svItems[name]:getLimit() ~= -1 then
+		local item = SvUtils.FindItemByNameAndMetadata(invId, identifier, name, metadata)
+
+		if item ~= nil then
+			--local sourceItemCount = UsersInventories[identifier][name]:GetCount()
+			local totalAmount = amount + item:getCount()
+
+			if svItems[item.name]:getLimit() < totalAmount then
+				return false
+			end
+		end
+
+		if invData.limit > 0 then
+			local sourceInventoryItemCount = InventoryService.getInventoryTotalCount(identifier, charIdentifier, invId)
+			sourceInventoryItemCount = sourceInventoryItemCount + amount
+
+			if sourceInventoryItemCount > invData.limit then
+				return false
+			end
+		end
+	end
+	return true
+end
+
 InventoryService.MoveToCustom = function(obj)
 	local _source = source
 	local data = json.decode(obj)
 	local invId = tostring(data.id)
 	local item = data.item
-	local count = tonumber(data.number)
+	local amount = tonumber(data.number)
 
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local sourceIdentifier = sourceCharacter.identifier
 	local sourceCharIdentifier = sourceCharacter.charIdentifier
 
-	-- Check item amount
-	-- Check if other canCarryItems
-	-- Check if other canCarryItem
-	-- Weapon do we consider the weapon as an item ?
 	if item.type == "item_weapon" then
-		exports.ghmattimysql:execute("UPDATE loadout SET curr_inv = @invId WHERE charidentifier = @charid AND id = @weaponId;", {
-			['invId'] = invId,
-			['charid'] = sourceCharIdentifier,
-			['weaponId'] = item.id,
-		})
+		if CustomInventoryInfos[invId].acceptWeapons then
+			if InventoryService.getInventoryTotalCount(sourceIdentifier, sourceCharIdentifier, invId) < CustomInventoryInfos[invId].limit then
+				exports.ghmattimysql:execute("UPDATE loadout SET curr_inv = @invId WHERE charidentifier = @charid AND id = @weaponId;", {
+					['invId'] = invId,
+					['charid'] = sourceCharIdentifier,
+					['weaponId'] = item.id,
+				})
 
-		UsersWeapons["default"][item.id]:SetCurrInv(invId)
-		UsersWeapons[invId][item.id] = UsersWeapons["default"][item.id]
-		UsersWeapons["default"][item.id] = nil
+				UsersWeapons["default"][item.id]:setCurrInv(invId)
+				UsersWeapons[invId][item.id] = UsersWeapons["default"][item.id]
+				UsersWeapons["default"][item.id] = nil
 
-		TriggerClientEvent("vorpCoreClient:subWeapon", _source, item.id)
-		InventoryAPI.reloadInventory(_source, invId)
-	else
-		InventoryService.subItem(_source, "default", item.id, count)
-		TriggerClientEvent("vorpInventory:removeItem", _source, item.name, item.id, count)
-		InventoryService.addItem(_source, invId, item.name, count, item.metadata, function (itemAdded)
-			print(itemAdded)
-			if itemAdded == nil then
-				return
+				TriggerClientEvent("vorpCoreClient:subWeapon", _source, item.id)
+				InventoryAPI.reloadInventory(_source, invId)
+			else
+				TriggerClientEvent("vorp:TipRight", _source, _U("fullInventory"), 2000)
 			end
-			InventoryAPI.reloadInventory(_source, invId)
-		end)
+		else
+			-- Print Error Client Side: Can't store weapon here
+		end
+	else
+		if InventoryService.canStoreItem(sourceIdentifier, sourceCharIdentifier, invId, item.name, item.metadata, amount) then
+			InventoryService.subItem(_source, "default", item.id, amount)
+			TriggerClientEvent("vorpInventory:removeItem", _source, item.name, item.id, amount)
+			InventoryService.addItem(_source, invId, item.name, amount, item.metadata, function (itemAdded)
+				print(itemAdded)
+				if itemAdded == nil then
+					return
+				end
+				InventoryAPI.reloadInventory(_source, invId)
+			end)
+		else
+			TriggerClientEvent("vorp:TipRight", _source, _U("fullInventory"), 2000)
+		end
 	end
 end
 
@@ -867,7 +917,7 @@ InventoryService.TakeFromCustom = function(obj)
 	local data = json.decode(obj)
 	local invId = tostring(data.id)
 	local item = data.item
-	local count = tonumber(data.number)
+	local amount = tonumber(data.number)
 
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local sourceIdentifier = sourceCharacter.identifier
@@ -878,26 +928,38 @@ InventoryService.TakeFromCustom = function(obj)
 	-- Check if default canCarryItem
 
 	if item.type == "item_weapon" then
-		exports.ghmattimysql:execute("UPDATE loadout SET curr_inv = 'default' WHERE charidentifier = @charid AND id = @weaponId;", {
-			['charid'] = sourceCharIdentifier,
-			['weaponId'] = item.id,
-		})
-		UsersWeapons[invId][item.id]:SetCurrInv("default")
-		UsersWeapons["default"][item.id] = UsersWeapons[invId][item.id]
-		UsersWeapons[invId][item.id] = nil
-
-		local weapon = UsersWeapons["default"][item.id]
-
-		TriggerClientEvent("vorpInventory:receiveWeapon", _source, item.id, weapon:getPropietary(), weapon:getName(), weapon:getAllAmmo())
-		InventoryAPI.reloadInventory(_source, invId)
-	else
-		InventoryService.subItem(_source, invId, item.id, count)
-		InventoryService.addItem(_source, "default", item.name, count, item.metadata, function (itemAdded)
-			if itemAdded == nil then
-				return
+		InventoryAPI.canCarryAmountWeapons(_source, 1, function(res)
+			if res then
+				exports.ghmattimysql:execute("UPDATE loadout SET curr_inv = 'default' WHERE charidentifier = @charid AND id = @weaponId;", {
+					['charid'] = sourceCharIdentifier,
+					['weaponId'] = item.id,
+				})
+				UsersWeapons[invId][item.id]:setCurrInv("default")
+				UsersWeapons["default"][item.id] = UsersWeapons[invId][item.id]
+				UsersWeapons[invId][item.id] = nil
+		
+				local weapon = UsersWeapons["default"][item.id]
+		
+				TriggerClientEvent("vorpInventory:receiveWeapon", _source, item.id, weapon:getPropietary(), weapon:getName(), weapon:getAllAmmo())
+				InventoryAPI.reloadInventory(_source, invId)
+			else
+				TriggerClientEvent("vorp:TipRight", _source, _U("fullInventory"), 2000)
 			end
-			TriggerClientEvent("vorpInventory:receiveItem", _source, item.name, itemAdded:getId(), count, itemAdded:getMetadata())
-			InventoryAPI.reloadInventory(_source, invId)
 		end)
+	else
+		InventoryAPI.canCarryItem(_source, item.name, amount, function (res)
+			if res then
+				InventoryService.subItem(_source, invId, item.id, amount)
+				InventoryService.addItem(_source, "default", item.name, amount, item.metadata, function (itemAdded)
+					if itemAdded == nil then
+						return
+					end
+					TriggerClientEvent("vorpInventory:receiveItem", _source, item.name, itemAdded:getId(), amount, itemAdded:getMetadata())
+					InventoryAPI.reloadInventory(_source, invId)
+				end)
+			else
+				TriggerClientEvent("vorp:TipRight", _source, _U("fullInventory"), 2000)
+			end
+		end, item.metadata)
 	end
 end

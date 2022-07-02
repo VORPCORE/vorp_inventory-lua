@@ -22,6 +22,10 @@ function OverSetDesc(title) {
     document.getElementById("description").innerHTML = title;
 }
 
+function OverSetDescSecond(desc) {
+    document.getElementById("description2").innerHTML = desc;
+}
+
 function secondarySetTitle(title) {
     document.getElementById("titleHorse").innerHTML = title;
 }

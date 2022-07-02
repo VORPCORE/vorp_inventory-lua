@@ -1,5 +1,4 @@
 function initSecondaryInventoryHandlers() {
-    console.log("Init Items dragndrop handling")
     $('#inventoryElement').droppable({
         drop: function (event, ui) {
             itemData = ui.draggable.data("item");
@@ -875,16 +874,19 @@ function secondInventorySetup(items) {
             },
             function () {
                 OverSetTitleSecond(" ");
-            },
+            }
+        );
+
+        $("#item-" + index).hover(
             function() {
                 if (item.type !== "item_weapon") {
-                    OverSetDesc(!!item.desc ? item.desc : item.label);
+                    OverSetDescSecond(!!item.metadata.description ? item.metadata.description : item.label);
                 } else {
-                    OverSetDesc(!!item.metadata.description ? item.metadata.description : item.label);
+                    OverSetDescSecond(!!item.desc ? item.desc : item.label);
                 }
             },
-            function () {
-                OverSetDesc(" ");
+            function() {
+                OverSetDescSecond(" ");
             }
         );
 

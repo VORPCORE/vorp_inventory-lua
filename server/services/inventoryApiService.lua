@@ -1,7 +1,12 @@
 InventoryAPI = {}
 UsableItemsFunctions = {}
 local allplayersammo = {}
-CustomInventoryInfos = {}
+CustomInventoryInfos = {
+	default = {
+		name= "Satchel",
+		limit = Config.MaxItemsInInventory.Items,
+	}
+}
 
 local function contains(table, element)
 	if table ~= 0 then
@@ -765,16 +770,22 @@ InventoryAPI.onNewCharacter = function(playerId)
 	end
 end
 
-InventoryAPI.registerInventory = function(id, name)
+InventoryAPI.registerInventory = function(id, name, limit, acceptWeapons)
+	limit = limit ~= nil and limit or -1
+	acceptWeapons = acceptWeapons ~= nil and acceptWeapons or true
 	if CustomInventoryInfos[id] ~= nil then
 		return
 	end
 
 	CustomInventoryInfos[id] = {
-		name = name
+		name = name,
+		limit = limit,
+		acceptWeapons = acceptWeapons
 	}
 	UsersInventories[id] = {}
-	UsersWeapons[id] = {}
+	if UsersWeapons[id] == nil then
+		UsersWeapons[id] = {}
+	end
 end
 
 InventoryAPI.removeInventory = function(id, name)
@@ -788,7 +799,6 @@ InventoryAPI.removeInventory = function(id, name)
 end
 
 InventoryAPI.reloadInventory = function(player, id)
-	print("reloading inventory " .. id)
 	local _source = player
 
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
@@ -822,7 +832,7 @@ InventoryAPI.reloadInventory = function(player, id)
 		action = "setSecondInventoryItems"
 	}
 
-	print(json.encode(itemList))
+	--print(json.encode(itemList))
 
 	TriggerClientEvent("vorp_inventory:ReloadCustomInventory", _source, json.encode(payload))
 end
@@ -836,10 +846,11 @@ InventoryAPI.openCustomInventory = function(player, id)
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local identifier = sourceCharacter.identifier
 	local charIdentifier = sourceCharacter.charIdentifier
+	local capacity = CustomInventoryInfos[id].limit > 0 and tostring(CustomInventoryInfos[id].limit) or 'oo'
 
 	if UsersInventories[id][identifier] ~= nil then
-		TriggerClientEvent("vorp_inventory:ReloadCustomInv", _source, json.encode(UsersInventories[id][identifier]))
-		TriggerClientEvent("vorp_inventory:OpenCustomInv", _source, CustomInventoryInfos[id].name, id, UsersInventories[id][identifier])
+		TriggerClientEvent("vorp_inventory:OpenCustomInv", _source, CustomInventoryInfos[id].name, id, capacity)
+		InventoryAPI.reloadInventory(_source, id)
 	else
 		DbService.GetInventory(charIdentifier, id, function(inventory)
 			local characterInventory = {}
@@ -861,8 +872,8 @@ InventoryAPI.openCustomInventory = function(player, id)
 				end
 			end
 			UsersInventories[id][identifier] = characterInventory
+			TriggerClientEvent("vorp_inventory:OpenCustomInv", _source, CustomInventoryInfos[id].name, id, capacity)
 			InventoryAPI.reloadInventory(_source, id)
-			TriggerClientEvent("vorp_inventory:OpenCustomInv", _source, CustomInventoryInfos[id].name, id, characterInventory)
 		end)
 	end
 end

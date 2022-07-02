@@ -5,12 +5,25 @@
 Config = {
 
   Debug = true, -- if your server is live set this to false.  to true only if you are testing things
-  DevMode = false, -- if your server is live set this to false.  to true only if you are testing things (auto load inventory when script restart and before character selection. Alos add /getInv command)
+  DevMode = true, -- if your server is live set this to false.  to true only if you are testing things (auto load inventory when script restart and before character selection. Alos add /getInv command)
 
   defaultlang = "en_lang",
 
+  -- items that dont get added up torwards your max weapon count 
+  notweapons = {
+    "WEAPON_KIT_BINOCULARS_IMPROVED",
+    "WEAPON_KIT_BINOCULARS",
+    "WEAPON_FISHINGROD",
+    "WEAPON_KIT_CAMERA",
+    "WEAPON_kIT_CAMERA_ADVANCED",
+    "WEAPON_MELEE_LANTERN",
+    "WEAPON_MELEE_DAVY_LANTERN",
+    "WEAPON_MELEE_LANTERN_HALLOWEEN",
+    "WEAPON_KIT_METAL_DETECTOR",
+    "WEAPON_MELEE_HAMMER",
+  },
   -- GOLD ITEM LIKE DOLLARS
-  UseGoldItem = true, -- IF TRUE YOU HAVE GOLD IN INVENTORY LIKE DOLLARS
+  UseGoldItem = false, -- IF TRUE YOU HAVE GOLD IN INVENTORY LIKE DOLLARS
   -- CHANGE IN html/js/config.js TOO !!!
 
   -- DEATH FUNCTIONS
@@ -22,10 +35,10 @@ Config = {
   --RMB mouse PROMPT PICKUP
   PickupKey = 0xF84FA74F,
 
-  -- LOGS 
+  -- LOGS
   webhookavatar = "https://cdn3.iconfinder.com/data/icons/hand/500/Hand_give_thumbs_finger-512.png",
-  webhook = "https://discord.com/api/webhooks/952537644259221544/EdqpLMoDJJx0b-eXJJn3m4cOUhktW21YY2nr-8pq8XEbsMZYEYbL8t6LO5dIzavr9tzE",
-  discordid = false, -- turn to true if ur using discord whitelist
+  webhook = "",
+  discordid = true, -- turn to true if ur using discord whitelist
 
   -- WEBHOOK LANGUAGE
   Language = {
@@ -37,16 +50,16 @@ Config = {
 
   -- NEED TO TEST
   DropOnRespawn = {
-    Money   = true,
+    Money   = false,
     Gold    = false, -- TRUE ONLY IF UseGoldItem = true
-    Weapons = true,
-    Items   = true
+    Weapons = false,
+    Items   = false
   },
 
   -- HOW MANY WEAPONS AND ITEMS ALLOWED PER PLAYER
   MaxItemsInInventory = {
     Weapons = 6,
-    Items = 50,
+    Items = 200,
   },
 
 
@@ -117,7 +130,6 @@ Config = {
     AMMO_MOLOTOV = 5,
     AMMO_MOLOTOV_VOLATILE = 5
   },
-  
   Ammolabels = { -- you can change this to your language
     AMMO_PISTOL = "Normal Pistol",
     AMMO_PISTOL_EXPRESS = "Express Pistol",

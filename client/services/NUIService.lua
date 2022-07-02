@@ -4,16 +4,25 @@ InInventory = false
 timerUse = 0
 
 NUIService.ReloadInventory = function(inventory)
-	print('reloading inventory')
-	SendNUIMessage(json.decode(inventory))
+	local payload = json.decode(inventory)
+
+	for _, item in pairs(payload.itemList) do
+		if item.type == "item_weapon" then
+			item.label = Utils.GetWeaponLabel(item.name)
+			item.desc = Utils.GetWeaponDesc(item.name)
+		end
+	end
+
+	SendNUIMessage(payload)
 	Wait(500)
 	NUIService.LoadInv()
 end
 
 
-NUIService.OpenCustomInventory = function(name, id, inventory)
+NUIService.OpenCustomInventory = function(name, id, capacity)
 	SetNuiFocus(true, true)
-	SendNUIMessage({ action = "display", type = "custom", title = tostring(name), id = tostring(id), capacity = inventory })
+	print(capacity)
+	SendNUIMessage({ action = "display", type = "custom", title = tostring(name), id = tostring(id), capacity = capacity })
 	InInventory = true
 end
 
@@ -466,7 +475,6 @@ NUIService.LoadInv = function()
 		table.insert(items, weapon)
 	end
 
-	print(json.encode(items))
 	payload.action = "setItems"
 	payload.itemList = items
 
