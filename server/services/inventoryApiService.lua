@@ -5,6 +5,7 @@ CustomInventoryInfos = {
 	default = {
 		name= "Satchel",
 		limit = Config.MaxItemsInInventory.Items,
+		shared = false
 	}
 }
 
@@ -463,7 +464,8 @@ InventoryAPI.addItem = function(player, name, amount, metadata)
 						name = name,
 						type = itemType,
 						canUse = true,
-						canRemove = itemCanRemove
+						canRemove = itemCanRemove,
+						owner = charIdentifier
 					})
 					userInventory[craftedItem.id] = item
 					TriggerClientEvent("vorpCoreClient:addItem", _source, item)
@@ -481,7 +483,8 @@ InventoryAPI.addItem = function(player, name, amount, metadata)
 					name = name,
 					type = itemType,
 					canUse = true,
-					canRemove = itemCanRemove
+					canRemove = itemCanRemove,
+					owner = charIdentifier
 				})
 				userInventory[craftedItem.id] = item
 				TriggerClientEvent("vorpCoreClient:addItem", _source, item)
@@ -770,9 +773,10 @@ InventoryAPI.onNewCharacter = function(playerId)
 	end
 end
 
-InventoryAPI.registerInventory = function(id, name, limit, acceptWeapons)
+InventoryAPI.registerInventory = function(id, name, limit, acceptWeapons, shared)
 	limit = limit ~= nil and limit or -1
 	acceptWeapons = acceptWeapons ~= nil and acceptWeapons or true
+	shared = shared ~= nil and shared or false
 	if CustomInventoryInfos[id] ~= nil then
 		return
 	end
@@ -780,7 +784,8 @@ InventoryAPI.registerInventory = function(id, name, limit, acceptWeapons)
 	CustomInventoryInfos[id] = {
 		name = name,
 		limit = limit,
-		acceptWeapons = acceptWeapons
+		acceptWeapons = acceptWeapons,
+		shared = shared
 	}
 	UsersInventories[id] = {}
 	if UsersWeapons[id] == nil then
@@ -801,11 +806,19 @@ end
 InventoryAPI.reloadInventory = function(player, id)
 	local _source = player
 
+	local invData = CustomInventoryInfos[id]
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local sourceIdentifier = sourceCharacter.identifier
 	local sourceCharIdentifier = sourceCharacter.charIdentifier
-	local userInventory = UsersInventories[id][sourceIdentifier]
+
+	local userInventory = {}
 	local itemList = {}
+
+	if invData.shared then
+		userInventory = UsersInventories[id]
+	else
+		userInventory = UsersInventories[id][sourceIdentifier]
+	end
 
 	-- arrange userInventory as a list
 	for _, value in pairs(userInventory) do
@@ -814,7 +827,7 @@ InventoryAPI.reloadInventory = function(player, id)
 
 	-- Add weapons as Item to inventory
 	for weaponId, weapon in pairs(UsersWeapons[id]) do
-		if weapon.charId == sourceCharIdentifier then
+		if invData.shared or weapon.charId == sourceCharIdentifier then
 			itemList[#itemList+1] = Item:New({
 				id = weaponId,
 				count = 1,
@@ -848,6 +861,39 @@ InventoryAPI.openCustomInventory = function(player, id)
 	local charIdentifier = sourceCharacter.charIdentifier
 	local capacity = CustomInventoryInfos[id].limit > 0 and tostring(CustomInventoryInfos[id].limit) or 'oo'
 
+	if CustomInventoryInfos[id].shared then
+		print("opening shared inventory")
+		if  UsersInventories[id] ~= nil and #UsersInventories[id] > 0 then
+			TriggerClientEvent("vorp_inventory:OpenCustomInv", _source, CustomInventoryInfos[id].name, id, capacity)
+			InventoryAPI.reloadInventory(_source, id)
+		else
+			DbService.GetSharedInventory(id, function(inventory)
+				local characterInventory = {}
+				for _, item in pairs(inventory) do
+					if svItems[item.item] ~= nil then
+						local dbItem = svItems[item.item]
+						characterInventory[item.id] = Item:New({
+							count = tonumber(item.amount),
+							id = item.id,
+							limit = dbItem.limit,
+							label = dbItem.label,
+							metadata = SharedUtils.MergeTables(dbItem.metadata, item.metadata),
+							name = dbItem.item,
+							type = dbItem.type,
+							canUse = dbItem.usable,
+							canRemove = dbItem.can_remove,
+							createdAt = item.created_at,
+							owner = item.character_id
+						})
+					end
+				end
+				UsersInventories[id] = characterInventory
+				TriggerClientEvent("vorp_inventory:OpenCustomInv", _source, CustomInventoryInfos[id].name, id, capacity)
+				InventoryAPI.reloadInventory(_source, id)
+			end)
+		end
+	end
+
 	if UsersInventories[id][identifier] ~= nil then
 		TriggerClientEvent("vorp_inventory:OpenCustomInv", _source, CustomInventoryInfos[id].name, id, capacity)
 		InventoryAPI.reloadInventory(_source, id)
@@ -867,7 +913,8 @@ InventoryAPI.openCustomInventory = function(player, id)
 						type = dbItem.type,
 						canUse = dbItem.usable,
 						canRemove = dbItem.can_remove,
-						createdAt = item.created_at
+						createdAt = item.created_at,
+						owner = charIdentifier
 					})
 				end
 			end

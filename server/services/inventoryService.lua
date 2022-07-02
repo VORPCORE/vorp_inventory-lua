@@ -241,8 +241,13 @@ InventoryService.subItem = function(target, invId, itemId, amount)
 	local _source = target
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local identifier = sourceCharacter.identifier
-	local charIdentifier = sourceCharacter.charIdentifier
-	local userInventory = UsersInventories[invId][identifier]
+	local userInventory = nil
+
+	if CustomInventoryInfos[invId].shared then
+		userInventory = UsersInventories[invId]
+	else
+		userInventory = UsersInventories[invId][identifier]
+	end
 
 	if userInventory ~= nil then
 		if userInventory[itemId] ~= nil then
@@ -254,9 +259,9 @@ InventoryService.subItem = function(target, invId, itemId, amount)
 	
 				if item:getCount() == 0 then
 					userInventory[itemId] = nil
-					DbService.DeleteItem(charIdentifier, itemId)
+					DbService.DeleteItem(item:getOwner(), itemId)
 				else
-					DbService.SetItemAmount(charIdentifier, itemId, item:getCount())
+					DbService.SetItemAmount(item:getOwner(), itemId, item:getCount())
 				end
 				--InventoryAPI.SaveInventoryItemsSupport(_source)
 			end
@@ -270,14 +275,21 @@ InventoryService.addItem = function(target, invId, name, amount, metadata, cb)
 	local identifier = sourceCharacter.identifier
 	local charIdentifier = sourceCharacter.charIdentifier
 	metadata = SharedUtils.MergeTables(svItems[name].metadata, metadata or {})
-	local userInventory = UsersInventories[invId][identifier]
+	local userInventory = nil
+
+	if CustomInventoryInfos[invId].shared then
+		userInventory = UsersInventories[invId]
+	else
+		userInventory = UsersInventories[invId][identifier]
+	end
 
 	if userInventory ~= nil then
 		local item = SvUtils.FindItemByNameAndMetadata(invId, identifier, name, metadata)
 		if item ~= nil then
 			if amount > 0 then
 				item:addCount(amount)
-				DbService.SetItemAmount(charIdentifier, item:getId(), item:getCount())
+				print(item:getOwner())
+				DbService.SetItemAmount(item:getOwner(), item:getId(), item:getCount())
 				cb(item)
 				return
 			end
@@ -295,7 +307,8 @@ InventoryService.addItem = function(target, invId, name, amount, metadata, cb)
 						name = name,
 						type = "item_standard",
 						canUse = svItems[name]:getCanUse(),
-						canRemove = svItems[name]:getCanRemove()
+						canRemove = svItems[name]:getCanRemove(),
+						owner = charIdentifier
 					})
 					userInventory[craftedItem.id] = item
 					cb(item)
@@ -674,7 +687,8 @@ InventoryService.GiveItem = function(itemId, amount, target)
 					type = "item_inventory",
 					metadata = itemMetadata,
 					canUse = svItems[itemName]:getCanUse(),
-					canRemove = svItems[itemName]:getCanRemove()
+					canRemove = svItems[itemName]:getCanRemove(),
+					owner = targetCharIdentifier
 				})
 				targetInventory[craftedItem.id] = targetItem
 				updateClient()
@@ -689,6 +703,7 @@ InventoryService.GiveItem = function(itemId, amount, target)
 					type = "item_inventory",
 					canUse = svItems[itemName]:getCanUse(),
 					canRemove = svItems[itemName]:getCanRemove(),
+					owner = targetCharIdentifier
 				})
 			else
 				if Config.Debug then
@@ -759,7 +774,8 @@ InventoryService.getInventory = function()
 						type = dbItem.type,
 						canUse = dbItem.canUse,
 						canRemove = dbItem.canRemove,
-						createdAt = item.created_at
+						createdAt = item.created_at,
+						owner = sourceCharId
 					})
 				end
 			end
@@ -824,13 +840,20 @@ end
 InventoryService.getInventoryTotalCount = function(identifier, charIdentifier, invId)
 	invId = invId ~= nil and invId or "default"
 	local userTotalItemCount = 0
-	local userInventory = UsersInventories[invId][identifier]
+	local userInventory = {}
 	local userWeapons = UsersWeapons[invId]
+
+	if CustomInventoryInfos[invId].shared then
+		userInventory = UsersInventories[invId]
+	else
+		userInventory = UsersInventories[invId][identifier]
+	end
+
 	for _, item in pairs(userInventory) do
 		userTotalItemCount = userTotalItemCount + item:getCount()
 	end
 	for _, weapon in pairs(userWeapons) do
-		if weapon.charId == charIdentifier then
+		if CustomInventoryInfos[invId].shared or weapon.charId == charIdentifier then
 			userTotalItemCount = userTotalItemCount + 1
 		end
 	end
@@ -900,7 +923,6 @@ InventoryService.MoveToCustom = function(obj)
 			InventoryService.subItem(_source, "default", item.id, amount)
 			TriggerClientEvent("vorpInventory:removeItem", _source, item.name, item.id, amount)
 			InventoryService.addItem(_source, invId, item.name, amount, item.metadata, function (itemAdded)
-				print(itemAdded)
 				if itemAdded == nil then
 					return
 				end
@@ -922,10 +944,6 @@ InventoryService.TakeFromCustom = function(obj)
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local sourceIdentifier = sourceCharacter.identifier
 	local sourceCharIdentifier = sourceCharacter.charIdentifier
-
-	-- Check item amount
-	-- Check if default canCarryItems
-	-- Check if default canCarryItem
 
 	if item.type == "item_weapon" then
 		InventoryAPI.canCarryAmountWeapons(_source, 1, function(res)

@@ -9,6 +9,7 @@ Item.type = nil
 Item.model = nil
 Item.metadata = {}
 Item.createdAt = nil
+Item.owner = nil
 
 Item.count = nil
 Item.limit = nil
@@ -131,13 +132,13 @@ function Item:getCanRemove()
 	return self.canRemove
 end
 
--- Desc
-function Item:setDesc(desc) 
-	self.desc = desc
+-- Owner
+function Item:setOwner(owner) 
+	self.owner = owner
 end
 
-function Item:getDesc() 
-	return self.desc
+function Item:getOwner()
+	return self.owner
 end
 
 -- DropOnDeath
