@@ -38,12 +38,12 @@ exports('vorp_inventoryApi',function()
         TriggerEvent("vorpCore:giveWeapon",source,weaponid,target)
     end
 
-    self.addItem = function(source,itemName,cuantity)
-        TriggerEvent("vorpCore:addItem",source,tostring(itemName),tonumber(cuantity))
+    self.addItem = function(source,itemName,qty, metadata)
+        TriggerEvent("vorpCore:addItem",source,tostring(itemName),tonumber(qty), metadata)
     end
 
-    self.subItem = function(source,itemName,cuantity)
-        TriggerEvent("vorpCore:subItem",source,tostring(itemName),tonumber(cuantity))
+    self.subItem = function(source,itemName,qty, metadata)
+        TriggerEvent("vorpCore:subItem",source,tostring(itemName),tonumber(qty), metadata)
     end
 
     self.getItem = function(source, itemName)
@@ -87,12 +87,12 @@ exports('vorp_inventoryApi',function()
         return item
     end
 
-    self.addBullets = function(source,weaponId,type,cuantity)
-        TriggerEvent("vorpCore:addBullets",source,weaponId,type,cuantity)
+    self.addBullets = function(source,weaponId,type,qty)
+        TriggerEvent("vorpCore:addBullets",source,weaponId,type,qty)
     end
 
-    self.subBullets = function(source,weaponId,type,cuantity)
-        TriggerEvent("vorpCore:subBullets",source,weaponId,type,cuantity)
+    self.subBullets = function(source,weaponId,type,qty)
+        TriggerEvent("vorpCore:subBullets",source,weaponId,type,qty)
     end
 
     self.getWeaponBullets = function(source,weaponId)
