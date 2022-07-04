@@ -290,6 +290,7 @@ end)
 
 RegisterServerEvent("vorpinventory:updateammo")
 AddEventHandler("vorpinventory:updateammo", function(ammoinfo)
+	print(json.encode(ammoinfo))
 	local _source = source
 	allplayersammo[_source] = ammoinfo
 	exports.ghmattimysql:execute("UPDATE characters Set ammo=@ammo WHERE charidentifier=@charidentifier",
@@ -320,11 +321,11 @@ InventoryAPI.addBullets = function(player, bulletType, amount)
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local identifier = sourceCharacter.identifier
 	local charidentifier = sourceCharacter.charIdentifier
-	exports.ghmattimysql:execute('SELECT ammo FROM characters WHERE charidentifier = @charidentifier ',
+	exports.ghmattimysql:execute('SELECT ammo FROM characters WHERE charidentifier = @charidentifier;',
 		{ ['charidentifier'] = charidentifier }, function(result)
 		local ammo = json.decode(result[1].ammo)
 		if ammo[bulletType] ~= nil then
-			ammo[bulletType] = ammo[bulletType] + amount
+			ammo[bulletType] = tonumber(ammo[bulletType]) + amount
 		else
 			ammo[bulletType] = amount
 		end
