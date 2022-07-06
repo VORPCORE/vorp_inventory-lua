@@ -1,6 +1,7 @@
 NUIService = {}
 isProcessingPay = false
 InInventory = false
+timerUse = 0
 
 NUIService.ReloadInventory = function(inventory)
 	SendNUIMessage(json.decode(inventory))
@@ -346,10 +347,14 @@ local function addWardrobeInventoryItem(itemName, slotHash)
 end
 
 NUIService.NUIUseItem = function(data)
+	--print("Timer before trigger - " .. timerUse)
 	if data["type"] == "item_standard" then
-
-		TriggerServerEvent("vorp_inventory:useItem", data["item"])
-
+		if timerUse <= 0 then
+			TriggerServerEvent("vorp_inventory:useItem", data["item"])
+			timerUse = 4000
+		else
+			TriggerEvent('vorp:TipRight', _U("slow"), 5000)
+		end
 	elseif data["type"] == "item_weapon" then
 
 		local _, weaponHash = GetCurrentPedWeapon(PlayerPedId(), false, 0, false)
@@ -525,5 +530,15 @@ Citizen.CreateThread(function()
 			end
 		end
 		Wait(1)
+	end
+end)
+
+-- Prevent Spam
+Citizen.CreateThread(function()
+	while true do
+		Wait(1000)
+		if timerUse > 0 then
+			timerUse = timerUse - 1000
+		end
 	end
 end)
