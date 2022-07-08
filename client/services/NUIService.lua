@@ -173,21 +173,20 @@ NUIService.NUIUnequipWeapon = function(obj)
 end
 
 NUIService.NUIGetNearPlayers = function(obj)
-	local playerPed = PlayerPedId()
 	local nearestPlayers = Utils.getNearestPlayers()
-	local isAnyPlayerFound = false
-	local closePlayersArr = {}
-	local nuiReturn = {}
 
+	local playerIds = {}
 	for _, player in pairs(nearestPlayers) do
-		isAnyPlayerFound = true
-		table.insert(closePlayersArr, {
-			label = GetPlayerServerId(player), -- show server id instead of steam name
-			player = GetPlayerServerId(player)
-		})
+		playerIds[#playerIds+1] = GetPlayerServerId(player)
 	end
+	TriggerServerEvent('vorp_inventory:getNearbyCharacters', obj, playerIds)
+end
 
-	if next(closePlayersArr) == nil then
+NUIService.NUISetNearPlayers = function(obj, nearestPlayers)
+	local nuiReturn = {}
+	local isAnyPlayerFound = #nearestPlayers > 0
+
+	if next(nearestPlayers) == nil then
 		print("No Near Players")
 		return
 	end
@@ -212,7 +211,7 @@ NUIService.NUIGetNearPlayers = function(obj)
 
 	nuiReturn.action = "nearPlayers"
 	nuiReturn.foundAny = isAnyPlayerFound
-	nuiReturn.players = closePlayersArr
+	nuiReturn.players = nearestPlayers
 	nuiReturn.item = item.item
 	nuiReturn.hash = item.hash
 	nuiReturn.count = item.count

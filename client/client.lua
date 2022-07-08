@@ -113,7 +113,7 @@ end)
 RegisterNetEvent("vorpinventory:recammo")
 AddEventHandler("vorpinventory:recammo", function(ammo)
 	playerammoinfo = ammo
-	getammoinfo = false 
+	getammoinfo = false
 end)
 -- Threads
 Citizen.CreateThread(function()

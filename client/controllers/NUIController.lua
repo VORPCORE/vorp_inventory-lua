@@ -21,6 +21,9 @@ AddEventHandler("vorp_inventory:CloseInv", NUIService.CloseInventory)
 RegisterNetEvent("vorp_inventory:OpenInv")
 AddEventHandler("vorp_inventory:OpenInv", NUIService.OpenInv)
 
+RegisterNetEvent("vorp_inventory:setNearbyCharacters")
+AddEventHandler("vorp_inventory:setNearbyCharacters", NUIService.NUISetNearPlayers)
+
 --#region Custom Inventory
 
 RegisterNetEvent("vorp_inventory:OpenCustomInv")

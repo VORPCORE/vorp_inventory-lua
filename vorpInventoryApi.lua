@@ -46,21 +46,21 @@ exports('vorp_inventoryApi',function()
         TriggerEvent("vorpCore:subItem",source,tostring(itemName),tonumber(qty), metadata)
     end
 
-    self.getItem = function(source, itemName)
+    self.getItem = function(source, itemName, metadata)
         local item
         
         TriggerEvent("vorpCore:getItem", source, tostring(itemName), function(responseItem)
             item = responseItem
-        end)
+        end, metadata)
 
         return item
     end
 
-    self.getItemCount = function(source,item)
+    self.getItemCount = function(source,item, metadata)
         local count = 0
         TriggerEvent("vorpCore:getItemCount",source,function(itemcount)
             count = itemcount
-        end,tostring(item))
+        end,tostring(item), metadata)
         return count
     end
 

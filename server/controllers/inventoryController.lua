@@ -61,6 +61,9 @@ AddEventHandler("vorpinventory:giveGoldToPlayer", InventoryService.giveGoldToPla
 RegisterServerEvent("vorp_inventory:useItem")
 AddEventHandler("vorp_inventory:useItem", InventoryService.UseItem)
 
+RegisterServerEvent("vorp_inventory:getNearbyCharacters")
+AddEventHandler("vorp_inventory:getNearbyCharacters", InventoryService.getNearbyCharacters)
+
 
 RegisterServerEvent("vorp_inventory:MoveToCustom")
 AddEventHandler("vorp_inventory:MoveToCustom", InventoryService.MoveToCustom)

@@ -375,18 +375,16 @@ InventoryAPI.getItems = function(player, cb, item, metadata)
 	end
 end
 
-InventoryAPI.getItem = function(player, item, cb)
+InventoryAPI.getItem = function(player, item, cb, metadata)
 	local _source = player
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local identifier = sourceCharacter.identifier
-	local userInventory = UsersInventories["default"][identifier]
+	local svItem = svItems[item]
+	metadata = SharedUtils.MergeTables(svItem ~= nil and svItem.metadata or {}, metadata or {})
+	local item = SvUtils.FindItemByNameAndMetadata("default", identifier, item, metadata)
 
-	if userInventory ~= nil then
-		if userInventory[item] ~= nil then
-			cb(userInventory[item])
-		else
-			cb(nil)
-		end
+	if item ~= nil then
+		cb(item)
 	else
 		cb(nil)
 	end
@@ -401,19 +399,19 @@ InventoryAPI.addItem = function(player, name, amount, metadata)
 		return
 	end
 
-	metadata = SharedUtils.MergeTables(svItems[name].metadata, metadata or {})
-
-	local sourceCharacter = sourceUser.getUsedCharacter
-	local identifier = sourceCharacter.identifier
-	local charIdentifier = sourceCharacter.charIdentifier
-	local userInventory = UsersInventories["default"][identifier]
-
 	if svItems[name] == nil then
 		if Config.Debug then
 			Log.Warning("Item: [^2" .. name .. "^7] ^1 do not exist on Database please add this item on ^7 Table Items")
 		end
 		return
 	end
+
+	metadata = SharedUtils.MergeTables(svItems[name].metadata, metadata or {})
+
+	local sourceCharacter = sourceUser.getUsedCharacter
+	local identifier = sourceCharacter.identifier
+	local charIdentifier = sourceCharacter.charIdentifier
+	local userInventory = UsersInventories["default"][identifier]
 
 	if userInventory == nil then
 		UsersInventories["default"][identifier] = {}

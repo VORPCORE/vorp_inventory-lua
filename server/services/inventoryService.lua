@@ -911,6 +911,28 @@ InventoryService.canStoreItem = function(identifier, charIdentifier, invId, name
 	return true
 end
 
+InventoryService.getNearbyCharacters = function(obj, sources)
+	local _source = source
+
+	local characters = {}
+	for _, playerId in pairs(sources) do
+		if Config.ShowCharacterNameOnGive then
+			local character = Core.getUser(playerId).getUsedCharacter
+			characters[#characters+1] = {
+				label = character.firstname .. ' ' .. character.lastname,
+				player = playerId
+			}
+		else
+			characters[#characters+1] = {
+				label = playerId, -- show server id instead of steam name
+				player = playerId
+			}
+		end
+	end
+
+	TriggerClientEvent('vorp_inventory:setNearbyCharacters', _source, obj, characters)
+end
+
 InventoryService.MoveToCustom = function(obj)
 	local _source = source
 	local data = json.decode(obj)
