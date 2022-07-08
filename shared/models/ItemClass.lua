@@ -1,19 +1,34 @@
+---@class Item
 Item = {}
 
+Item.id = nil
+Item.item = nil
 Item.name = nil
 Item.label = nil
 Item.type = nil
 Item.model = nil
+Item.metadata = {}
+Item.createdAt = nil
+Item.owner = nil
 
 Item.count = nil
 Item.limit = nil
 
 Item.weight = nil
 
-Item.canUse = false 
+Item.canUse = false
 Item.canRemove = false
 Item.desc = nil
-Item.dropOnDeath = false 
+Item.dropOnDeath = false
+
+-- ID
+function Item:setId(id) 
+	self.id = id
+end
+
+function Item:getId() 
+	return self.id
+end
 
 -- NAME
 function Item:setName(name) 
@@ -25,20 +40,20 @@ function Item:getName()
 end
 
 -- LABEL
-function Item:setLabel(label) 
+function Item:setLabel(label)
 	self.label = label
 end
 
-function Item:getLabel() 
+function Item:getLabel()
 	return self.label
 end
 
 -- TYPE
-function Item:setType(type) 
+function Item:setType(type)
 	self.type = type
 end
 
-function Item:getType() 
+function Item:getType()
 	return self.type
 end
 
@@ -51,16 +66,25 @@ function Item:getModel()
 	return self.model
 end
 
+-- Metadata
+function Item:setMetadata(metadata)
+	self.metadata = metadata
+end
+
+function Item:getMetadata()
+	return self.metadata
+end
+
 -- COUNT
-function Item:setCount(amount) 
+function Item:setCount(amount)
 	self.count = amount
 end
 
-function Item:getCount() 
+function Item:getCount()
 	return self.count
 end
 
-function Item:addCount(amount) 
+function Item:addCount(amount)
 	if self.count + amount <= self.limit then
 		self.count = self.count + amount
 		return true
@@ -108,13 +132,13 @@ function Item:getCanRemove()
 	return self.canRemove
 end
 
--- Desc
-function Item:setDesc(desc) 
-	self.desc = desc
+-- Owner
+function Item:setOwner(owner) 
+	self.owner = owner
 end
 
-function Item:getDesc() 
-	return self.desc
+function Item:getOwner()
+	return self.owner
 end
 
 -- DropOnDeath
@@ -125,7 +149,8 @@ end
 function Item:getDropOnDeath()
 	return self.dropOnDeath
 end
- 
+
+---@return Item
 function Item:New (t)
 	t = t or {}
 	setmetatable(t, self)

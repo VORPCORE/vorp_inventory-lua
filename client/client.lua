@@ -56,10 +56,11 @@ end
 Citizen.CreateThread(function()
 	while true do
         Wait(1)
-        if not loaded then 
+        if not loaded then
             DisableControlAction(0, 0xC1989F95, true)
         else
-            Wait(500)
+            DisableControlAction(0, 0xC1989F95, false)
+            return
         end
     end
 end)
@@ -80,7 +81,7 @@ AddEventHandler("vorpinventory:loaded", function()
         action      = "updateammo",
         ammo = playerammo
     })
-    loaded = true 
+    loaded = true
 end)
 
 RegisterNetEvent("vorpinventory:updateuiammocount")
@@ -112,7 +113,7 @@ end)
 RegisterNetEvent("vorpinventory:recammo")
 AddEventHandler("vorpinventory:recammo", function(ammo)
 	playerammoinfo = ammo
-	getammoinfo = false 
+	getammoinfo = false
 end)
 -- Threads
 Citizen.CreateThread(function()
@@ -132,7 +133,7 @@ Citizen.CreateThread(function()
 		    	local ammotypes = Config.Ammotypes[tostring(wepgroup)]
 		    	local playerammo = playerammoinfo["ammo"]
                 if ammotypes ~= nil and playerammo ~= nil then 
-		    	    for k,v in pairs(ammotypes) do 
+		    	    for k,v in pairs(ammotypes) do
 		    	    	if contains(playerammo,v) then 
 		    	    		local qt = Citizen.InvokeNative(0x39D22031557946C1, PlayerPedId(), GetHashKey(v))
                             if not qt or ((GetWeapontypeGroup(wephash) == 1548507267 or GetWeapontypeGroup(wephash) == -1241684019) and qt == 1) then -- an issue occurs where when the player fires their last throwable this loop stops since the player auto switches to melee and it never registers that they used the last of their ammo, creating a problem where the player will always have 1 throwable left even after they have used it. to combat this the player is considered out of ammo if they only have 1 ammo left

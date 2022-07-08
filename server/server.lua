@@ -87,8 +87,7 @@ AddEventHandler("vorpinventory:weaponlog", function(targetHandle, data)
 end)
 
 RegisterServerEvent("vorpinventory:moneylog")
-AddEventHandler("vorpinventory:moneylog", function(targetHandle, amount)
-    local _source = source
+AddEventHandler("vorpinventory:moneylog", function(_source,targetHandle, amount)
     local name = GetPlayerName(_source)
     local name2 = GetPlayerName(targetHandle)
     local description = name..Config.Language.gave.." $"..amount.." "..Config.Language.to..name2
