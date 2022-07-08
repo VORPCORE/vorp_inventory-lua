@@ -32,6 +32,10 @@ CREATE INDEX character_inventory_idx
     ON character_inventories (character_id, inventory_type);
 
 
+
+-- If you want to convert the old inventory format to the new one, run this part of the file.
+-- It will keep the old inventory in the characters table, but all data will be copied and parsed into the new tables.
+
 -- Convert Json items into separate rows and insert them in items_crafted
 INSERT INTO items_crafted (
       character_id,
