@@ -25,7 +25,7 @@ Config = {
     "WEAPON_MELEE_HAMMER",
   },
   -- GOLD ITEM LIKE DOLLARS
-  UseGoldItem = true, -- IF TRUE YOU HAVE GOLD IN INVENTORY LIKE DOLLARS
+  UseGoldItem = false, -- IF TRUE YOU HAVE GOLD IN INVENTORY LIKE DOLLARS
   -- CHANGE IN html/js/config.js TOO !!!
 
   -- DEATH FUNCTIONS
