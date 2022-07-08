@@ -19,6 +19,9 @@ AddEventHandler("vorpinventory:serverDropMoney", InventoryService.DropMoney)
 RegisterServerEvent("vorpinventory:serverDropAllMoney")
 AddEventHandler("vorpinventory:serverDropAllMoney", InventoryService.DropAllMoney)
 
+RegisterServerEvent("vorpinventory:serverDropPartMoney")
+AddEventHandler("vorpinventory:serverDropPartMoney", InventoryService.DropPartMoney)
+
 RegisterServerEvent("vorpinventory:serverDropGold")
 AddEventHandler("vorpinventory:serverDropGold", InventoryService.DropGold)
 
