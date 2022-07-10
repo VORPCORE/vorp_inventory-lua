@@ -53,10 +53,17 @@ SvUtils.FindItemByNameAndMetadata = function (invId, identifier, name, metadata)
     if userInventory == nil then
         return nil
     end
-
-    for _, item in pairs(userInventory) do
-        if name == item:getName() and SharedUtils.Table_equals(metadata, item:getMetadata()) then
-            return item
+    if metadata ~= nil then 
+        for _, item in pairs(userInventory) do
+            if name == item:getName() and SharedUtils.Table_equals(metadata, item:getMetadata()) then
+                return item
+            end
+        end
+    else
+        for _, item in pairs(userInventory) do
+            if name == item:getName() then
+                return item
+            end
         end
     end
     return nil
