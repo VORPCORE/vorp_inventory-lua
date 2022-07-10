@@ -19,6 +19,9 @@ AddEventHandler("vorpinventory:serverDropMoney", InventoryService.DropMoney)
 RegisterServerEvent("vorpinventory:serverDropAllMoney")
 AddEventHandler("vorpinventory:serverDropAllMoney", InventoryService.DropAllMoney)
 
+RegisterServerEvent("vorpinventory:serverDropPartMoney")
+AddEventHandler("vorpinventory:serverDropPartMoney", InventoryService.DropPartMoney)
+
 RegisterServerEvent("vorpinventory:serverDropGold")
 AddEventHandler("vorpinventory:serverDropGold", InventoryService.DropGold)
 
@@ -70,3 +73,4 @@ AddEventHandler("vorp_inventory:MoveToCustom", InventoryService.MoveToCustom)
 
 RegisterServerEvent("vorp_inventory:TakeFromCustom")
 AddEventHandler("vorp_inventory:TakeFromCustom", InventoryService.TakeFromCustom)
+

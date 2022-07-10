@@ -224,8 +224,13 @@ end
 PickupsService.dropAllPlease = function()
 	Wait(200)
 
-	if Config.DropOnRespawn.Money then
+	if Config.DropOnRespawn.AllMoney then
 		TriggerServerEvent("vorpinventory:serverDropAllMoney")
+		Wait(200)
+	end
+
+	if Config.DropOnRespawn.PartMoney then
+		TriggerServerEvent("vorpinventory:serverDropPartMoney")
 		Wait(200)
 	end
 

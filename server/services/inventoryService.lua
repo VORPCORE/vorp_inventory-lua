@@ -107,6 +107,20 @@ InventoryService.DropAllMoney = function()
 	end
 end
 
+InventoryService.DropPartMoney = function()
+	local _source = source
+	local userCharacter = Core.getUser(_source).getUsedCharacter
+	local userMoney = userCharacter.money
+	local userPartMoney = userMoney - (userMoney * Config.DropOnRespawn.PartPercentage / 100)
+	local userMoneyDef = userMoney - userPartMoney
+
+	if userMoney > 0 then
+		userCharacter.removeCurrency(0, userMoneyDef)
+
+		TriggerClientEvent("vorpInventory:createMoneyPickup", _source, userMoneyDef)
+	end
+end
+
 InventoryService.giveMoneyToPlayer = function(target, amount)
 	local _source = source
 	if not SvUtils.InProcessing(_source) then
