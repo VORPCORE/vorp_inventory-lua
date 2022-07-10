@@ -9,13 +9,6 @@ exports('vorp_inventoryApi',function()
         TriggerEvent("vorpCore:removeInventory", id)
     end
 
-    self.openInventory = function(source, id)
-        TriggerEvent("vorpCore:openCustomInventory", source, id)
-    end
-
-    self.closeInventory = function(source, id)
-        TriggerEvent("vorpCore:closeCustomInventory", source, id)
-    end
 
     self.setInventoryItemLimit = function(id, itemName, limit)
         TriggerEvent("vorpCore:setInventoryItemLimit", id, itemName, limit)
@@ -187,11 +180,19 @@ exports('vorp_inventoryApi',function()
         TriggerEvent("vorpCore:canCarryWeapons", source, amount, cb)
     end
 
-    self.CloseInv = function(source) 
-        TriggerClientEvent("vorp_inventory:CloseInv",source)
+     self.CloseInv = function(source, invId) 
+        if invId then
+            TriggerEvent("vorpCore:closeCustomInventory", source, id)
+        else
+            TriggerClientEvent("vorp_inventory:CloseInv",source)
+        end
     end
-    self.OpenInv = function(source)
-        TriggerClientEvent("vorp_inventory:OpenInv",source)
+    self.OpenInv = function(source, invId)
+        if invId then
+            TriggerEvent("vorpCore:openCustomInventory", source, id)
+        else
+            TriggerClientEvent("vorp_inventory:OpenInv",source)
+        end
     end
     
     return self
