@@ -420,7 +420,7 @@ InventoryAPI.addItem = function(player, name, amount, metadata)
 
 	if userInventory == nil then
 		UsersInventories["default"][identifier] = {}
-		userInventory = {}
+		userInventory = UsersInventories["default"][identifier] -- create reference to actual table
 	end
 
 	if userInventory == nil then
