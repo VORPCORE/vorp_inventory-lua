@@ -707,24 +707,11 @@ InventoryService.GiveItem = function(itemId, amount, target)
 				updateClient()
 			end)
 		else
-			if svItems[itemName] ~= nil then
-				targetInventory[itemName] = Item:New({
-					count = amount,
-					limit = svItems[itemName]:getLimit(),
-					label = svItems[itemName]:getLabel(),
-					name = itemName,
-					type = "item_inventory",
-					canUse = svItems[itemName]:getCanUse(),
-					canRemove = svItems[itemName]:getCanRemove(),
-					owner = targetCharIdentifier
-				})
-			else
-				if Config.Debug then
-					Log.error("ServerGiveItem: Server items does not contain " .. itemName .. ".")
-				end
-				SvUtils.Trem(_source)
-				return
+			if Config.Debug then
+				Log.error("ServerGiveItem: Server items does not contain " .. itemName .. ".")
 			end
+			SvUtils.Trem(_source)
+			return
 		end
 
 		item:quitCount(amount)
