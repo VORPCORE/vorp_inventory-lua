@@ -16,20 +16,24 @@ InventoryService.UseItem = function(itemName, itemId, args)
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local identifier = sourceCharacter.identifier
 	local userInventory = UsersInventories["default"][identifier]
+	local svItem = svItems[itemName]
+
+	if svItem == nil then
+		print("[^2UseItem^7] ^1Error^7: Item [^3" .. tostring(itemName) .. "^7] does not exist in DB.")
+		return
+	end
 
 	if UsableItemsFunctions[itemName] ~= nil and userInventory[itemId] ~= nil then
 		local item = userInventory[itemId]
 		if item ~= nil then
-			if svItems[itemName] ~= nil then
-				local itemArgs = json.decode(json.encode(svItems[itemName]))
-				itemArgs.metadata = item:getMetadata()
-				local arguments = {
-					source = _source,
-					item = itemArgs,
-					args = args
-				}
-				UsableItemsFunctions[itemName](arguments)
-			end
+			local itemArgs = json.decode(json.encode(svItem))
+			itemArgs.metadata = item:getMetadata()
+			local arguments = {
+				source = _source,
+				item = itemArgs,
+				args = args
+			}
+			UsableItemsFunctions[itemName](arguments)
 		end
 	end
 	return false
@@ -288,7 +292,15 @@ InventoryService.addItem = function(target, invId, name, amount, metadata, cb)
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local identifier = sourceCharacter.identifier
 	local charIdentifier = sourceCharacter.charIdentifier
-	metadata = SharedUtils.MergeTables(svItems[name].metadata, metadata or {})
+	local svItem = svItems[name]
+
+	if svItem == nil then
+		print("[^2AddItem^7] ^1Error^7: Item [^3" .. tostring(name) .. "^7] does not exist in DB.")
+		cb(nil)
+		return
+	end
+
+	metadata = SharedUtils.MergeTables(svItem.metadata, metadata or {})
 	local userInventory = nil
 
 	if CustomInventoryInfos[invId].shared then
@@ -309,26 +321,22 @@ InventoryService.addItem = function(target, invId, name, amount, metadata, cb)
 			cb(nil)
 			return
 		else
-			if svItems[name] ~= nil then
-				DbService.CreateItem(charIdentifier, svItems[name]:getId(), amount, metadata, function (craftedItem)
-					item = Item:New({
-						id = craftedItem.id,
-						count = amount,
-						limit = svItems[name]:getLimit(),
-						label = svItems[name]:getLabel(),
-						metadata = SharedUtils.MergeTables(svItems[name]:getMetadata(), metadata),
-						name = name,
-						type = "item_standard",
-						canUse = svItems[name]:getCanUse(),
-						canRemove = svItems[name]:getCanRemove(),
-						owner = charIdentifier
-					})
-					userInventory[craftedItem.id] = item
-					cb(item)
-				end, invId)
-				return
-			end
-			cb(nil)
+			DbService.CreateItem(charIdentifier, svItem:getId(), amount, metadata, function (craftedItem)
+				item = Item:New({
+					id = craftedItem.id,
+					count = amount,
+					limit = svItem:getLimit(),
+					label = svItem:getLabel(),
+					metadata = SharedUtils.MergeTables(svItem.metadata, metadata),
+					name = name,
+					type = "item_standard",
+					canUse = svItem:getCanUse(),
+					canRemove = svItem:getCanRemove(),
+					owner = charIdentifier
+				})
+				userInventory[craftedItem.id] = item
+				cb(item)
+			end, invId)
 			return
 		end
 	end
@@ -386,22 +394,29 @@ InventoryService.onPickup = function(obj)
 	local userInventory = UsersInventories["default"][identifier]
 	local userWeapons = UsersWeapons["default"]
 
+
 	if ItemPickUps[obj] ~= nil then
 		local name = ItemPickUps[obj].name
 		local amount = ItemPickUps[obj].amount
 		local metadata = ItemPickUps[obj].metadata
+		local svItem = svItems[name]
 
-			if ItemPickUps[obj].weaponid == 1 then
+		if svItem == nil then
+			print("[^2OnPickup^7] ^1Error^7: Item [^3" .. tostring(name) .. "^7] does not exist in DB.")
+			SvUtils.Trem(_source, false)
+			return
+		end
 
+		if ItemPickUps[obj].weaponid == 1 then
 			if userInventory ~= nil then
-				if svItems[name]:getLimit() ~= -1 then
+				if svItem:getLimit() ~= -1 then
 					local item = SvUtils.FindItemByNameAndMetadata("default", identifier, name, metadata)
 
 					if item ~= nil then
 						--local sourceItemCount = UsersInventories[identifier][name]:GetCount()
 						local totalAmount = amount + item:getCount()
 
-						if svItems[name]:getLimit() < totalAmount then
+						if svItem:getLimit() < totalAmount then
 							TriggerClientEvent("vorp:TipRight", _source, _U("fullInventory"), 2000)
 							return
 						end
@@ -640,6 +655,14 @@ InventoryService.GiveItem = function(itemId, amount, target)
 	local targetInventoryItemCount = InventoryAPI.getUserTotalCount(targetIdentifier)
 	local canGiveItemToTarget = true
 	local targetItem = SvUtils.FindItemByNameAndMetadata("default", targetIdentifier, itemName, itemMetadata);
+	local svItem = svItems[itemName]
+
+	if svItem == nil then
+		print("[^2GiveItem^7] ^1Error^7: Item [^3" .. itemName .. "^7] does not exist in DB.")
+
+		SvUtils.Trem(_source)
+		return
+	end
 
 
 	if targetItem ~= nil then
@@ -675,7 +698,7 @@ InventoryService.GiveItem = function(itemId, amount, target)
 			DbService.SetItemAmount(sourceCharIdentifier, item:getId(), item:getCount())
 		end
 
-		local ItemsLabel = svItems[itemName]:getLabel()
+		local ItemsLabel = svItem:getLabel()
 		--NOTIFY
 
 		TriggerClientEvent("vorp:TipRight", _source, "you gave " .. amount .. " of " .. ItemsLabel, 2000)
@@ -689,30 +712,22 @@ InventoryService.GiveItem = function(itemId, amount, target)
 		DbService.SetItemAmount(targetCharIdentifier, targetItem:getId(), targetItem:getCount())
 		updateClient()
 	else
-		if svItems[itemName] ~= nil then
-			DbService.CreateItem(targetCharIdentifier, svItems[itemName]:getId(), amount, itemMetadata, function (craftedItem)
-				targetItem = Item:New({
-					id = craftedItem.id,
-					count = amount,
-					limit = svItems[itemName]:getLimit(),
-					label = svItems[itemName]:getLabel(),
-					name = itemName,
-					type = "item_inventory",
-					metadata = itemMetadata,
-					canUse = svItems[itemName]:getCanUse(),
-					canRemove = svItems[itemName]:getCanRemove(),
-					owner = targetCharIdentifier
-				})
-				targetInventory[craftedItem.id] = targetItem
-				updateClient()
-			end)
-		else
-			if Config.Debug then
-				Log.error("ServerGiveItem: Server items does not contain " .. itemName .. ".")
-			end
-			SvUtils.Trem(_source)
-			return
-		end
+		DbService.CreateItem(targetCharIdentifier,svItem:getId(), amount, itemMetadata, function (craftedItem)
+			targetItem = Item:New({
+				id = craftedItem.id,
+				count = amount,
+				limit = svItem:getLimit(),
+				label = svItem:getLabel(),
+				name = itemName,
+				type = "item_inventory",
+				metadata = itemMetadata,
+				canUse = svItem:getCanUse(),
+				canRemove = svItem:getCanRemove(),
+				owner = targetCharIdentifier
+			})
+			targetInventory[craftedItem.id] = targetItem
+			updateClient()
+		end)
 
 		item:quitCount(amount)
 
@@ -727,7 +742,7 @@ InventoryService.GiveItem = function(itemId, amount, target)
 
 
 
-		local ItemsLabel = svItems[itemName]:getLabel()
+		local ItemsLabel = svItem:getLabel()
 		--NOTIFY
 
 		TriggerClientEvent("vorp:TipRight", _source, _U("yougive") .. amount .. _U("of") .. ItemsLabel .. "", 2000)
