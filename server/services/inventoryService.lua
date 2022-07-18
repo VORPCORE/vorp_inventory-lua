@@ -418,6 +418,7 @@ InventoryService.onPickup = function(obj)
 
 						if svItem:getLimit() < totalAmount then
 							TriggerClientEvent("vorp:TipRight", _source, _U("fullInventory"), 2000)
+							SvUtils.Trem(_source, false)
 							return
 						end
 					end
@@ -428,6 +429,7 @@ InventoryService.onPickup = function(obj)
 
 						if sourceInventoryItemCount > Config.MaxItemsInInventory.Items then
 							TriggerClientEvent("vorp:TipRight", _source, _U("fullInventory"), 2000)
+							SvUtils.Trem(_source, false)
 							return
 						end
 					end

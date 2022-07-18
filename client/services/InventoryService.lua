@@ -1,3 +1,4 @@
+---@type table<string, Item>
 svItems = {}
 InventoryService = {}
 UserWeapons = {}
@@ -6,7 +7,6 @@ UserInventory = {}
 bulletsHash = {}
 
 InventoryService.receiveItem = function (name, id, amount, metadata)
-	print("receiving item " .. name)
 	if UserInventory[id] ~= nil then
 		UserInventory[id]:addCount(amount)
 	else
@@ -19,7 +19,7 @@ InventoryService.receiveItem = function (name, id, amount, metadata)
 			metadata = SharedUtils.MergeTables(svItems[name].metadata, metadata),
 			type = "item_standard",
 			canUse = true,
-			canRemove = svItems[name].can_remove
+			canRemove = svItems[name].canRemove
 		})
 	end
 
