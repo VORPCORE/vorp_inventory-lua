@@ -66,7 +66,7 @@ InventoryAPI.canCarryItem = function(player, itemName, amount, cb, metadata)
 	local svItem = svItems[itemName]
 
 	if svItem == nil then
-		print("[^2API CanCarryItem^7]^1Error^7: Item [^3" .. tostring(itemName) .. "^7] does not exist in DB.")
+		print("[^2API CanCarryItem^7] ^1Error^7: Item [^3" .. tostring(itemName) .. "^7] does not exist in DB.")
 		cb(false)
 		return
 	end
@@ -371,7 +371,7 @@ InventoryAPI.getItems = function(player, cb, itemName, metadata)
 	local svItem = svItems[itemName]
 
 	if svItem == nil then
-		print("[^2API GetItems^7]^1Error^7: Item [^3" .. tostring(itemName) .. "^7] does not exist in DB.")
+		print("[^2API GetItems^7] ^1Error^7: Item [^3" .. tostring(itemName) .. "^7] does not exist in DB.")
 		cb(0)
 		return
 	end
@@ -398,7 +398,7 @@ InventoryAPI.getItem = function(player, itemName, cb, metadata)
 	local svItem = svItems[itemName]
 
 	if svItem == nil then
-		print("[^2API GetItem^7]^1Error^7: Item [^3" .. tostring(itemName) .. "^7] does not exist in DB.")
+		print("[^2API GetItem^7] ^1Error^7: Item [^3" .. tostring(itemName) .. "^7] does not exist in DB.")
 		cb(nil)
 		return
 	end
@@ -427,7 +427,7 @@ InventoryAPI.addItem = function(player, name, amount, metadata)
 	local svItem = svItems[name]
 
 	if svItem == nil then
-		print("[^2API AddItem^7]^1Error^7: Item [^3" .. tostring(name) .. "^7] does not exist in DB.")
+		print("[^2API AddItem^7] ^1Error^7: Item [^3" .. tostring(name) .. "^7] does not exist in DB.")
 		return
 	end
 
@@ -531,7 +531,7 @@ InventoryAPI.subItem = function(player, name, amount, metadata)
 	local svItem = svItems[name]
 
 	if svItem == nil then
-		print("[^2API SubItem^7]^1Error^7: Item [^3" .. tostring(name) .. "^7] does not exist in DB.")
+		print("[^2API SubItem^7] ^1Error^7: Item [^3" .. tostring(name) .. "^7] does not exist in DB.")
 		return
 	end
 	metadata = SharedUtils.MergeTables(svItem.metadata, metadata or {})

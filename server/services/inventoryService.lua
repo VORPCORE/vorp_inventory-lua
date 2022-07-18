@@ -19,7 +19,7 @@ InventoryService.UseItem = function(itemName, itemId, args)
 	local svItem = svItems[itemName]
 
 	if svItem == nil then
-		print("[^2UseItem^7]^1Error^7: Item [^3" .. tostring(itemName) .. "^7] does not exist in DB.")
+		print("[^2UseItem^7] ^1Error^7: Item [^3" .. tostring(itemName) .. "^7] does not exist in DB.")
 		return
 	end
 
@@ -295,7 +295,7 @@ InventoryService.addItem = function(target, invId, name, amount, metadata, cb)
 	local svItem = svItems[name]
 
 	if svItem == nil then
-		print("[^2AddItem^7]^1Error^7: Item [^3" .. tostring(name) .. "^7] does not exist in DB.")
+		print("[^2AddItem^7] ^1Error^7: Item [^3" .. tostring(name) .. "^7] does not exist in DB.")
 		cb(nil)
 		return
 	end
@@ -402,7 +402,7 @@ InventoryService.onPickup = function(obj)
 		local svItem = svItems[name]
 
 		if svItem == nil then
-			print("[^2OnPickup^7]^1Error^7: Item [^3" .. tostring(name) .. "^7] does not exist in DB.")
+			print("[^2OnPickup^7] ^1Error^7: Item [^3" .. tostring(name) .. "^7] does not exist in DB.")
 			SvUtils.Trem(_source, false)
 			return
 		end
@@ -658,7 +658,7 @@ InventoryService.GiveItem = function(itemId, amount, target)
 	local svItem = svItems[itemName]
 
 	if svItem == nil then
-		print("[^2GiveItem^7]^1Error^7: Item [^3" .. itemName .. "^7] does not exist in DB.")
+		print("[^2GiveItem^7] ^1Error^7: Item [^3" .. itemName .. "^7] does not exist in DB.")
 
 		SvUtils.Trem(_source)
 		return
