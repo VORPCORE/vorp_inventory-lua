@@ -66,7 +66,8 @@ function LoadDatabase()
 						used = used,
 						used2 = used2,
 						charId = charId,
-						currInv = db_weapon.curr_inv
+						currInv = db_weapon.curr_inv,
+						dropped = db_weapon.dropped
 					})
 	
 					if UsersWeapons[db_weapon.curr_inv] == nil then

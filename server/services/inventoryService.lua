@@ -372,9 +372,8 @@ InventoryService.subWeapon = function(target, weaponId)
 	if userWeapons[weaponId] ~= nil then
 		userWeapons[weaponId]:setPropietary('')
 
-		exports.ghmattimysql:execute('UPDATE loadout SET identifier = @identifier, charidentifier = @charid WHERE id = @id', {
-			['identifier'] = identifier,
-			['charid'] = charId,
+		exports.ghmattimysql:execute("UPDATE loadout SET identifier = '', charidentifier = @charId WHERE id = @id", {
+			['charId'] = charId,
 			['id'] = weaponId
 		}, function() end)
 	end
@@ -452,6 +451,7 @@ InventoryService.onPickup = function(obj)
 					local weaponId = ItemPickUps[obj].weaponid
 					local weaponObj = ItemPickUps[obj].obj
 					InventoryService.addWeapon(_source, weaponId)
+					UsersWeapons["default"][weaponId]:setDropped(0)
 
 					TriggerEvent("syn_weapons:onpickup", weaponId)
 					TriggerClientEvent("vorpInventory:sharePickupClient", -1, name, weaponObj, 1, metadata, ItemPickUps[obj].coords, 2, weaponId)
@@ -569,6 +569,8 @@ InventoryService.DropWeapon = function(weaponId)
 	if not SvUtils.InProcessing(_source) then
 		SvUtils.ProcessUser(_source)
 		InventoryService.subWeapon(_source, weaponId)
+		UsersWeapons["default"][weaponId]:setDropped(1)
+
 
 		TriggerClientEvent("vorpInventory:createPickup", _source, UsersWeapons["default"][weaponId]:getName(), 1, {}, weaponId)
 		SvUtils.Trem(_source)
@@ -832,7 +834,7 @@ InventoryService.getInventory = function()
 		-- Weapons are already loaded at the start of the script. We just need to filter the good ones
 		local userWeapons = {}
 		for _, weapon in pairs(UsersWeapons["default"]) do
-			if weapon.charId == sourceCharId and weapon.currInv == "default" then
+			if weapon.propietary == sourceIdentifier and weapon.charId == sourceCharId and weapon.currInv == "default" and weapon.dropped == 0 then
 				userWeapons[#userWeapons+1] = weapon
 			end
 		end
