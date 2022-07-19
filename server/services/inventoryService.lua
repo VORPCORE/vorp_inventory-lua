@@ -400,12 +400,6 @@ InventoryService.onPickup = function(obj)
 		local metadata = ItemPickUps[obj].metadata
 		local svItem = svItems[name]
 
-		if ItemPickUps[obj].weaponid == 1 and svItem == nil then
-			print("[^2OnPickup^7] ^1Error^7: Item [^3" .. tostring(name) .. "^7] does not exist in DB.")
-			SvUtils.Trem(_source, false)
-			return
-		end
-
 		if ItemPickUps[obj].weaponid == 1 then
 			if userInventory ~= nil then
 				if svItem:getLimit() ~= -1 then
