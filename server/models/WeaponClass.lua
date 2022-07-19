@@ -11,6 +11,7 @@ Weapon.ammo = {}
 Weapon.components = {}
 Weapon.desc = nil
 Weapon.currInv = ''
+Weapon.dropped = 0
 
 function Weapon:setUsed(isUsed)
 	self.used = isUsed
@@ -74,6 +75,14 @@ end
 
 function Weapon:getCurrInv()
 	return self.currInv
+end
+
+function Weapon:setDropped(dropped)
+	self.dropped = dropped
+end
+
+function Weapon:getDropped()
+	return self.dropped
 end
 
 function Weapon:getAllAmmo()
