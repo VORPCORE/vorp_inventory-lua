@@ -93,6 +93,10 @@ function Item:addCount(amount)
 end
 
 function Item:quitCount(amount) 
+	if amount == nil then
+		print('[^3Item quitCount^7]^1 Error: given amount is nil^7')
+		return
+	end
 	self.count = self.count - amount
 end
 

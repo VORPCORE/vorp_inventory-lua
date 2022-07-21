@@ -296,7 +296,6 @@ end)
 
 RegisterServerEvent("vorpinventory:updateammo")
 AddEventHandler("vorpinventory:updateammo", function(ammoinfo)
-	print(json.encode(ammoinfo))
 	local _source = source
 	allplayersammo[_source] = ammoinfo
 	exports.ghmattimysql:execute("UPDATE characters Set ammo=@ammo WHERE charidentifier=@charidentifier",
@@ -460,9 +459,9 @@ InventoryAPI.addItem = function(player, name, amount, metadata)
 	local itemDefaultMetadata = svItem:getMetadata()
 
 	local item = SvUtils.FindItemByNameAndMetadata("default", identifier, name, metadata)
-	if item == nil then
-		item = SvUtils.FindItemByNameAndMetadata("default", identifier, name, nil)
-	end
+	-- if item == nil then
+	-- 	item = SvUtils.FindItemByNameAndMetadata("default", identifier, name, nil)
+	-- end
 	if item then -- Item already exist in inventory
 		if item:getCount() + amount <= sourceItemLimit or sourceItemLimit == -1 then
 			if Config.MaxItemsInInventory.Items ~= -1 then
@@ -549,9 +548,9 @@ InventoryAPI.subItem = function(player, name, amount, metadata)
 
 	if userInventory then
 		local item = SvUtils.FindItemByNameAndMetadata("default", identifier, name, metadata)
-		if item == nil then
-			item = SvUtils.FindItemByNameAndMetadata("default", identifier, name, nil)
-		end
+		-- if item == nil then
+		-- 	item = SvUtils.FindItemByNameAndMetadata("default", identifier, name, nil)
+		-- end
 		if item then
 			local sourceItemCount = item:getCount()
 

@@ -281,7 +281,6 @@ InventoryService.subItem = function(target, invId, itemId, amount)
 				else
 					DbService.SetItemAmount(item:getOwner(), itemId, item:getCount())
 				end
-				--InventoryAPI.SaveInventoryItemsSupport(_source)
 			end
 		end
 	end
@@ -633,8 +632,6 @@ InventoryService.GiveItem = function(itemId, amount, target)
 		return
 	end
 
-
-
 	if sourceInventory[itemId] == nil then
 		TriggerClientEvent("vorp:TipRight", _source, _U("itemerror"), 2000)
 
@@ -732,8 +729,6 @@ InventoryService.GiveItem = function(itemId, amount, target)
 		if item:getCount() == 0 then
 			sourceInventory[itemName] = nil
 		end
-
-		InventoryAPI.SaveInventoryItemsSupport(_source)
 
 		TriggerClientEvent("vorpInventory:receiveItem", _target, itemName, amount)
 		TriggerClientEvent("vorpInventory:removeItem", _source, itemName, amount)
