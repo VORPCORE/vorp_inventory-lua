@@ -59,7 +59,96 @@ InventoryAPI.canCarryAmountItem = function(player, amount, cb)
 	end
 end
 
-InventoryAPI.canCarryItem = function(player, itemName, amount, cb, metadata)
+-- InventoryAPI.canCarryItem = function(player, itemName, amount, cb)
+-- 	local _source = player
+-- 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
+-- 	local identifier = sourceCharacter.identifier
+-- 	local svItem = svItems[itemName]
+
+-- 	if svItem == nil then
+-- 		print("[^2API CanCarryItem^7] ^1Error^7: Item [^3" .. tostring(itemName) .. "^7] does not exist in DB.")
+-- 		cb(false)
+-- 		return
+-- 	end
+
+-- 	local userInventory = UsersInventories["default"][identifier]
+
+-- 	local limit = svItem:getLimit()
+
+-- 	if limit ~= -1 then
+-- 		if userInventory then
+-- 			local item = SvUtils.FindItemByNameAndMetadata("default", identifier, itemName, nil)
+			
+
+-- 			if item then
+-- 				local count = item:getCount()
+-- 				local total = count + amount
+
+-- 				if total <= limit then
+-- 					if Config.MaxItemsInInventory.Items ~= -1 then
+-- 						local sourceInventoryItemCount = InventoryAPI.getUserTotalCount(identifier) + amount
+
+-- 						if sourceInventoryItemCount <= Config.MaxItemsInInventory.Items then
+-- 							cb(true)
+-- 						else
+-- 							cb(false)
+-- 						end
+-- 					else
+-- 						cb(true)
+-- 					end
+-- 				else
+-- 					cb(false)
+-- 				end
+-- 			else
+-- 				if amount <= limit then
+-- 					if Config.MaxItemsInInventory.Items ~= -1 then
+-- 						local sourceInventoryItemCount = InventoryAPI.getUserTotalCount(identifier) + amount
+
+-- 						if sourceInventoryItemCount <= Config.MaxItemsInInventory.Items then
+-- 							cb(true)
+-- 						else
+-- 							cb(false)
+-- 						end
+-- 					else
+-- 						cb(true)
+-- 					end
+-- 				else
+-- 					cb(false)
+-- 				end
+-- 			end
+-- 		else
+-- 			if amount <= limit then
+-- 				if Config.MaxItemsInInventory.Items ~= -1 then
+-- 					local totalAmount = amount
+
+-- 					if totalAmount <= Config.MaxItemsInInventory.Items then
+-- 						cb(true)
+-- 					else
+-- 						cb(false)
+-- 					end
+-- 				else
+-- 					cb(true)
+-- 				end
+-- 			else
+-- 				cb(false)
+-- 			end
+-- 		end
+-- 	else
+-- 		if Config.MaxItemsInInventory.Items ~= -1 then
+-- 			local totalAmount = InventoryAPI.getUserTotalCount(identifier) + amount
+
+-- 			if totalAmount <= Config.MaxItemsInInventory.Items then
+-- 				cb(true)
+-- 			else
+-- 				cb(false)
+-- 			end
+-- 		else
+-- 			cb(true)
+-- 		end
+-- 	end
+-- end
+
+InventoryAPI.canCarryItem = function (player, itemName, amount, cb)
 	local _source = player
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local identifier = sourceCharacter.identifier
@@ -71,66 +160,30 @@ InventoryAPI.canCarryItem = function(player, itemName, amount, cb, metadata)
 		return
 	end
 
-	metadata = SharedUtils.MergeTables(svItem.metadata, metadata or {})
-	local userInventory = UsersInventories["default"][identifier]
-
 	local limit = svItem:getLimit()
 
 	if limit ~= -1 then
-		if userInventory then
-			local item = SvUtils.FindItemByNameAndMetadata("default", identifier, itemName, nil)
-			if item then
-				local count = item:getCount()
-				local total = count + amount
+		local items = SvUtils.FindAllItemsByName("default", identifier, itemName)
+		local count = 0
+		for _, item in pairs(items) do
+			count = count + item:getCount()
+		end
+		local total = count + amount
 
-				if total <= limit then
-					if Config.MaxItemsInInventory.Items ~= -1 then
-						local sourceInventoryItemCount = InventoryAPI.getUserTotalCount(identifier) + amount
+		if total <= limit then
+			if Config.MaxItemsInInventory.Items ~= -1 then
+				local sourceInventoryItemCount = InventoryAPI.getUserTotalCount(identifier) + amount
 
-						if sourceInventoryItemCount <= Config.MaxItemsInInventory.Items then
-							cb(true)
-						else
-							cb(false)
-						end
-					else
-						cb(true)
-					end
+				if sourceInventoryItemCount <= Config.MaxItemsInInventory.Items then
+					cb(true)
 				else
 					cb(false)
 				end
 			else
-				if amount <= limit then
-					if Config.MaxItemsInInventory.Items ~= -1 then
-						local sourceInventoryItemCount = InventoryAPI.getUserTotalCount(identifier) + amount
-
-						if sourceInventoryItemCount <= Config.MaxItemsInInventory.Items then
-							cb(true)
-						else
-							cb(false)
-						end
-					else
-						cb(true)
-					end
-				else
-					cb(false)
-				end
+				cb(true)
 			end
 		else
-			if amount <= limit then
-				if Config.MaxItemsInInventory.Items ~= -1 then
-					local totalAmount = amount
-
-					if totalAmount <= Config.MaxItemsInInventory.Items then
-						cb(true)
-					else
-						cb(false)
-					end
-				else
-					cb(true)
-				end
-			else
-				cb(false)
-			end
+			cb(false)
 		end
 	else
 		if Config.MaxItemsInInventory.Items ~= -1 then
