@@ -69,6 +69,27 @@ SvUtils.FindItemByNameAndMetadata = function (invId, identifier, name, metadata)
     return nil
 end
 
+SvUtils.FindItemByNameAndContainingMetadata = function (invId, identifier, name, metadata)
+    local userInventory = nil
+
+	if CustomInventoryInfos[invId].shared then
+		userInventory = UsersInventories[invId]
+	else
+		userInventory = UsersInventories[invId][identifier]
+	end
+
+    if userInventory == nil then
+        return nil
+    end
+
+    for _, item in pairs(userInventory) do
+        if name == item:getName() and SharedUtils.Table_contains(item:getMetadata(), metadata) then
+            return item
+        end
+    end
+    return nil
+end
+
 
 SvUtils.ProcessUser = function(id)
 	TriggerClientEvent("vorp_inventory:transactionStarted", id)

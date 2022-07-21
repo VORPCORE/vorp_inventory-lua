@@ -414,6 +414,69 @@ InventoryAPI.getItem = function(player, itemName, cb, metadata)
 	end
 end
 
+InventoryAPI.getItemByName = function(player, itemName, cb)
+	local _source = player
+	local sourceCharacter = Core.getUser(_source).getUsedCharacter
+	local identifier = sourceCharacter.identifier
+	local svItem = svItems[itemName]
+
+	if svItem == nil then
+		print("[^2API GetItem^7] ^1Error^7: Item [^3" .. tostring(itemName) .. "^7] does not exist in DB.")
+		cb(nil)
+		return
+	end
+
+	local item = SvUtils.FindItemByNameAndMetadata("default", identifier, itemName, nil)
+	if item then
+		cb(item)
+	else
+		cb(nil)
+	end
+end
+
+InventoryAPI.getItemContainingMetadata = function(player, itemName, metadata, cb)
+	local _source = player
+	local sourceCharacter = Core.getUser(_source).getUsedCharacter
+	local identifier = sourceCharacter.identifier
+	local svItem = svItems[itemName]
+
+	if svItem == nil then
+		print("[^2API GetItem^7] ^1Error^7: Item [^3" .. tostring(itemName) .. "^7] does not exist in DB.")
+		cb(nil)
+		return
+	end
+
+	metadata = SharedUtils.MergeTables(svItem.metadata or {}, metadata or {})
+	local item = SvUtils.FindItemByNameAndContainingMetadata("default", identifier, itemName, metadata)
+	if item then
+		cb(item)
+	else
+		cb(nil)
+	end
+end
+
+InventoryAPI.getItemMatchingMetadata = function(player, itemName, metadata, cb)
+	local _source = player
+	local sourceCharacter = Core.getUser(_source).getUsedCharacter
+	local identifier = sourceCharacter.identifier
+	local svItem = svItems[itemName]
+
+	if svItem == nil then
+		print("[^2API GetItem^7] ^1Error^7: Item [^3" .. tostring(itemName) .. "^7] does not exist in DB.")
+		cb(nil)
+		return
+	end
+
+	metadata = SharedUtils.MergeTables(svItem.metadata or {}, metadata or {})
+	local item = SvUtils.FindItemByNameAndMetadata("default", identifier, itemName, metadata)
+
+	if item then
+		cb(item)
+	else
+		cb(nil)
+	end
+end
+
 InventoryAPI.addItem = function(player, name, amount, metadata)
 	local _source = player
 	local sourceUser = Core.getUser(_source)
@@ -535,11 +598,9 @@ InventoryAPI.subItem = function(player, name, amount, metadata)
 	end
 	metadata = SharedUtils.MergeTables(svItem.metadata, metadata or {})
 
-
 	if (sourceUser) == nil then
 		return
 	end
-
 
 	local sourceCharacter = sourceUser.getUsedCharacter
 	local identifier = sourceCharacter.identifier

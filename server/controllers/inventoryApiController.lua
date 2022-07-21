@@ -16,6 +16,15 @@ AddEventHandler("vorpCore:subItem", InventoryAPI.subItem)
 RegisterServerEvent("vorpCore:getItem")
 AddEventHandler("vorpCore:getItem", InventoryAPI.getItem)
 
+RegisterServerEvent("vorpCore:getItemByName")
+AddEventHandler("vorpCore:getItemByName", InventoryAPI.getItemByName)
+
+RegisterServerEvent("vorpCore:getItemContainingMetadata")
+AddEventHandler("vorpCore:getItemContainingMetadata", InventoryAPI.getItemContainingMetadata)
+
+RegisterServerEvent("vorpCore:getItemMatchingMetadata")
+AddEventHandler("vorpCore:getItemMatchingMetadata", InventoryAPI.getItemMatchingMetadata)
+
 RegisterServerEvent("vorpCore:getItemCount")
 AddEventHandler("vorpCore:getItemCount", InventoryAPI.getItems)
 

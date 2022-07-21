@@ -49,6 +49,36 @@ exports('vorp_inventoryApi',function()
         return item
     end
 
+    self.getItemByName = function(source, itemName)
+        local item
+        
+        TriggerEvent("vorpCore:getItemByName", source, tostring(itemName), function(responseItem)
+            item = responseItem
+        end, metadata)
+
+        return item
+    end
+
+    self.getItemContainingMetadata = function(source, itemName, metadata)
+        local item
+        
+        TriggerEvent("vorpCore:getItemContainingMetadata", source, tostring(itemName), metadata, function(responseItem)
+            item = responseItem
+        end)
+
+        return item
+    end
+
+    self.getItemMatchingMetadata = function(source, itemName, metadata)
+        local item
+        
+        TriggerEvent("vorpCore:getItemMatchingMetadata", source, tostring(itemName), metadata, function(responseItem)
+            item = responseItem
+        end)
+
+        return item
+    end
+
     self.getItemCount = function(source,item, metadata)
         local count = 0
         TriggerEvent("vorpCore:getItemCount",source,function(itemcount)
