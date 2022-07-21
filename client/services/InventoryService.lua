@@ -37,7 +37,6 @@ InventoryService.removeItem = function (name, id, count, metadata)
 		item:quitCount(count)
 
 		if item:getCount() <= 0 then
-			print("removing item from inventory")
 			UserInventory[id] = nil
 		end
 
