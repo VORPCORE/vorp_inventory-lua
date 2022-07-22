@@ -572,7 +572,7 @@ InventoryAPI.addItem = function(player, name, amount, metadata)
 	local itemDefaultMetadata = svItem:getMetadata()
 
 	
-	if InventoryAPI.canCarryItem(_source, name, amount, function (canAdd)
+	InventoryAPI.canCarryItem(_source, name, amount, function (canAdd)
 		if canAdd then
 			local item = SvUtils.FindItemByNameAndMetadata("default", identifier, name, metadata)
 			-- if item == nil then

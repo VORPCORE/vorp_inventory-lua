@@ -424,7 +424,7 @@ InventoryService.onPickup = function(obj)
 
 		if ItemPickUps[obj].weaponid == 1 then
 			if userInventory ~= nil then
-				if InventoryAPI.canCarryItem(_source, name, amount, function (canAdd)
+				InventoryAPI.canCarryItem(_source, name, amount, function (canAdd)
 					if canAdd then
 						InventoryService.addItem(_source, "default", name, amount, metadata, function (item)
 							if item ~= nil then
@@ -443,47 +443,6 @@ InventoryService.onPickup = function(obj)
 					else
 						TriggerClientEvent("vorp:TipRight", _source, _U("fullInventory"), 2000)
 						SvUtils.Trem(_source, false)
-					end
-				end)
-
-				if svItem:getLimit() ~= -1 then
-					local item = SvUtils.FindItemByNameAndMetadata("default", identifier, name, metadata)
-
-					if item ~= nil then
-						--local sourceItemCount = UsersInventories[identifier][name]:GetCount()
-						local totalAmount = amount + item:getCount()
-
-						if svItem:getLimit() < totalAmount then
-							TriggerClientEvent("vorp:TipRight", _source, _U("fullInventory"), 2000)
-							SvUtils.Trem(_source, false)
-							return
-						end
-					end
-
-					if Config.MaxItemsInInventory.Items ~= 0 then
-						local sourceInventoryItemCount = InventoryAPI.getUserTotalCount(identifier)
-						sourceInventoryItemCount = sourceInventoryItemCount + amount
-
-						if sourceInventoryItemCount > Config.MaxItemsInInventory.Items then
-							TriggerClientEvent("vorp:TipRight", _source, _U("fullInventory"), 2000)
-							SvUtils.Trem(_source, false)
-							return
-						end
-					end
-				end
-
-				InventoryService.addItem(_source, "default", name, amount, metadata, function (item)
-					if item ~= nil then
-						local title = _U('itempickup')
-						local description = _U('itempickup2') .. amount .. " " .. name
-						Discord(title, _source, description)
-
-						TriggerClientEvent("vorpInventory:sharePickupClient", -1, name, ItemPickUps[obj].obj, amount, metadata, ItemPickUps[obj].coords, 2)
-						TriggerClientEvent("vorpInventory:removePickupClient", -1, ItemPickUps[obj].obj)
-						TriggerClientEvent("vorpInventory:receiveItem", _source, name, item:getId(), amount, metadata)
-						TriggerClientEvent("vorpInventory:playerAnim", _source, obj)
-		
-						ItemPickUps[obj] = nil
 					end
 				end)
 			end
@@ -717,7 +676,7 @@ InventoryService.GiveItem = function(itemId, amount, target)
 		TriggerEvent("vorpinventory:itemlog", _source, _target, itemName, amount)
 	end
 
-	if InventoryAPI.canCarryItem(_target, itemName, amount, function (canGive)
+	InventoryAPI.canCarryItem(_target, itemName, amount, function (canGive)
 		if canGive then
 			local targetItem = SvUtils.FindItemByNameAndMetadata("default", targetIdentifier, itemName, itemMetadata)
 
