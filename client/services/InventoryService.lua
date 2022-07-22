@@ -26,7 +26,7 @@ InventoryService.receiveItem = function (name, id, amount, metadata)
 	NUIService.LoadInv()
 end
 
-InventoryService.removeItem = function (name, id, count, metadata)
+InventoryService.removeItem = function (name, id, count)
 	if UserInventory[id] == nil then
 		return
 	end
@@ -34,6 +34,7 @@ InventoryService.removeItem = function (name, id, count, metadata)
 	local item = UserInventory[id]
 
 	if item ~= nil then
+		print("[^2removeItem^7] ^1Debug^7: Going to call Item:quitCount with amount = ^3" .. tonumber(count) .. "^7.")
 		item:quitCount(count)
 
 		if item:getCount() <= 0 then

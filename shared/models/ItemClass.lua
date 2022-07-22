@@ -68,7 +68,9 @@ end
 
 -- Metadata
 function Item:setMetadata(metadata)
-	self.metadata = metadata
+	if metadata ~= nil then
+		self.metadata = metadata
+	end
 end
 
 function Item:getMetadata()
