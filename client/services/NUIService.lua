@@ -2,6 +2,11 @@ NUIService = {}
 isProcessingPay = false
 InInventory = false
 timerUse = 0
+local candrop = true 
+RegisterNetEvent('inv:dropstatus')
+AddEventHandler('inv:dropstatus', function(x)
+	candrop = x
+end)
 
 NUIService.ReloadInventory = function(inventory)
 	local payload = json.decode(inventory)
@@ -65,6 +70,8 @@ end
 
 NUIService.CloseInventory = function()
 	SetNuiFocus(false, false)
+	TriggerEvent("vorp_stables:setClosedInv", false)
+	TriggerEvent("syn:closeinv")
 	SendNUIMessage({ action = "hide" })
 	InInventory = false
 end
@@ -276,53 +283,57 @@ NUIService.NUIGiveItem = function(obj)
 end
 
 NUIService.NUIDropItem = function (obj)
-	local aux = Utils.expandoProcessing(obj)
-	local itemName = aux.item
-	local itemId = aux.id
-	local metadata = aux.metadata
-	local type = aux.type
-	local qty = tonumber(aux.number)
+	if candrop then 
+		local aux = Utils.expandoProcessing(obj)
+		local itemName = aux.item
+		local itemId = aux.id
+		local metadata = aux.metadata
+		local type = aux.type
+		local qty = tonumber(aux.number)
 
-	if type == "item_money" then
-		TriggerServerEvent("vorpinventory:serverDropMoney", qty)
-	end
-
-	if Config.UseGoldItem then
-		if type == "item_gold" then
-			TriggerServerEvent("vorpinventory:serverDropGold", qty)
+		if type == "item_money" then
+			TriggerServerEvent("vorpinventory:serverDropMoney", qty)
 		end
-	end
 
-	if type == "item_standard" then
-		if aux.number ~= nil and aux.number ~= '' then
-			local item =  UserInventory[itemId]
+		if Config.UseGoldItem then
+			if type == "item_gold" then
+				TriggerServerEvent("vorpinventory:serverDropGold", qty)
+			end
+		end
 
-			if  qty > 0 and item ~= nil and item:getCount() >= qty then
-				TriggerServerEvent("vorpinventory:serverDropItem", itemName, itemId, qty, metadata)
-				item:quitCount(qty)
-				if item:getCount() == 0 then
-					UserInventory[itemId] = nil
+		if type == "item_standard" then
+			if aux.number ~= nil and aux.number ~= '' then
+				local item =  UserInventory[itemId]
+
+				if  qty > 0 and item ~= nil and item:getCount() >= qty then
+					TriggerServerEvent("vorpinventory:serverDropItem", itemName, itemId, qty, metadata)
+					item:quitCount(qty)
+					if item:getCount() == 0 then
+						UserInventory[itemId] = nil
+					end
 				end
 			end
 		end
-	end
 
-	if type == "item_weapon" then
-		TriggerServerEvent("vorpinventory:serverDropWeapon", aux.id)
+		if type == "item_weapon" then
+			TriggerServerEvent("vorpinventory:serverDropWeapon", aux.id)
 
-		if UserWeapons[aux.id] then
-			local weapon = UserWeapons[aux.id]
+			if UserWeapons[aux.id] then
+				local weapon = UserWeapons[aux.id]
 
-			if weapon:getUsed() then
-				weapon:setUsed(false)
-				RemoveWeaponFromPed(PlayerPedId(), GetHashKey(weapon:getName()), true, 0)
+				if weapon:getUsed() then
+					weapon:setUsed(false)
+					RemoveWeaponFromPed(PlayerPedId(), GetHashKey(weapon:getName()), true, 0)
+				end
+
+				UserWeapons[aux.id] = nil
 			end
-
-			UserWeapons[aux.id] = nil
 		end
-	end
 
-	NUIService.LoadInv()
+		NUIService.LoadInv()
+	else
+		TriggerEvent('vorp:TipRight', "cant drop here", 5000)
+	end
 end
 
 
@@ -430,8 +441,6 @@ end
 
 NUIService.NUIFocusOff = function(obj)
 	NUIService.CloseInv()
-	TriggerEvent("vorp_stables:setClosedInv", false)
-	TriggerEvent("syn:closeinv")
 end
 
 NUIService.OnKey = function()
@@ -493,6 +502,8 @@ NUIService.CloseInv = function()
 	SetNuiFocus(false, false)
 	SendNUIMessage({ action = "hide" })
 	InInventory = false
+	TriggerEvent("vorp_stables:setClosedInv", false)
+	TriggerEvent("syn:closeinv")
 end
 
 NUIService.TransactionStarted = function()
