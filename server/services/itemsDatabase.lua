@@ -23,7 +23,7 @@ function LoadDatabase()
 				local item = Item:New({
 					id = db_item.id,
 					item = db_item.item,
-					metadata = db_item.metadata,
+					metadata = db_item.metadata or {},
 					label = db_item.label,
 					limit = db_item.limit,
 					type = db_item.type,

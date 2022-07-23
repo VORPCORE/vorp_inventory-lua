@@ -3,6 +3,8 @@ ItemPickUps = {}
 MoneyPickUps = {}
 GoldPickUps = {}
 Core = {}
+local newchar = {} -- new 
+local timer = 120 -- new 
 
 Citizen.CreateThread(function()
 	TriggerEvent("getCore", function(core)
@@ -10,6 +12,34 @@ Citizen.CreateThread(function()
 	end)
 end)
 
+
+RegisterServerEvent("syn:stopscene")
+AddEventHandler("syn:stopscene", function(x) -- new 
+	local _source = source
+	TriggerClientEvent("inv:dropstatus",_source,x)
+end)
+AddEventHandler('vorp_NewCharacter', function(source)-- new 
+	local _source = source
+    local Character = Core.getUser(_source).getUsedCharacter
+    local charid = Character.charIdentifier
+    table.insert(newchar,charid)
+    Wait(timer*60000)
+    for k,v in pairs(newchar) do 
+        if v == charid then 
+            newchar[k] = nil
+        end
+    end
+end)
+
+
+function contains(table, element) -- new 
+    for k, v in pairs(table) do
+        if v == element then
+            return true
+        end
+    end
+return false
+end
 
 InventoryService.UseItem = function(itemName, itemId, args)
 	local _source = source
@@ -45,14 +75,19 @@ InventoryService.DropMoney = function(amount)
 		SvUtils.ProcessUser(_source)
 		local userCharacter = Core.getUser(_source).getUsedCharacter
 		local userMoney = userCharacter.money
-
+		local charid = userCharacter.charIdentifier -- new line
+		
+		if contains(newchar,charid)  then -- new line
+			TriggerClientEvent("vorp:TipRight", _source, "Cant Drop Money as a new player", 5000)-- new line
+			SvUtils.Trem(_source)-- new line
+			return-- new line
+		end-- new line
 		if amount <= 0 then
 			TriggerClientEvent("vorp:TipRight", _source, _U("TryExploits"), 3000)
 		elseif userMoney < amount then
 			TriggerClientEvent("vorp:TipRight", _source, _U("NotEnoughMoney"), 3000)
 		else
 			userCharacter.removeCurrency(0, amount)
-
 			TriggerClientEvent("vorpInventory:createMoneyPickup", _source, amount)
 		end
 		SvUtils.Trem(_source)
@@ -60,69 +95,46 @@ InventoryService.DropMoney = function(amount)
 end
 
 InventoryService.DropAllMoney = function()
-	local _source = source
-	if not SvUtils.InProcessing(_source) then
-		SvUtils.ProcessUser(_source)
-		local userCharacter = Core.getUser(_source).getUsedCharacter
-		local userMoney = userCharacter.money
+		local _source = source
+		if not SvUtils.InProcessing(_source) then
+			SvUtils.ProcessUser(_source)
+			local userCharacter = Core.getUser(_source).getUsedCharacter
+			local userMoney = userCharacter.money
+			local charid = userCharacter.charIdentifier -- new line
+			
+			if contains(newchar,charid)  then -- new line
+				TriggerClientEvent("vorp:TipRight", _source, "Cant Drop Money as a new player", 5000)-- new line
+				SvUtils.Trem(_source)-- new line
+				return-- new line
+			end-- new line
+			if userMoney > 0 then
+				userCharacter.removeCurrency(0, userMoney)
 
-		if userMoney > 0 then
-			userCharacter.removeCurrency(0, userMoney)
-
-			TriggerClientEvent("vorpInventory:createMoneyPickup", _source, userMoney)
+				TriggerClientEvent("vorpInventory:createMoneyPickup", _source, userMoney)
+			end
+			SvUtils.Trem(_source)
 		end
-		SvUtils.Trem(_source)
-	end
-end
-
-InventoryService.DropMoney = function(amount)
-	local _source = source
-	if not SvUtils.InProcessing(_source) then
-		SvUtils.ProcessUser(_source)
-		local userCharacter = Core.getUser(_source).getUsedCharacter
-		local userMoney = userCharacter.money
-
-		if amount <= 0 then
-			TriggerClientEvent("vorp:TipRight", _source, _U("TryExploits"), 3000)
-		elseif userMoney < amount then
-			TriggerClientEvent("vorp:TipRight", _source, _U("NotEnoughMoney"), 3000)
-		else
-			userCharacter.removeCurrency(0, amount)
-
-			TriggerClientEvent("vorpInventory:createMoneyPickup", _source, amount)
-		end
-		SvUtils.Trem(_source)
-	end
-end
-
-InventoryService.DropAllMoney = function()
-	local _source = source
-	if not SvUtils.InProcessing(_source) then
-		SvUtils.ProcessUser(_source)
-		local userCharacter = Core.getUser(_source).getUsedCharacter
-		local userMoney = userCharacter.money
-
-		if userMoney > 0 then
-			userCharacter.removeCurrency(0, userMoney)
-
-			TriggerClientEvent("vorpInventory:createMoneyPickup", _source, userMoney)
-		end
-		SvUtils.Trem(_source)
-	end
+	
 end
 
 InventoryService.DropPartMoney = function()
-	local _source = source
-	local userCharacter = Core.getUser(_source).getUsedCharacter
-	local userMoney = userCharacter.money
-	local userPartMoney = userMoney - (userMoney * Config.DropOnRespawn.PartPercentage / 100)
-	local userMoneyDef = userMoney - userPartMoney
+		local _source = source
+		local userCharacter = Core.getUser(_source).getUsedCharacter
+		local userMoney = userCharacter.money
+		local userPartMoney = userMoney - (userMoney * Config.DropOnRespawn.PartPercentage / 100)
+		local userMoneyDef = userMoney - userPartMoney
+		local charid = userCharacter.charIdentifier -- new line
+		
+		if contains(newchar,charid)  then -- new line
+			TriggerClientEvent("vorp:TipRight", _source, "Cant Drop Money as a new player", 5000)-- new line
+			SvUtils.Trem(_source)-- new line
+			return-- new line
+		end-- new line
+		if userMoney > 0 then
+			userCharacter.removeCurrency(0, userMoneyDef)
 
-	if userMoney > 0 then
-		userCharacter.removeCurrency(0, userMoneyDef)
-
-		TriggerClientEvent("vorpInventory:createMoneyPickup", _source, userMoneyDef)
-	end
+			TriggerClientEvent("vorpInventory:createMoneyPickup", _source, userMoneyDef)
+		end
 end
 
 InventoryService.giveMoneyToPlayer = function(target, amount)
@@ -132,12 +144,19 @@ InventoryService.giveMoneyToPlayer = function(target, amount)
 		local _target = target
 		if Core.getUser(_source) == nil or Core.getUser(_target) == nil then
 			SvUtils.Trem(_source)
+			TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
 			return
 		end
 		local sourceCharacter = Core.getUser(_source).getUsedCharacter
 		local targetCharacter = Core.getUser(_target).getUsedCharacter
 		local sourceMoney = sourceCharacter.money
-
+		local charid = sourceCharacter.charIdentifier -- new line
+		if contains(newchar,charid)  then -- new line
+			TriggerClientEvent("vorp:TipRight", _source, "Cant Give Money as a new player", 5000)-- new line
+			SvUtils.Trem(_source)-- new line
+			TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
+			return-- new line
+		end-- new line
 		if amount <= 0 then
 			TriggerClientEvent("vorp:TipRight", _source, _U("TryExploits"), 3000)
 			Wait(3000)
@@ -150,8 +169,8 @@ InventoryService.giveMoneyToPlayer = function(target, amount)
 			sourceCharacter.removeCurrency(0, amount)
 			targetCharacter.addCurrency(0, amount)
 
-			TriggerClientEvent("vorp:TipRight", _source, _U("YouPaidMoney", tostring(amount), targetCharacter.firstname .. " " .. targetCharacter.lastname), 3000)
-			TriggerClientEvent("vorp:TipRight", _target, _U("YouReceivedMoney", tostring(amount), sourceCharacter.firstname .. " " .. sourceCharacter.lastname), 3000)
+			TriggerClientEvent("vorp:TipRight", _source, _U("YouPaid", tostring(amount), "ID: ".._target), 3000)
+			TriggerClientEvent("vorp:TipRight", _target, _U("YouReceived", tostring(amount), "ID: ".._source), 3000)
 			Wait(3000)
 			TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
 		end
@@ -225,8 +244,8 @@ InventoryService.giveGoldToPlayer = function(target, amount)
 		sourceCharacter.removeCurrency(1, amount)
 		targetCharacter.addCurrency(1, amount)
 
-		TriggerClientEvent("vorp:TipRight", _source, _U("YouPaid", tostring(amount), targetCharacter.firstname .. " " .. targetCharacter.lastname), 3000)
-		TriggerClientEvent("vorp:TipRight", _target, _U("YouReceived", tostring(amount), sourceCharacter.firstname .. " " .. sourceCharacter.lastname), 3000)
+		TriggerClientEvent("vorp:TipRight", _source, _U("YouPaid", tostring(amount), "ID: ".._target), 3000)
+		TriggerClientEvent("vorp:TipRight", _target, _U("YouReceived", tostring(amount), "ID: ".._source), 3000)
 		Wait(3000)
 	end
 	SvUtils.Trem(_source)
@@ -401,44 +420,25 @@ InventoryService.onPickup = function(obj)
 
 		if ItemPickUps[obj].weaponid == 1 then
 			if userInventory ~= nil then
-				if svItem:getLimit() ~= -1 then
-					local item = SvUtils.FindItemByNameAndMetadata("default", identifier, name, metadata)
-
-					if item ~= nil then
-						--local sourceItemCount = UsersInventories[identifier][name]:GetCount()
-						local totalAmount = amount + item:getCount()
-
-						if svItem:getLimit() < totalAmount then
-							TriggerClientEvent("vorp:TipRight", _source, _U("fullInventory"), 2000)
-							SvUtils.Trem(_source, false)
-							return
-						end
-					end
-
-					if Config.MaxItemsInInventory.Items ~= 0 then
-						local sourceInventoryItemCount = InventoryAPI.getUserTotalCount(identifier)
-						sourceInventoryItemCount = sourceInventoryItemCount + amount
-
-						if sourceInventoryItemCount > Config.MaxItemsInInventory.Items then
-							TriggerClientEvent("vorp:TipRight", _source, _U("fullInventory"), 2000)
-							SvUtils.Trem(_source, false)
-							return
-						end
-					end
-				end
-
-				InventoryService.addItem(_source, "default", name, amount, metadata, function (item)
-					if item ~= nil then
-						local title = _U('itempickup')
-						local description = _U('itempickup2') .. amount .. " " .. name
-						Discord(title, _source, description)
-
-						TriggerClientEvent("vorpInventory:sharePickupClient", -1, name, ItemPickUps[obj].obj, amount, metadata, ItemPickUps[obj].coords, 2)
-						TriggerClientEvent("vorpInventory:removePickupClient", -1, ItemPickUps[obj].obj)
-						TriggerClientEvent("vorpInventory:receiveItem", _source, name, item:getId(), amount, metadata)
-						TriggerClientEvent("vorpInventory:playerAnim", _source, obj)
+				InventoryAPI.canCarryItem(_source, name, amount, function (canAdd)
+					if canAdd then
+						InventoryService.addItem(_source, "default", name, amount, metadata, function (item)
+							if item ~= nil then
+								local title = _U('itempickup')
+								local description = _U('itempickup2') .. amount .. " " .. name
+								Discord(title, _source, description)
 		
-						ItemPickUps[obj] = nil
+								TriggerClientEvent("vorpInventory:sharePickupClient", -1, name, ItemPickUps[obj].obj, amount, metadata, ItemPickUps[obj].coords, 2)
+								TriggerClientEvent("vorpInventory:removePickupClient", -1, ItemPickUps[obj].obj)
+								TriggerClientEvent("vorpInventory:receiveItem", _source, name, item:getId(), amount, metadata)
+								TriggerClientEvent("vorpInventory:playerAnim", _source, obj)
+				
+								ItemPickUps[obj] = nil
+							end
+						end)
+					else
+						TriggerClientEvent("vorp:TipRight", _source, _U("fullInventory"), 2000)
+						SvUtils.Trem(_source, false)
 					end
 				end)
 			end
@@ -452,6 +452,10 @@ InventoryService.onPickup = function(obj)
 					InventoryService.addWeapon(_source, weaponId)
 					UsersWeapons["default"][weaponId]:setDropped(0)
 
+					local title = _U('weppickup')
+					local description = _U('itempickup2') .. userWeapons[weaponId]:getName()
+					Discord(title, _source, description)
+
 					TriggerEvent("syn_weapons:onpickup", weaponId)
 					TriggerClientEvent("vorpInventory:sharePickupClient", -1, name, weaponObj, 1, metadata, ItemPickUps[obj].coords, 2, weaponId)
 					TriggerClientEvent("vorpInventory:removePickupClient", -1, weaponObj)
@@ -461,26 +465,7 @@ InventoryService.onPickup = function(obj)
 					ItemPickUps[obj] = nil
 				end
 			else
-				if Config.MaxItemsInInventory.Weapons ~= 0 then
-					local sourceInventoryWeaponCount = InventoryAPI.getUserTotalCountWeapons(identifier, charId) + 1
-
-					if sourceInventoryWeaponCount <= Config.MaxItemsInInventory.Weapons then
-						local weaponId = ItemPickUps[obj].weaponid
-						local weaponObj = ItemPickUps[obj].obj
-						InventoryService.addWeapon(_source, weaponId)
-						local title = _U('weppickup')
-						local description = _U('itempickup2') .. userWeapons[weaponId]:getName()
-						Discord(title, _source, description)
-						TriggerEvent("syn_weapons:onpickup", weaponId)
-						TriggerClientEvent("vorpInventory:sharePickupClient", -1, name, weaponObj, 1, ItemPickUps[obj].coords, 2, weaponId)
-						TriggerClientEvent("vorpInventory:removePickupClient", -1, weaponObj)
-						TriggerClientEvent("vorpInventory:receiveWeapon", _source, weaponId, userWeapons[weaponId]:getPropietary(), userWeapons[weaponId]:getName(), userWeapons[weaponId]:getAllAmmo())
-						TriggerClientEvent("vorpInventory:playerAnim", _source, obj)
-						ItemPickUps[obj] = nil
-					else
-						TriggerClientEvent("vorp:TipRight", _source, _U("fullInventoryWeapon"), 2000)
-					end
-				end
+				TriggerClientEvent("vorp:TipRight", _source, _U("fullInventoryWeapon"), 2000)
 			end
 		end
 	end
@@ -564,28 +549,29 @@ InventoryService.shareGoldPickupServer = function(obj, amount, position)
 end
 
 InventoryService.DropWeapon = function(weaponId)
-	local _source = source
-	if not SvUtils.InProcessing(_source) then
-		SvUtils.ProcessUser(_source)
-		InventoryService.subWeapon(_source, weaponId)
-		UsersWeapons["default"][weaponId]:setDropped(1)
+		local _source = source
+		if not SvUtils.InProcessing(_source) then
+			
+			SvUtils.ProcessUser(_source)
+			InventoryService.subWeapon(_source, weaponId)
+			UsersWeapons["default"][weaponId]:setDropped(1)
 
 
-		TriggerClientEvent("vorpInventory:createPickup", _source, UsersWeapons["default"][weaponId]:getName(), 1, {}, weaponId)
-		SvUtils.Trem(_source)
-	end
+			TriggerClientEvent("vorpInventory:createPickup", _source, UsersWeapons["default"][weaponId]:getName(), 1, {}, weaponId)
+			SvUtils.Trem(_source)
+		end
 end
 
 InventoryService.DropItem = function(itemName, itemId, amount, metadata)
 	local _source = source
+		if not SvUtils.InProcessing(_source) then
+			
+			SvUtils.ProcessUser(_source)
+			InventoryService.subItem(_source, "default", itemId, amount)
 
-	if not SvUtils.InProcessing(_source) then
-		SvUtils.ProcessUser(_source)
-		InventoryService.subItem(_source, "default", itemId, amount)
-
-		TriggerClientEvent("vorpInventory:createPickup", _source, itemName, amount, metadata, 1)
-		SvUtils.Trem(_source)
-	end
+			TriggerClientEvent("vorpInventory:createPickup", _source, itemName, amount, metadata, 1)
+			SvUtils.Trem(_source)
+		end
 end
 
 InventoryService.GiveWeapon = function(weaponId, target)
@@ -617,7 +603,12 @@ InventoryService.GiveItem = function(itemId, amount, target)
 	end
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local targetCharacter = Core.getUser(_target).getUsedCharacter
-
+	local charid = sourceCharacter.charIdentifier -- new line
+	if contains(newchar,charid)  then -- new line
+		TriggerClientEvent("vorp:TipRight", _source, "Cant Give Item as a new player", 5000)-- new line
+		SvUtils.Trem(_source)-- new line
+		return-- new line
+	end-- new line
 	local sourceIdentifier = sourceCharacter.identifier
 	local targetIdentifier = targetCharacter.identifier
 
@@ -645,11 +636,6 @@ InventoryService.GiveItem = function(itemId, amount, target)
 	local item = sourceInventory[itemId]
 	local itemName = item:getName()
 	local itemMetadata = item:getMetadata()
-	local targetItemAmount = 0
-	local targetItemLimit = 0
-	local targetInventoryItemCount = InventoryAPI.getUserTotalCount(targetIdentifier)
-	local canGiveItemToTarget = true
-	local targetItem = SvUtils.FindItemByNameAndMetadata("default", targetIdentifier, itemName, itemMetadata);
 	local svItem = svItems[itemName]
 
 	if svItem == nil then
@@ -659,30 +645,8 @@ InventoryService.GiveItem = function(itemId, amount, target)
 		return
 	end
 
-
-	if targetItem ~= nil then
-		targetItemAmount = targetItem:getCount()
-		targetItemLimit = targetItem:getLimit()
-
-		if targetItemAmount + amount > targetItemLimit then
-			canGiveItemToTarget = false
-		end
-	end
-
-	if targetInventoryItemCount + amount > Config.MaxItemsInInventory.Items then
-		canGiveItemToTarget = false
-	end
-
-	if not canGiveItemToTarget then
-		TriggerClientEvent("vorp:TipRight", _source, _U('fullInventoryGive'), 2000)
-		TriggerClientEvent("vorp:TipRight", _target, _U('fullInventory'), 2000)
-		SvUtils.Trem(_source)
-		return
-	end
-
-
-	local updateClient = function ()
-		TriggerClientEvent("vorpInventory:receiveItem", _target, itemName, targetItem:getId(), amount, itemMetadata)
+	local updateClient = function(addedItem)
+		TriggerClientEvent("vorpInventory:receiveItem", _target, itemName, addedItem:getId(), amount, itemMetadata)
 		TriggerClientEvent("vorpInventory:removeItem", _source, itemName, item:getId(), amount)
 
 		if item:getCount() - amount <= 0 then
@@ -696,53 +660,43 @@ InventoryService.GiveItem = function(itemId, amount, target)
 		local ItemsLabel = svItem:getLabel()
 		--NOTIFY
 
-		TriggerClientEvent("vorp:TipRight", _source, "you gave " .. amount .. " of " .. ItemsLabel, 2000)
-		TriggerClientEvent("vorp:TipRight", _target, "you received " .. amount .. " " .. ItemsLabel, 2000)
-		TriggerEvent("vorpinventory:itemlog", _source, _target, itemName, amount)
-		SvUtils.Trem(_source)
-	end
-
-	if targetItem ~= nil then
-		targetItem:addCount(amount)
-		DbService.SetItemAmount(targetCharIdentifier, targetItem:getId(), targetItem:getCount())
-		updateClient()
-	else
-		DbService.CreateItem(targetCharIdentifier,svItem:getId(), amount, itemMetadata, function (craftedItem)
-			targetItem = Item:New({
-				id = craftedItem.id,
-				count = amount,
-				limit = svItem:getLimit(),
-				label = svItem:getLabel(),
-				name = itemName,
-				type = "item_inventory",
-				metadata = itemMetadata,
-				canUse = svItem:getCanUse(),
-				canRemove = svItem:getCanRemove(),
-				owner = targetCharIdentifier
-			})
-			targetInventory[craftedItem.id] = targetItem
-			updateClient()
-		end)
-
-		item:quitCount(amount)
-
-		if item:getCount() == 0 then
-			sourceInventory[itemName] = nil
-		end
-
-		TriggerClientEvent("vorpInventory:receiveItem", _target, itemName, amount)
-		TriggerClientEvent("vorpInventory:removeItem", _source, itemName, amount)
-
-
-
-		local ItemsLabel = svItem:getLabel()
-		--NOTIFY
-
 		TriggerClientEvent("vorp:TipRight", _source, _U("yougive") .. amount .. _U("of") .. ItemsLabel .. "", 2000)
 		TriggerClientEvent("vorp:TipRight", _target, _U("youreceive") .. amount .. _U("of") .. ItemsLabel .. "", 2000)
 		TriggerEvent("vorpinventory:itemlog", _source, _target, itemName, amount)
-		SvUtils.Trem(_source)
 	end
+
+	InventoryAPI.canCarryItem(_target, itemName, amount, function (canGive)
+		if canGive then
+			local targetItem = SvUtils.FindItemByNameAndMetadata("default", targetIdentifier, itemName, itemMetadata)
+
+			if targetItem ~= nil then
+				targetItem:addCount(amount)
+				DbService.SetItemAmount(targetCharIdentifier, targetItem:getId(), targetItem:getCount())
+				updateClient(targetItem)
+			else
+				DbService.CreateItem(targetCharIdentifier,svItem:getId(), amount, itemMetadata, function (craftedItem)
+					targetItem = Item:New({
+						id = craftedItem.id,
+						count = amount,
+						limit = svItem:getLimit(),
+						label = svItem:getLabel(),
+						name = itemName,
+						type = "item_inventory",
+						metadata = itemMetadata,
+						canUse = svItem:getCanUse(),
+						canRemove = svItem:getCanRemove(),
+						owner = targetCharIdentifier
+					})
+					targetInventory[craftedItem.id] = targetItem
+					updateClient(targetItem)
+				end)
+			end
+		else
+			TriggerClientEvent("vorp:TipRight", _source, _U('fullInventoryGive'), 2000)
+			TriggerClientEvent("vorp:TipRight", _target, _U('fullInventory'), 2000)
+		end
+	end)
+	SvUtils.Trem(_source)
 end
 
 InventoryService.getItemsTable = function()

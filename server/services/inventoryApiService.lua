@@ -59,78 +59,131 @@ InventoryAPI.canCarryAmountItem = function(player, amount, cb)
 	end
 end
 
-InventoryAPI.canCarryItem = function(player, itemName, amount, cb, metadata)
+-- InventoryAPI.canCarryItem = function(player, itemName, amount, cb)
+-- 	local _source = player
+-- 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
+-- 	local identifier = sourceCharacter.identifier
+-- 	local svItem = svItems[itemName]
+
+-- 	if svItem == nil then
+-- 		print("[^2API CanCarryItem^7] ^1Error^7: Item [^3" .. tostring(itemName) .. "^7] does not exist in DB.")
+-- 		cb(false)
+-- 		return
+-- 	end
+
+-- 	local userInventory = UsersInventories["default"][identifier]
+
+-- 	local limit = svItem:getLimit()
+
+-- 	if limit ~= -1 then
+-- 		if userInventory then
+-- 			local item = SvUtils.FindItemByNameAndMetadata("default", identifier, itemName, nil)
+			
+
+-- 			if item then
+-- 				local count = item:getCount()
+-- 				local total = count + amount
+
+-- 				if total <= limit then
+-- 					if Config.MaxItemsInInventory.Items ~= -1 then
+-- 						local sourceInventoryItemCount = InventoryAPI.getUserTotalCount(identifier) + amount
+
+-- 						if sourceInventoryItemCount <= Config.MaxItemsInInventory.Items then
+-- 							cb(true)
+-- 						else
+-- 							cb(false)
+-- 						end
+-- 					else
+-- 						cb(true)
+-- 					end
+-- 				else
+-- 					cb(false)
+-- 				end
+-- 			else
+-- 				if amount <= limit then
+-- 					if Config.MaxItemsInInventory.Items ~= -1 then
+-- 						local sourceInventoryItemCount = InventoryAPI.getUserTotalCount(identifier) + amount
+
+-- 						if sourceInventoryItemCount <= Config.MaxItemsInInventory.Items then
+-- 							cb(true)
+-- 						else
+-- 							cb(false)
+-- 						end
+-- 					else
+-- 						cb(true)
+-- 					end
+-- 				else
+-- 					cb(false)
+-- 				end
+-- 			end
+-- 		else
+-- 			if amount <= limit then
+-- 				if Config.MaxItemsInInventory.Items ~= -1 then
+-- 					local totalAmount = amount
+
+-- 					if totalAmount <= Config.MaxItemsInInventory.Items then
+-- 						cb(true)
+-- 					else
+-- 						cb(false)
+-- 					end
+-- 				else
+-- 					cb(true)
+-- 				end
+-- 			else
+-- 				cb(false)
+-- 			end
+-- 		end
+-- 	else
+-- 		if Config.MaxItemsInInventory.Items ~= -1 then
+-- 			local totalAmount = InventoryAPI.getUserTotalCount(identifier) + amount
+
+-- 			if totalAmount <= Config.MaxItemsInInventory.Items then
+-- 				cb(true)
+-- 			else
+-- 				cb(false)
+-- 			end
+-- 		else
+-- 			cb(true)
+-- 		end
+-- 	end
+-- end
+
+InventoryAPI.canCarryItem = function (player, itemName, amount, cb)
 	local _source = player
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local identifier = sourceCharacter.identifier
 	local svItem = svItems[itemName]
 
 	if svItem == nil then
-		print("[^2API CanCarryItem^7] ^1Error^7: Item [^3" .. tostring(itemName) .. "^7] does not exist in DB.")
+		Log.print("[^2API CanCarryItem^7] ^1Error^7: Item [^3" .. tostring(itemName) .. "^7] does not exist in DB.")
 		cb(false)
 		return
 	end
 
-	metadata = SharedUtils.MergeTables(svItem.metadata, metadata or {})
-	local userInventory = UsersInventories["default"][identifier]
-
 	local limit = svItem:getLimit()
 
 	if limit ~= -1 then
-		if userInventory then
-			local item = SvUtils.FindItemByNameAndMetadata("default", identifier, itemName, nil)
-			if item then
-				local count = item:getCount()
-				local total = count + amount
+		local items = SvUtils.FindAllItemsByName("default", identifier, itemName)
+		local count = 0
+		for _, item in pairs(items) do
+			count = count + item:getCount()
+		end
+		local total = count + amount
 
-				if total <= limit then
-					if Config.MaxItemsInInventory.Items ~= -1 then
-						local sourceInventoryItemCount = InventoryAPI.getUserTotalCount(identifier) + amount
+		if total <= limit then
+			if Config.MaxItemsInInventory.Items ~= -1 then
+				local sourceInventoryItemCount = InventoryAPI.getUserTotalCount(identifier) + amount
 
-						if sourceInventoryItemCount <= Config.MaxItemsInInventory.Items then
-							cb(true)
-						else
-							cb(false)
-						end
-					else
-						cb(true)
-					end
+				if sourceInventoryItemCount <= Config.MaxItemsInInventory.Items then
+					cb(true)
 				else
 					cb(false)
 				end
 			else
-				if amount <= limit then
-					if Config.MaxItemsInInventory.Items ~= -1 then
-						local sourceInventoryItemCount = InventoryAPI.getUserTotalCount(identifier) + amount
-
-						if sourceInventoryItemCount <= Config.MaxItemsInInventory.Items then
-							cb(true)
-						else
-							cb(false)
-						end
-					else
-						cb(true)
-					end
-				else
-					cb(false)
-				end
+				cb(true)
 			end
 		else
-			if amount <= limit then
-				if Config.MaxItemsInInventory.Items ~= -1 then
-					local totalAmount = amount
-
-					if totalAmount <= Config.MaxItemsInInventory.Items then
-						cb(true)
-					else
-						cb(false)
-					end
-				else
-					cb(true)
-				end
-			else
-				cb(false)
-			end
+			cb(false)
 		end
 	else
 		if Config.MaxItemsInInventory.Items ~= -1 then
@@ -370,7 +423,7 @@ InventoryAPI.getItems = function(player, cb, itemName, metadata)
 	local svItem = svItems[itemName]
 
 	if svItem == nil then
-		print("[^2API GetItems^7] ^1Error^7: Item [^3" .. tostring(itemName) .. "^7] does not exist in DB.")
+		Log.print("[^2API GetItems^7] ^1Error^7: Item [^3" .. tostring(itemName) .. "^7] does not exist in DB.")
 		cb(0)
 		return
 	end
@@ -397,7 +450,7 @@ InventoryAPI.getItem = function(player, itemName, cb, metadata)
 	local svItem = svItems[itemName]
 
 	if svItem == nil then
-		print("[^2API GetItem^7] ^1Error^7: Item [^3" .. tostring(itemName) .. "^7] does not exist in DB.")
+		Log.print("[^2API GetItem^7] ^1Error^7: Item [^3" .. tostring(itemName) .. "^7] does not exist in DB.")
 		cb(nil)
 		return
 	end
@@ -414,10 +467,72 @@ InventoryAPI.getItem = function(player, itemName, cb, metadata)
 	end
 end
 
+InventoryAPI.getItemByName = function(player, itemName, cb)
+	local _source = player
+	local sourceCharacter = Core.getUser(_source).getUsedCharacter
+	local identifier = sourceCharacter.identifier
+	local svItem = svItems[itemName]
+
+	if svItem == nil then
+		Log.print("[^2API GetItem^7] ^1Error^7: Item [^3" .. tostring(itemName) .. "^7] does not exist in DB.")
+		cb(nil)
+		return
+	end
+
+	local item = SvUtils.FindItemByNameAndMetadata("default", identifier, itemName, nil)
+	if item then
+		cb(item)
+	else
+		cb(nil)
+	end
+end
+
+InventoryAPI.getItemContainingMetadata = function(player, itemName, metadata, cb)
+	local _source = player
+	local sourceCharacter = Core.getUser(_source).getUsedCharacter
+	local identifier = sourceCharacter.identifier
+	local svItem = svItems[itemName]
+
+	if svItem == nil then
+		Log.print("[^2API GetItem^7] ^1Error^7: Item [^3" .. tostring(itemName) .. "^7] does not exist in DB.")
+		cb(nil)
+		return
+	end
+
+	metadata = SharedUtils.MergeTables(svItem.metadata or {}, metadata or {})
+	local item = SvUtils.FindItemByNameAndContainingMetadata("default", identifier, itemName, metadata)
+	if item then
+		cb(item)
+	else
+		cb(nil)
+	end
+end
+
+InventoryAPI.getItemMatchingMetadata = function(player, itemName, metadata, cb)
+	local _source = player
+	local sourceCharacter = Core.getUser(_source).getUsedCharacter
+	local identifier = sourceCharacter.identifier
+	local svItem = svItems[itemName]
+
+	if svItem == nil then
+		Log.print("[^2API GetItem^7] ^1Error^7: Item [^3" .. tostring(itemName) .. "^7] does not exist in DB.")
+		cb(nil)
+		return
+	end
+
+	metadata = SharedUtils.MergeTables(svItem.metadata or {}, metadata or {})
+	local item = SvUtils.FindItemByNameAndMetadata("default", identifier, itemName, metadata)
+
+	if item then
+		cb(item)
+	else
+		cb(nil)
+	end
+end
+
 InventoryAPI.addItem = function(player, name, amount, metadata)
 	local _source = player
 	local sourceUser = Core.getUser(_source)
-	local added = false
 
 	if (sourceUser) == nil then
 		return
@@ -426,7 +541,7 @@ InventoryAPI.addItem = function(player, name, amount, metadata)
 	local svItem = svItems[name]
 
 	if svItem == nil then
-		print("[^2API AddItem^7] ^1Error^7: Item [^3" .. tostring(name) .. "^7] does not exist in DB.")
+		Log.print("[^2API AddItem^7] ^1Error^7: Item [^3" .. tostring(name) .. "^7] does not exist in DB.")
 		return
 	end
 
@@ -451,36 +566,23 @@ InventoryAPI.addItem = function(player, name, amount, metadata)
 	end
 
 	local sourceItemLimit = svItem:getLimit()
-	local sourceInventoryItemCount = InventoryAPI.getUserTotalCount(identifier) + amount
-
 	local itemLabel = svItem:getLabel()
 	local itemType = svItem:getType()
 	local itemCanRemove = svItem:getCanRemove()
 	local itemDefaultMetadata = svItem:getMetadata()
 
-	local item = SvUtils.FindItemByNameAndMetadata("default", identifier, name, metadata)
-	-- if item == nil then
-	-- 	item = SvUtils.FindItemByNameAndMetadata("default", identifier, name, nil)
-	-- end
-	if item then -- Item already exist in inventory
-		if item:getCount() + amount <= sourceItemLimit or sourceItemLimit == -1 then
-			if Config.MaxItemsInInventory.Items ~= -1 then
-				if sourceInventoryItemCount <= Config.MaxItemsInInventory.Items then
-					item:addCount(amount)
-					DbService.SetItemAmount(charIdentifier, item:getId(), item:getCount())
-					TriggerClientEvent("vorpCoreClient:addItem", _source, item)
-					return
-				end
-			else
+	
+	InventoryAPI.canCarryItem(_source, name, amount, function (canAdd)
+		if canAdd then
+			local item = SvUtils.FindItemByNameAndMetadata("default", identifier, name, metadata)
+			-- if item == nil then
+			-- 	item = SvUtils.FindItemByNameAndMetadata("default", identifier, name, nil)
+			-- end
+			if item ~= nil then -- Item already exist in inventory
 				item:addCount(amount)
 				DbService.SetItemAmount(charIdentifier, item:getId(), item:getCount())
 				TriggerClientEvent("vorpCoreClient:addItem", _source, item)
-				return
-			end
-		end
-	else -- Item does not exist in inventory
-		if Config.MaxItemsInInventory.Items ~= -1 then
-			if sourceInventoryItemCount <= Config.MaxItemsInInventory.Items then
+			else
 				DbService.CreateItem(charIdentifier, svItem:getId(), amount, metadata, function(craftedItem)
 					item = Item:New({
 						id = craftedItem.id,
@@ -497,31 +599,12 @@ InventoryAPI.addItem = function(player, name, amount, metadata)
 					userInventory[craftedItem.id] = item
 					TriggerClientEvent("vorpCoreClient:addItem", _source, item)
 				end)
-				return
 			end
 		else
-			DbService.CreateItem(charIdentifier, svItem:getId(), amount, metadata, function(craftedItem)
-				item = Item:New({
-					id = craftedItem.id,
-					count = amount,
-					limit = sourceItemLimit,
-					label = itemLabel,
-					metadata = SharedUtils.MergeTables(itemDefaultMetadata, metadata),
-					name = name,
-					type = itemType,
-					canUse = true,
-					canRemove = itemCanRemove,
-					owner = charIdentifier
-				})
-				userInventory[craftedItem.id] = item
-				TriggerClientEvent("vorpCoreClient:addItem", _source, item)
-			end)
-			return
+			-- inventory is full
+			TriggerClientEvent("vorp:Tip", _source, _U("fullInventory"), 2000)
 		end
-	end
-
-	-- inventory is full
-	TriggerClientEvent("vorp:Tip", _source, _U("fullInventory"), 2000)
+	end)
 end
 
 InventoryAPI.subItem = function(player, name, amount, metadata)
@@ -530,16 +613,14 @@ InventoryAPI.subItem = function(player, name, amount, metadata)
 	local svItem = svItems[name]
 
 	if svItem == nil then
-		print("[^2API SubItem^7] ^1Error^7: Item [^3" .. tostring(name) .. "^7] does not exist in DB.")
+		Log.print("[^2API SubItem^7] ^1Error^7: Item [^3" .. tostring(name) .. "^7] does not exist in DB.")
 		return
 	end
 	metadata = SharedUtils.MergeTables(svItem.metadata, metadata or {})
 
-
 	if (sourceUser) == nil then
 		return
 	end
-
 
 	local sourceCharacter = sourceUser.getUsedCharacter
 	local identifier = sourceCharacter.identifier
