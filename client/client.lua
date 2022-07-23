@@ -102,6 +102,11 @@ AddEventHandler("vorpinventory:setammotoped", function(ammo)
     end
 end)
 
+RegisterNetEvent("vorpinventory:updateinventorystuff")
+AddEventHandler("vorpinventory:updateinventorystuff", function() -- new 
+    NUIService.LoadInv()
+end)
+
 RegisterNetEvent("vorpinventory:updateuiammocount")
 AddEventHandler("vorpinventory:updateuiammocount", function(ammo)
 	SendNUIMessage({

@@ -653,7 +653,6 @@ InventoryService.GiveItem = function(itemId, amount, target)
 			DbService.DeleteItem(sourceCharIdentifier, item:getId())
 			sourceInventory[item:getId()] = nil
 		else
-			print("[^2GiveItem^7] ^1Debug^7: Going to call Item:quitCount with amount = ^3" .. tonumber(amount) .. "^7.")
 			item:quitCount(amount)
 			DbService.SetItemAmount(sourceCharIdentifier, item:getId(), item:getCount())
 		end
