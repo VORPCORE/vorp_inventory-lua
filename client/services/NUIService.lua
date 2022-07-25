@@ -13,7 +13,7 @@ end
 
 NUIService.OpenClanInventory = function(clanName, clanId, capacity)
 	SetNuiFocus(true, true)
-	SendNUIMessage({ action = "display", type = "clan", title = "" .. clanName .. "", clanid = clanId, capacity = capacity })
+	SendNUIMessage({ action = "display", type = "clan", title = "" .. clanName .. "", clanid = clanId, capacity = capacity, search = Config.InventorySearchable })
 	InInventory = true
 end
 
@@ -28,7 +28,7 @@ end
 NUIService.OpenContainerInventory = function(ContainerName, Containerid, capacity)
 	SetNuiFocus(true, true)
 	SendNUIMessage({ action = "display", type = "Container", title = "" .. ContainerName .. "", Containerid = Containerid,
-		capacity = capacity })
+		capacity = capacity, search = Config.InventorySearchable })
 	InInventory = true
 end
 
@@ -48,7 +48,7 @@ end
 
 NUIService.OpenHorseInventory = function(horseTitle, horseId, capacity)
 	SetNuiFocus(true, true)
-	SendNUIMessage({ action = "display", type = "horse", title = horseTitle, horseid = horseId, capacity = capacity })
+	SendNUIMessage({ action = "display", type = "horse", title = horseTitle, horseid = horseId, capacity = capacity, search = Config.InventorySearchable })
 	InInventory = true
 	TriggerEvent("vorp_stables:setClosedInv", true)
 end
@@ -63,7 +63,7 @@ end
 
 NUIService.OpenstealInventory = function(stealName, stealId, capacity)
 	SetNuiFocus(true, true)
-	SendNUIMessage({ action = "display", type = "steal", title = stealName, stealId = stealId, capacity = capacity })
+	SendNUIMessage({ action = "display", type = "steal", title = stealName, stealId = stealId, capacity = capacity, search = Config.InventorySearchable })
 	InInventory = true
 	TriggerEvent("vorp_stables:setClosedInv", true)
 end
@@ -78,7 +78,7 @@ end
 
 NUIService.OpenCartInventory = function(cartName, wagonId, capacity)
 	SetNuiFocus(true, true)
-	SendNUIMessage({ action = "display", type = "cart", title = cartName, wagonid = wagonId, capacity = capacity })
+	SendNUIMessage({ action = "display", type = "cart", title = cartName, wagonid = wagonId, capacity = capacity, search = Config.InventorySearchable })
 	InInventory = true
 
 	TriggerEvent("vorp_stables:setClosedInv", true)
@@ -95,7 +95,7 @@ end
 
 NUIService.OpenHouseInventory = function(houseName, houseId, capacity)
 	SetNuiFocus(true, true)
-	SendNUIMessage({ action = "display", type = "house", title = houseName, houseId = houseId, capacity = capacity })
+	SendNUIMessage({ action = "display", type = "house", title = houseName, houseId = houseId, capacity = capacity, search = Config.InventorySearchable })
 	InInventory = true
 end
 
@@ -109,7 +109,7 @@ end
 
 NUIService.OpenBankInventory = function(bankName, bankId, capacity)
 	SetNuiFocus(true, true)
-	SendNUIMessage({ action = "display", type = "bank", title = bankName, bankId = bankId, capacity = capacity })
+	SendNUIMessage({ action = "display", type = "bank", title = bankName, bankId = bankId, capacity = capacity, search = Config.InventorySearchable })
 	InInventory = true
 end
 
@@ -123,7 +123,7 @@ end
 
 NUIService.OpenHideoutInventory = function(hideoutName, hideoutId, capacity)
 	SetNuiFocus(true, true)
-	SendNUIMessage({ action = "display", type = "hideout", title = hideoutName, hideoutId = hideoutId, capacity = capacity })
+	SendNUIMessage({ action = "display", type = "hideout", title = hideoutName, hideoutId = hideoutId, capacity = capacity, search = Config.InventorySearchable })
 	InInventory = true
 end
 
@@ -461,7 +461,7 @@ end
 
 NUIService.OpenInv = function()
 	SetNuiFocus(true, true)
-	SendNUIMessage({ action = "display", type = "main" })
+	SendNUIMessage({ action = "display", type = "main", search = Config.InventorySearchable})
 	InInventory = true
 
 	NUIService.LoadInv()
