@@ -4,9 +4,9 @@ local Tables = {
         script = "vorp_inventory",
         sql = [[
             CREATE TABLE IF NOT EXISTS `loadout` (
-                `id` INT(11) NOT NULL AUTO_INCREMENT,
+                `id` INT NOT NULL AUTO_INCREMENT,
                 `identifier` VARCHAR(50) NOT NULL,
-                `charidentifier` INT(11) NULL,
+                `charidentifier` INT NULL,
                 `name` VARCHAR(50) NULL DEFAULT NULL,
                 `ammo` VARCHAR(255) NOT NULL DEFAULT '{}',
                 `components` VARCHAR(255) NOT NULL DEFAULT '[]',
@@ -14,7 +14,7 @@ local Tables = {
                 `mudlevel` DOUBLE NULL DEFAULT 0,
                 `conditionlevel` DOUBLE NULL DEFAULT 0,
                 `rustlevel` DOUBLE NULL DEFAULT 0,
-                `used` TINYINT(4) NULL DEFAULT 0,
+                `used` TINYINT NULL DEFAULT 0,
                 PRIMARY KEY (`id`),
                 INDEX `id` (`id`)
             )
@@ -30,10 +30,10 @@ local Tables = {
             CREATE TABLE IF NOT EXISTS `items` (
                 `item` VARCHAR(50) NOT NULL,
                 `label` VARCHAR(50) NOT NULL,
-                `limit` INT(11) NOT NULL DEFAULT 1,
-                `can_remove` TINYINT(1) NOT NULL DEFAULT 1,
+                `limit` INT NOT NULL DEFAULT 1,
+                `can_remove` TINYINT NOT NULL DEFAULT 1,
                 `type` VARCHAR(50) NULL DEFAULT NULL,
-                `usable` TINYINT(1) NULL DEFAULT NULL,
+                `usable` TINYINT NULL DEFAULT NULL,
                 PRIMARY KEY (`item`) USING BTREE
             )
             COLLATE='utf8mb4_general_ci'
@@ -54,7 +54,7 @@ local Updates = {
             AND  Column_Name = 'dropped';
         ]],
         sql =  [[
-            ALTER TABLE `loadout` ADD COLUMN `dropped` INT(11) NOT NULL DEFAULT 0;
+            ALTER TABLE `loadout` ADD COLUMN `dropped` INT NOT NULL DEFAULT 0;
         ]]
     },
     {
@@ -80,7 +80,7 @@ local Updates = {
             AND  Column_Name = 'used2';
         ]],
         sql =  [[
-            ALTER TABLE `loadout` ADD COLUMN `used2` tinyint(4) NOT NULL DEFAULT 0;
+            ALTER TABLE `loadout` ADD COLUMN `used2` tinyint NOT NULL DEFAULT 0;
         ]]
     },
     {

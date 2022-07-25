@@ -29,6 +29,8 @@ Config = {
   -- DEATH FUNCTIONS
   DisableDeathInventory = true, -- prevent the ability to access inventory while dead
 
+  InventorySearchable = true, -- Should the search bar appear in inventories
+
   --{ I } OPEN INVENTORY
   OpenKey = 0xC1989F95,
 
