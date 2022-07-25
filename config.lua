@@ -50,7 +50,9 @@ Config = {
 
   -- NEED TO TEST
   DropOnRespawn = {
-    Money   = false,
+    AllMoney   = false,
+    PartMoney = false,
+    PartPercentage = 25,
     Gold    = false, -- TRUE ONLY IF UseGoldItem = true
     Weapons = false,
     Items   = false
