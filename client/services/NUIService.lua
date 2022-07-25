@@ -461,7 +461,7 @@ end
 
 NUIService.OpenInv = function()
 	SetNuiFocus(true, true)
-	SendNUIMessage({ action = "display", type = "main", search = Config.InventorySearchable})
+	SendNUIMessage({ action = "display", type = "main", search = Config.InventorySearchable, autofocus = Config.InventorySearchAutoFocus})
 	InInventory = true
 
 	NUIService.LoadInv()

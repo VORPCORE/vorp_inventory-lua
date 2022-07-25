@@ -30,6 +30,7 @@ Config = {
   DisableDeathInventory = true, -- prevent the ability to access inventory while dead
 
   InventorySearchable = true, -- Should the search bar appear in inventories
+  InventorySearchAutoFocus = true, -- Search autoofocuses when you type
 
   --{ I } OPEN INVENTORY
   OpenKey = 0xC1989F95,

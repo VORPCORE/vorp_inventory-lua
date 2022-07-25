@@ -157,9 +157,11 @@ window.addEventListener('message', function (event) {
 
         disabled = false;
 
-        $(document).on('keydown', function (event) {
-            $("#search").focus();
-        });
+        if (event.data.autofocus == true) {
+            $(document).on('keydown', function (event) {
+                $("#search").focus();
+            });
+        }
 
         $("#close").on('click', function (event) {
             closeInventory();
