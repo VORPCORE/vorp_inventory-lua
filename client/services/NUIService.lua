@@ -70,10 +70,10 @@ end
 
 NUIService.CloseInventory = function()
 	SetNuiFocus(false, false)
-	TriggerEvent("vorp_stables:setClosedInv", false)
-	TriggerEvent("syn:closeinv")
 	SendNUIMessage({ action = "hide" })
 	InInventory = false
+	TriggerEvent("vorp_stables:setClosedInv", false)
+	TriggerEvent("syn:closeinv")
 end
 
 NUIService.OpenHorseInventory = function(horseTitle, horseId, capacity)
@@ -197,6 +197,8 @@ NUIService.NUISetNearPlayers = function(obj, nearestPlayers)
 		print("No Near Players")
 		return
 	end
+	
+	print('[^NUISetNearPlayers^7] ^2Info^7: players found = ' .. json.encode(nearestPlayers));
 
 	local item = {}
 
@@ -226,6 +228,8 @@ NUIService.NUISetNearPlayers = function(obj, nearestPlayers)
 	nuiReturn.type = item.type
 	nuiReturn.what = item.what
 
+	print('[^NUISetNearPlayers^7] ^2Info^7: sending payload to NUI. Payload = ' .. json.encode(nuiReturn));
+
 	SendNUIMessage(nuiReturn)
 end
 
@@ -235,6 +239,7 @@ NUIService.NUIGiveItem = function(obj)
 	local data = Utils.expandoProcessing(obj)
 	local data2 = Utils.expandoProcessing(data.data)
 
+	print('[^NUIGiveItem^7] ^2Info^7: selected player id = ' .. tostring(data.player));
 	for _, player in pairs(nearestPlayers) do
 		if player ~= PlayerId() then
 			if GetPlayerServerId(player) == tonumber(data.player) then
@@ -276,6 +281,7 @@ NUIService.NUIGiveItem = function(obj)
 					TriggerServerEvent("vorpinventory:weaponlog", target, data2)
 				end
 
+				print('[^NUIGiveItem^7] ^2Info^7: Reloading inv after sending info of giving item ?');
 				NUIService.LoadInv()
 			end
 		end

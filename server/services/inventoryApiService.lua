@@ -835,7 +835,7 @@ InventoryAPI.getUserTotalCountWeapons = function(identifier, charId)
 	local userTotalWeaponCount = 0
 	for _, weapon in pairs(UsersWeapons["default"]) do
 		if weapon:getPropietary() == identifier and weapon:getCharId() == charId then
-			if not contains(Config.notweapons, weapon:getName()) then
+			if not contains(Config.notweapons, string.upper(weapon:getName())) then
 				userTotalWeaponCount = userTotalWeaponCount + 1
 			end
 		end

@@ -117,6 +117,7 @@ function disableInventory(ms) {
 }
 
 function selectPlayerToGive(data) {
+    console.log('[selectPlayerToGive] Info: Opening prompt to select player');
     dialog.prompt({
         title: LANGUAGE.toplayerpromptitle,
         button: LANGUAGE.toplaterpromptaccept,
@@ -129,6 +130,7 @@ function selectPlayerToGive(data) {
                 player: player,
                 data: data
             }));
+            console.log('[selectPlayerToGive] Info: Validated selected player');
             return true;
         }
     });
@@ -188,12 +190,15 @@ function giveGetHowMany(item, type, hash, id, metadata) {
             },
             validate: function (value, item, type) {
                 if (!value) {
+                    console.log('[giveGetHowMany] Error: given value is nil or 0. Closing Dialog');
                     dialog.close()
                     return;
                 }
                 if (!isInt(value)) {
-                        return;
-                    } 
+                    console.log('[giveGetHowMany] Error: given value is not an integer. Closing Dialog');
+                    dialog.close()
+                    return;
+                }
                 $.post("http://vorp_inventory/GetNearPlayers", JSON.stringify({
                     type: type,
                     what: "give",
