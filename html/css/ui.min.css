@@ -499,7 +499,10 @@ span.emoji {
         top: 790px;
 
     }
+    #description2 { 
+        top: 790px;
 
+    }
     .controls {
         top: 240px;
         left: 390px;
@@ -562,7 +565,10 @@ span.emoji {
         top: 840px;
         left: 10px;
     }
-    
+    #description2 { 
+        top: 840px;
+        left: 10px;
+    }
     .controls {
         top: 170px;
         left: 390px;
