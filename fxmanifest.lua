@@ -4,9 +4,17 @@ rdr3_warning 'I acknowledge that this is a prerelease build of RedM, and I am aw
 ui_page 'html/ui.html'
 
 client_scripts {
+  'client/models/*.lua',
+  'client/handler/*.lua',
+  'client/services/*.lua',
+  'client/controllers/*.lua',
   'client/*.lua',
 }
 server_scripts {
+  'server/models/*.lua',
+  'server/handler/*.lua',
+  'server/services/*.lua',
+  'server/controllers/*.lua',
   'vorpInventoryApi.lua',
   'server/*.lua',
 }
