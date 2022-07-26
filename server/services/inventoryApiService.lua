@@ -750,7 +750,9 @@ InventoryAPI.registerWeapon = function(target, name, ammos, components,comps)
 					ammo = ammo,
 					used = false,
 					used2 = false,
-					charId = targetCharId
+					charId = targetCharId,
+					currInv = "default",
+					dropped = 0,
 				})
 				UsersWeapons["default"][weaponId] = newWeapon
 
@@ -775,7 +777,9 @@ InventoryAPI.registerWeapon = function(target, name, ammos, components,comps)
 					ammo = ammo,
 					used = false,
 					used2 = false,
-					charId = targetCharId
+					charId = targetCharId,
+					currInv = "default",
+					dropped = 0,
 				})
 				UsersWeapons["default"][weaponId] = newWeapon
 
