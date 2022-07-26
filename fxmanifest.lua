@@ -4,10 +4,6 @@ rdr3_warning 'I acknowledge that this is a prerelease build of RedM, and I am aw
 ui_page 'html/ui.html'
 
 client_scripts {
-  'client/models/*.lua',
-  'client/handler/*.lua',
-  'client/services/*.lua',
-  'client/controllers/*.lua',
   'client/*.lua',
 }
 server_scripts {
@@ -34,7 +30,7 @@ files {
 server_exports { 'vorp_inventoryApi' }
 
 
-version '1.1.1'
+version '2.0'
 vorp_checker 'yes'
 vorp_name '^4Resource version Check^3'
 vorp_github 'https://github.com/VORPCORE/vorp_inventory-lua'
