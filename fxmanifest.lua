@@ -7,10 +7,6 @@ client_scripts {
   'client/*.lua',
 }
 server_scripts {
-  'server/models/*.lua',
-  'server/handler/*.lua',
-  'server/services/*.lua',
-  'server/controllers/*.lua',
   'vorpInventoryApi.lua',
   'server/*.lua',
 }
