@@ -9,18 +9,20 @@ AddEventHandler('inv:dropstatus', function(x)
 end)
 
 NUIService.ReloadInventory = function(inventory)
-	local payload = json.decode(inventory)
+    local payload = json.decode(inventory)
 
-	for _, item in pairs(payload.itemList) do
-		if item.type == "item_weapon" then
-			item.label = Utils.GetWeaponLabel(item.name)
-			item.desc = Utils.GetWeaponDesc(item.name)
-		end
-	end
+    for _, item in pairs(payload.itemList) do
+        if item.type == "item_weapon" then
+            item.label = Utils.GetWeaponLabel(item.name)
+            if item.desc == nil then 
+                item.desc = Utils.GetWeaponDesc(item.name)
+            end
+        end
+    end
 
-	SendNUIMessage(payload)
-	Wait(500)
-	NUIService.LoadInv()
+    SendNUIMessage(payload)
+    Wait(500)
+    NUIService.LoadInv()
 end
 
 
