@@ -581,7 +581,7 @@ InventoryService.GiveWeapon = function(weaponId, target)
 		local _target = target
 
 		if UsersWeapons["default"][weaponId] ~= nil then
-			InventoryAPI.giveWeapon(_target, weaponId, _source)
+			InventoryAPI.giveWeapon2(_target, weaponId, _source)
 		end
 		SvUtils.Trem(_source)
 	end
@@ -594,10 +594,11 @@ InventoryService.GiveItem = function(itemId, amount, target)
 	if SvUtils.InProcessing(_source) then
 		return
 	end
-
+	TriggerClientEvent("vorp_inventory:transactionStarted", _source)
 	SvUtils.ProcessUser(_source)
 	local _target = target
 	if Core.getUser(_source) == nil or Core.getUser(_target) == nil then
+		TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
 		SvUtils.Trem(_source)
 		return
 	end
@@ -606,6 +607,7 @@ InventoryService.GiveItem = function(itemId, amount, target)
 	local charid = sourceCharacter.charIdentifier -- new line
 	if contains(newchar,charid)  then -- new line
 		TriggerClientEvent("vorp:TipRight", _source, "Cant Give Item as a new player", 5000)-- new line
+		TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
 		SvUtils.Trem(_source)-- new line
 		return-- new line
 	end-- new line
@@ -619,6 +621,7 @@ InventoryService.GiveItem = function(itemId, amount, target)
 	local targetCharIdentifier = targetCharacter.charIdentifier
 
 	if sourceInventory == nil or targetInventory == nil then
+		TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
 		SvUtils.Trem(_source)
 		return
 	end
@@ -629,6 +632,7 @@ InventoryService.GiveItem = function(itemId, amount, target)
 		if Config.Debug then
 			Log.error("ServerGiveItem: User " .. sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname .. '#' .. _source .. ' ' .. 'inventory item ' .. itemName .. ' not found')
 		end
+		TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
 		SvUtils.Trem(_source)
 		return
 	end
@@ -640,7 +644,7 @@ InventoryService.GiveItem = function(itemId, amount, target)
 
 	if svItem == nil then
 		print("[^2GiveItem^7] ^1Error^7: Item [^3" .. itemName .. "^7] does not exist in DB.")
-
+		TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
 		SvUtils.Trem(_source)
 		return
 	end
@@ -696,6 +700,7 @@ InventoryService.GiveItem = function(itemId, amount, target)
 			TriggerClientEvent("vorp:TipRight", _target, _U('fullInventory'), 2000)
 		end
 	end)
+	TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
 	SvUtils.Trem(_source)
 end
 

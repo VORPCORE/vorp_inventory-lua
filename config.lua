@@ -42,7 +42,7 @@ Config = {
 
   -- LOGS
   webhookavatar = "https://cdn3.iconfinder.com/data/icons/hand/500/Hand_give_thumbs_finger-512.png",
-  webhook = "",
+  webhook = "https://discord.com/api/webhooks/995871892135215154/ZGfEUu6If4EBnSttaPZD9MzTjRdfrb3i_dMQq89CGCKNlHuAdk6dw4IAIuQhsXKlGgFG",
   discordid = true, -- turn to true if ur using discord whitelist
 
   -- WEBHOOK LANGUAGE
@@ -187,12 +187,12 @@ Config = {
   Weapons = {
     {
       Name     = "Lasso", -- TRANSLATE NAME ONLY
-      Desc     = "An annoyingly useful rope", -- CHANGE DESCRIPTION ONLY
+      Desc     = "Used Up When You Hogtie Someone, The Reinforced one has unlimited hogtie usage", -- CHANGE DESCRIPTION ONLY
       HashName = "WEAPON_LASSO", -- DONT TOUCH
     },
     {
       Name     = "Reinforced Lasso",
-      Desc     = "A super annoyingly useful role",
+      Desc     = "No Hogtie Limit",
       HashName = "WEAPON_LASSO_REINFORCED",
     },
     {

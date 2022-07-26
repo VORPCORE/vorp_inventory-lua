@@ -23,10 +23,37 @@ exports('vorp_inventoryApi',function()
         TriggerEvent("vorpCore:subWeapon",source,tonumber(weaponid))
     end
 
-    self.createWeapon = function(source,weaponName,ammoaux,compaux)
-        TriggerEvent("vorpCore:registerWeapon",source,tostring(string.upper(weaponName)),ammoaux,compaux)
+    self.createWeapon = function(source,weaponName,ammoaux,compaux,comps)
+        TriggerEvent("vorpCore:registerWeapon",source,tostring(string.upper(weaponName)),ammoaux,compaux,comps)
     end
 
+    self.deletegun = function(source,id)
+        TriggerEvent("vorpCore:deletegun",source,tonumber(id))
+    end
+    self.canCarryWeapons = function(source, amount, cb)
+        TriggerEvent("vorpCore:canCarryWeapons", source, amount, cb)
+    end
+
+    self.getcomps = function(source, weaponid)
+        local comps
+        TriggerEvent("vorpCore:getcomps", source, tonumber(weaponid), function(responseItem)
+            comps = responseItem
+        end)
+        while comps == nil do 
+            Wait(50)
+        end
+        return comps 
+    end
+
+    self.getItem = function(source, itemName, metadata)
+        local item
+        
+        TriggerEvent("vorpCore:getItem", source, tostring(itemName), function(responseItem)
+            item = responseItem
+        end, metadata)
+
+        return item
+    end
     self.giveWeapon = function(source,weaponid,target)
         TriggerEvent("vorpCore:giveWeapon",source,weaponid,target)
     end
@@ -39,15 +66,7 @@ exports('vorp_inventoryApi',function()
         TriggerEvent("vorpCore:subItem",source,tostring(itemName),tonumber(qty), metadata)
     end
 
-    self.getItem = function(source, itemName, metadata)
-        local item
-        
-        TriggerEvent("vorpCore:getItem", source, tostring(itemName), function(responseItem)
-            item = responseItem
-        end, metadata)
 
-        return item
-    end
 
     self.getItemByName = function(source, itemName)
         local item
@@ -206,9 +225,7 @@ exports('vorp_inventoryApi',function()
         return inv
     end
 
-    self.canCarryWeapons = function(source, amount, cb)
-        TriggerEvent("vorpCore:canCarryWeapons", source, amount, cb)
-    end
+    
 
      self.CloseInv = function(source, invId) 
         if invId then

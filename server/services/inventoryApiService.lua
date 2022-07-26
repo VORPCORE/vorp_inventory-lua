@@ -22,31 +22,6 @@ local function contains(table, element)
 	return false
 end
 
-InventoryAPI.canCarryAmountWeapons = function(player, amount, cb)
-	local _source = player
-	
-	if _source == nil then
-		print("Wrong ID or player dont exist")
-		return
-	end
-	
-	local sourceCharacter = Core.getUser(_source).getUsedCharacter
-	local identifier = sourceCharacter.identifier
-	local charId = sourceCharacter.charIdentifier
-
-	local sourceInventoryWeaponCount = InventoryAPI.getUserTotalCountWeapons(identifier, charId) + amount
-
-	if Config.MaxItemsInInventory.Weapons ~= -1 then
-		if sourceInventoryWeaponCount <= Config.MaxItemsInInventory.Weapons then
-			cb(true)
-		else
-			cb(false)
-		end
-	else
-		cb(true)
-	end
-end
-
 InventoryAPI.canCarryAmountItem = function(player, amount, cb)
 	local _source = player
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
@@ -454,29 +429,7 @@ InventoryAPI.getItems = function(player, cb, itemName, metadata)
 	end
 end
 
-InventoryAPI.getItem = function(player, itemName, cb, metadata)
-	local _source = player
-	local sourceCharacter = Core.getUser(_source).getUsedCharacter
-	local identifier = sourceCharacter.identifier
-	local svItem = svItems[itemName]
 
-	if svItem == nil then
-		Log.print("[^2API GetItem^7] ^1Error^7: Item [^3" .. tostring(itemName) .. "^7] does not exist in DB.")
-		cb(nil)
-		return
-	end
-
-	metadata = SharedUtils.MergeTables(svItem.metadata or {}, metadata or {})
-	local item = SvUtils.FindItemByNameAndMetadata("default", identifier, itemName, metadata)
-	if item == nil then
-		item = SvUtils.FindItemByNameAndMetadata("default", identifier, itemName, nil)
-	end
-	if item then
-		cb(item)
-	else
-		cb(nil)
-	end
-end
 
 InventoryAPI.getItemByName = function(player, itemName, cb)
 	local _source = player
@@ -497,6 +450,10 @@ InventoryAPI.getItemByName = function(player, itemName, cb)
 		cb(nil)
 	end
 end
+
+
+
+
 
 InventoryAPI.getItemContainingMetadata = function(player, itemName, metadata, cb)
 	local _source = player
@@ -664,8 +621,67 @@ InventoryAPI.subItem = function(player, name, amount, metadata)
 		end
 	end
 end
+InventoryAPI.canCarryAmountWeapons = function(player, amount, cb)
+	local _source = player
+	local sourceCharacter = Core.getUser(_source).getUsedCharacter
+	local identifier = sourceCharacter.identifier
+	local charId = sourceCharacter.charIdentifier
 
-InventoryAPI.registerWeapon = function(target, name, ammos, components)
+	local sourceInventoryWeaponCount = InventoryAPI.getUserTotalCountWeapons(identifier, charId) + amount
+
+	if Config.MaxItemsInInventory.Weapons ~= -1 then
+		if sourceInventoryWeaponCount <= Config.MaxItemsInInventory.Weapons then
+			cb(true)
+		else
+			cb(false)
+		end
+	else
+		cb(true)
+	end
+end
+InventoryAPI.getItem = function(player, itemName, cb, metadata)
+	local _source = player
+	local sourceCharacter = Core.getUser(_source).getUsedCharacter
+	local identifier = sourceCharacter.identifier
+	local svItem = svItems[itemName]
+
+	if svItem == nil then
+		Log.print("[^2API GetItem^7] ^1Error^7: Item [^3" .. tostring(itemName) .. "^7] does not exist in DB.")
+		cb(nil)
+		return
+	end
+
+	metadata = SharedUtils.MergeTables(svItem.metadata or {}, metadata or {})
+	local item = SvUtils.FindItemByNameAndMetadata("default", identifier, itemName, metadata)
+	if item == nil then
+		item = SvUtils.FindItemByNameAndMetadata("default", identifier, itemName, nil)
+	end
+	if item then
+		cb(item)
+	else
+		cb(nil)
+	end
+end
+InventoryAPI.getcomps = function(player, weaponid,cb)
+	local _source = player
+    exports.ghmattimysql:execute('SELECT comps FROM loadout WHERE id = @id ' , {['id'] = weaponid}, function(result)
+        if result[1] ~= nil then 
+            cb(json.decode(result[1].comps))
+		else
+			cb({})
+        end
+    end)
+	
+end
+
+
+
+InventoryAPI.deletegun = function(player, weaponid)
+	local _source = player
+    exports.ghmattimysql:execute("DELETE FROM loadout WHERE id=@id", { ['id'] = weaponid})
+end
+
+InventoryAPI.registerWeapon = function(target, name, ammos, components,comps)
 	local _target = target
 	local targetUser = Core.getUser(_target)
 	local targetCharacter
@@ -715,34 +731,102 @@ InventoryAPI.registerWeapon = function(target, name, ammos, components)
 		end
 	end
 	if canGive then
-		exports.ghmattimysql:execute("INSERT INTO loadout (identifier, charidentifier, name, ammo, components) VALUES (@identifier, @charid, @name, @ammo, @components)"
-			, {
-				['identifier'] = targetIdentifier,
-				['charid'] = targetCharId,
-				['name'] = name,
-				['ammo'] = json.encode(ammo),
-				['components'] = json.encode(component)
-			}, function(result)
-			local weaponId = result.insertId
-			local newWeapon = Weapon:New({
-				id = weaponId,
-				propietary = targetIdentifier,
-				name = name,
-				ammo = ammo,
-				used = false,
-				used2 = false,
-				charId = targetCharId
-			})
-			UsersWeapons["default"][weaponId] = newWeapon
+		if comps == nil then 
+			exports.ghmattimysql:execute("INSERT INTO loadout (identifier, charidentifier, name, ammo, components) VALUES (@identifier, @charid, @name, @ammo, @components)"
+				, {
+					['identifier'] = targetIdentifier,
+					['charid'] = targetCharId,
+					['name'] = name,
+					['ammo'] = json.encode(ammo),
+					['components'] = json.encode(component)
+				}, function(result)
+				local weaponId = result.insertId
+				local newWeapon = Weapon:New({
+					id = weaponId,
+					propietary = targetIdentifier,
+					name = name,
+					ammo = ammo,
+					used = false,
+					used2 = false,
+					charId = targetCharId
+				})
+				UsersWeapons["default"][weaponId] = newWeapon
 
-			TriggerEvent("syn_weapons:registerWeapon", weaponId)
-			TriggerClientEvent("vorpInventory:receiveWeapon", _target, weaponId, targetIdentifier, name, ammo)
-		end)
+				TriggerEvent("syn_weapons:registerWeapon", weaponId)
+				TriggerClientEvent("vorpInventory:receiveWeapon", _target, weaponId, targetIdentifier, name, ammo)
+			end)
+		else
+			exports.ghmattimysql:execute("INSERT INTO loadout (identifier, charidentifier, name, ammo, components, comps) VALUES (@identifier, @charid, @name, @ammo, @components, @comps)"
+				, {
+					['identifier'] = targetIdentifier,
+					['charid'] = targetCharId,
+					['name'] = name,
+					['ammo'] = json.encode(ammo),
+					['components'] = json.encode(component),
+					['comps'] = json.encode(comps),
+				}, function(result)
+				local weaponId = result.insertId
+				local newWeapon = Weapon:New({
+					id = weaponId,
+					propietary = targetIdentifier,
+					name = name,
+					ammo = ammo,
+					used = false,
+					used2 = false,
+					charId = targetCharId
+				})
+				UsersWeapons["default"][weaponId] = newWeapon
+
+				TriggerEvent("syn_weapons:registerWeapon", weaponId)
+				TriggerClientEvent("vorpInventory:receiveWeapon", _target, weaponId, targetIdentifier, name, ammo)
+			end)
+		end
 	else
 		Log.Warning("Weapon: [^2" .. name .. "^7] ^1 do not exist on the config or its a WRONG HASH")
 	end
 end
+InventoryAPI.giveWeapon2 = function(player, weaponId, target)
+	local _source = player
+	local sourceCharacter = Core.getUser(_source).getUsedCharacter
+	local sourceIdentifier = sourceCharacter.identifier
+	local sourceCharId = sourceCharacter.charIdentifier
+	local _target = tonumber(target)
+	local targetisPlayer = false
+	local userWeapons = UsersWeapons["default"]
+	if Config.MaxItemsInInventory.Weapons ~= 0 then
+		local sourceTotalWeaponCount = InventoryAPI.getUserTotalCountWeapons(sourceIdentifier, sourceCharId) + 1
 
+		if sourceTotalWeaponCount > Config.MaxItemsInInventory.Weapons then
+
+			TriggerClientEvent("vorp:TipRight", _source, _U("cantweapons"), 2000)
+			if Config.Debug then
+				Log.print(sourceCharacter.firstname .. " " .. sourceCharacter.lastname .. " ^1Can't carry more weapons^7")
+			end
+			return
+		end
+	end
+	local weaponcomps
+	exports.ghmattimysql:execute('SELECT comps FROM loadout WHERE id = @id ' , {['id'] = weaponId}, function(result)
+        if result[1] ~= nil then 
+            weaponcomps =  json.decode(result[1].comps)
+		else
+			weaponcomps = {}
+        end
+    end)
+	while weaponcomps == nil do 
+		Wait(50)
+	end
+	local weaponname = userWeapons[weaponId]:getName()
+    local ammo = {["nothing"] = 0}
+    local components =  {["nothing"] = 0}
+	InventoryAPI.registerWeapon(_source, weaponname, ammo, components,weaponcomps)
+	InventoryAPI.deletegun(_source, weaponId)
+	TriggerClientEvent("vorp:TipRight", _target, _U("youGaveWeapon"), 2000)
+	TriggerClientEvent("vorp:TipRight", _source, _U("youReceivedWeapon"), 2000)
+	TriggerClientEvent("vorpinventory:updateinventorystuff",_target)
+	TriggerClientEvent("vorpinventory:updateinventorystuff",_source)
+	TriggerClientEvent("vorpCoreClient:subWeapon", _target, weaponId)
+end
 InventoryAPI.giveWeapon = function(player, weaponId, target)
 	local _source = player
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
