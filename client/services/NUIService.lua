@@ -91,6 +91,29 @@ NUIService.NUITakeFromHorse = function(obj)
 	TriggerServerEvent("vorp_stables:TakeFromHorse", json.encode(obj))
 end
 
+
+
+
+
+NUIService.NUIMoveToStore = function(obj)
+	TriggerServerEvent("syn_store:MoveToStore", json.encode(obj))
+end
+
+NUIService.NUITakeFromStore = function(obj)
+	TriggerServerEvent("syn_store:TakeFromStore", json.encode(obj))
+end
+NUIService.OpenStoreInventory = function(StoreName, StoreId, capacity,geninfo)
+	SetNuiFocus(true, true)
+	SendNUIMessage({ action = "display", type = "store", title = StoreName, StoreId = StoreId, capacity = capacity,geninfo=geninfo })
+	InInventory = true
+	TriggerEvent("syn_store:setClosedInv", true)
+end
+
+
+
+
+
+
 NUIService.OpenstealInventory = function(stealName, stealId, capacity)
 	SetNuiFocus(true, true)
 	SendNUIMessage({ action = "display", type = "steal", title = stealName, stealId = stealId, capacity = capacity, search = Config.InventorySearchable })
@@ -529,6 +552,7 @@ NUIService.initiateData = function()
 	SendNUIMessage({ action = "initiate", language = {
 		empty = _U("emptyammo"),
 		prompttitle = _U("prompttitle"),
+		prompttitle2 = _U("prompttitle2"),
 		promptaccept = _U("promptaccept"),
 		inventoryclose = _U("inventoryclose"),
 		inventorysearch = _U("inventorysearch"),

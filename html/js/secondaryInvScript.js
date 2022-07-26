@@ -53,6 +53,7 @@ function initSecondaryInventoryHandlers() {
                         }));
                     }
                 }
+            
             } else if (type === "horse" && itemInventory === "second") {
                 disableInventory(500);
                 if (itemData.type != "item_weapon") {
@@ -97,6 +98,57 @@ function initSecondaryInventoryHandlers() {
                             type: itemData.type,
                             number: 1,
                             horse: horseid
+                        }));
+                    }
+                }
+            } else if (type === "store" && itemInventory === "second") {
+                disableInventory(500);
+                if (itemData.type != "item_weapon") {
+                    dialog.prompt({
+                        title: LANGUAGE.prompttitle,
+                        button: LANGUAGE.promptaccept,
+                        required: true,
+                        item: itemData,
+                        type: itemData.type,
+                        input: {
+                            type: "number",
+                            autofocus: "true"
+                        },
+
+                        validate: function (value, item, type) {
+                            if (!value) {
+                                dialog.close()
+                                return;
+                            }
+
+                            if (!isInt(value)) {
+                                return;
+                            }
+
+                            if (!isValidating) {
+                                processEventValidation();
+                                $.post("http://vorp_inventory/TakeFromStore", JSON.stringify({
+                                    item: itemData,
+                                    type: type,
+                                    number: value,
+                                    price: itemData.price,
+                                    shoptype:geninfo,
+                                    store: StoreId
+                                }));
+                            }
+
+                        }
+                    });
+                } else {
+                    if (!isValidating) {
+                        processEventValidation();
+                        $.post("http://vorp_inventory/TakeFromStore", JSON.stringify({
+                            item: itemData,
+                            type: itemData.type,
+                            number: 1,
+                            price: itemData.price,
+                            shoptype:geninfo,
+                            store: StoreId
                         }));
                     }
                 }
@@ -520,7 +572,108 @@ function initSecondaryInventoryHandlers() {
                     }
 
                 }
+            } else if (type === "store" && itemInventory === "main") {
+                disableInventory(500);
+                if (itemData.type != "item_weapon") {
+                    dialog.prompt({
+                        title: LANGUAGE.prompttitle,
+                        button: LANGUAGE.promptaccept,
+                        required: true,
+                        item: itemData,
+                        type: itemData.type,
+                        input: {
+                            type: "number",
+                            autofocus: "true"
+                        },
+                        validate: function (value, item, type) {
+                            if (!value) {
+                                dialog.close()
+                                return;
+                            }
 
+                            if (!isInt(value)) {
+                                return;
+                            }
+
+                            if (!isValidating) {
+                                processEventValidation();
+                                dialog.prompt({
+                                    title: LANGUAGE.prompttitle2,
+                                    button: LANGUAGE.promptaccept,
+                                    required: true,
+                                    item: itemData,
+                                    type: itemData.type,
+                                    input: {
+                                        type: "number",
+                                        autofocus: "true"
+                                    },
+                                    validate: function (value2, item, type) {
+                                        if (!value2) {
+                                            dialog.close()
+                                            return;
+                                        }
+            
+                                        if (!isInt(value2)) {
+                                            return;
+                                        }
+            
+                                        if (!isValidating) {
+                                            processEventValidation();
+                                            $.post("http://vorp_inventory/MoveToStore", JSON.stringify({
+                                                item: itemData,
+                                                type: type,
+                                                number: value,
+                                                price:value2,
+                                                shoptype:geninfo,
+                                                store: StoreId
+                                            }));
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    });
+                   
+                } else {
+                    if (!isValidating) {
+                        processEventValidation();
+                        dialog.prompt({
+                            title: LANGUAGE.prompttitle2,
+                            button: LANGUAGE.promptaccept,
+                            required: true,
+                            item: itemData,
+                            type: itemData.type,
+                            input: {
+                                type: "number",
+                                autofocus: "true"
+                            },
+                            validate: function (value2, item, type) {
+                                if (!value2) {
+                                    dialog.close()
+                                    return;
+                                }
+    
+                                if (!isInt(value2)) {
+                                    return;
+                                }
+    
+                                if (!isValidating) {
+                                    processEventValidation();
+                                    $.post("http://vorp_inventory/MoveToStore", JSON.stringify({
+                                        item: itemData,
+                                        type: itemData.type,
+                                        number: 1,
+                                        price:value2,
+                                        shoptype:geninfo,
+                                        store: StoreId
+                                    }));
+                                }
+                            }
+                        });
+                       
+                    }
+
+                }
             } else if (type === "cart" && itemInventory === "main") {
                 disableInventory(500);
                 if (itemData.type != "item_weapon") {

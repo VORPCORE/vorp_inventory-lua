@@ -150,6 +150,11 @@ window.addEventListener('message', function (event) {
             clanid = event.data.clanid;
             initiateSecondaryInventory(clanid, event.data.title, event.data.capacity)
         }
+        if (event.data.type == "store") {
+            StoreId = event.data.StoreId;
+            geninfo = event.data.geninfo;
+            initiateSecondaryInventory(StoreId, event.data.title, event.data.capacity)
+        }
         if (event.data.type == "steal") {
             stealid = event.data.stealId;
             initiateSecondaryInventory(stealid, event.data.title, event.data.capacity)

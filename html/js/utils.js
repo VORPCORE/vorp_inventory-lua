@@ -132,6 +132,10 @@ function selectPlayerToGive(data) {
             }));
             console.log('[selectPlayerToGive] Info: Validated selected player');
             return true;
+        },
+        callback: function(value) {
+            const obj = {data: value}
+            console.log(`[selectPlayerToGive] Debug: ${JSON.stringify(obj)}`)
         }
     });
 }
