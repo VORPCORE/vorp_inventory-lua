@@ -117,7 +117,8 @@ InventoryService.getLoadout = function (loadout)
 				used = weaponUsed,
 				used2 = weaponUsed2,
 				desc = Utils.GetWeaponDesc(weapon.name),
-				currInv = weapon.curr_inv
+				currInv = weapon.curr_inv,
+				dropped = 0,
 			})
 	
 			UserWeapons[newWeapon:getId()] = newWeapon
