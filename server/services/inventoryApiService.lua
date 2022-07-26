@@ -678,6 +678,8 @@ end
 
 InventoryAPI.deletegun = function(player, weaponid)
 	local _source = player
+	local userWeapons = UsersWeapons["default"]
+	userWeapons[weaponid]:setPropietary('')
     exports.ghmattimysql:execute("DELETE FROM loadout WHERE id=@id", { ['id'] = weaponid})
 end
 
