@@ -40,6 +40,35 @@ local Tables = {
             ENGINE=InnoDB
             ROW_FORMAT=DYNAMIC;
         ]]
+    },
+    {
+        name = "items_crafted",
+        script = "vorp_inventory",
+        sql = [[
+            CREATE TABLE IF NOT EXISTS items_crafted (
+                id           int auto_increment primary key,
+                character_id int                                 not null,
+                item_id      int                                 not null,
+                updated_at   timestamp default CURRENT_TIMESTAMP not null,
+                metadata     json                                not null,
+                constraint ID unique (id),
+                INDEX `crafted_item_idx` (`character_id`)
+            ) COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;
+        ]]
+    },
+    {
+        name = "character_inventories",
+        script = "vorp_inventory",
+        sql = [[
+            CREATE TABLE IF NOT EXISTS character_inventories (
+                character_id    int                                    null,
+                inventory_type  varchar(100) default 'default'         not null,
+                item_crafted_id int                                    not null,
+                amount          int                                    null,
+                created_at      timestamp    default CURRENT_TIMESTAMP null,
+                INDEX `character_inventory_idx` (`character_id`, `inventory_type`)
+            ) COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;
+        ]]
     }
 }
 
@@ -95,10 +124,51 @@ local Updates = {
         sql =  [[
             ALTER TABLE `items` ADD COLUMN `desc` VARCHAR(5550) NOT NULL DEFAULT 'nice item';
         ]]
+    },
+    {
+        name = "id",
+        script = "vorp_inventory",
+        find = [[
+            select *
+            from Information_Schema.Columns
+            where Table_Name = 'items'
+            AND  Column_Name = 'id';
+        ]],
+        sql =  [[
+            ALTER TABLE items ADD COLUMN `id` int UNIQUE AUTO_INCREMENT;
+        ]]
+    },
+    {
+        name = "metadata",
+        script = "vorp_inventory",
+        find = [[
+            select *
+            from Information_Schema.Columns
+            where Table_Name = 'items'
+            AND  Column_Name = 'metadata';
+        ]],
+        sql =  [[
+            ALTER TABLE items ADD COLUMN `metadata` JSON DEFAULT ('{}');
+        ]]
+    },
+    {
+        name = "curr_inv",
+        script = "vorp_inventory",
+        find = [[
+            select *
+            from Information_Schema.Columns
+            where Table_Name = 'loadout'
+            AND  Column_Name = 'curr_inv';
+        ]],
+        sql =  [[
+            ALTER TABLE loadout ADD COLUMN IF NOT EXISTS `curr_inv` VARCHAR(100) DEFAULT 'default' NOT NULL;
+        ]]
     }
 }
 
 Citizen.CreateThread(function()
-    VorpCore.dbUpdateAddTables(Tables)
-    VorpCore.dbUpdateAddUpdates(Updates)
+    TriggerEvent("getCore",function(core)
+        core.dbUpdateAddTables(Tables)
+        core.dbUpdateAddUpdates(Updates)
+    end)
 end)
