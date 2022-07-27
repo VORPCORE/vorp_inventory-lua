@@ -6,6 +6,10 @@ UserWeapons = {}
 UserInventory = {}
 bulletsHash = {}
 
+InventoryService.PullAllInventory = function ()
+    return UserInventory
+end
+
 InventoryService.receiveItem = function (name, id, amount, metadata)
 	if UserInventory[id] ~= nil then
 		UserInventory[id]:addCount(amount)
