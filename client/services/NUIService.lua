@@ -105,10 +105,25 @@ NUIService.NUITakeFromStore = function(obj)
 	TriggerServerEvent("syn_store:TakeFromStore", json.encode(obj))
 end
 NUIService.OpenStoreInventory = function(StoreName, StoreId, capacity,geninfo)
-	SetNuiFocus(true, true)
-	SendNUIMessage({ action = "display", type = "store", title = StoreName, StoreId = StoreId, capacity = capacity,geninfo=geninfo })
-	InInventory = true
-	TriggerEvent("syn_store:setClosedInv", true)
+    SetNuiFocus(true, true)
+
+    local pitems = InventoryService.PullAllInventory()
+    local buyitems = geninfo.buyitems
+    local finitems = {}
+
+    for i, pitem in ipairs(pitems) do
+        for il, bitem in ipairs(buyitems) do 
+            if pitem.name == bitem.name then 
+                Table.insert(finitems, pitems)
+                break
+            end
+        end
+    end
+    NUIService.ReloadInventory(json.encode(finitems))
+
+    SendNUIMessage({ action = "display", type = "store", title = StoreName, StoreId = StoreId, capacity = capacity,geninfo=geninfo })
+    InInventory = true
+    TriggerEvent("syn_store:setClosedInv", true)
 end
 
 
