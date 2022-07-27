@@ -1006,11 +1006,14 @@ function secondInventorySetup(items) {
         count = item.count;
 
         if (item.type !== "item_weapon") {
-            $("#secondInventoryElement").append("<div data-label='" + item.label +
-            "' style='background-image: url(\"img/items/" + item.name.toLowerCase() +
-            ".png\"), url(); background-size: 90px 90px, 90px 90px; background-repeat: no-repeat; background-position: center;' id='item-" +
-            index + "' class='item'><div class='count'>" + count +
-            "</div><div class='text'></div></div>")
+            $("#secondInventoryElement").append(`
+                <div data-label="${item.label}"' 
+                style='background-image: url(\"img/items/${item.name.toLowerCase()}.png\"), url(); background-size: 90px 90px, 90px 90px; background-repeat: no-repeat; background-position: center;'
+                id="item-${index}" class='item'>
+                    ${count > 0 ? `<div class='count'>${count}</div>` : ``}
+                    <div class='text'></div>
+                </div>
+            `)
         } else {
             $("#secondInventoryElement").append("<div data-label='" + item.label +
             "' style='background-image: url(\"img/items/" + item.name.toLowerCase() +
