@@ -117,27 +117,24 @@ function disableInventory(ms) {
 }
 
 function selectPlayerToGive(data) {
-    console.log('[selectPlayerToGive] Info: Opening prompt to select player');
-    dialog.prompt({
-        title: LANGUAGE.toplayerpromptitle,
-        button: LANGUAGE.toplaterpromptaccept,
-        required: false,
-        item: data,
-        type: data.type,
-        select: true,
-        validate: function (value, data, player) {
-            $.post("http://vorp_inventory/GiveItem", JSON.stringify({
-                player: player,
-                data: data
-            }));
-            console.log('[selectPlayerToGive] Info: Validated selected player');
-            return true;
-        },
-        callback: function(value) {
-            const obj = {data: value}
-            console.log(`[selectPlayerToGive] Debug: ${JSON.stringify(obj)}`)
-        }
-    });
+    const timer = setTimeout(() => {
+        clearTimeout(timer);
+        dialog.prompt({
+            title: LANGUAGE.toplayerpromptitle,
+            button: LANGUAGE.toplaterpromptaccept,
+            required: false,
+            item: data,
+            type: data.type,
+            select: true,
+            validate: function (value, data, player) {
+                $.post("http://vorp_inventory/GiveItem", JSON.stringify({
+                    player: player,
+                    data: data
+                }));
+                return true;
+            }
+        });
+    }, 300);
 }
 
 function dropGetHowMany(item, type, hash, id, metadata) {
@@ -159,7 +156,7 @@ function dropGetHowMany(item, type, hash, id, metadata) {
                 }
                 if (!isInt(value)) {
                         return;
-                    } 
+                } 
                 $.post("http://vorp_inventory/DropItem", JSON.stringify({
                     item: item,
                     id: id,
