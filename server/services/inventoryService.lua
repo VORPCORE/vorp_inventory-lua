@@ -368,16 +368,22 @@ InventoryService.addWeapon = function(target, weaponId)
 	local identifier = sourceCharacter.identifier
 	local charId = sourceCharacter.charIdentifier
 	local userWeapons = UsersWeapons["default"]
-
-	if userWeapons[weaponId] ~= nil then
-		userWeapons[weaponId]:setPropietary(identifier)
-		exports.ghmattimysql:execute('UPDATE loadout SET identifier = @identifier, charidentifier = @charid WHERE id = @id', {
-			['identifier'] = identifier,
-			['charid'] = charId,
-			['id'] = weaponId
-		}, function()
-		end)
+	local weaponcomps
+	exports.ghmattimysql:execute('SELECT comps FROM loadout WHERE id = @id ' , {['id'] = weaponId}, function(result)
+        if result[1] ~= nil then 
+            weaponcomps =  json.decode(result[1].comps)
+		else
+			weaponcomps = {}
+        end
+    end)
+	while weaponcomps == nil do 
+		Wait(50)
 	end
+	local weaponname = userWeapons[weaponId]:getName()
+    local ammo = {["nothing"] = 0}
+    local components =  {["nothing"] = 0}
+	InventoryAPI.registerWeapon(_source, weaponname, ammo, components,weaponcomps)
+	InventoryAPI.deletegun(_source, weaponId)
 end
 
 InventoryService.subWeapon = function(target, weaponId)
