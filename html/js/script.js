@@ -5,14 +5,20 @@ $("document").ready(function () {
 
     $("#inventoryHud").hide();
     $("#secondInventoryHud").hide();
+    $('#character-selection').hide();
 
     $("body").on("keyup", function (key) {
         if (Config.closeKeys.includes(key.which)) {
-            closeInventory();
+            if ($('#character-selection').is(":visible")) {
+                $('#character-selection').hide();
+            } else {
+                closeInventory();
+            }
         }
     });
 
     initSecondaryInventoryHandlers();
+
 });
 
 window.onload = initDivMouseOver;

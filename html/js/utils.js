@@ -116,7 +116,7 @@ function disableInventory(ms) {
     }
 }
 
-function selectPlayerToGive(data) {
+/*function selectPlayerToGive(data) {
     const timer = setTimeout(() => {
         clearTimeout(timer);
         dialog.prompt({
@@ -135,6 +135,43 @@ function selectPlayerToGive(data) {
             }
         });
     }, 300);
+}*/
+
+function validatePlayerSelection(player) {
+    const data = objToGive;
+
+    $.post("http://vorp_inventory/GiveItem", JSON.stringify({
+        player: player,
+        data: data
+    }));
+    $('#character-selection').hide();
+
+    // reset obj to give, for security
+    objToGive = {}
+}
+
+/**
+ * @param {object} data
+ }**/
+function selectPlayerToGive(data)
+{
+    objToGive = data; // save obj to give during process
+    const characters = data.players;
+
+    $('#character-select-title').html(LANGUAGE.toplayerpromptitle);
+    characters.sort((a, b) => a.label.localeCompare(b.label));
+
+    $('#character-list').html('');
+    characters.forEach(character => {
+        $('#character-list').append(`<li class="list-item" id="character-${character.player}" data-player="${character.player}" onclick="validatePlayerSelection(${character.player})">${character.label}</li>`)
+    })
+    $('#character-selection').show();
+}
+
+function closeCharacterSelection() {
+    // reset obj to give, for security
+    objToGive = {}
+    $('#character-selection').hide();
 }
 
 function dropGetHowMany(item, type, hash, id, metadata) {
