@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------------------------------
 --------------------------------------- CONFIG -----------------------------------------------------
 -- VORP INVENTORY LUA*
-
+--test
 Config = {
 
   Debug = false, -- if your server is live set this to false.  to true only if you are testing things
