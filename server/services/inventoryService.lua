@@ -455,19 +455,18 @@ InventoryService.onPickup = function(obj)
 				if sourceInventoryWeaponCount <= Config.MaxItemsInInventory.Weapons then
 					local weaponId = ItemPickUps[obj].weaponid
 					local weaponObj = ItemPickUps[obj].obj
-					InventoryService.addWeapon(_source, weaponId)
 					UsersWeapons["default"][weaponId]:setDropped(0)
 
 					local title = _U('weppickup')
 					local description = _U('itempickup2') .. userWeapons[weaponId]:getName()
 					Discord(title, _source, description)
 
-					TriggerEvent("syn_weapons:onpickup", weaponId)
+					--TriggerEvent("syn_weapons:onpickup", weaponId)
 					TriggerClientEvent("vorpInventory:sharePickupClient", -1, name, weaponObj, 1, metadata, ItemPickUps[obj].coords, 2, weaponId)
 					TriggerClientEvent("vorpInventory:removePickupClient", -1, weaponObj)
-					TriggerClientEvent("vorpInventory:receiveWeapon", _source, weaponId, userWeapons[weaponId]:getPropietary(), userWeapons[weaponId]:getName(), userWeapons[weaponId]:getAllAmmo())
+					--TriggerClientEvent("vorpInventory:receiveWeapon", _source, weaponId, userWeapons[weaponId]:getPropietary(), userWeapons[weaponId]:getName(), userWeapons[weaponId]:getAllAmmo())
 					TriggerClientEvent("vorpInventory:playerAnim", _source, obj)
-
+					InventoryService.addWeapon(_source, weaponId)
 					ItemPickUps[obj] = nil
 				end
 			else
