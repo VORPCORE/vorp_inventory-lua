@@ -594,83 +594,105 @@ function initSecondaryInventoryHandlers() {
                             if (!isInt(value)) {
                                 return;
                             }
+                            if (geninfo.isowner != 0) {
+                                if (!isValidating) {
+                                    processEventValidation();
+                                    dialog.prompt({
+                                        title: LANGUAGE.prompttitle2,
+                                        button: LANGUAGE.promptaccept,
+                                        required: true,
+                                        item: itemData,
+                                        type: itemData.type,
+                                        input: {
+                                            type: "number",
+                                            autofocus: "true"
+                                        },
+                                        validate: function (value2, item, type) {
+                                            if (!value2) {
+                                                dialog.close()
+                                                return;
+                                            }
+                                        
+                                            
+                                        
+                                            if (!isValidating) {
+                                                processEventValidation();
+                                                $.post("http://vorp_inventory/MoveToStore", JSON.stringify({
+                                                    item: itemData,
+                                                    type: type,
+                                                    number: value,
+                                                    price:value2,
+                                                    geninfo:geninfo,
+                                                    store: StoreId
+                                                }));
+                                            }
+                                        }
+                                    });
+                                }
+                            } else {
+                                if (!isValidating) {
+                                    processEventValidation();
+                                    $.post("http://vorp_inventory/MoveToStore", JSON.stringify({
+                                        item: itemData,
+                                        type: type,
+                                        number: value,
+                                        geninfo:geninfo,
+                                        store: StoreId
+                                    }));
+                                }
 
-                            if (!isValidating) {
-                                processEventValidation();
-                                dialog.prompt({
-                                    title: LANGUAGE.prompttitle2,
-                                    button: LANGUAGE.promptaccept,
-                                    required: true,
-                                    item: itemData,
-                                    type: itemData.type,
-                                    input: {
-                                        type: "number",
-                                        autofocus: "true"
-                                    },
-                                    validate: function (value2, item, type) {
-                                        if (!value2) {
-                                            dialog.close()
-                                            return;
-                                        }
-            
-                                        if (!isInt(value2)) {
-                                            return;
-                                        }
-            
-                                        if (!isValidating) {
-                                            processEventValidation();
-                                            $.post("http://vorp_inventory/MoveToStore", JSON.stringify({
-                                                item: itemData,
-                                                type: type,
-                                                number: value,
-                                                price:value2,
-                                                geninfo:geninfo,
-                                                store: StoreId
-                                            }));
-                                        }
-                                    }
-                                });
                             }
                         }
                     });
                    
                 } else {
-                    if (!isValidating) {
-                        processEventValidation();
-                        dialog.prompt({
-                            title: LANGUAGE.prompttitle2,
-                            button: LANGUAGE.promptaccept,
-                            required: true,
-                            item: itemData,
-                            type: itemData.type,
-                            input: {
-                                type: "number",
-                                autofocus: "true"
-                            },
-                            validate: function (value2, item, type) {
-                                if (!value2) {
-                                    dialog.close()
-                                    return;
+                    if (geninfo.isowner != 0) {
+                        if (!isValidating) {
+                            processEventValidation();
+                            dialog.prompt({
+                                title: LANGUAGE.prompttitle2,
+                                button: LANGUAGE.promptaccept,
+                                required: true,
+                                item: itemData,
+                                type: itemData.type,
+                                input: {
+                                    type: "number",
+                                    autofocus: "true"
+                                },
+                                validate: function (value2, item, type) {
+                                    if (!value2) {
+                                        dialog.close()
+                                        return;
+                                    }
+                                
+                                    
+                                
+                                    if (!isValidating) {
+                                        processEventValidation();
+                                        $.post("http://vorp_inventory/MoveToStore", JSON.stringify({
+                                            item: itemData,
+                                            type: itemData.type,
+                                            number: 1,
+                                            price:value2,
+                                            geninfo:geninfo,
+                                            store: StoreId
+                                        }));
+                                    }
                                 }
-    
-                                if (!isInt(value2)) {
-                                    return;
-                                }
-    
-                                if (!isValidating) {
-                                    processEventValidation();
-                                    $.post("http://vorp_inventory/MoveToStore", JSON.stringify({
-                                        item: itemData,
-                                        type: itemData.type,
-                                        number: 1,
-                                        price:value2,
-                                        geninfo:geninfo,
-                                        store: StoreId
-                                    }));
-                                }
-                            }
-                        });
-                       
+                            });
+                        
+                        }
+                    }else {
+                        if (!isValidating) {
+                            processEventValidation();
+                            $.post("http://vorp_inventory/MoveToStore", JSON.stringify({
+                                item: itemData,
+                                type: itemData.type,
+                                number: 1,
+                                geninfo:geninfo,
+                                store: StoreId
+                            }));
+                        }
                     }
 
                 }

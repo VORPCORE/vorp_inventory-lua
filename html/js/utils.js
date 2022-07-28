@@ -9,7 +9,9 @@ function processEventValidation(ms = 1000) {
 function isInt(n) {
     return n != "" && !isNaN(n) && Math.round(n) == n;
 }
-
+function isFloat(n){
+    return Number(n) === n && n % 1 !== 0;
+}
 function OverSetTitle(title) {
     document.getElementById("information").innerHTML = title;
 }
