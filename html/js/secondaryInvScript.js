@@ -132,7 +132,7 @@ function initSecondaryInventoryHandlers() {
                                     type: type,
                                     number: value,
                                     price: itemData.price,
-                                    shoptype:geninfo,
+                                    geninfo:geninfo,
                                     store: StoreId
                                 }));
                             }
@@ -147,7 +147,7 @@ function initSecondaryInventoryHandlers() {
                             type: itemData.type,
                             number: 1,
                             price: itemData.price,
-                            shoptype:geninfo,
+                            geninfo:geninfo,
                             store: StoreId
                         }));
                     }
@@ -624,7 +624,7 @@ function initSecondaryInventoryHandlers() {
                                                 type: type,
                                                 number: value,
                                                 price:value2,
-                                                shoptype:geninfo,
+                                                geninfo:geninfo,
                                                 store: StoreId
                                             }));
                                         }
@@ -664,7 +664,7 @@ function initSecondaryInventoryHandlers() {
                                         type: itemData.type,
                                         number: 1,
                                         price:value2,
-                                        shoptype:geninfo,
+                                        geninfo:geninfo,
                                         store: StoreId
                                     }));
                                 }
