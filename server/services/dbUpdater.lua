@@ -167,8 +167,10 @@ local Updates = {
 }
 
 Citizen.CreateThread(function()
-    TriggerEvent("getCore",function(core)
-        core.dbUpdateAddTables(Tables)
-        core.dbUpdateAddUpdates(Updates)
-    end)
+    if Config.dbupdater = true then 
+        TriggerEvent("getCore",function(core)
+            core.dbUpdateAddTables(Tables)
+            core.dbUpdateAddUpdates(Updates)
+        end)
+    end
 end)
