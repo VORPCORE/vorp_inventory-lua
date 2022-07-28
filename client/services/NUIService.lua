@@ -498,6 +498,20 @@ NUIService.OnKey = function()
 	end
 end
 
+function deep_copy(orig)
+	local copy
+	if type(orig) == "table" then
+	  copy = {}
+	  for orig_key, orig_value in next, orig, nil do
+		copy[deep_copy(orig_key)] = deep_copy(orig_value)
+	  end
+	  setmetatable(copy, deep_copy(getmetatable(orig)))
+	else
+	  copy = orig
+	end
+	return copy
+end
+
 NUIService.LoadInv = function()
 	local payload = {}
 	local items = {}
@@ -509,6 +523,7 @@ NUIService.LoadInv = function()
 			table.insert(items, item)
 		end
 	elseif storemenu then 
+		local UserInventory = deep_copy(UserInventory)
 		if geninfo.buyitems ~= nil and next(geninfo.buyitems) ~= nil then 
 			local buyitems = geninfo.buyitems
 			for _, item in pairs(UserInventory) do
