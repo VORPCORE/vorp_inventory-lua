@@ -23,6 +23,7 @@ Config = {
     "WEAPON_MELEE_LANTERN_HALLOWEEN",
     "WEAPON_KIT_METAL_DETECTOR",
     "WEAPON_MELEE_HAMMER",
+    "WEAPON_MELEE_KNIFE",
   },
   -- GOLD ITEM LIKE DOLLARS
   UseGoldItem = false, -- IF TRUE YOU HAVE GOLD IN INVENTORY LIKE DOLLARS
@@ -30,9 +31,6 @@ Config = {
 
   -- DEATH FUNCTIONS
   DisableDeathInventory = true, -- prevent the ability to access inventory while dead
-
-  InventorySearchable = true, -- Should the search bar appear in inventories
-  InventorySearchAutoFocus = true, -- Search autoofocuses when you type
 
   --{ I } OPEN INVENTORY
   OpenKey = 0xC1989F95,

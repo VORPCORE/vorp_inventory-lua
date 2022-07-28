@@ -6,9 +6,11 @@ UserWeapons = {}
 UserInventory = {}
 bulletsHash = {}
 
+
 InventoryService.PullAllInventory = function ()
     return UserInventory
 end
+
 
 InventoryService.receiveItem = function (name, id, amount, metadata)
 	if UserInventory[id] ~= nil then
@@ -98,6 +100,7 @@ end
 
 InventoryService.getLoadout = function (loadout)
 	for _, weapon in pairs(loadout) do
+
 		local weaponAmmo = weapon.ammo
 
 		for type, amount in pairs(weaponAmmo) do

@@ -22,6 +22,8 @@ local function contains(table, element)
 	return false
 end
 
+
+
 InventoryAPI.canCarryAmountItem = function(player, amount, cb)
 	local _source = player
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
@@ -131,11 +133,6 @@ end
 
 InventoryAPI.canCarryItem = function (player, itemName, amount, cb)
 	local _source = player
-	if _source == nil then
-		print("Wrong ID or player dont exist")
-	        return
-	end
-	
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local identifier = sourceCharacter.identifier
 	local svItem = svItems[itemName]
@@ -799,6 +796,7 @@ InventoryAPI.giveWeapon2 = function(player, weaponId, target)
 	local _target = tonumber(target)
 	local targetisPlayer = false
 	local userWeapons = UsersWeapons["default"]
+	userWeapons[weaponId]:setPropietary('')
 	if Config.MaxItemsInInventory.Weapons ~= 0 then
 		local sourceTotalWeaponCount = InventoryAPI.getUserTotalCountWeapons(sourceIdentifier, sourceCharId) + 1
 
