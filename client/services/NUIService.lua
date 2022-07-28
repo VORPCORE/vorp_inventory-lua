@@ -3,6 +3,9 @@ isProcessingPay = false
 InInventory = false
 timerUse = 0
 local candrop = true 
+local storemenu = false 
+local geninfo = {}
+
 RegisterNetEvent('inv:dropstatus')
 AddEventHandler('inv:dropstatus', function(x)
 	candrop = x
@@ -10,7 +13,6 @@ end)
 
 NUIService.ReloadInventory = function(inventory)
     local payload = json.decode(inventory)
-
     for _, item in pairs(payload.itemList) do
         if item.type == "item_weapon" then
             item.label = Utils.GetWeaponLabel(item.name)
@@ -71,6 +73,8 @@ NUIService.NUITakeFromContainer = function(obj)
 end
 
 NUIService.CloseInventory = function()
+	storemenu = false 
+	geninfo = {}
 	SetNuiFocus(false, false)
 	SendNUIMessage({ action = "hide" })
 	InInventory = false
@@ -104,26 +108,13 @@ end
 NUIService.NUITakeFromStore = function(obj)
 	TriggerServerEvent("syn_store:TakeFromStore", json.encode(obj))
 end
-NUIService.OpenStoreInventory = function(StoreName, StoreId, capacity,geninfo)
-    SetNuiFocus(true, true)
-
-    local pitems = InventoryService.PullAllInventory()
-    local buyitems = geninfo.buyitems
-    local finitems = {}
-
-    for i, pitem in ipairs(pitems) do
-        for il, bitem in ipairs(buyitems) do 
-            if pitem.name == bitem.name then 
-                Table.insert(finitems, pitems)
-                break
-            end
-        end
-    end
-    NUIService.ReloadInventory(json.encode(finitems))
-
-    SendNUIMessage({ action = "display", type = "store", title = StoreName, StoreId = StoreId, capacity = capacity,geninfo=geninfo })
-    InInventory = true
-    TriggerEvent("syn_store:setClosedInv", true)
+NUIService.OpenStoreInventory = function(StoreName, StoreId, capacity,geninfox)
+	storemenu = true
+	geninfo = geninfox
+	SetNuiFocus(true, true)
+	SendNUIMessage({ action = "display", type = "store", title = StoreName, StoreId = StoreId, capacity = capacity,geninfo=geninfo })
+	InInventory = true
+	TriggerEvent("syn_store:setClosedInv", true)
 end
 
 
@@ -507,11 +498,31 @@ NUIService.LoadInv = function()
 
 	TriggerServerEvent("vorpinventory:check_slots")
 
-
-	for _, item in pairs(UserInventory) do
-		table.insert(items, item)
+	if not storemenu then 
+		for _, item in pairs(UserInventory) do
+			table.insert(items, item)
+		end
+	elseif storemenu then 
+		if geninfo.buyitems ~= nil and next(geninfo.buyitems) ~= nil then 
+			local buyitems = geninfo.buyitems
+			for _, item in pairs(UserInventory) do
+				for k, v in ipairs(buyitems) do 
+					if item.name == v.name then 
+						if item.metadata.description ~= nil then 
+							item.metadata.description = item.metadata.description.."<br><span style=color:Green;>".._U("cansell")..v.price.."</span>"
+						else
+							item.metadata.description = "<span style=color:Green;>".._U("cansell")..v.price.."</span>"
+						end
+					end
+				end
+				table.insert(items, item)
+			end
+		else
+			for _, item in pairs(UserInventory) do
+				table.insert(items, item)
+			end
+		end
 	end
-
 	for _, currentWeapon in pairs(UserWeapons) do
 		local weapon = {}
 		weapon.count = currentWeapon:getTotalAmmoCount()
@@ -545,6 +556,8 @@ NUIService.OpenInv = function()
 end
 
 NUIService.CloseInv = function()
+	storemenu = false 
+	geninfo = {}
 	SetNuiFocus(false, false)
 	SendNUIMessage({ action = "hide" })
 	InInventory = false
