@@ -167,7 +167,7 @@ local Updates = {
 }
 
 Citizen.CreateThread(function()
-    if Config.dbupdater = true then 
+    if Config.dbupdater == true then 
         TriggerEvent("getCore",function(core)
             core.dbUpdateAddTables(Tables)
             core.dbUpdateAddUpdates(Updates)
