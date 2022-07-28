@@ -20,3 +20,4 @@ let ammolabels = [];
 let isValidating = false; // Block other validation event when a validation prompt is already processing
 let LANGUAGE = {}
 let geninfo;
+let StoreId;
