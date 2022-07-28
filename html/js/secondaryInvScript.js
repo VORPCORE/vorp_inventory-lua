@@ -613,9 +613,7 @@ function initSecondaryInventoryHandlers() {
                                                 return;
                                             }
                                         
-                                            if (!isInt(value2) && !isFloat(value2)) {
-                                                return;
-                                            }
+                                            
                                         
                                             if (!isValidating) {
                                                 processEventValidation();
@@ -667,9 +665,7 @@ function initSecondaryInventoryHandlers() {
                                         return;
                                     }
                                 
-                                    if (!isInt(value2) && !isFloat(value2)) {
-                                        return;
-                                    }
+                                    
                                 
                                     if (!isValidating) {
                                         processEventValidation();
