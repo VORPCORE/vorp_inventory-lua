@@ -116,7 +116,7 @@ exports('vorp_inventoryApi',function()
                 if result[1] then
                     item = result[1]
                 else
-                    print('Item does not exist in Items table. Item: '..itemName)
+                    print('Item does not exist in Items table. Item: '.. tostring(itemName))
                 end
                 done = true
             end)

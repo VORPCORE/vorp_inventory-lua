@@ -161,7 +161,7 @@ function selectPlayerToGive(data)
     const characters = data.players;
 
     $('#character-select-title').html(LANGUAGE.toplayerpromptitle);
-    characters.sort((a, b) => a.label.localeCompare(b.label));
+    characters.sort((a, b) => a.label.toString().localeCompare(b.label.toString()));
 
     $('#character-list').html('');
     characters.forEach(character => {

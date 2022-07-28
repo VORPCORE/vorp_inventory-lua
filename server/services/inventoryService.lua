@@ -898,7 +898,7 @@ InventoryService.getNearbyCharacters = function(obj, sources)
 			}
 		else
 			characters[#characters+1] = {
-				label = playerId, -- show server id instead of steam name
+				label = tostring(playerId), -- show server id instead of steam name
 				player = playerId
 			}
 		end
