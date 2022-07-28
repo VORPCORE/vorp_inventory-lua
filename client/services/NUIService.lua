@@ -74,8 +74,20 @@ NUIService.NUITakeFromContainer = function(obj)
 end
 
 NUIService.CloseInventory = function()
-	storemenu = false 
-	geninfo = {}
+	if storemenu then 
+		storemenu = false 
+		geninfo = {}
+		for _, item in pairs(UserInventory) do
+			if item.metadata ~= nil and item.metadata.description ~= nil and (item.metadata.orgdescription ~= nil or item.metadata.orgdescription == "") then 
+				if item.metadata.orgdescription == "" then 
+					item.metadata.description = nil
+				else
+					item.metadata.description = item.metadata.orgdescription 
+				end
+				item.metadata.orgdescription = nil 
+			end
+		end
+	end
 	SetNuiFocus(false, false)
 	SendNUIMessage({ action = "hide" })
 	InInventory = false
@@ -83,8 +95,20 @@ NUIService.CloseInventory = function()
 	TriggerEvent("syn:closeinv")
 end
 NUIService.CloseInv = function()
-	storemenu = false 
-	geninfo = {}
+	if storemenu then 
+		storemenu = false 
+		geninfo = {}
+		for _, item in pairs(UserInventory) do
+			if item.metadata ~= nil and item.metadata.description ~= nil and (item.metadata.orgdescription ~= nil or item.metadata.orgdescription == "") then 
+				if item.metadata.orgdescription == "" then 
+					item.metadata.description = nil
+				else
+					item.metadata.description = item.metadata.orgdescription 
+				end
+				item.metadata.orgdescription = nil 
+			end
+		end
+	end
 	SetNuiFocus(false, false)
 	SendNUIMessage({ action = "hide" })
 	InInventory = false
@@ -498,20 +522,6 @@ NUIService.OnKey = function()
 	end
 end
 
-function deep_copy(orig)
-	local copy
-	if type(orig) == "table" then
-	  copy = {}
-	  for orig_key, orig_value in next, orig, nil do
-		copy[deep_copy(orig_key)] = deep_copy(orig_value)
-	  end
-	  setmetatable(copy, deep_copy(getmetatable(orig)))
-	else
-	  copy = orig
-	end
-	return copy
-end
-
 NUIService.LoadInv = function()
 	local payload = {}
 	local items = {}
@@ -523,15 +533,22 @@ NUIService.LoadInv = function()
 			table.insert(items, item)
 		end
 	elseif storemenu then 
-		local UserInventory = deep_copy(UserInventory)
+		for _, item in pairs(UserInventory) do
+			if item.metadata ~= nil and item.metadata.description ~= nil and item.metadata.orgdescription ~= nil then 
+				item.metadata.description = item.metadata.orgdescription 
+				item.metadata.orgdescription = nil 
+			end
+		end
 		if geninfo.buyitems ~= nil and next(geninfo.buyitems) ~= nil then 
 			local buyitems = geninfo.buyitems
 			for _, item in pairs(UserInventory) do
 				for k, v in ipairs(buyitems) do 
 					if item.name == v.name then 
 						if item.metadata.description ~= nil then 
+							item.metadata.orgdescription = item.metadata.description
 							item.metadata.description = item.metadata.description.."<br><span style=color:Green;>".._U("cansell")..v.price.."</span>"
 						else
+							item.metadata.orgdescription = ""
 							item.metadata.description = "<span style=color:Green;>".._U("cansell")..v.price.."</span>"
 						end
 					end
