@@ -39,8 +39,8 @@ Config = {
   PickupKey = 0xF84FA74F,
 
   -- LOGS
-  webhookavatar = "https://cdn3.iconfinder.com/data/icons/hand/500/Hand_give_thumbs_finger-512.png",
-  webhook = "https://discord.com/api/webhooks/995871892135215154/ZGfEUu6If4EBnSttaPZD9MzTjRdfrb3i_dMQq89CGCKNlHuAdk6dw4IAIuQhsXKlGgFG",
+  webhookavatar = "",
+  webhook = "",
   discordid = true, -- turn to true if ur using discord whitelist
 
   -- WEBHOOK LANGUAGE
