@@ -166,11 +166,26 @@ local Updates = {
     }
 }
 
-Citizen.CreateThread(function()
-    if Config.dbupdater == true then 
-        TriggerEvent("getCore",function(core)
+     
+
+local tries = 10
+local currentry = 1
+local CORE = nil
+function getCore()
+    TriggerEvent("getCore", function(core)
+        if not core.dbUpdateAddTables and not core.dbUpdateAddUpdates then
+            if currentry < tries then
+                currentry = currentry + 1
+                getCore() 
+            end
+        else
             core.dbUpdateAddTables(Tables)
             core.dbUpdateAddUpdates(Updates)
-        end)
-    end
+        end
+    end)
+end
+
+Citizen.CreateThread(function()
+    getCore()
+
 end)
