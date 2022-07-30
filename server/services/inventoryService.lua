@@ -90,6 +90,9 @@ InventoryService.DropMoney = function(amount)
 			userCharacter.removeCurrency(0, amount)
 			TriggerClientEvent("vorpInventory:createMoneyPickup", _source, amount)
 		end
+		local title = _U('drop')
+		local description = _U('drop') .. " $"..amount
+		Discord(title, _source, description)
 		SvUtils.Trem(_source)
 	end
 end
@@ -485,7 +488,9 @@ InventoryService.onPickupMoney = function(obj)
 			local moneyObj = MoneyPickUps[obj].obj
 			local moneyAmount = MoneyPickUps[obj].amount
 			local moneyCoords = MoneyPickUps[obj].coords
-
+			local title = _U('itempickup')
+			local description = _U('itempickup2') .. " $"..moneyAmount
+			Discord(title, _source, description)
 			TriggerClientEvent("vorpInventory:shareMoneyPickupClient", -1, moneyObj, moneyAmount, moneyCoords, 2)
 			TriggerClientEvent("vorpInventory:removePickupClient", -1, moneyObj)
 			TriggerClientEvent("vorpInventory:playerAnim", _source, moneyObj)
@@ -573,7 +578,9 @@ InventoryService.DropItem = function(itemName, itemId, amount, metadata)
 			
 			SvUtils.ProcessUser(_source)
 			InventoryService.subItem(_source, "default", itemId, amount)
-
+			local title = _U('drop')
+			local description = _U('drop') .. " "..amount.." "..itemName
+			Discord(title, _source, description)
 			TriggerClientEvent("vorpInventory:createPickup", _source, itemName, amount, metadata, 1)
 			SvUtils.Trem(_source)
 		end
