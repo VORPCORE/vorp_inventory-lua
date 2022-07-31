@@ -1123,36 +1123,36 @@ InventoryAPI.openCustomInventory = function(player, id)
 				InventoryAPI.reloadInventory(_source, id)
 			end)
 		end
-	end
-
-	if UsersInventories[id][identifier] then
-		TriggerClientEvent("vorp_inventory:OpenCustomInv", _source, CustomInventoryInfos[id].name, id, capacity)
-		InventoryAPI.reloadInventory(_source, id)
 	else
-		DbService.GetInventory(charIdentifier, id, function(inventory)
-			local characterInventory = {}
-			for _, item in pairs(inventory) do
-				if svItems[item.item] ~= nil then
-					local dbItem = svItems[item.item]
-					characterInventory[item.id] = Item:New({
-						count = tonumber(item.amount),
-						id = item.id,
-						limit = dbItem.limit,
-						label = dbItem.label,
-						metadata = SharedUtils.MergeTables(dbItem.metadata, item.metadata),
-						name = dbItem.item,
-						type = dbItem.type,
-						canUse = dbItem.usable,
-						canRemove = dbItem.can_remove,
-						createdAt = item.created_at,
-						owner = charIdentifier
-					})
-				end
-			end
-			UsersInventories[id][identifier] = characterInventory
+		if UsersInventories[id][identifier] then
 			TriggerClientEvent("vorp_inventory:OpenCustomInv", _source, CustomInventoryInfos[id].name, id, capacity)
 			InventoryAPI.reloadInventory(_source, id)
-		end)
+		else
+			DbService.GetInventory(charIdentifier, id, function(inventory)
+				local characterInventory = {}
+				for _, item in pairs(inventory) do
+					if svItems[item.item] ~= nil then
+						local dbItem = svItems[item.item]
+						characterInventory[item.id] = Item:New({
+							count = tonumber(item.amount),
+							id = item.id,
+							limit = dbItem.limit,
+							label = dbItem.label,
+							metadata = SharedUtils.MergeTables(dbItem.metadata, item.metadata),
+							name = dbItem.item,
+							type = dbItem.type,
+							canUse = dbItem.usable,
+							canRemove = dbItem.can_remove,
+							createdAt = item.created_at,
+							owner = charIdentifier
+						})
+					end
+				end
+				UsersInventories[id][identifier] = characterInventory
+				TriggerClientEvent("vorp_inventory:OpenCustomInv", _source, CustomInventoryInfos[id].name, id, capacity)
+				InventoryAPI.reloadInventory(_source, id)
+			end)
+		end
 	end
 end
 
