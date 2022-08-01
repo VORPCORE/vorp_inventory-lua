@@ -7,7 +7,8 @@ CustomInventoryInfos = {
 		limit = Config.MaxItemsInInventory.Items,
 		shared = false,
 		---@type table<string, integer>
-		limitedItems = {}
+		limitedItems = {},
+		ignoreItemStackLimit = false
 	}
 }
 
@@ -981,8 +982,9 @@ InventoryAPI.onNewCharacter = function(playerId)
 	end
 end
 
-InventoryAPI.registerInventory = function(id, name, limit, acceptWeapons, shared)
+InventoryAPI.registerInventory = function(id, name, limit, acceptWeapons, shared, ignoreItemStackLimit)
 	limit = limit and limit or -1
+	ignoreItemStackLimit = ignoreItemStackLimit and ignoreItemStackLimit or false
 	acceptWeapons = acceptWeapons and acceptWeapons or true
 	shared = shared and shared or false
 	if CustomInventoryInfos[id] then
@@ -994,6 +996,7 @@ InventoryAPI.registerInventory = function(id, name, limit, acceptWeapons, shared
 		limit = limit,
 		acceptWeapons = acceptWeapons,
 		shared = shared,
+		ignoreItemStackLimit = ignoreItemStackLimit,
 		limitedItems = {}
 	}
 	UsersInventories[id] = {}
