@@ -334,7 +334,7 @@ InventoryService.addItem = function(target, invId, name, amount, metadata, cb)
 		local item = SvUtils.FindItemByNameAndMetadata(invId, identifier, name, metadata)
 		if item ~= nil then
 			if amount > 0 then
-				item:addCount(amount)
+				item:addCount(amount, CustomInventoryInfos[invId].ignoreItemStackLimit)
 				DbService.SetItemAmount(item:getOwner(), item:getId(), item:getCount())
 				cb(item)
 				return
