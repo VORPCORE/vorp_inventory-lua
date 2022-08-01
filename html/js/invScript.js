@@ -206,7 +206,7 @@ function inventorySetup(items) {
     });
     $("#item-" + m_item).hover(
         function() {
-            OverSetTitle(m_item);
+            OverSetTitle(m_label);
         },
         function() {
             OverSetTitle(" ");
