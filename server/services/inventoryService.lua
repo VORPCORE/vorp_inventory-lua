@@ -975,9 +975,10 @@ InventoryService.TakeFromCustom = function(obj)
 	if item.type == "item_weapon" then
 		InventoryAPI.canCarryAmountWeapons(_source, 1, function(res)
 			if res then
-				exports.ghmattimysql:execute("UPDATE loadout SET curr_inv = 'default' WHERE charidentifier = @charid AND id = @weaponId;", {
+				exports.ghmattimysql:execute("UPDATE loadout SET curr_inv = 'default', charidentifier = @charid, identifier = @identifier WHERE id = @weaponId;", {
 					['charid'] = sourceCharIdentifier,
 					['weaponId'] = item.id,
+					['identifier'] = sourceIdentifier
 				})
 				UsersWeapons[invId][item.id]:setCurrInv("default")
 				UsersWeapons["default"][item.id] = UsersWeapons[invId][item.id]
