@@ -946,7 +946,7 @@ InventoryService.MoveToCustom = function(obj)
 			-- Print Error Client Side: Can't store weapon here
 		end
 	else
-		if InventoryService.canStoreItem(sourceIdentifier, sourceCharIdentifier, invId, item.name, amount) then
+		if item.count >= amount and InventoryService.canStoreItem(sourceIdentifier, sourceCharIdentifier, invId, item.name, amount) then
 			InventoryService.subItem(_source, "default", item.id, amount)
 			TriggerClientEvent("vorpInventory:removeItem", _source, item.name, item.id, amount)
 			InventoryService.addItem(_source, invId, item.name, amount, item.metadata, function (itemAdded)
