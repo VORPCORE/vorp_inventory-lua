@@ -242,8 +242,6 @@ InventoryAPI.getUserWeapons = function(player, cb)
 	local charidentifier = sourceCharacter.charIdentifier
 	local userWeapons = UsersWeapons["default"]
 
-	local userWeapons = {}
-
 	for _, currentWeapon in pairs(userWeapons) do
 		if currentWeapon:getPropietary() == identifier and currentWeapon:getCharId() == charidentifier then
 			local weapon = {
