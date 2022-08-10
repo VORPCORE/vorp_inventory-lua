@@ -242,7 +242,7 @@ InventoryAPI.getUserWeapons = function(player, cb)
     local charidentifier = sourceCharacter.charIdentifier
     local usersWeapons = UsersWeapons["default"]
 
-    local userWeapons = {}
+    local userWeapons2 = {}
 
     for _, currentWeapon in pairs(usersWeapons ) do
         if currentWeapon:getPropietary() == identifier and currentWeapon:getCharId() == charidentifier then
@@ -254,10 +254,10 @@ InventoryAPI.getUserWeapons = function(player, cb)
                 ammo = currentWeapon:getAllAmmo(),
                 desc = currentWeapon:getDesc()
             }
-            table.insert(userWeapons, weapon)
+            table.insert(userWeapons2, weapon)
         end
     end
-    cb(userWeapons)
+    cb(userWeapons2)
 end
 
 InventoryAPI.getWeaponBullets = function(player, cb, weaponId)
