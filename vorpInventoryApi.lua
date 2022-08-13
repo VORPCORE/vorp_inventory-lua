@@ -229,7 +229,7 @@ exports('vorp_inventoryApi',function()
 
      self.CloseInv = function(source, invId) 
         if invId then
-            TriggerEvent("vorpCore:closeCustomInventory", source, id)
+            TriggerEvent("vorpCore:closeCustomInventory", source, invId)
         else
             TriggerClientEvent("vorp_inventory:CloseInv",source)
         end
