@@ -647,8 +647,7 @@ function initSecondaryInventoryHandlers() {
                    
                 } else {
                     if (geninfo.isowner != 0) {
-                        if (!isValidating) {
-                            processEventValidation();
+                        
                             dialog.prompt({
                                 title: LANGUAGE.prompttitle2,
                                 button: LANGUAGE.promptaccept,
@@ -681,7 +680,7 @@ function initSecondaryInventoryHandlers() {
                                 }
                             });
                         
-                        }
+                        
                     }else {
                         if (!isValidating) {
                             processEventValidation();
