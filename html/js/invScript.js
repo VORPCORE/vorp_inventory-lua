@@ -174,6 +174,17 @@ function inventorySetup(items) {
             offsetX: 1,
             offsetY: 1,
         });
+
+        $("#ammobox").hover(
+            function() {
+                $("#hint").show()
+                document.getElementById("hint").innerHTML = gunbelt_label;
+            },
+            function() {
+                $("#hint").hide()
+                document.getElementById("hint").innerHTML = '';
+            }
+        );
     }
 
     isOpen = true;
@@ -234,6 +245,18 @@ function inventorySetup(items) {
             offsetX: 1,
             offsetY: 1,
         });
+
+        $("#cash").hover(
+            function() {
+                $("#money-value").hide()
+                $("#hint-money-value").show()
+                $("#hint-money-value").text(m_label)
+            },
+            function() {
+                $("#money-value").show()
+                $("#hint-money-value").hide()
+            }
+        );
     }
 
     
@@ -301,6 +324,18 @@ function inventorySetup(items) {
                 offsetX: 1,
                 offsetY: 1,
             });
+
+            $("#gold").hover(
+                function() {
+                    $("#gold-value").hide()
+                    $("#hint-gold-value").show()
+                    $("#hint-gold-value").text(g_label)
+                },
+                function() {
+                    $("#gold-value").show()
+                    $("#hint-gold-value").hide()
+                }
+            );
           }
 
           isOpen = true;
