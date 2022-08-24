@@ -50,6 +50,15 @@ window.addEventListener('message', function (event) {
     if (event.data.action == "initiate") {
         //BACKHERE
         LANGUAGE = event.data.language
+        LuaConfig = event.data.config
+        Config.UseGoldItem = LuaConfig.UseGoldItem;
+        Config.AddGoldItem = LuaConfig.AddGoldItem;
+        Config.AddDollarItem = LuaConfig.AddDollarItem;
+        Config.AddAmmoItem = LuaConfig.AddAmmoItem;
+
+        if (!Config.UseGoldItem) {
+            $("#inventoryHud").addClass("NoGoldBackground")
+        }
     }
 
     if (event.data.action == "reclabels") {

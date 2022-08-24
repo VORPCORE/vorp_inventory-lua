@@ -26,8 +26,10 @@ Config = {
     "WEAPON_MELEE_KNIFE",
   },
   -- GOLD ITEM LIKE DOLLARS
-  UseGoldItem = false, -- IF TRUE YOU HAVE GOLD IN INVENTORY LIKE DOLLARS
-  -- CHANGE IN html/js/config.js TOO !!!
+  UseGoldItem = false,
+  AddGoldItem = false, -- Should there be an item in inventory to represent gold
+  AddDollarItem = true, -- Should there be an item in inventory to represent dollars
+  AddAmmoItem = true, -- Should there be an item in inventory to represent the gun belt
 
   InventorySearchable = true, -- Should the search bar appear in inventories
   InventorySearchAutoFocus = true, -- Search autoofocuses when you type

@@ -630,6 +630,11 @@ NUIService.initiateData = function()
 		use = _U("use"),
 		give = _U("give"),
 		drop = _U("drop")
+	}, config = {
+		UseGoldItem = Config.UseGoldItem,
+		AddGoldItem = Config.AddGoldItem,
+		AddDollarItem = Config.AddDollarItem,
+		AddAmmoItem = Config.AddAmmoItem
 	}})
 end
 
