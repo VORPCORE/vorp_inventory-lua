@@ -50,7 +50,19 @@ body {
     background-size: 520px 800px;
     z-index: -100;
     opacity: 0.9;
-   
+}
+
+.NoGoldBackground {
+    background-image: url(../img/bgPanelcashonly.png) !important;
+}
+
+#ammobox {
+    width: 57px;
+    height: 40px;
+    z-index: 10;
+    position: absolute;
+    top: 20%;
+    left: 32%;
 }
 
 #secondInventoryHud {
@@ -561,6 +573,11 @@ span.emoji {
 
     #title {
         margin-top: 11rem;
+    }
+
+    #ammobox {
+        top: 16%;
+        left: 32%;
     }
 
     #inventoryHud {

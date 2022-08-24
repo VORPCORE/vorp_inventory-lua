@@ -22,3 +22,4 @@ let LANGUAGE = {}
 let objToGive = {}
 let geninfo;
 let StoreId;
+let LuaConfig = {};

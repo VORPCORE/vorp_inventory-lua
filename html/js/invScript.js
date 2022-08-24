@@ -114,10 +114,6 @@ function inventorySetup(items) {
     var gunbelt_label = LANGUAGE.gunbeltlabel
     var gunbelt_desc = LANGUAGE.gunbeltdescription
 
-    $("#inventoryElement").append("<div data-label='" + gunbelt_label +
-        "' style='background-image: url(\"img/items/" + gunbelt_item +
-        ".png\"), url(); background-size: 90px 90px, 90px 90px; background-repeat: no-repeat; background-position: center;' id='item-" +
-        gunbelt_item + "' class='item'><div class='text'></div></div>")
     var data = [];
     
     let empty = true
@@ -141,33 +137,44 @@ function inventorySetup(items) {
             action: function () {}
         });
     }
+
+    if (Config.AddAmmoItem) {
+        $("#inventoryElement").append("<div data-label='" + gunbelt_label +
+        "' style='background-image: url(\"img/items/" + gunbelt_item +
+        ".png\"), url(); background-size: 90px 90px, 90px 90px; background-repeat: no-repeat; background-position: center;' id='item-" +
+        gunbelt_item + "' class='item'><div class='text'></div></div>")
+
+        $("#item-" + gunbelt_item).contextMenu([data], {
+            offsetX: 1,
+            offsetY: 1,
+        });
     
     
-    $("#item-" + gunbelt_item).contextMenu([data], {
-        offsetX: 1,
-        offsetY: 1,
-    });
-
-
-    $("#item-" + gunbelt_item).hover(
-        function() {
-            OverSetTitle(gunbelt_label);
-        },
-        function() {
-            OverSetTitle(" ");
-        }
-    );
-
-    $('#item-' + gunbelt_item).hover(
-          function() {
-                  OverSetDesc(gunbelt_desc);
-          },
-          function() {
-              OverSetDesc(" ");
-          }
-      )
-    $('#item-' + gunbelt_item).data('item', gunbelt_item);
-    $('#item-' + gunbelt_item).data('inventory', "none");
+        $("#item-" + gunbelt_item).hover(
+            function() {
+                OverSetTitle(gunbelt_label);
+            },
+            function() {
+                OverSetTitle(" ");
+            }
+        );
+    
+        $('#item-' + gunbelt_item).hover(
+              function() {
+                      OverSetDesc(gunbelt_desc);
+              },
+              function() {
+                  OverSetDesc(" ");
+              }
+          )
+        $('#item-' + gunbelt_item).data('item', gunbelt_item);
+        $('#item-' + gunbelt_item).data('inventory', "none");
+    } else {
+        $("#ammobox").contextMenu([data], {
+            offsetX: 1,
+            offsetY: 1,
+        });
+    }
 
     isOpen = true;
     initDivMouseOver()
@@ -175,12 +182,6 @@ function inventorySetup(items) {
     var m_item = "money";
     var m_label = LANGUAGE.inventorymoneylabel
     var m_desc = LANGUAGE.inventorymoneydescription
-
-
-    $("#inventoryElement").append("<div data-label='" + m_label +
-        "' style='background-image: url(\"img/items/" + m_item +
-        ".png\"), url(); background-size: 90px 90px, 90px 90px; background-repeat: no-repeat; background-position: center;' id='item-" +
-        m_item + "' class='item'><div class='text'></div></div>")
 
     var data = [];
 
@@ -198,32 +199,44 @@ function inventorySetup(items) {
         }
     });
 
+    if (Config.AddDollarItem) {
+        $("#inventoryElement").append("<div data-label='" + m_label +
+            "' style='background-image: url(\"img/items/" + m_item +
+            ".png\"), url(); background-size: 90px 90px, 90px 90px; background-repeat: no-repeat; background-position: center;' id='item-" +
+            m_item + "' class='item'><div class='text'></div></div>")
 
+        $("#item-" + m_item).contextMenu([data], {
+            offsetX: 1,
+            offsetY: 1,
+        });
+        $("#item-" + m_item).hover(
+            function() {
+                OverSetTitle(m_label);
+            },
+            function() {
+                OverSetTitle(" ");
+            }
+        );
+    
+        $("#item-" + m_item).hover(
+            function () {
+                OverSetDesc(m_desc);
+            },
+            function () {
+                OverSetDesc(" ");
+            }
+        );
+    
+        $('#item-' + m_item).data('item', m_item);
+        $('#item-' + m_item).data('inventory', "none");
+    } else {
+        $("#cash").contextMenu([data], {
+            offsetX: 1,
+            offsetY: 1,
+        });
+    }
 
-    $("#item-" + m_item).contextMenu([data], {
-        offsetX: 1,
-        offsetY: 1,
-    });
-    $("#item-" + m_item).hover(
-        function() {
-            OverSetTitle(m_label);
-        },
-        function() {
-            OverSetTitle(" ");
-        }
-    );
-
-    $("#item-" + m_item).hover(
-        function () {
-            OverSetDesc(m_desc);
-        },
-        function () {
-            OverSetDesc(" ");
-        }
-    );
-
-    $('#item-' + m_item).data('item', m_item);
-    $('#item-' + m_item).data('inventory', "none");
+    
 
     isOpen = true;
     initDivMouseOver()
@@ -234,12 +247,6 @@ function inventorySetup(items) {
           var g_item = "gold";
           var g_label = LANGUAGE.inventorygoldlabel;
           var g_desc = LANGUAGE.inventorygolddescription
-
-
-          $("#inventoryElement").append("<div data-label='" + g_label +
-              "' style='background-image: url(\"img/items/" + g_item +
-              ".png\"), url(); background-size: 90px 90px, 90px 90px; background-repeat: no-repeat; background-position: center;' id='item-" +
-              g_item + "' class='item'><div class='text'></div></div>")
 
           var data = [];
           
@@ -257,33 +264,44 @@ function inventorySetup(items) {
               }
           });
 
+          if (Config.AddGoldItem) {
+            $("#inventoryElement").append("<div data-label='" + g_label +
+            "' style='background-image: url(\"img/items/" + g_item +
+            ".png\"), url(); background-size: 90px 90px, 90px 90px; background-repeat: no-repeat; background-position: center;' id='item-" +
+            g_item + "' class='item'><div class='text'></div></div>")
 
-          $("#item-" + g_item).contextMenu([data], {
-              offsetX: 1,
-              offsetY: 1,
-          });
-
-
-          $("#item-" + g_item).hover(
-              function() {
-                  OverSetTitle(g_label);
-              },
-              function() {
-                  OverSetTitle(" ");
-              }
-          );
-
-          $('#item-' + g_item).hover(
+            $("#item-" + g_item).contextMenu([data], {
+                offsetX: 1,
+                offsetY: 1,
+            });
+  
+  
+            $("#item-" + g_item).hover(
                 function() {
-                        OverSetDesc(g_desc);
+                    OverSetTitle(g_label);
                 },
                 function() {
-                    OverSetDesc(" ");
+                    OverSetTitle(" ");
                 }
             );
-
-          $('#item-' + g_item).data('item', g_item);
-          $('#item-' + g_item).data('inventory', "none");
+  
+            $('#item-' + g_item).hover(
+                  function() {
+                          OverSetDesc(g_desc);
+                  },
+                  function() {
+                      OverSetDesc(" ");
+                  }
+              );
+  
+            $('#item-' + g_item).data('item', g_item);
+            $('#item-' + g_item).data('inventory', "none");
+          } else {
+            $("#gold").contextMenu([data], {
+                offsetX: 1,
+                offsetY: 1,
+            });
+          }
 
           isOpen = true;
           initDivMouseOver()
