@@ -985,7 +985,7 @@ end
 InventoryAPI.registerInventory = function(id, name, limit, acceptWeapons, shared, ignoreItemStackLimit)
 	limit = limit and limit or -1
 	ignoreItemStackLimit = ignoreItemStackLimit and ignoreItemStackLimit or false
-	acceptWeapons == nil and true or acceptWeapons
+	acceptWeapons = acceptWeapons == nil and true or acceptWeapons
 	shared = shared and shared or false
 	if CustomInventoryInfos[id] then
 		return
