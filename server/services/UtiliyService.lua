@@ -39,7 +39,25 @@ SvUtils.FindAllItemsByName = function (invId, identifier, name)
     return items
 end
 
+SvUtils.FindItemByName = function (invId, identifier, name)
+    local userInventory = nil
 
+	if CustomInventoryInfos[invId].shared then
+		userInventory = UsersInventories[invId]
+	else
+		userInventory = UsersInventories[invId][identifier]
+	end
+
+    if userInventory == nil then
+        return nil
+    end
+    for _, item in pairs(userInventory) do
+        if name == item:getName() then
+            return item
+        end
+    end
+    return nil
+end
 
 SvUtils.FindItemByNameAndMetadata = function (invId, identifier, name, metadata)
     local userInventory = nil
