@@ -995,6 +995,9 @@ InventoryService.TakeFromCustom = function(obj)
 	else
 		InventoryAPI.canCarryItem(_source, item.name, amount, function (res)
 			if res then
+				if amount > item.count then
+					return
+				end
 				InventoryService.subItem(_source, invId, item.id, amount)
 				InventoryService.addItem(_source, "default", item.name, amount, item.metadata, function (itemAdded)
 					if itemAdded == nil then
