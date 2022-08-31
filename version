@@ -1,3 +1,10 @@
+<2.2>
+- fix for duplication on custom inventories
+- fix for getting weapons
+- added options to remove autofocus search bar
+- added options to remove dollar ammo gold item from inside inventory
+- can be accessed from the money bellow gold or the top ico weapon wheel for ammo
+- update all files
 <2.1>
 - lots of fixes for metadata 
 - update all files 
