@@ -277,7 +277,7 @@ InventoryService.usedWeapon = function(id, _used, _used2)
 	end)
 end
 
-InventoryService.subItem = function(target, invId, itemId, amount, cb)
+InventoryService.subItem = function(target, invId, itemId, amount)
 	local _source = target
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local identifier = sourceCharacter.identifier
@@ -303,14 +303,8 @@ InventoryService.subItem = function(target, invId, itemId, amount, cb)
 				else
 					DbService.SetItemAmount(item:getOwner(), itemId, item:getCount())
 				end
-				if cb then 
-					cb(true) 
-				end
 			end
 		end
-	end
-	if cb then
-		cb(false)
 	end
 end
 
