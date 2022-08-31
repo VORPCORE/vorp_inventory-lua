@@ -277,7 +277,7 @@ InventoryService.usedWeapon = function(id, _used, _used2)
 	end)
 end
 
-InventoryService.subItem = function(target, invId, itemId, amount)
+InventoryService.subItem = function(target, invId, itemId, amount, cb)
 	local _source = target
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local identifier = sourceCharacter.identifier
@@ -303,8 +303,14 @@ InventoryService.subItem = function(target, invId, itemId, amount)
 				else
 					DbService.SetItemAmount(item:getOwner(), itemId, item:getCount())
 				end
+				if cb then 
+					cb(true) 
+				end
 			end
 		end
+	end
+	if cb then
+		cb(false)
 	end
 end
 
@@ -995,6 +1001,9 @@ InventoryService.TakeFromCustom = function(obj)
 	else
 		InventoryAPI.canCarryItem(_source, item.name, amount, function (res)
 			if res then
+				if amount > item.count then
+					return
+				end
 				InventoryService.subItem(_source, invId, item.id, amount)
 				InventoryService.addItem(_source, "default", item.name, amount, item.metadata, function (itemAdded)
 					if itemAdded == nil then
