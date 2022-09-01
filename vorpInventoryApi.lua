@@ -1,8 +1,8 @@
 exports('vorp_inventoryApi',function()
     local self = {}
 
-    self.registerInventory = function(id, name, limit, acceptWeapons, shared, ignoreItemStackLimit)
-        TriggerEvent("vorpCore:registerInventory", id, name, limit, acceptWeapons, shared, ignoreItemStackLimit)
+    self.registerInventory = function(id, name, limit, acceptWeapons, shared, ignoreItemStackLimit, whitelistItems)
+        TriggerEvent("vorpCore:registerInventory", id, name, limit, acceptWeapons, shared, ignoreItemStackLimit, whitelistItems)
     end
 
     self.removeInventory = function(id)
