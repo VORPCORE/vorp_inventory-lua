@@ -888,7 +888,7 @@ InventoryService.canStoreItem = function(identifier, charIdentifier, invId, name
 			if totalAmount > invData.limitedItems[name] then
 				return false
 			end
-		else if amount > invData.limitedItems[name] then
+		elseif amount > invData.limitedItems[name] then
 			return false
 		end
 		return true
