@@ -8,7 +8,8 @@ CustomInventoryInfos = {
 		shared = false,
 		---@type table<string, integer>
 		limitedItems = {},
-		ignoreItemStackLimit = false
+		ignoreItemStackLimit = false,
+		whitelistItems = false
 	}
 }
 
@@ -982,10 +983,11 @@ InventoryAPI.onNewCharacter = function(playerId)
 	end
 end
 
-InventoryAPI.registerInventory = function(id, name, limit, acceptWeapons, shared, ignoreItemStackLimit)
+InventoryAPI.registerInventory = function(id, name, limit, acceptWeapons, shared, ignoreItemStackLimit, whitelistItems)
 	limit = limit and limit or -1
 	ignoreItemStackLimit = ignoreItemStackLimit and ignoreItemStackLimit or false
 	acceptWeapons = acceptWeapons == nil and true or acceptWeapons
+	whitelistItems = whitelistItems and whitelistItems or false
 	shared = shared and shared or false
 	if CustomInventoryInfos[id] then
 		return
@@ -997,6 +999,7 @@ InventoryAPI.registerInventory = function(id, name, limit, acceptWeapons, shared
 		acceptWeapons = acceptWeapons,
 		shared = shared,
 		ignoreItemStackLimit = ignoreItemStackLimit,
+		whitelistItems = whitelistItems,
 		limitedItems = {}
 	}
 	UsersInventories[id] = {}

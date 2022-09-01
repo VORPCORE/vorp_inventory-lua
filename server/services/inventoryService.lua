@@ -857,6 +857,8 @@ InventoryService.canStoreWeapon = function(identifier, charIdentifier, invId, na
 		if weaponCount > invData.limitedItems[name] then
 			return false
 		end
+	elseif invData.whitelistItems then
+		return false
 	end
 	return true
 end
@@ -884,6 +886,23 @@ InventoryService.canStoreItem = function(identifier, charIdentifier, invId, name
 			local totalAmount = amount + itemCount
 
 			if totalAmount > invData.limitedItems[name] then
+				return false
+			end
+		else if amount > invData.limitedItems[name] then
+			return false
+		end
+		return true
+	elseif invData.whitelistItems then
+		return false
+	end
+
+	if not invData.ignoreItemStackLimit then
+		local item = SvUtils.FindItemByNameAndMetadata(invId, identifier, name, metadata)
+
+		if item ~= nil then
+			local totalCount = item:getCount() + amount
+
+			if totalCount > item:getLimit() then
 				return false
 			end
 		end
