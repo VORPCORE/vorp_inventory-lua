@@ -642,6 +642,28 @@ InventoryAPI.subItem = function(player, name, amount, metadata, cb)
 		end
 	end
 end
+
+InventoryAPI.setItemMetadata = function(player, itemId, metadata, cb)
+	local _source = player
+	local sourceCharacter = Core.getUser(_source).getUsedCharacter
+	local identifier = sourceCharacter.identifier
+	local charId = sourceCharacter.charIdentifier
+	local userInventory = UsersInventories["default"][identifier]
+
+	if userInventory then
+		local item = userInventory[itemId]
+			
+		if item ~= nil then
+			DbService.SetItemMetadata(charId, item.id, metadata)
+			item:setMetadata(metadata)
+			cb(true)
+		else
+			cb(false)
+		end
+	end
+	cb(false)
+end
+
 InventoryAPI.canCarryAmountWeapons = function(player, amount, cb)
 	local _source = player
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter

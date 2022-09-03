@@ -13,6 +13,9 @@ AddEventHandler("vorpCore:addItem", InventoryAPI.addItem)
 RegisterServerEvent("vorpCore:subItem")
 AddEventHandler("vorpCore:subItem", InventoryAPI.subItem)
 
+RegisterServerEvent("vorpCore:setItemMetadata")
+AddEventHandler("vorpCore:setItemMetadata", InventoryAPI.setItemMetadata)
+
 RegisterServerEvent("vorpCore:getItem")
 AddEventHandler("vorpCore:getItem", InventoryAPI.getItem)
 

@@ -74,6 +74,14 @@ exports('vorp_inventoryApi',function()
         return result
     end
 
+    self.setItemMetadata = function(source, itemId, metadata)
+        local result = nil
+        TriggerEvent("vorpCore:setItemMetadata", source, tonumber(itemId), metadata, function (res)
+            result = res
+        end))
+        return result
+    end
+
 
 
     self.getItemByName = function(source, itemName)
