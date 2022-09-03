@@ -59,11 +59,27 @@ exports('vorp_inventoryApi',function()
     end
 
     self.addItem = function(source,itemName,qty, metadata)
-        TriggerEvent("vorpCore:addItem",source,tostring(itemName),tonumber(qty), metadata)
+        local result = nil
+        TriggerEvent("vorpCore:addItem",source,tostring(itemName),tonumber(qty), metadata, function (res)
+            result = res
+        end)
+        return result
     end
 
     self.subItem = function(source,itemName,qty, metadata)
-        TriggerEvent("vorpCore:subItem",source,tostring(itemName),tonumber(qty), metadata)
+        local result = nil
+        TriggerEvent("vorpCore:subItem",source,tostring(itemName),tonumber(qty), metadata, function (res)
+            result = res
+        end)
+        return result
+    end
+
+    self.setItemMetadata = function(source, itemId, metadata)
+        local result = nil
+        TriggerEvent("vorpCore:setItemMetadata", source, tonumber(itemId), metadata, function (res)
+            result = res
+        end))
+        return result
     end
 
 

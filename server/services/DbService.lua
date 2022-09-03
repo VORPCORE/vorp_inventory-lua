@@ -47,7 +47,7 @@ DbService.SetItemAmount = function (sourceCharIdentifier, itemCraftedId, amount)
 end
 
 DbService.SetItemMetadata = function (sourceCharIdentifier, itemCraftedId, metadata)
-    Log.print('Set Item Metadata')
+    Log.print('Character[' .. tostring(sourceCharIdentifier) .. '] Set Item[' .. tostring(itemCraftedId) .. '] metadata to ' .. json.encode(metadata))
     exports.ghmattimysql:execute("UPDATE items_crafted SET metadata = @metadata WHERE character_id = @charid AND id = @itemid;", {
         ['metadata'] = metadata, -- Check if need to json.encode().
         ['itemCraftedId'] = tonumber(sourceCharIdentifier),
