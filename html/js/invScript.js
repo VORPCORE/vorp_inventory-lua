@@ -37,22 +37,39 @@ function inventorySetup(items) {
                 }
             })
         }
-        if (item.used2) {
-            data.push({
-                text: LANGUAGE.unequip,
-                action: function () {
-                    $.post("http://vorp_inventory/UnequipWeapon", JSON.stringify({
+           // if (item.used2) {    // if you dont want double click enable this remove the bellow
+                //    data.push({
+                //       text: LANGUAGE.unequip,
+                //       action: function () {
+                //            $.post("http://vorp_inventory/UnequipWeapon", JSON.stringify({
+                //                item: item.name,
+                //                id: item.id
+                //            }));
+                //        }
+                //    })
+            // }
+                //if (item.canUse) {
+            //     data.push({
+                //        text: LANGUAGE.use,
+                //        action: function () {
+                //            $.post("http://vorp_inventory/UseItem", JSON.stringify({
+                //                item: item.name,
+                //                type: item.type,
+                //                hash: item.hash,
+                //                amount: item.count,
+                //                id: item.id
+                //            }));
+                //        }
+                //    });
+            // }
+        $("#item-" + index).dblclick(function(){
+            if(item.used || item.used2) {
+                $.post("http://vorp_inventory/UnequipWeapon", JSON.stringify({
                         item: item.name,
                         id: item.id
                     }));
-                }
-            })
-        }
-        if (item.canUse) {
-            data.push({
-                text: LANGUAGE.use,
-                action: function () {
-                    $.post("http://vorp_inventory/UseItem", JSON.stringify({
+            } else {
+            $.post("http://vorp_inventory/UseItem", JSON.stringify({
                         item: item.name,
                         type: item.type,
                         hash: item.hash,
@@ -60,8 +77,7 @@ function inventorySetup(items) {
                         id: item.id
                     }));
                 }
-            });
-        }
+        });
 
         if (item.canRemove) {
             data.push({
