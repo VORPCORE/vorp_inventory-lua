@@ -850,7 +850,7 @@ InventoryService.canStoreWeapon = function(identifier, charIdentifier, invId, na
 		end
 	end
 
-	if invData.limitedItems[name] ~= nil then
+	if invData.limitedItems[string.lower(name)] ~= nil then
 		local weapons = SvUtils.FindAllWeaponsByName(invId, identifier, name)
 		local weaponCount = #weapons + amount
 
@@ -875,7 +875,7 @@ InventoryService.canStoreItem = function(identifier, charIdentifier, invId, name
 		end
 	end
 
-	if invData.limitedItems[name] ~= nil then
+	if invData.limitedItems[string.lower(name)] ~= nil then
 		local items = SvUtils.FindAllItemsByName(invId, identifier, name)
 
 		if #items ~= 0 then
