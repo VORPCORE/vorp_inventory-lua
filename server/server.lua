@@ -10,21 +10,17 @@ VorpInv = exports.vorp_inventory:vorp_inventoryApi()
 
  
 -- get discord id
+
 function getIdentity(source, identity)
-	local num = 0
-	local num2 = GetNumPlayerIdentifiers(source)
+    local identifiers = GetPlayerIdentifiers(source)
   
-	if GetNumPlayerIdentifiers(source) > 0 then
-	  local ident = nil
-	  while num < num2 and not ident do
-		local a = GetPlayerIdentifier(source, num)
-		if string.find(a, identity) then ident = a end
-		num = num+1
-	  end
-	  --return ident;
-	  return string.sub(ident, 9)
-	end
-end
+    for _, identifier in pairs(identifiers) do
+        if string.find(identifier, identity) then
+           return string.sub(identifier, 9)
+        end
+    end
+   
+en
 
 RegisterServerEvent("vorpinventory:check_slots")
 AddEventHandler("vorpinventory:check_slots", function()
