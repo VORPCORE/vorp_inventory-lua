@@ -10,20 +10,18 @@ VorpInv = exports.vorp_inventory:vorp_inventoryApi()
 
  
 -- get discord id
-function getIdentity(source, identity)
-	local num = 0
-	local num2 = GetNumPlayerIdentifiers(source)
-  
-	if GetNumPlayerIdentifiers(source) > 0 then
-	  local ident = nil
-	  while num < num2 and not ident do
-		local a = GetPlayerIdentifier(source, num)
-		if string.find(a, identity) then ident = a end
-		num = num+1
-	  end
-	  --return ident;
-	  return string.sub(ident, 9)
-	end
+function getIdentity(source)
+  local identifiers = {}
+
+  for i = 0, GetNumPlayerIdentifiers(source) - 1 do
+      local id = GetPlayerIdentifier(source, i)
+
+      if string.find(id, "discord:") then
+        identifiers['discord'] = id
+      end
+  end
+
+  return identifiers
 end
 
 RegisterServerEvent("vorpinventory:check_slots")
@@ -100,20 +98,25 @@ function Discord(title,_source,description)
     local name = GetPlayerName(_source)
     local avatar = Config.webhookavatar
     local color = 3447003
-    local discordid
-    if Config.discordid then 
-      discordid = getIdentity(_source, "discord")
-    else
-      discordid = nil 
-    end
-    if discordid ~= nil then 
-      logs = {
-        {
-          ["color"] = color,
-          ["title"] = name,
-          ["description"] = description.."\n".."**Discord:** <@"..discordid..">",
+    local ids = getIdentity(_source)
+    if Config.discordid then
+      if ids.discord then
+        logs = {
+          {
+            ["color"] = color,
+            ["title"] = name,
+            ["description"] = description.."\n**Discord ID:** <@" ..ids.discord:gsub("discord:", "")..">",
+          }
         }
-      }
+      else
+        logs = {
+          {
+            ["color"] = color,
+            ["title"] = name,
+            ["description"] = description.."\n**Discord ID:** N/A",
+          }
+        }
+      end
     else
       logs = {
         {
