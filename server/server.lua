@@ -20,7 +20,7 @@ function getIdentity(source, identity)
         end
     end
    
-en
+end
 
 RegisterServerEvent("vorpinventory:check_slots")
 AddEventHandler("vorpinventory:check_slots", function()
