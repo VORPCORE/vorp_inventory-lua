@@ -71,6 +71,7 @@ Utils.addItems = function(name, id, amount)
 			type = "item_standard",
 			canUse = true,
 			canRemove = svItems[name].can_remove,
+			desc = svItems[name].desc,
 		})
 	end
 end

@@ -543,6 +543,7 @@ InventoryAPI.addItem = function(player, name, amount, metadata, cb)
 	local itemType = svItem:getType()
 	local itemCanRemove = svItem:getCanRemove()
 	local itemDefaultMetadata = svItem:getMetadata()
+	local ItemDesc = svItem:getDesc()
 
 	local canAdd = nil
 	InventoryAPI.canCarryItem(_source, name, amount, function (res)
@@ -575,7 +576,8 @@ InventoryAPI.addItem = function(player, name, amount, metadata, cb)
 					type = itemType,
 					canUse = true,
 					canRemove = itemCanRemove,
-					owner = charIdentifier
+					owner = charIdentifier,
+					desc = ItemDesc
 				})
 				userInventory[craftedItem.id] = item
 				TriggerClientEvent("vorpCoreClient:addItem", _source, item)
@@ -1164,7 +1166,8 @@ InventoryAPI.openCustomInventory = function(player, id)
 							canUse = dbItem.usable,
 							canRemove = dbItem.can_remove,
 							createdAt = item.created_at,
-							owner = item.character_id
+							owner = item.character_id,
+							desc = dbItem.desc
 						})
 					end
 				end
@@ -1194,7 +1197,8 @@ InventoryAPI.openCustomInventory = function(player, id)
 							canUse = dbItem.usable,
 							canRemove = dbItem.can_remove,
 							createdAt = item.created_at,
-							owner = charIdentifier
+							owner = charIdentifier,
+							desc = dbItem.desc
 						})
 					end
 				end

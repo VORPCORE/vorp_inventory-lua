@@ -353,7 +353,8 @@ InventoryService.addItem = function(target, invId, name, amount, metadata, cb)
 					type = "item_standard",
 					canUse = svItem:getCanUse(),
 					canRemove = svItem:getCanRemove(),
-					owner = charIdentifier
+					owner = charIdentifier,
+					desc = svItem:getDesc()
 				})
 				userInventory[craftedItem.id] = item
 				cb(item)
@@ -701,7 +702,8 @@ InventoryService.GiveItem = function(itemId, amount, target)
 						metadata = itemMetadata,
 						canUse = svItem:getCanUse(),
 						canRemove = svItem:getCanRemove(),
-						owner = targetCharIdentifier
+						owner = targetCharIdentifier,
+						desc = svItem:getDesc()
 					})
 					targetInventory[craftedItem.id] = targetItem
 					updateClient(targetItem)
@@ -753,7 +755,8 @@ InventoryService.getInventory = function()
 						canUse = dbItem.canUse,
 						canRemove = dbItem.canRemove,
 						createdAt = item.created_at,
-						owner = sourceCharId
+						owner = sourceCharId,
+						desc = dbItem.desc
 					})
 				end
 			end

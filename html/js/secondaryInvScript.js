@@ -1056,11 +1056,7 @@ function secondInventorySetup(items) {
 
         $("#item-" + index).hover(
             function() {
-                if (item.type !== "item_weapon") {
-                    OverSetDescSecond(!!item.metadata && !!item.metadata.description ? item.metadata.description : '');
-                } else {
-                    OverSetDescSecond(!!item.desc ? item.desc : '');
-                }
+                OverSetDescSecond(!!item.desc ? item.desc : '');
             },
             function() {
                 OverSetDescSecond(" ");
