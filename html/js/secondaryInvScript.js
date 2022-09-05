@@ -1056,7 +1056,11 @@ function secondInventorySetup(items) {
 
         $("#item-" + index).hover(
             function() {
-                OverSetDescSecond(!!item.desc ? item.desc : '');
+                if (!!item.metadata && !!item.metadata.description) {
+                    OverSetDescSecond(item.metadata.description);
+                } else {
+                    OverSetDescSecond(!!item.desc ? item.desc : "");
+                }
             },
             function() {
                 OverSetDescSecond(" ");

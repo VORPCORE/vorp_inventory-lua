@@ -113,7 +113,11 @@ function inventorySetup(items) {
 
         $("#item-" + index).hover(
             function () {
-                OverSetDesc(!!item.desc ? item.desc : '');
+                if (!!item.metadata && !!item.metadata.description) {
+                    OverSetDesc(item.metadata.description);
+                } else {
+                    OverSetDesc(!!item.desc ? item.desc : "");
+                }
             },
             function () {
                 OverSetDesc(" ");
