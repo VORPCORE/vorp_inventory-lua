@@ -25,7 +25,8 @@ InventoryService.receiveItem = function (name, id, amount, metadata)
 			metadata = SharedUtils.MergeTables(svItems[name].metadata, metadata),
 			type = "item_standard",
 			canUse = true,
-			canRemove = svItems[name].canRemove
+			canRemove = svItems[name].canRemove,
+			desc = svItems[name].desc
 		})
 	end
 
@@ -153,6 +154,7 @@ InventoryService.getInventory = function (inventory)
 				local itemType = dbItem.type
 				local itemCanUse = dbItem.canUse
 				local itemDefaultMetadata = dbItem.metadata
+				local itemDesc = dbItem.desc
 
 				local newItem = Item:New({
 					id = item.id,
@@ -164,6 +166,7 @@ InventoryService.getInventory = function (inventory)
 					type = itemType,
 					canUse = itemCanUse,
 					canRemove = itemCanRemove,
+					desc = itemDesc
 				})
 
 				UserInventory[item.id] = newItem
