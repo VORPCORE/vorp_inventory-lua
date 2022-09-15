@@ -617,9 +617,9 @@ InventoryAPI.subItem = function(player, name, amount, metadata, cb)
 
 	if userInventory then
 		local item = SvUtils.FindItemByNameAndMetadata("default", identifier, name, metadata)
-		-- if item == nil then
-		-- 	item = SvUtils.FindItemByNameAndMetadata("default", identifier, name, nil)
-		-- end
+		if item == nil then 
+			item = SvUtils.FindItemByName("default", identifier, name)
+		end
 		if item then
 			local sourceItemCount = item:getCount()
 
