@@ -582,7 +582,7 @@ InventoryService.DropItem = function(itemName, itemId, amount, metadata)
 			local title = _U('drop')
 			local description = _U('drop') .. " "..amount.." "..itemName
 			Discord(title, _source, description)
-			TriggerClientEvent("vorpInventory:createPickup", _source, itemName, amount, metadata, 1)
+			TriggerClientEvent("vorpInventory:createPickup", _source, itemName, itemId, amount, metadata, 1)
 			SvUtils.Trem(_source)
 		end
 end
