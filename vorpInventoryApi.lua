@@ -78,7 +78,7 @@ exports('vorp_inventoryApi',function()
         local result = nil
         TriggerEvent("vorpCore:setItemMetadata", source, tonumber(itemId), metadata, function (res)
             result = res
-        end))
+        end)
         return result
     end
 

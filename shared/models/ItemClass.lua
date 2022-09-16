@@ -10,6 +10,7 @@ Item.model = nil
 Item.metadata = {}
 Item.createdAt = nil
 Item.owner = nil
+Item.desc = nil
 
 Item.count = nil
 Item.limit = nil
@@ -37,6 +38,15 @@ end
 
 function Item:getName() 
 	return self.name
+end
+
+-- DESCRIPTION
+function Item:getDesc() 
+	return self.desc
+end
+
+function Item:setDesc(desc) 
+	self.desc = desc
 end
 
 -- LABEL

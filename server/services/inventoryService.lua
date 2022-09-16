@@ -353,7 +353,8 @@ InventoryService.addItem = function(target, invId, name, amount, metadata, cb)
 					type = "item_standard",
 					canUse = svItem:getCanUse(),
 					canRemove = svItem:getCanRemove(),
-					owner = charIdentifier
+					owner = charIdentifier,
+					desc = svItem:getDesc()
 				})
 				userInventory[craftedItem.id] = item
 				cb(item)
@@ -701,7 +702,8 @@ InventoryService.GiveItem = function(itemId, amount, target)
 						metadata = itemMetadata,
 						canUse = svItem:getCanUse(),
 						canRemove = svItem:getCanRemove(),
-						owner = targetCharIdentifier
+						owner = targetCharIdentifier,
+						desc = svItem:getDesc()
 					})
 					targetInventory[craftedItem.id] = targetItem
 					updateClient(targetItem)
@@ -753,7 +755,8 @@ InventoryService.getInventory = function()
 						canUse = dbItem.canUse,
 						canRemove = dbItem.canRemove,
 						createdAt = item.created_at,
-						owner = sourceCharId
+						owner = sourceCharId,
+						desc = dbItem.desc
 					})
 				end
 			end
@@ -850,7 +853,7 @@ InventoryService.canStoreWeapon = function(identifier, charIdentifier, invId, na
 		end
 	end
 
-	if invData.limitedItems[name] ~= nil then
+	if invData.limitedItems[string.lower(name)] ~= nil then
 		local weapons = SvUtils.FindAllWeaponsByName(invId, identifier, name)
 		local weaponCount = #weapons + amount
 
@@ -875,7 +878,7 @@ InventoryService.canStoreItem = function(identifier, charIdentifier, invId, name
 		end
 	end
 
-	if invData.limitedItems[name] ~= nil then
+	if invData.limitedItems[string.lower(name)] ~= nil then
 		local items = SvUtils.FindAllItemsByName(invId, identifier, name)
 
 		if #items ~= 0 then

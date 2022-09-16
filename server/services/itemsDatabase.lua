@@ -29,6 +29,7 @@ function LoadDatabase()
 					type = db_item.type,
 					canUse = db_item.usable,
 					canRemove = db_item.can_remove,
+					desc = db_item.desc
 				})
 				svItems[item.item] = item
 				--svItems[item.item] = item

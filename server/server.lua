@@ -10,6 +10,7 @@ VorpInv = exports.vorp_inventory:vorp_inventoryApi()
 
  
 -- get discord id
+
 function getIdentity(source)
   local identifiers = {}
 
@@ -22,6 +23,7 @@ function getIdentity(source)
   end
 
   return identifiers
+
 end
 
 RegisterServerEvent("vorpinventory:check_slots")
