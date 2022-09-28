@@ -634,7 +634,8 @@ NUIService.initiateData = function()
 		UseGoldItem = Config.UseGoldItem,
 		AddGoldItem = Config.AddGoldItem,
 		AddDollarItem = Config.AddDollarItem,
-		AddAmmoItem = Config.AddAmmoItem
+		AddAmmoItem = Config.AddAmmoItem,
+		DoubleClickToUse = Config.DoubleClickToUse
 	}})
 end
 

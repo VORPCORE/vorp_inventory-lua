@@ -55,6 +55,7 @@ window.addEventListener('message', function (event) {
         Config.AddGoldItem = LuaConfig.AddGoldItem;
         Config.AddDollarItem = LuaConfig.AddDollarItem;
         Config.AddAmmoItem = LuaConfig.AddAmmoItem;
+        Config.DoubleClickToUse = LuaConfig.DoubleClickToUse;
 
         if (!Config.UseGoldItem) {
             $("#inventoryHud").addClass("NoGoldBackground")

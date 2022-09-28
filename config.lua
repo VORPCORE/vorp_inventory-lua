@@ -11,6 +11,8 @@ Config = {
   dbupdater = true,
   ShowCharacterNameOnGive = false, -- when giving an item, show the character name of nearby players instead of their player ID. if set to false, show the player ID
 
+  DoubleClickToUse = true, -- if toggled to false, items in inventory will right click then left click "use"
+
   -- items that dont get added up torwards your max weapon count
   notweapons = {
     "WEAPON_KIT_BINOCULARS_IMPROVED",
