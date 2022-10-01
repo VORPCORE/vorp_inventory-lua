@@ -77,11 +77,15 @@ InventoryService.DropMoney = function(amount)
 		local userMoney = userCharacter.money
 		local charid = userCharacter.charIdentifier -- new line
 		
+		if Config.NewPlayers then
+		
 		if contains(newchar,charid)  then -- new line
 			TriggerClientEvent("vorp:TipRight", _source, "Cant Drop Money as a new player", 5000)-- new line
 			SvUtils.Trem(_source)-- new line
 			return-- new line
 		end-- new line
+		end
+			
 		if amount <= 0 then
 			TriggerClientEvent("vorp:TipRight", _source, _U("TryExploits"), 3000)
 		elseif userMoney < amount then
@@ -105,11 +109,15 @@ InventoryService.DropAllMoney = function()
 			local userMoney = userCharacter.money
 			local charid = userCharacter.charIdentifier -- new line
 			
+			if Config.NewPlayers then
+			
 			if contains(newchar,charid)  then -- new line
 				TriggerClientEvent("vorp:TipRight", _source, "Cant Drop Money as a new player", 5000)-- new line
 				SvUtils.Trem(_source)-- new line
 				return-- new line
 			end-- new line
+			end
+				
 			if userMoney > 0 then
 				userCharacter.removeCurrency(0, userMoney)
 
@@ -128,11 +136,15 @@ InventoryService.DropPartMoney = function()
 		local userMoneyDef = userMoney - userPartMoney
 		local charid = userCharacter.charIdentifier -- new line
 		
+		if Config.NewPlayers then			
+			
 		if contains(newchar,charid)  then -- new line
 			TriggerClientEvent("vorp:TipRight", _source, "Cant Drop Money as a new player", 5000)-- new line
 			SvUtils.Trem(_source)-- new line
 			return-- new line
 		end-- new line
+		end
+				
 		if userMoney > 0 then
 			userCharacter.removeCurrency(0, userMoneyDef)
 
@@ -154,12 +166,16 @@ InventoryService.giveMoneyToPlayer = function(target, amount)
 		local targetCharacter = Core.getUser(_target).getUsedCharacter
 		local sourceMoney = sourceCharacter.money
 		local charid = sourceCharacter.charIdentifier -- new line
+					
+		if Config.NewPlayers then
 		if contains(newchar,charid)  then -- new line
 			TriggerClientEvent("vorp:TipRight", _source, "Cant Give Money as a new player", 5000)-- new line
 			SvUtils.Trem(_source)-- new line
 			TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
 			return-- new line
 		end-- new line
+		end
+						
 		if amount <= 0 then
 			TriggerClientEvent("vorp:TipRight", _source, _U("TryExploits"), 3000)
 			Wait(3000)
@@ -618,12 +634,16 @@ InventoryService.GiveItem = function(itemId, amount, target)
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local targetCharacter = Core.getUser(_target).getUsedCharacter
 	local charid = sourceCharacter.charIdentifier -- new line
+					
+	if Config.NewPlayers then
 	if contains(newchar,charid)  then -- new line
 		TriggerClientEvent("vorp:TipRight", _source, "Cant Give Item as a new player", 5000)-- new line
 		TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
 		SvUtils.Trem(_source)-- new line
 		return-- new line
 	end-- new line
+	end
+						
 	local sourceIdentifier = sourceCharacter.identifier
 	local targetIdentifier = targetCharacter.identifier
 
