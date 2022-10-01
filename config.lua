@@ -13,7 +13,7 @@ Config = {
 
   DoubleClickToUse = true, -- if toggled to false, items in inventory will right click then left click "use"
   
-  NewPlayers = false,
+  NewPlayers = false, --- if you dont want new players to give money or items then set to true. this can avoid cheaters giving stuff on first join
 
   -- items that dont get added up torwards your max weapon count
   notweapons = {
