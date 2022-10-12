@@ -1,18 +1,35 @@
+---@class Item
 Item = {}
 
+Item.id = nil
+Item.item = nil
 Item.name = nil
 Item.label = nil
 Item.type = nil
 Item.model = nil
+Item.metadata = {}
+Item.createdAt = nil
+Item.owner = nil
+Item.desc = nil
 
 Item.count = nil
 Item.limit = nil
 
 Item.weight = nil
 
-Item.canUse = false 
+Item.canUse = false
 Item.canRemove = false
-Item.dropOnDeath = false 
+Item.desc = nil
+Item.dropOnDeath = false
+
+-- ID
+function Item:setId(id) 
+	self.id = id
+end
+
+function Item:getId() 
+	return self.id
+end
 
 -- NAME
 function Item:setName(name) 
@@ -23,21 +40,30 @@ function Item:getName()
 	return self.name
 end
 
+-- DESCRIPTION
+function Item:getDesc() 
+	return self.desc
+end
+
+function Item:setDesc(desc) 
+	self.desc = desc
+end
+
 -- LABEL
-function Item:setLabel(label) 
+function Item:setLabel(label)
 	self.label = label
 end
 
-function Item:getLabel() 
+function Item:getLabel()
 	return self.label
 end
 
 -- TYPE
-function Item:setType(type) 
+function Item:setType(type)
 	self.type = type
 end
 
-function Item:getType() 
+function Item:getType()
 	return self.type
 end
 
@@ -50,17 +76,28 @@ function Item:getModel()
 	return self.model
 end
 
+-- Metadata
+function Item:setMetadata(metadata)
+	if metadata ~= nil then
+		self.metadata = metadata
+	end
+end
+
+function Item:getMetadata()
+	return self.metadata
+end
+
 -- COUNT
-function Item:setCount(amount) 
+function Item:setCount(amount)
 	self.count = amount
 end
 
-function Item:getCount() 
+function Item:getCount()
 	return self.count
 end
 
-function Item:addCount(amount) 
-	if self.count + amount <= self.limit then
+function Item:addCount(amount, ignoreStackLimit)
+	if (self.count + amount <= self.limit) or ignoreStackLimit then
 		self.count = self.count + amount
 		return true
 	end
@@ -68,6 +105,10 @@ function Item:addCount(amount)
 end
 
 function Item:quitCount(amount) 
+	if amount == nil then
+		print('[^3Item quitCount^7]^1 Error: given amount is nil^7')
+		return
+	end
 	self.count = self.count - amount
 end
 
@@ -107,6 +148,15 @@ function Item:getCanRemove()
 	return self.canRemove
 end
 
+-- Owner
+function Item:setOwner(owner) 
+	self.owner = owner
+end
+
+function Item:getOwner()
+	return self.owner
+end
+
 -- DropOnDeath
 function Item:setDropOnDeath(dropOnDeath)
 	self.dropOnDeath = dropOnDeath
@@ -115,7 +165,8 @@ end
 function Item:getDropOnDeath()
 	return self.dropOnDeath
 end
- 
+
+---@return Item
 function Item:New (t)
 	t = t or {}
 	setmetatable(t, self)

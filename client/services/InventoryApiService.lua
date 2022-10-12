@@ -7,19 +7,32 @@ InventoryApiService = {}
 ---@param type string
 ---@param canUse boolean
 ---@param canRemove boolean
-InventoryApiService.addItem = function (count, limit, label, name, type, canUse, canRemove)
-    if UserInventory[name] ~= nil then
-        UserInventory[name]:addCount(count)
+InventoryApiService.addItem = function (itemData)
+    local itemId = itemData.id
+    local itemAmount = itemData.count
+
+    local item = UserInventory[itemId]
+
+    if item ~= nil then
+        item:setCount(itemAmount)
     else
-        UserInventory[name] = Item:New({
-            count = count,
-            limit = limit,
-            name = name,
-            label = label,
-            type = type,
-            canUse = canUse,
-            canRemove = canRemove
-        })
+        UserInventory[itemId] = Item:New(itemData)
+    end
+    NUIService.LoadInv()
+end
+
+---@param id number
+---@param qty number
+---@param metadata table
+InventoryApiService.subItem = function (id, qty, metadata)
+    if UserInventory[id] == nil then
+        return
+    end
+
+
+    UserInventory[id]:setCount(qty)
+    if UserInventory[id]:getCount() == 0 then
+        UserInventory[id] = nil
     end
     NUIService.LoadInv()
 end
@@ -35,29 +48,17 @@ InventoryApiService.subWeapon = function (weaponId)
     NUIService.LoadInv()
 end
 
----@param name string
----@param qty number
-InventoryApiService.subItem = function (name, qty)
-    if UserInventory[name] ~= nil then
-        UserInventory[name]:setCount(qty)
-        if UserInventory[name]:getCount() == 0 then
-            --table.remove(UserInventory, name)
-            Utils.TableRemoveByKey(UserInventory, name)
-        end
-    end
-    NUIService.LoadInv()
-end
-
 ---@param weaponId number
 ---@param bulletType string
 ---@param qty number
-InventoryApiService.addWeaponBullets = function (weaponId, bulletType, qty)
-    if UserWeapons[weaponId] ~= nil then
+InventoryApiService.addWeaponBullets = function (bulletType, qty)
+    SetPedAmmoByType(PlayerPedId(), GetHashKey(bulletType), qty)
+    --[[ if UserWeapons[weaponId] ~= nil then
         UserWeapons[weaponId]:addAmmo(bulletType, qty)
         if UserWeapons[weaponId]:getUsed() then
             SetPedAmmoByType(PlayerPedId(), GetHashKey(bulletType), UserWeapons[weaponId]:getAmmo(bulletType))
         end
-    end
+    end ]]
     NUIService.LoadInv()
 end
 
@@ -87,7 +88,7 @@ InventoryApiService.addComponent = function (weaponId, component)
         UserWeapons[weaponId]:setComponent(component)
         if UserWeapons[weaponId]:getUsed() then
             Citizen.InvokeNative(0x4899CB088EDF59B8, PlayerPedId(), GetHashKey(UserWeapons[weaponId]:getName()), true, 0)
-            UserWeapons[weaponId]:loadAmmo()
+            UserWeapons[weaponId]:equipwep()
             UserWeapons[weaponId]:loadComponents()
         end
     end
@@ -106,7 +107,7 @@ InventoryApiService.subComponent = function (weaponId, component)
         UserWeapons[weaponId]:quitComponent(component)
         if UserWeapons[weaponId]:getUsed() then
             Citizen.InvokeNative(0x4899CB088EDF59B8, PlayerPedId(), GetHashKey(UserWeapons[weaponId]:getName()), true, 0)
-            UserWeapons[weaponId]:loadAmmo()
+            UserWeapons[weaponId]:equipwep()
             UserWeapons[weaponId]:loadComponents()
         end
     end

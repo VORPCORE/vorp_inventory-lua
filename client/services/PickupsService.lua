@@ -28,7 +28,7 @@ PickupsService.CreateObject = function(model, position)
 	return entityHandle
 end
 
-PickupsService.createPickup = function(name, amount, weaponId)
+PickupsService.createPickup = function(name, amount, metadata, weaponId)
 	local playerPed = PlayerPedId()
 	local coords = GetEntityCoords(playerPed, true, true)
 	local forward = GetEntityForwardVector(playerPed)
@@ -45,9 +45,8 @@ PickupsService.createPickup = function(name, amount, weaponId)
 
 	local entityHandle = PickupsService.CreateObject(pickupModel, position)
 
-	TriggerServerEvent("vorpinventory:sharePickupServer", name, entityHandle, amount, position, weaponId)
+	TriggerServerEvent("vorpinventory:sharePickupServer", name, entityHandle, amount, metadata, position, weaponId)
 	PlaySoundFrontend("show_info", "Study_Sounds", true, 0)
-
 end
 
 PickupsService.createMoneyPickup = function(amount)
@@ -70,7 +69,30 @@ PickupsService.createMoneyPickup = function(amount)
 	PlaySoundFrontend("show_info", "Study_Sounds", true, 0)
 end
 
-PickupsService.sharePickupClient = function(name, entityHandle, amount, position, value, weaponId)
+PickupsService.createGoldPickup = function(amount)
+	if not Config.UseGoldItem then
+		return
+	end
+	local playerPed = PlayerPedId()
+	local coords = GetEntityCoords(playerPed, true, true)
+	local forward = GetEntityForwardVector(playerPed)
+	local position = vector3(coords.x + forward.x * 1.6, coords.y + forward.y * 1.6, coords.z + forward.z * 1.6)
+	local pickupModel = "s_pickup_goldbar01x"
+
+	if dropAll then
+		local randomOffsetX = math.random(-35, 35)
+		local randomOffsetY = math.random(-35, 35)
+
+		position = vector3(lastCoords.x + (randomOffsetX / 10.0), lastCoords.y + (randomOffsetY / 10.0), lastCoords.z)
+	end
+
+	local entityHandle = PickupsService.CreateObject(pickupModel, position)
+
+	TriggerServerEvent("vorpinventory:shareGoldPickupServer", entityHandle, amount, position)
+	PlaySoundFrontend("show_info", "Study_Sounds", true, 0)
+end
+
+PickupsService.sharePickupClient = function(name, entityHandle, amount, metadata, position, value, weaponId)
 	if value == 1 then
 		if WorldPickups[entityHandle] == nil then
 			local label = Utils.GetHashreadableLabel(name, weaponId)
@@ -79,6 +101,7 @@ PickupsService.sharePickupClient = function(name, entityHandle, amount, position
 				name = (amount > 1) and label .. " x " .. tostring(amount) or label,
 				entityId = entityHandle,
 				amount = amount,
+				metadata = metadata,
 				weaponId = weaponId,
 				coords = position,
 				prompt = Prompt:New(0xF84FA74F, _U("TakeFromFloor"), PromptType.StandardHold, promptGroup)
@@ -107,6 +130,7 @@ PickupsService.shareMoneyPickupClient = function(entityHandle, amount, position,
 				entityId = entityHandle,
 				amount = amount,
 				isMoney = true,
+				isGold = false,
 				coords = position,
 				prompt = Prompt:New(0xF84FA74F, _U("TakeFromFloor"), PromptType.StandardHold, promptGroup)
 			})
@@ -116,6 +140,34 @@ PickupsService.shareMoneyPickupClient = function(entityHandle, amount, position,
 			WorldPickups[entityHandle] = pickup
 			if Config.Debug then
 				print('Money pickup added: ' .. tostring(pickup.name))
+			end
+		end
+	else
+		if WorldPickups[entityHandle] ~= nil then
+			WorldPickups[entityHandle].prompt:Delete()
+			Utils.TableRemoveByKey(WorldPickups, entityHandle)
+		end
+	end
+end
+
+PickupsService.shareGoldPickupClient = function(entityHandle, amount, position, value)
+	if value == 1 then
+		if WorldPickups[entityHandle] == nil then
+			local pickup = Pickup:New({
+				name = "Gold (" .. tostring(amount) .. ")",
+				entityId = entityHandle,
+				amount = amount,
+				isMoney = false,
+				isGold = true,
+				coords = position,
+				prompt = Prompt:New(0xF84FA74F, _U("TakeFromFloor"), PromptType.StandardHold, promptGroup)
+			})
+
+
+			pickup.prompt:SetVisible(false)
+			WorldPickups[entityHandle] = pickup
+			if Config.Debug then
+				print('Gold pickup added: ' .. tostring(pickup.name))
 			end
 		end
 	else
@@ -172,8 +224,18 @@ end
 PickupsService.dropAllPlease = function()
 	Wait(200)
 
-	if Config.DropOnRespawn.Money then
+	if Config.DropOnRespawn.AllMoney then
 		TriggerServerEvent("vorpinventory:serverDropAllMoney")
+		Wait(200)
+	end
+
+	if Config.DropOnRespawn.PartMoney then
+		TriggerServerEvent("vorpinventory:serverDropPartMoney")
+		Wait(200)
+	end
+
+	if Config.UseGoldItem and Config.DropOnRespawn.Gold then
+		TriggerServerEvent("vorpinventory:serverDropAllGold")
 		Wait(200)
 	end
 
@@ -183,12 +245,13 @@ PickupsService.dropAllPlease = function()
 		for _, item in pairs(items) do
 			local itemName = item:getName()
 			local itemCount = item:getCount()
+			local itemMetadata = item:getMetadata()
 
-			TriggerServerEvent("vorpinventory:serverDropItem", itemName, itemCount)
-			UserInventory[itemName]:quitCount(itemCount)
+			TriggerServerEvent("vorpinventory:serverDropItem", itemName, itemCount, itemMetadata)
+			item:quitCount(itemCount)
 
-			if UserInventory[itemName]:getCount() == 0 then
-				UserInventory[itemName] = nil
+			if item:getCount() == 0 then
+				UserInventory[item.id] = nil
 			end
 
 			Wait(200)
@@ -257,6 +320,8 @@ PickupsService.OnWorldPickup = function()
 			if pickup.prompt:HasHoldModeCompleted() then
 				if pickup.isMoney then
 					TriggerServerEvent("vorpinventory:onPickupMoney", pickup.entityId)
+				elseif Config.UseGoldItem and pickup.isGold then 
+					TriggerServerEvent("vorpinventory:onPickupGold", pickup.entityId )
 				else
 					TriggerServerEvent("vorpinventory:onPickup", pickup.entityId)
 				end

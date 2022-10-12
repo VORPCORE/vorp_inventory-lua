@@ -1,3 +1,4 @@
+---@class Weapon
 Weapon = {}
 
 Weapon.name = nil
@@ -8,6 +9,9 @@ Weapon.used = false
 Weapon.used2 = false
 Weapon.ammo = {}
 Weapon.components = {}
+Weapon.desc = nil
+Weapon.currInv = ''
+Weapon.dropped = 0
 
 function Weapon:setUsed(isUsed)
 	self.used = isUsed
@@ -55,6 +59,30 @@ end
 
 function Weapon:getName()
 	return self.name
+end
+
+function Weapon:setDesc(desc)
+	self.desc = desc
+end
+
+function Weapon:getDesc()
+	return self.desc
+end
+
+function Weapon:setCurrInv(invId)
+	self.currInv = invId
+end
+
+function Weapon:getCurrInv()
+	return self.currInv
+end
+
+function Weapon:setDropped(dropped)
+	self.dropped = dropped
+end
+
+function Weapon:getDropped()
+	return self.dropped
 end
 
 function Weapon:getAllAmmo()
@@ -107,6 +135,7 @@ function Weapon:subAmmo(type, amount)
 	end
 end
 
+---@return Weapon
 function Weapon:New (t)
 	t = t or {}
 	setmetatable(t, self)
