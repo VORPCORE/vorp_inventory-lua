@@ -21,6 +21,11 @@ function initSecondaryInventoryHandlers() {
                         },
 
                         validate: function (value, item, type) {
+                             if (value <= 0) {
+                                dialog.close()
+                                return;
+                            }
+
                             if (!value) {
                                 dialog.close()
                                 return;
@@ -497,11 +502,14 @@ function initSecondaryInventoryHandlers() {
                                 dialog.close()
                                 return;
                             }
-
+                             if (value <= 0) {
+                                dialog.close()
+                                return;
+                            }
                             if (!isInt(value)) {
                                 return;
                             }
-
+                         
                             if (!isValidating) {
                                 processEventValidation();
                                 $.post("http://vorp_inventory/MoveToCustom", JSON.stringify({
