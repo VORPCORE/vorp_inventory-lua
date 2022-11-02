@@ -1,3 +1,8 @@
+<2.3>
+- uses oxmysql from now on, please download it if you havvent yet.
+- code clean up
+- small fixes on metadata
+- small fixes on custom invs
 <2.2>
 - fix for duplication on custom inventories
 - fix for getting weapons
