@@ -21,7 +21,8 @@ exports('vorp_inventoryApi', function()
     end
 
     self.registerInventory = function(id, name, limit, acceptWeapons, shared, ignoreItemStackLimit, whitelistItems)
-        TriggerEvent("vorpCore:registerInventory", id, name, limit, acceptWeapons, shared, ignoreItemStackLimit, whitelistItems)
+        TriggerEvent("vorpCore:registerInventory", id, name, limit, acceptWeapons, shared, ignoreItemStackLimit,
+            whitelistItems)
     end
 
     self.removeInventory = function(id)
@@ -127,9 +128,10 @@ exports('vorp_inventoryApi', function()
 
         local item_promise = promise.new()
 
-        TriggerEvent("vorpCore:getItemContainingMetadata", source, tostring(itemName), metadata, function(responseItem)
-            item_promise:resolve(responseItem)
-        end)
+        TriggerEvent("vorpCore:getItemContainingMetadata", source, tostring(itemName), metadata,
+            function(responseItem)
+                item_promise:resolve(responseItem)
+            end)
 
         return Citizen.Await(item_promise)
     end
@@ -257,7 +259,7 @@ exports('vorp_inventoryApi', function()
         local weapon_promise = promise.new()
 
         TriggerEvent("vorpCore:getUserWeapon", source, function(weapon)
-            weapon_promise:resolve(data)
+            weapon_promise:resolve(weapon)
         end, weaponId)
 
         return Citizen.Await(weapon_promise)
