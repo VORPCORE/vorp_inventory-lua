@@ -449,7 +449,9 @@ InventoryService.onPickup = function(obj)
 							if item ~= nil then
 								local title = _U('itempickup')
 								local description = _U('itempickup2') .. amount .. " " .. name
-								Discord(title, _source, description)
+								--Discord(title, _source, description)
+								Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
+
 
 								TriggerClientEvent("vorpInventory:sharePickupClient", -1, name, ItemPickUps[obj].obj, amount, metadata,
 									ItemPickUps[obj].coords, 2)
@@ -595,7 +597,8 @@ InventoryService.DropItem = function(itemName, itemId, amount, metadata)
 		InventoryService.subItem(_source, "default", itemId, amount)
 		local title = _U('drop')
 		local description = _U('drop') .. " " .. amount .. " " .. itemName
-		Discord(title, _source, description)
+		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
+
 		TriggerClientEvent("vorpInventory:createPickup", _source, itemName, amount, metadata, 1)
 		SvUtils.Trem(_source)
 	end
