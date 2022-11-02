@@ -38,7 +38,7 @@ AddEventHandler("vorpinventory:check_slots", function()
     end
     local stufftosend = tonumber(slot_check)
     local part2 = Config.MaxItemsInInventory.Items
-    local User = VorpCore.getUser(_source).getUsedCharacter
+    local User = Core.getUser(_source).getUsedCharacter
     local money = User.money
     local gold = User.gold
     TriggerClientEvent("syn:getnuistuff", _source, stufftosend, part2, money, gold)
