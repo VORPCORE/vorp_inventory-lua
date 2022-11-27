@@ -951,7 +951,7 @@ InventoryService.MoveToCustom = function(obj)
 				exports.oxmysql:execute("UPDATE loadout SET curr_inv = @invId WHERE charidentifier = @charid AND id = @weaponId;"
 					, {
 					['invId'] = invId,
-					['charid'] = sourceCharIdentifier,
+					['charid'] = "",
 					['weaponId'] = item.id,
 				})
 
