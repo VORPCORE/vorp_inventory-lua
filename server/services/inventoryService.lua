@@ -619,12 +619,15 @@ end
 InventoryService.GiveWeapon = function(weaponId, target)
 	local _source = source
 	if not SvUtils.InProcessing(_source) then
+		TriggerClientEvent("vorp_inventory:transactionStarted", _source)
 		SvUtils.ProcessUser(_source)
 		local _target = target
 
 		if UsersWeapons["default"][weaponId] ~= nil then
 			InventoryAPI.giveWeapon2(_target, weaponId, _source)
 		end
+
+		TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
 		SvUtils.Trem(_source)
 	end
 end
