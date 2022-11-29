@@ -14,6 +14,10 @@ end)
 
 NUIService.ReloadInventory = function(inventory)
     local payload = json.decode(inventory)
+	if payload.itemList == '[]' then
+		payload.itemList = {}
+	end
+
     for _, item in pairs(payload.itemList) do
         if item.type == "item_weapon" then
             item.label = Utils.GetWeaponLabel(item.name)
@@ -255,7 +259,7 @@ NUIService.NUISetNearPlayers = function(obj, nearestPlayers)
 	local isAnyPlayerFound = #nearestPlayers > 0
 
 	if next(nearestPlayers) == nil then
-		print("No Near Players")
+		TriggerEvent('vorp:TipRight', "No Players Near By", 5000)
 		return
 	end
 	
