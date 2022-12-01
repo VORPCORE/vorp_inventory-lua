@@ -123,7 +123,7 @@ window.addEventListener('message', function (event) {
 
         $("#search").bind('input', function () {
             searchFor = $("#search").val().toLowerCase();
-            $(".item").each(function () {
+            $("#inventoryElement .item").each(function () {
                 label = $(this).data("label").toLowerCase();
                 if (label.indexOf(searchFor) < 0) {
                     $(this).hide();
@@ -184,7 +184,9 @@ window.addEventListener('message', function (event) {
 
         if (event.data.autofocus == true) {
             $(document).on('keydown', function (event) {
-                $("#search").focus();
+                if (!(event.target && event.target.id === 'secondarysearch')) {
+                    $("#search").focus();
+                }
             });
         }
 
