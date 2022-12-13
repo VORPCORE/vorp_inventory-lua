@@ -951,10 +951,10 @@ InventoryService.MoveToCustom = function(obj)
 	if item.type == "item_weapon" then
 		if CustomInventoryInfos[invId].acceptWeapons then
 			if InventoryService.canStoreWeapon(sourceIdentifier, sourceCharIdentifier, invId, item.name, amount) then
-				exports.oxmysql:execute("UPDATE loadout SET curr_inv = @invId WHERE charidentifier = @charid AND id = @weaponId;"
+				exports.oxmysql:execute("UPDATE loadout SET identifier = '',curr_inv = @invId WHERE charidentifier = @charid AND id = @weaponId;"
 					, {
 					['invId'] = invId,
-					['charid'] = "",
+					['charid'] = sourceCharIdentifier,
 					['weaponId'] = item.id,
 				})
 
