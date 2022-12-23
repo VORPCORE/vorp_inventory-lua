@@ -49,6 +49,22 @@ function hideSecondaryCapacity() {
 }
 
 function initiateSecondaryInventory(id, title, capacity) {
+    $("#secondInventoryHud").append(
+        `<div class='controls'><div class='controls-center'><input type='text' id='secondarysearch' placeholder='Search'/></div></div>`
+    );
+
+    $("#secondarysearch").bind('input', function () {
+        searchFor = $("#secondarysearch").val().toLowerCase();
+        $("#secondInventoryElement .item").each(function () {
+            label = $(this).data("label").toLowerCase();
+            if (label.indexOf(searchFor) < 0) {
+                $(this).hide();
+            } else {
+                $(this).show();
+            }
+        });
+    });
+    
     $("#secondInventoryHud").fadeIn();
     secondarySetTitle(title);
 
