@@ -629,14 +629,19 @@ InventoryAPI.deletegun = function(player, weaponid)
 	exports.oxmysql:execute("DELETE FROM loadout WHERE id=@id", { ['id'] = weaponid })
 end
 
-InventoryAPI.registerWeapon = function(target, name, ammos, components, comps)
+InventoryAPI.registerWeapon = function(target, name, comps, status)
 	local _target = target
 	local targetUser = Core.getUser(_target)
 	local targetCharacter
 	local targetIdentifier
 	local targetCharId
-	local ammo = {}
-	local component = {}
+	local _comps = comps or {}
+	local _status = status or { 
+		dirtlevel = 0, 
+		mudlevel = 0,
+		conditionlevel = 0, 
+		rustlevel = 0, 
+	}
 
 	local canGive = false
 
@@ -647,7 +652,6 @@ InventoryAPI.registerWeapon = function(target, name, ammos, components, comps)
 		end
 
 	end
-
 
 	if targetUser then
 		targetCharacter = targetUser.getUsedCharacter
@@ -667,72 +671,39 @@ InventoryAPI.registerWeapon = function(target, name, ammos, components, comps)
 		end
 	end
 
-	if ammos then
-		for _, value in pairs(ammos) do
-			ammo[_] = value
-		end
-	end
-
-	if components then
-		for key, value in pairs(components) do
-			component[#component + 1] = key
-		end
-	end
 	if canGive then
-		if comps == nil then
-			exports.oxmysql:execute("INSERT INTO loadout (identifier, charidentifier, name, ammo, components) VALUES (@identifier, @charid, @name, @ammo, @components)"
-				, {
-					['identifier'] = targetIdentifier,
-					['charid'] = targetCharId,
-					['name'] = name,
-					['ammo'] = json.encode(ammo),
-					['components'] = json.encode(component)
-				}, function(result)
-				local weaponId = result.insertId
-				local newWeapon = Weapon:New({
-					id = weaponId,
-					propietary = targetIdentifier,
-					name = name,
-					ammo = ammo,
-					used = false,
-					used2 = false,
-					charId = targetCharId,
-					currInv = "default",
-					dropped = 0,
-				})
-				UsersWeapons["default"][weaponId] = newWeapon
+		exports.oxmysql:execute("INSERT INTO loadout (identifier, charidentifier, name, ammo, components, comps, dirtlevel, mudlevel, conditionlevel, rustlevel)"..
+		"VALUES (@identifier, @charid, @name, @ammo, @components, @comps, @dirtlevel, @mudlevel, @conditionlevel, @rustlevel)"
+			, {
+				['identifier'] = targetIdentifier,
+				['charid'] = targetCharId,
+				['name'] = name,
+				['ammo'] = '[]',
+				['components'] = '[]',
+				['comps'] = json.encode(_comps),
+				['dirtlevel'] = _status.dirtlevel, 
+				['mudlevel'] = _status.mudlevel, 
+				['conditionlevel'] = _status.conditionlevel,
+				['rustlevel'] = _status.rustlevel, 	
 
-				TriggerEvent("syn_weapons:registerWeapon", weaponId)
-				TriggerClientEvent("vorpInventory:receiveWeapon", _target, weaponId, targetIdentifier, name, ammo)
-			end)
-		else
-			exports.oxmysql:execute("INSERT INTO loadout (identifier, charidentifier, name, ammo, components, comps) VALUES (@identifier, @charid, @name, @ammo, @components, @comps)"
-				, {
-					['identifier'] = targetIdentifier,
-					['charid'] = targetCharId,
-					['name'] = name,
-					['ammo'] = json.encode(ammo),
-					['components'] = json.encode(component),
-					['comps'] = json.encode(comps),
-				}, function(result)
-				local weaponId = result.insertId
-				local newWeapon = Weapon:New({
-					id = weaponId,
-					propietary = targetIdentifier,
-					name = name,
-					ammo = ammo,
-					used = false,
-					used2 = false,
-					charId = targetCharId,
-					currInv = "default",
-					dropped = 0,
-				})
-				UsersWeapons["default"][weaponId] = newWeapon
+			}, function(result)
+			local weaponId = result.insertId
+			local newWeapon = Weapon:New({
+				id = weaponId,
+				propietary = targetIdentifier,
+				name = name,
+				ammo = {},
+				used = false,
+				used2 = false,
+				charId = targetCharId,
+				currInv = "default",
+				dropped = 0,
+			})
+			UsersWeapons["default"][weaponId] = newWeapon
 
-				TriggerEvent("syn_weapons:registerWeapon", weaponId)
-				TriggerClientEvent("vorpInventory:receiveWeapon", _target, weaponId, targetIdentifier, name, ammo)
-			end)
-		end
+			TriggerEvent("syn_weapons:registerWeapon", weaponId)
+			TriggerClientEvent("vorpInventory:receiveWeapon", _target, weaponId, targetIdentifier, name, {})
+		end)
 	else
 		Log.Warning("Weapon: [^2" .. name .. "^7] ^1 do not exist on the config or its a WRONG HASH")
 	end

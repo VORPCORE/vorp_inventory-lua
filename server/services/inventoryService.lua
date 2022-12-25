@@ -388,22 +388,23 @@ end
 InventoryService.addWeapon = function(target, weaponId)
 	local _source = target
 	local userWeapons = UsersWeapons["default"]
-	local weaponcomps
-	exports.oxmysql:execute('SELECT comps FROM loadout WHERE id = @id ', { ['id'] = weaponId }, function(result)
+
+	exports.oxmysql:execute('SELECT * FROM loadout WHERE id = @id ', { ['id'] = weaponId }, function(result)
 		if result[1] ~= nil then
-			weaponcomps = json.decode(result[1].comps)
-		else
-			weaponcomps = {}
+			local weaponcomps = json.decode(result[1].comps)
+			local weaponStatus = { 
+				dirtlevel = result[1].dirtlevel, 
+				mudlevel = result[1].mudlevel,
+				conditionlevel = result[1].conditionlevel, 
+				rustlevel = result[1].rustlevel, 
+			}
+
+			local weaponname = userWeapons[weaponId]:getName()
+			InventoryAPI.registerWeapon(_source, weaponname, weaponcomps, weaponStatus)
+			InventoryAPI.deletegun(_source, weaponId)
 		end
 	end)
-	while weaponcomps == nil do
-		Wait(50)
-	end
-	local weaponname = userWeapons[weaponId]:getName()
-	local ammo = { ["nothing"] = 0 }
-	local components = { ["nothing"] = 0 }
-	InventoryAPI.registerWeapon(_source, weaponname, ammo, components, weaponcomps)
-	InventoryAPI.deletegun(_source, weaponId)
+
 end
 
 InventoryService.subWeapon = function(target, weaponId)
