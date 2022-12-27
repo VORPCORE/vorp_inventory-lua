@@ -56,4 +56,6 @@ Locales["en_lang"] = {
     cantweapons2 = "The person already has too many guns",
     slow = "Stop trying to spam items!",
     cansell = "Can sell for: $",
+    cantdrophere = "cant drop here",
+    noplayersnearby = "No Players Near By",
 }

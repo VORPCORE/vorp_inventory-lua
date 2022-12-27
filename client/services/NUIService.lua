@@ -259,7 +259,7 @@ NUIService.NUISetNearPlayers = function(obj, nearestPlayers)
 	local isAnyPlayerFound = #nearestPlayers > 0
 
 	if next(nearestPlayers) == nil then
-		TriggerEvent('vorp:TipRight', "No Players Near By", 5000)
+		TriggerEvent('vorp:TipRight', _U("noplayersnearby"), 5000)
 		return
 	end
 	
@@ -401,7 +401,7 @@ NUIService.NUIDropItem = function (obj)
 
 		NUIService.LoadInv()
 	else
-		TriggerEvent('vorp:TipRight', "cant drop here", 5000)
+		TriggerEvent('vorp:TipRight', _U("cantdrophere"), 5000)
 	end
 end
 
