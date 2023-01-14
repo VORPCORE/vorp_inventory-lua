@@ -113,6 +113,17 @@ exports('vorp_inventoryApi', function()
         return Citizen.Await(result_promise)
     end
 
+    self.subItemID = function(source, id)
+
+        local result_promise = promise.new()
+
+        TriggerEvent("vorpCore:subItemID", source, id, function(res)
+            result_promise:resolve(res)
+        end)
+
+        return Citizen.Await(result_promise)
+    end
+
     self.getItemByName = function(source, itemName)
 
         local item_promise = promise.new()

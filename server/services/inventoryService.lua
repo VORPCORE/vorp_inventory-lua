@@ -59,6 +59,7 @@ InventoryService.UseItem = function(itemName, itemId, args)
 		if item ~= nil then
 			local itemArgs = json.decode(json.encode(svItem))
 			itemArgs.metadata = item:getMetadata()
+			itemArgs.mainid = itemId
 			local arguments = {
 				source = _source,
 				item = itemArgs,

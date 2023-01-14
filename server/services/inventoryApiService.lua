@@ -493,6 +493,49 @@ InventoryAPI.addItem = function(player, name, amount, metadata, cb)
 	end
 end
 
+InventoryAPI.subItemID = function(player, id, cb)
+	local _source = player
+	local sourceUser = Core.getUser(_source)
+
+	if cb == nil then
+		cb = function(r) end
+	end
+
+	if (sourceUser) == nil then
+		return
+	end
+
+	local sourceCharacter = sourceUser.getUsedCharacter
+	local identifier = sourceCharacter.identifier
+	local charIdentifier = sourceCharacter.charIdentifier
+	local userInventory = UsersInventories["default"][identifier]
+
+	if userInventory then
+		local item = userInventory[id]
+		if item then
+			local sourceItemCount = item:getCount()
+
+			if 1 <= sourceItemCount then
+				item:quitCount(1)
+			else
+				return
+			end
+
+			TriggerClientEvent("vorpCoreClient:subItem", _source, item:getId(), item:getCount())
+
+			if item:getCount() == 0 then
+				userInventory[item:getId()] = nil
+				DbService.DeleteItem(charIdentifier, item:getId())
+			else
+				DbService.SetItemAmount(charIdentifier, item:getId(), item:getCount())
+			end
+			cb(true)
+		else
+			cb(false)
+		end
+	end
+end
+
 InventoryAPI.subItem = function(player, name, amount, metadata, cb)
 	local _source = player
 	local sourceUser = Core.getUser(_source)
@@ -559,6 +602,7 @@ InventoryAPI.setItemMetadata = function(player, itemId, metadata, cb)
 		if item ~= nil then
 			DbService.SetItemMetadata(charId, item.id, metadata)
 			item:setMetadata(metadata)
+			TriggerClientEvent("vorpCoreClient:SetItemMetadata", _source, itemId, metadata)
 			cb(true)
 		else
 			cb(false)
