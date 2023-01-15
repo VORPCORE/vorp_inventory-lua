@@ -3,6 +3,7 @@
 - added new API to work with metdata
 - update all files including fxmanifest no need config or html 
 - make sure to update fxmanifest
+- fix the opening the same inventory on custom inventories. only one player can open at the time
 <2.3>
 - uses oxmysql from now on, please download it if you havvent yet.
 - code clean up
