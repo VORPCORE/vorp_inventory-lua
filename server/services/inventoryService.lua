@@ -860,7 +860,7 @@ InventoryService.canStoreWeapon = function(identifier, charIdentifier, invId, na
 		local weapons = SvUtils.FindAllWeaponsByName(invId, identifier, name)
 		local weaponCount = #weapons + amount
 
-		if weaponCount > invData.limitedItems[name] then
+		if weaponCount > invData.limitedItems[string.lower(name)] then
 			return false
 		end
 	elseif invData.whitelistItems then
