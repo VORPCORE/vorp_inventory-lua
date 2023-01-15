@@ -856,7 +856,7 @@ InventoryService.canStoreWeapon = function(identifier, charIdentifier, invId, na
 		end
 	end
 
-	if invData.limitedItems[string.lower(name)] ~= nil then
+	if invData.limitedItems[string.lower(name)] then
 		local weapons = SvUtils.FindAllWeaponsByName(invId, identifier, name)
 		local weaponCount = #weapons + amount
 
@@ -865,6 +865,8 @@ InventoryService.canStoreWeapon = function(identifier, charIdentifier, invId, na
 		end
 	elseif invData.whitelistItems then
 		return false
+	else
+		return false -- dont allow weapon if its not found in the list
 	end
 	return true
 end
