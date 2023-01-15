@@ -875,8 +875,8 @@ InventoryAPI.giveWeapon = function(player, weaponId, target)
 		end
 
 		TriggerClientEvent('vorp:ShowAdvancedRightNotification', _source, _U("youReceivedWeapon"), "inventory_items",
-            weaponName, "COLOR_PURE_WHITE", 4000)
-			
+			weaponName, "COLOR_PURE_WHITE", 4000)
+
 		TriggerClientEvent("vorpInventory:receiveWeapon", _source, weaponId, weaponPropietary, weaponName, weaponAmmo)
 	end
 end
@@ -1019,7 +1019,7 @@ InventoryAPI.setCustomInventoryItemLimit = function(id, itemName, limit)
 		return
 	end
 
-	CustomInventoryInfos[id].limitedItems[string.lower(itemName)] = limit
+	CustomInventoryInfos[id].limitedItems[string.lower(itemName)] = limit -- create table with item name and count
 
 	if Config.Debug then
 		Wait(9000) -- so it doesn't print everywhere in the console
@@ -1153,6 +1153,5 @@ InventoryAPI.closeCustomInventory = function(player, id)
 	if CustomInventoryInfos[id] == nil then
 		return
 	end
-
 	TriggerClientEvent("vorp_inventory:CloseCustomInv", _source)
 end

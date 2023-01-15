@@ -78,7 +78,6 @@ AddEventHandler("vorpinventory:moneylog", function(targetHandle, amount)
     local name = GetPlayerName(_source)
     local name2 = GetPlayerName(targetHandle)
     local description = name .. Config.Language.gave .. " $" .. amount .. " " .. Config.Language.to .. name2
-    --  Discord(Config.Language.gaveitem, _source, description)
     Core.AddWebhook(_source, Config.webhook, description, color, Name, logo, footerlogo, avatar)
 
 end)
@@ -98,3 +97,53 @@ if Config.DevMode then
         end
     end, false--[[this command is not restricted, everyone can use this.]] )
 end
+
+--============================  CUSTOM INVENTORY CHECK UP ====================================--
+local InventoryBeingUsed = {}
+
+--lock custom inventory
+RegisterServerEvent("vorp_inventory:Server:LockCustomInv", function(id)
+    local _source = source
+
+    if next(InventoryBeingUsed) then -- if is table is not empty
+        for _, value in pairs(InventoryBeingUsed) do
+            if value.invid == id then -- if id exist in table then block opening
+                local CanOpen = false
+                TriggerClientEvent("vorp_inventory:Client:CanOpenCustom", _source, CanOpen)
+            else -- if not let it open and insert
+                local CanOpen = true
+                TriggerClientEvent("vorp_inventory:Client:CanOpenCustom", _source, CanOpen)
+                InventoryBeingUsed[#InventoryBeingUsed + 1] = { invid = id, playerid = _source }
+            end
+        end
+    else -- if empty let it open and insert to table
+        InventoryBeingUsed[#InventoryBeingUsed + 1] = { invid = id, playerid = _source }
+        local CanOpen = true
+        TriggerClientEvent("vorp_inventory:Client:CanOpenCustom", _source, CanOpen)
+    end
+
+end)
+
+-- remove from table
+local RemoveIndex = function(source)
+    if next(InventoryBeingUsed) then
+        for index, value in pairs(InventoryBeingUsed) do
+            if value.playerid == source then -- if source exists in the table then remove it the index
+                InventoryBeingUsed[index] = nil
+            end
+        end
+    end
+end
+
+-- unlock custom inventory
+RegisterServerEvent("vorp_inventory:Server:UnlockCustomInv", function()
+    local _source = source
+    RemoveIndex(_source)
+end)
+
+-- in case players drop the server while inventory open  take them out of the table
+AddEventHandler('playerDropped', function()
+    local _source = source
+    RemoveIndex(_source)
+end)
+--=============================================================================================--

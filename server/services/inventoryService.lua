@@ -857,16 +857,15 @@ InventoryService.canStoreWeapon = function(identifier, charIdentifier, invId, na
 	end
 
 	if invData.limitedItems[string.lower(name)] then
-		local weapons = SvUtils.FindAllWeaponsByName(invId, identifier, name)
+		local weapons = SvUtils.FindAllWeaponsByName(invId, name)
 		local weaponCount = #weapons + amount
-
 		if weaponCount > invData.limitedItems[string.lower(name)] then
 			return false
 		end
 	elseif invData.whitelistItems then
 		return false
-	else
-		return false -- dont allow weapon if its not found in the list
+	else -- reject weapon if not found in the list
+		return false
 	end
 	return true
 end
@@ -883,7 +882,7 @@ InventoryService.canStoreItem = function(identifier, charIdentifier, invId, name
 		end
 	end
 
-	if invData.limitedItems[string.lower(name)] ~= nil then
+	if invData.limitedItems[string.lower(name)] then
 		local items = SvUtils.FindAllItemsByName(invId, identifier, name)
 
 		if #items ~= 0 then
@@ -952,7 +951,9 @@ InventoryService.MoveToCustom = function(obj)
 	local sourceCharIdentifier = sourceCharacter.charIdentifier
 
 	if item.type == "item_weapon" then
-		if CustomInventoryInfos[invId].acceptWeapons then
+		if CustomInventoryInfos[invId].acceptWeapons then -- if accept weapons
+
+
 			if InventoryService.canStoreWeapon(sourceIdentifier, sourceCharIdentifier, invId, item.name, amount) then
 				exports.oxmysql:execute("UPDATE loadout SET identifier = '',curr_inv = @invId WHERE charidentifier = @charid AND id = @weaponId;"
 					, {
@@ -970,8 +971,6 @@ InventoryService.MoveToCustom = function(obj)
 			else
 				TriggerClientEvent("vorp:TipRight", _source, _U("fullInventory"), 2000)
 			end
-		else
-			-- Print Error Client Side: Can't store weapon here
 		end
 	else
 		if item.count >= amount and
