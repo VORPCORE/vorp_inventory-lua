@@ -21,16 +21,22 @@ function initSecondaryInventoryHandlers() {
                         },
 
                         validate: function (value, item, type) {
-                             if (value <= 0) {
-                                dialog.close()
-                                return;
-                            }
-
                             if (!value) {
                                 dialog.close()
                                 return;
                             }
 
+                            if (value <= 0) {
+                                dialog.close()
+                                return;
+                            }
+
+                            if (value > 200) {/*limite to a certain number currently it does accpet any bits*/
+                                console.log("amount was greater than 200")
+                                dialog.close()
+                                return;
+                            }
+                            
                             if (!isInt(value)) {
                                 return;
                             }
@@ -498,14 +504,21 @@ function initSecondaryInventoryHandlers() {
                             autofocus: "true"
                         },
                         validate: function (value, item, type) {
-                            if (!value) {
+                           if (!value) {
                                 dialog.close()
                                 return;
                             }
-                             if (value <= 0) {
+
+                            if (value <= 0) {
                                 dialog.close()
                                 return;
                             }
+
+                            if (value > 200) {/*limite to a certain number currently it does accpet any bits*/
+                                dialog.close()
+                                return;
+                            }
+
                             if (!isInt(value)) {
                                 return;
                             }
