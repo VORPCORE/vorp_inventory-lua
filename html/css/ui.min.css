@@ -39,7 +39,7 @@ body {
     z-index: 10;
 }
 
-#inventoryHud {
+#inventoryHud, #disabler {
     min-width: 1200px;
     min-height: 1290px;
     overflow: hidden;
@@ -600,7 +600,7 @@ span.emoji {
         margin-top: -2px;
     }
 
-    #inventoryHud {
+    #inventoryHud, #disabler {
         min-width: 1200px;
         min-height: 1120px;
         background-size: 510px 800px;
@@ -664,7 +664,7 @@ span.emoji {
         margin-top: 5rem;
     }
     
-    #inventoryHud {
+    #inventoryHud, #disabler {
         min-width: 1200px;
         min-height: 1120px;
         background-size: 710px 1000px;
@@ -751,6 +751,13 @@ span.emoji {
         height: 35px;   
     }
     
+}
+
+
+#disabler {
+    z-index: 9999;
+    display: none;
+    background: none;
 }
 
 /* Animations */
