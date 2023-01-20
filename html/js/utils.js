@@ -162,6 +162,8 @@ function validatePlayerSelection(player) {
         player: player,
         data: data
     }));
+
+    $('#disabler').hide();
     $('#character-selection').hide();
 
     // reset obj to give, for security
@@ -173,6 +175,7 @@ function validatePlayerSelection(player) {
  }**/
 function selectPlayerToGive(data)
 {
+    $('#disabler').show();
     objToGive = data; // save obj to give during process
     const characters = data.players;
 
@@ -189,6 +192,7 @@ function selectPlayerToGive(data)
 function closeCharacterSelection() {
     // reset obj to give, for security
     objToGive = {}
+    $('#disabler').hide();
     $('#character-selection').hide();
 }
 
