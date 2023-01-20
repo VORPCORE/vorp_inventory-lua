@@ -864,8 +864,6 @@ InventoryService.canStoreWeapon = function(identifier, charIdentifier, invId, na
 		end
 	elseif invData.whitelistItems then
 		return false
-	else -- reject weapon if not found in the list
-		return false
 	end
 	return true
 end
@@ -952,8 +950,6 @@ InventoryService.MoveToCustom = function(obj)
 
 	if item.type == "item_weapon" then
 		if CustomInventoryInfos[invId].acceptWeapons then -- if accept weapons
-
-
 			if InventoryService.canStoreWeapon(sourceIdentifier, sourceCharIdentifier, invId, item.name, amount) then
 				exports.oxmysql:execute("UPDATE loadout SET identifier = '',curr_inv = @invId WHERE charidentifier = @charid AND id = @weaponId;"
 					, {
@@ -969,6 +965,7 @@ InventoryService.MoveToCustom = function(obj)
 				TriggerClientEvent("vorpCoreClient:subWeapon", _source, item.id)
 				InventoryAPI.reloadInventory(_source, invId)
 			else
+				print('testa di cazzo #1')
 				TriggerClientEvent("vorp:TipRight", _source, _U("fullInventory"), 2000)
 			end
 		end
