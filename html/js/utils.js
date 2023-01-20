@@ -157,11 +157,10 @@ function disableInventory(ms) {
 
 function validatePlayerSelection(player) {
     const data = objToGive;
-
-    $.post("http://vorp_inventory/GiveItem", JSON.stringify({
+    secureCallbackToNui("vorp_inventory", "GiveItem", {
         player: player,
         data: data
-    }));
+    });
 
     $('#disabler').hide();
     $('#character-selection').hide();
@@ -215,24 +214,25 @@ function dropGetHowMany(item, type, hash, id, metadata) {
                 }
                 if (!isInt(value)) {
                         return;
-                } 
-                $.post("http://vorp_inventory/DropItem", JSON.stringify({
+                }
+                secureCallbackToNui("vorp_inventory", "DropItem", {
                     item: item,
                     id: id,
                     type: type,
                     number: value,
                     metadata: metadata
-                }));
+                });
+
                 return true;
             }
         });
     } else {
-        $.post("http://vorp_inventory/DropItem", JSON.stringify({
+        secureCallbackToNui("vorp_inventory", "DropItem", {
             item: item,
             type: type,
             hash: hash,
             id: parseInt(id)
-        }));
+        });
     }
 }
 
