@@ -82,6 +82,19 @@ AddEventHandler("vorpinventory:moneylog", function(targetHandle, amount)
 
 end)
 
+RegisterServerEvent("vorpinventory:netduplog")
+AddEventHandler("vorpinventory:netduplog", function()
+    local _source = source
+    local name = GetPlayerName(_source)
+    local description = Config.NetDupWebHook.Language.descriptionstart ..  name .. Config.NetDupWebHook.Language.descriptionend
+    
+    if Config.NetDupWebHook.Active then
+        Core.AddWebhook(Config.NetDupWebHook.Language.title, Config.webhook, description, color, name, logo, footerlogo, avatar)
+    else
+        print('['..Config.NetDupWebHook.Language.title..'] ', description)
+    end
+end)
+
 
 if Config.DevMode then
     RegisterCommand("getInv", function(source, args, rawCommand)

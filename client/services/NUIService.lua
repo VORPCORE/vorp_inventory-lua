@@ -336,49 +336,52 @@ NUIService.NUIGiveItem = function(obj)
 		local data = Utils.expandoProcessing(obj)
 		local data2 = Utils.expandoProcessing(data.data)
 
-		for _, player in pairs(nearestPlayers) do
-			if player ~= PlayerId() then
-				if GetPlayerServerId(player) == tonumber(data.player) then
-					local itemName = data2.item
-					local itemId = data2.id
-					local metadata = data2.metadata
-					local target = tonumber(data.player)
-					print(data2.type)
+		local isvalid = Validator.IsValidNuiCallback(data.hsn)
+		if isvalid then
+			for _, player in pairs(nearestPlayers) do
+				if player ~= PlayerId() then
+					if GetPlayerServerId(player) == tonumber(data.player) then
+						local itemName = data2.item
+						local itemId = data2.id
+						local metadata = data2.metadata
+						local target = tonumber(data.player)
+						print(data2.type)
 
-					if data2.type == "item_money" then
-						if isProcessingPay then return end
-						isProcessingPay = true
-						TriggerServerEvent("vorpinventory:giveMoneyToPlayer", target, tonumber(data2.count))
-						TriggerServerEvent("vorpinventory:moneylog", target, tonumber(data2.count))
-					elseif Config.UseGoldItem and data2.type == "item_gold" then
-						if isProcessingPay then return end
-						isProcessingPay = true
-						TriggerServerEvent("vorpinventory:giveGoldToPlayer", target, tonumber(data2.count))
-					elseif data2.type == "item_ammo" then
-						if isProcessingPay then return end
-						isProcessingPay = true
-						local amount = tonumber(data2.count)
-						local ammotype = data2.item
-						local maxcount = Config.maxammo[ammotype]
-						if amount > 0 and maxcount >= amount then
-							TriggerServerEvent("vorpinventory:servergiveammo", ammotype, amount, target, maxcount)
-						end
-					elseif data2.type == "item_standard" then
-						local amount = tonumber(data2.count)
-						local item = UserInventory[itemId]
+						if data2.type == "item_money" then
+							if isProcessingPay then return end
+							isProcessingPay = true
+							TriggerServerEvent("vorpinventory:giveMoneyToPlayer", target, tonumber(data2.count))
+							TriggerServerEvent("vorpinventory:moneylog", target, tonumber(data2.count))
+						elseif Config.UseGoldItem and data2.type == "item_gold" then
+							if isProcessingPay then return end
+							isProcessingPay = true
+							TriggerServerEvent("vorpinventory:giveGoldToPlayer", target, tonumber(data2.count))
+						elseif data2.type == "item_ammo" then
+							if isProcessingPay then return end
+							isProcessingPay = true
+							local amount = tonumber(data2.count)
+							local ammotype = data2.item
+							local maxcount = Config.maxammo[ammotype]
+							if amount > 0 and maxcount >= amount then
+								TriggerServerEvent("vorpinventory:servergiveammo", ammotype, amount, target, maxcount)
+							end
+						elseif data2.type == "item_standard" then
+							local amount = tonumber(data2.count)
+							local item = UserInventory[itemId]
 
-						if amount > 0 and item ~= nil and item:getCount() >= amount then
-							TriggerServerEvent("vorpinventory:serverGiveItem", itemId, amount, target)
+							if amount > 0 and item ~= nil and item:getCount() >= amount then
+								TriggerServerEvent("vorpinventory:serverGiveItem", itemId, amount, target)
+							else
+								-- TODO error message: Invalid amount of item
+							end
 						else
-							-- TODO error message: Invalid amount of item
+							TriggerServerEvent("vorpinventory:serverGiveWeapon", tonumber(itemId), target)
+							TriggerServerEvent("vorpinventory:weaponlog", target, data2)
 						end
-					else
-						TriggerServerEvent("vorpinventory:serverGiveWeapon", tonumber(itemId), target)
-						TriggerServerEvent("vorpinventory:weaponlog", target, data2)
-					end
 
-					print('[^NUIGiveItem^7] ^2Info^7: Reloading inv after sending info of giving item ?');
-					NUIService.LoadInv()
+						print('[^NUIGiveItem^7] ^2Info^7: Reloading inv after sending info of giving item ?');
+						NUIService.LoadInv()
+					end
 				end
 			end
 		end
@@ -390,52 +393,56 @@ end
 NUIService.NUIDropItem = function(obj)
 	if candrop then
 		local aux = Utils.expandoProcessing(obj)
-		local itemName = aux.item
-		local itemId = aux.id
-		local metadata = aux.metadata
-		local type = aux.type
-		local qty = tonumber(aux.number)
+		
+		local isvalid = Validator.IsValidNuiCallback(aux.hsn)
+		if isvalid then
+			local itemName = aux.item
+			local itemId = aux.id
+			local metadata = aux.metadata
+			local type = aux.type
+			local qty = tonumber(aux.number)
 
-		if type == "item_money" then
-			TriggerServerEvent("vorpinventory:serverDropMoney", qty)
-		end
-
-		if Config.UseGoldItem then
-			if type == "item_gold" then
-				TriggerServerEvent("vorpinventory:serverDropGold", qty)
+			if type == "item_money" then
+				TriggerServerEvent("vorpinventory:serverDropMoney", qty)
 			end
-		end
 
-		if type == "item_standard" then
-			if aux.number ~= nil and aux.number ~= '' then
-				local item = UserInventory[itemId]
+			if Config.UseGoldItem then
+				if type == "item_gold" then
+					TriggerServerEvent("vorpinventory:serverDropGold", qty)
+				end
+			end
 
-				if qty > 0 and item ~= nil and item:getCount() >= qty then
-					TriggerServerEvent("vorpinventory:serverDropItem", itemName, itemId, qty, metadata)
-					item:quitCount(qty)
-					if item:getCount() == 0 then
-						UserInventory[itemId] = nil
+			if type == "item_standard" then
+				if aux.number ~= nil and aux.number ~= '' then
+					local item = UserInventory[itemId]
+
+					if qty > 0 and item ~= nil and item:getCount() >= qty then
+						TriggerServerEvent("vorpinventory:serverDropItem", itemName, itemId, qty, metadata)
+						item:quitCount(qty)
+						if item:getCount() == 0 then
+							UserInventory[itemId] = nil
+						end
 					end
 				end
 			end
-		end
 
-		if type == "item_weapon" then
-			TriggerServerEvent("vorpinventory:serverDropWeapon", aux.id)
+			if type == "item_weapon" then
+				TriggerServerEvent("vorpinventory:serverDropWeapon", aux.id)
 
-			if UserWeapons[aux.id] then
-				local weapon = UserWeapons[aux.id]
+				if UserWeapons[aux.id] then
+					local weapon = UserWeapons[aux.id]
 
-				if weapon:getUsed() then
-					weapon:setUsed(false)
-					RemoveWeaponFromPed(PlayerPedId(), GetHashKey(weapon:getName()), true, 0)
+					if weapon:getUsed() then
+						weapon:setUsed(false)
+						RemoveWeaponFromPed(PlayerPedId(), GetHashKey(weapon:getName()), true, 0)
+					end
+
+					UserWeapons[aux.id] = nil
 				end
-
-				UserWeapons[aux.id] = nil
 			end
-		end
 
-		NUIService.LoadInv()
+			NUIService.LoadInv()
+		end
 	else
 		TriggerEvent('vorp:TipRight', _U("cantdrophere"), 5000)
 	end

@@ -24,7 +24,8 @@ shared_scripts {
   "locale.lua",
   "languages/*.lua",
   "shared/models/*.lua",
-  "shared/services/*.lua"
+  "shared/services/*.lua",
+  "shared/services/Regex.js"
 }
 
 files {

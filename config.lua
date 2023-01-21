@@ -59,6 +59,15 @@ Config = {
     withid = " with the weapon ID: ",
   },
 
+  NetDupWebHook = {
+    Active = true,
+    Language = {
+      title = "Possible Cheater Detected",
+      descriptionstart = "Invalid NUI Callback performed by...\n **Playername** `",
+      descriptionend = "`\n"
+    }
+  },
+
   -- NEED TO TEST
   DropOnRespawn = {
     AllMoney   = false,
