@@ -1,3 +1,9 @@
+<2.5>
+- dupping fix when people use nui dev tools
+- dupping fix when people use amount 3422424242423423423 and would dupe, can only select 200 now
+- duping fix when players give items and could also drop them
+- added NEW API for custom inventories and small fix for weapons.
+- update all files including fxmanifest and html folder
 <2.4>
 - fixing custom inventories using API
 - added new API to work with metdata
