@@ -1,6 +1,7 @@
 InventoryAPI = {}
 UsableItemsFunctions = {}
 local allplayersammo = {}
+-- by default assign this
 CustomInventoryInfos = {
 	default = {
 		name = "Satchel",
@@ -8,8 +9,24 @@ CustomInventoryInfos = {
 		shared = false,
 		---@type table<string, integer>
 		limitedItems = {},
+		---@type boolean
 		ignoreItemStackLimit = false,
-		whitelistItems = false
+		---@type boolean
+		whitelistItems = false,
+		---@type table<string, integer>
+		PermissionTakeFrom = {},
+		---@type table<string, integer>
+		PermissionMoveTo = {},
+		---@type boolean
+		UsePermissions = false,
+		---@type boolean
+		UseBlackList = false,
+		---@type table<string>
+		BlackListItems = {},
+		---@type boolean
+		whitelistWeapons = false,
+		---@type table<string, integer>
+		limitedWeapons = {}
 	}
 }
 
@@ -354,10 +371,6 @@ InventoryAPI.getItemByName = function(player, itemName, cb)
 	end
 end
 
-
-
-
-
 InventoryAPI.getItemContainingMetadata = function(player, itemName, metadata, cb)
 	local _source = player
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
@@ -631,6 +644,10 @@ InventoryAPI.canCarryAmountWeapons = function(player, amount, cb)
 end
 InventoryAPI.getItem = function(player, itemName, cb, metadata)
 	local _source = player
+	if not Core.getUser(_source) then
+		print("getitem function source does not exist , make sure its specified")
+		return
+	end
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local identifier = sourceCharacter.identifier
 	local svItem = svItems[itemName]
@@ -969,12 +986,17 @@ InventoryAPI.onNewCharacter = function(playerId)
 	end
 end
 
-InventoryAPI.registerInventory = function(id, name, limit, acceptWeapons, shared, ignoreItemStackLimit, whitelistItems)
+InventoryAPI.registerInventory = function(id, name, limit, acceptWeapons, shared, ignoreItemStackLimit, whitelistItems,
+                                          UsePermissions, UseBlackList, whitelistWeapons)
 	limit = limit and limit or -1
 	ignoreItemStackLimit = ignoreItemStackLimit and ignoreItemStackLimit or false
 	acceptWeapons = acceptWeapons == nil and true or acceptWeapons
 	whitelistItems = whitelistItems and whitelistItems or false
 	shared = shared and shared or false
+	UsePermissions = UsePermissions and UsePermissions or false
+	UseBlackList = UseBlackList and UseBlackList or false
+	whitelistWeapons = whitelistWeapons and whitelistWeapons or false
+
 	if CustomInventoryInfos[id] then
 		return
 	end
@@ -986,7 +1008,14 @@ InventoryAPI.registerInventory = function(id, name, limit, acceptWeapons, shared
 		shared = shared,
 		ignoreItemStackLimit = ignoreItemStackLimit,
 		whitelistItems = whitelistItems,
-		limitedItems = {}
+		limitedItems = {},
+		PermissionTakeFrom = {}, -- for permissions
+		PermissionMoveTo = {}, -- for permissions
+		UsePermissions = UsePermissions, -- allow or not
+		UseBlackList = UseBlackList,
+		BlackListItems = {},
+		whitelistWeapons = whitelistWeapons,
+		limitedWeapons = {},
 	}
 	UsersInventories[id] = {}
 	if UsersWeapons[id] == nil then
@@ -998,6 +1027,53 @@ InventoryAPI.registerInventory = function(id, name, limit, acceptWeapons, shared
 		Log.print("Custom inventory[^3" .. id .. "^7] ^2Registered!^7")
 	end
 end
+
+InventoryAPI.AddPermissionMoveToCustom = function(id, jobName, grade)
+	if not CustomInventoryInfos[id] then
+		return -- dont add
+	end
+
+	if not jobName and not grade then
+		return -- dont add
+	end
+	if Config.DevMode then
+		Log.print("AdPermsMoveTo  for [^3" .. jobName .. "^7] and grade [^3" .. grade .. "^7]")
+	end
+
+	CustomInventoryInfos[id].PermissionMoveTo[jobName] = grade -- create table with item name and count
+end
+
+InventoryAPI.AddPermissionTakeFromCustom = function(id, jobName, grade)
+
+	if not CustomInventoryInfos[id] then
+		return -- dont add
+	end
+
+	if not jobName and not grade then
+		return -- dont add
+	end
+	if Config.DevMode then
+		Log.print("AdPermsTakeFrom  for [^3" .. jobName .. "^7] and grade [^3" .. grade .. "^7]")
+	end
+	CustomInventoryInfos[id].PermissionTakeFrom[jobName] = grade -- create table with item name and count
+end
+
+InventoryAPI.BlackListCustom = function(id, name)
+
+	if not CustomInventoryInfos[id] then
+		return -- dont add
+	end
+
+	if not name then
+		return -- dont add
+	end
+	if Config.DevMode then
+		Log.print("Blacklisted [^3" .. name .. "^7]")
+	end
+	CustomInventoryInfos[id].BlackListItems[name] = name
+end
+
+
 
 InventoryAPI.removeInventory = function(id, name)
 	if CustomInventoryInfos[id] == nil then
@@ -1024,6 +1100,19 @@ InventoryAPI.setCustomInventoryItemLimit = function(id, itemName, limit)
 	if Config.Debug then
 		Wait(9000) -- so it doesn't print everywhere in the console
 		Log.print("Custom inventory[^3" .. id .. "^7] set item[^3" .. itemName .. "^7] limit to ^2" .. limit .. "^7")
+	end
+end
+
+InventoryAPI.setCustomInventoryWeaponLimit = function(id, wepName, limit)
+	if CustomInventoryInfos[id] == nil or wepName == nil or limit == nil then
+		return
+	end
+
+	CustomInventoryInfos[id].limitedWeapons[string.lower(wepName)] = limit -- create table with item name and count
+
+	if Config.Debug then
+		Wait(9000) -- so it doesn't print everywhere in the console
+		Log.print("Custom inventory[^3" .. id .. "^7] set item[^3" .. wepName .. "^7] limit to ^2" .. limit .. "^7")
 	end
 end
 

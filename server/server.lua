@@ -86,12 +86,14 @@ RegisterServerEvent("vorpinventory:netduplog")
 AddEventHandler("vorpinventory:netduplog", function()
     local _source = source
     local name = GetPlayerName(_source)
-    local description = Config.NetDupWebHook.Language.descriptionstart ..  name .. Config.NetDupWebHook.Language.descriptionend
-    
+    local description = Config.NetDupWebHook.Language.descriptionstart ..
+        name .. Config.NetDupWebHook.Language.descriptionend
+
     if Config.NetDupWebHook.Active then
-        Core.AddWebhook(Config.NetDupWebHook.Language.title, Config.webhook, description, color, name, logo, footerlogo, avatar)
+        Core.AddWebhook(Config.NetDupWebHook.Language.title, Config.webhook, description, color, name, logo, footerlogo,
+            avatar)
     else
-        print('['..Config.NetDupWebHook.Language.title..'] ', description)
+        print('[' .. Config.NetDupWebHook.Language.title .. '] ', description)
     end
 end)
 
@@ -123,10 +125,12 @@ RegisterServerEvent("vorp_inventory:Server:LockCustomInv", function(id)
             if value.invid == id then -- if id exist in table then block opening
                 local CanOpen = false
                 TriggerClientEvent("vorp_inventory:Client:CanOpenCustom", _source, CanOpen)
+                break
             else -- if not let it open and insert
                 local CanOpen = true
                 TriggerClientEvent("vorp_inventory:Client:CanOpenCustom", _source, CanOpen)
                 InventoryBeingUsed[#InventoryBeingUsed + 1] = { invid = id, playerid = _source }
+                break
             end
         end
     else -- if empty let it open and insert to table

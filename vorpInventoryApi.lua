@@ -15,18 +15,29 @@ exports('vorp_inventoryApi', function()
             query_promise:resolve(result)
         end
 
-        exports.ghmattimysql:execute(query, params, on_result)
+        exports.oxmysql:execute(query, params, on_result)
 
         return Citizen.Await(query_promise)
     end
 
-    self.registerInventory = function(id, name, limit, acceptWeapons, shared, ignoreItemStackLimit, whitelistItems)
-        TriggerEvent("vorpCore:registerInventory", id, name, limit, acceptWeapons, shared, ignoreItemStackLimit,
-            whitelistItems)
+    self.registerInventory = function(...)
+        TriggerEvent("vorpCore:registerInventory", ...)
     end
 
     self.removeInventory = function(id)
         TriggerEvent("vorpCore:removeInventory", id)
+    end
+
+    self.BlackListCustomAny = function(...) -- items or weapons
+        TriggerEvent("vorp_inventory:Server:BlackListCustom", ...)
+    end
+
+    self.AddPermissionMoveToCustom = function(...)
+        TriggerEvent("vorp_inventory:Server:AddPermissionMoveToCustom", ...)
+    end
+
+    self.AddPermissionTakeFromCustom = function(...)
+        TriggerEvent("vorp_inventory:Server:AddPermissionTakeFromCustom", ...)
     end
 
     self.setInventoryItemLimit = function(id, itemName, limit)
@@ -34,8 +45,7 @@ exports('vorp_inventoryApi', function()
     end
 
     self.setInventoryWeaponLimit = function(id, weaponName, limit)
-        -- same event as setInventoryItemLimit
-        TriggerEvent("vorpCore:setInventoryItemLimit", id, weaponName, limit)
+        TriggerEvent("vorpCore:setInventoryWeaponLimit", id, weaponName, limit)
     end
 
     self.subWeapon = function(source, weaponid)
