@@ -1121,11 +1121,13 @@ InventoryService.TakeFromCustom = function(obj)
 				})
 				UsersWeapons[invId][item.id]:setCurrInv("default")
 				UsersWeapons["default"][item.id] = UsersWeapons[invId][item.id]
+				UsersWeapons["default"][item.id].propietary = sourceIdentifier
+				UsersWeapons["default"][item.id].charId = sourceCharIdentifier
 				UsersWeapons[invId][item.id] = nil
 
 				local weapon = UsersWeapons["default"][item.id]
 
-				TriggerClientEvent("vorpInventory:receiveWeapon", _source, item.id, weapon:getPropietary(), weapon:getName(),
+				TriggerClientEvent("vorpInventory:receiveWeapon", _source, item.id, sourceIdentifier, weapon:getName(),
 					weapon:getAllAmmo())
 				InventoryAPI.reloadInventory(_source, invId)
 				InventoryService.DiscordLogs(invId, item.name, amount, sourceName, "Take")
