@@ -1,12 +1,10 @@
 exports('vorp_inventoryApi', function()
-
     local self = {}
 
     ---@param query string
     ---@param params table<string, string|number>|nil
     ---@return any
     local dbQuery = function(query, params)
-
         local query_promise = promise.new()
 
         params = params or {}
@@ -65,7 +63,6 @@ exports('vorp_inventoryApi', function()
     end
 
     self.getcomps = function(source, weaponid)
-
         local comps_promise = promise.new()
 
         TriggerEvent("vorpCore:getcomps", source, tonumber(weaponid), function(responseItem)
@@ -76,7 +73,6 @@ exports('vorp_inventoryApi', function()
     end
 
     self.getItem = function(source, itemName, metadata)
-
         local item_promise = promise.new()
 
         TriggerEvent("vorpCore:getItem", source, tostring(itemName), function(responseItem)
@@ -86,12 +82,19 @@ exports('vorp_inventoryApi', function()
         return Citizen.Await(item_promise)
     end
 
+    self.getItemByMainId = function(source, mainid) --main id can be obtain by using an item.
+        local item_promise = promise.new()
+        TriggerEvent("vorpCore:getItemByMainId", source, mainid, function(responseItem)
+            item_promise:resolve(responseItem)
+        end)
+        return Citizen.Await(item_promise)
+    end
+
     self.giveWeapon = function(source, weaponid, target)
         TriggerEvent("vorpCore:giveWeapon", source, weaponid, target)
     end
 
     self.addItem = function(source, itemName, qty, metadata)
-
         local result_promise = promise.new()
 
         TriggerEvent("vorpCore:addItem", source, tostring(itemName), tonumber(qty), metadata, function(res)
@@ -102,7 +105,6 @@ exports('vorp_inventoryApi', function()
     end
 
     self.subItem = function(source, itemName, qty, metadata)
-
         local result_promise = promise.new()
 
         TriggerEvent("vorpCore:subItem", source, tostring(itemName), tonumber(qty), metadata, function(res)
@@ -113,7 +115,6 @@ exports('vorp_inventoryApi', function()
     end
 
     self.setItemMetadata = function(source, itemId, metadata)
-
         local result_promise = promise.new()
 
         TriggerEvent("vorpCore:setItemMetadata", source, tonumber(itemId), metadata, function(res)
@@ -124,7 +125,6 @@ exports('vorp_inventoryApi', function()
     end
 
     self.subItemID = function(source, id)
-
         local result_promise = promise.new()
 
         TriggerEvent("vorpCore:subItemID", source, id, function(res)
@@ -135,7 +135,6 @@ exports('vorp_inventoryApi', function()
     end
 
     self.getItemByName = function(source, itemName)
-
         local item_promise = promise.new()
 
         TriggerEvent("vorpCore:getItemByName", source, tostring(itemName), function(responseItem)
@@ -146,7 +145,6 @@ exports('vorp_inventoryApi', function()
     end
 
     self.getItemContainingMetadata = function(source, itemName, metadata)
-
         local item_promise = promise.new()
 
         TriggerEvent("vorpCore:getItemContainingMetadata", source, tostring(itemName), metadata,
@@ -158,7 +156,6 @@ exports('vorp_inventoryApi', function()
     end
 
     self.getItemMatchingMetadata = function(source, itemName, metadata)
-
         local item_promise = promise.new()
 
         TriggerEvent("vorpCore:getItemMatchingMetadata", source, tostring(itemName), metadata, function(responseItem)
@@ -169,7 +166,6 @@ exports('vorp_inventoryApi', function()
     end
 
     self.getItemCount = function(source, item, metadata)
-
         local count_promise = promise.new()
 
         TriggerEvent("vorpCore:getItemCount", source, function(itemcount)
@@ -183,7 +179,6 @@ exports('vorp_inventoryApi', function()
     ---@param itemName string
     ---@return table|nil
     self.getDBItem = function(source, itemName)
-
         local item
         local query = "SELECT * FROM items WHERE item=@id;"
         local params = { ['@id'] = itemName }
@@ -208,7 +203,6 @@ exports('vorp_inventoryApi', function()
     end
 
     self.getWeaponBullets = function(source, weaponId)
-
         local bullets_promise = promise.new()
 
         TriggerEvent("vorpCore:getWeaponBullets", source, function(bullets)
@@ -219,7 +213,6 @@ exports('vorp_inventoryApi', function()
     end
 
     self.getWeaponComponents = function(source, weaponId)
-
         local components_promise = promise.new()
 
         TriggerEvent("vorpCore:getWeaponComponents", source, function(components)
@@ -230,7 +223,6 @@ exports('vorp_inventoryApi', function()
     end
 
     self.getUserWeapons = function(source)
-
         local weapons_promise = promise.new()
 
         TriggerEvent("vorpCore:getUserWeapons", source, function(weapons)
@@ -241,7 +233,6 @@ exports('vorp_inventoryApi', function()
     end
 
     self.canCarryItems = function(source, amount)
-
         local can_promise = promise.new()
 
         TriggerEvent("vorpCore:canCarryItems", source, amount, function(data)
@@ -252,7 +243,6 @@ exports('vorp_inventoryApi', function()
     end
 
     self.canCarryItem = function(source, item, amount)
-
         local can = false
 
         -- Limit is a restricted field in sql. Query for it directly gives an error.
@@ -276,7 +266,6 @@ exports('vorp_inventoryApi', function()
     end
 
     self.getUserWeapon = function(source, weaponId)
-
         local weapon_promise = promise.new()
 
         TriggerEvent("vorpCore:getUserWeapon", source, function(weapon)
@@ -291,7 +280,6 @@ exports('vorp_inventoryApi', function()
     end
 
     self.getUserInventory = function(source)
-
         local inventory_promise = promise.new()
 
         TriggerEvent("vorpCore:getUserInventory", source, function(invent)

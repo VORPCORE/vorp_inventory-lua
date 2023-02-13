@@ -248,9 +248,9 @@ AddEventHandler("vorpinventory:servergiveammo", function(ammotype, amount, targe
 	local charidentifier = allplayersammo[_source]["charidentifier"]
 	local charidentifier2 = allplayersammo[target]["charidentifier"]
 	exports.oxmysql:execute("UPDATE characters Set ammo=@ammo WHERE charidentifier=@charidentifier",
-		{ ['charidentifier'] = charidentifier, ['ammo'] = json.encode(allplayersammo[_source]["ammo"]) })
+		{ ['charidentifier'] = charidentifier,['ammo'] = json.encode(allplayersammo[_source]["ammo"]) })
 	exports.oxmysql:execute("UPDATE characters Set ammo=@ammo WHERE charidentifier=@charidentifier",
-		{ ['charidentifier'] = charidentifier2, ['ammo'] = json.encode(allplayersammo[target]["ammo"]) })
+		{ ['charidentifier'] = charidentifier2,['ammo'] = json.encode(allplayersammo[target]["ammo"]) })
 	TriggerClientEvent("vorpinventory:updateuiammocount", _source, allplayersammo[_source]["ammo"])
 	TriggerClientEvent("vorpinventory:updateuiammocount", target, allplayersammo[target]["ammo"])
 	TriggerClientEvent("vorpinventory:setammotoped", _source, allplayersammo[_source]["ammo"])
@@ -265,7 +265,7 @@ AddEventHandler("vorpinventory:updateammo", function(ammoinfo)
 	local _source = source
 	allplayersammo[_source] = ammoinfo
 	exports.oxmysql:execute("UPDATE characters Set ammo=@ammo WHERE charidentifier=@charidentifier",
-		{ ['charidentifier'] = ammoinfo["charidentifier"], ['ammo'] = json.encode(ammoinfo["ammo"]) })
+		{ ['charidentifier'] = ammoinfo["charidentifier"],['ammo'] = json.encode(ammoinfo["ammo"]) })
 end)
 
 InventoryAPI.LoadAllAmmo = function()
@@ -303,9 +303,8 @@ InventoryAPI.addBullets = function(player, bulletType, amount)
 		TriggerClientEvent("vorpinventory:updateuiammocount", _source, allplayersammo[_source]["ammo"])
 		TriggerClientEvent("vorpCoreClient:addBullets", _source, bulletType, ammo[bulletType])
 		exports.oxmysql:execute("UPDATE characters Set ammo=@ammo WHERE charidentifier=@charidentifier",
-			{ ['charidentifier'] = charidentifier, ['ammo'] = json.encode(ammo) })
+			{ ['charidentifier'] = charidentifier,['ammo'] = json.encode(ammo) })
 	end)
-
 end
 
 InventoryAPI.subBullets = function(weaponId, bulletType, amount)
@@ -419,7 +418,8 @@ InventoryAPI.addItem = function(player, name, amount, metadata, cb)
 	local sourceUser = Core.getUser(_source)
 
 	if cb == nil then
-		cb = function(r) end
+		cb = function(r)
+		end
 	end
 
 	if (sourceUser) == nil then
@@ -482,18 +482,18 @@ InventoryAPI.addItem = function(player, name, amount, metadata, cb)
 		else
 			DbService.CreateItem(charIdentifier, svItem:getId(), amount, metadata, function(craftedItem)
 				item = Item:New({
-					id = craftedItem.id,
-					count = amount,
-					limit = sourceItemLimit,
-					label = itemLabel,
-					metadata = SharedUtils.MergeTables(itemDefaultMetadata, metadata),
-					name = name,
-					type = itemType,
-					canUse = true,
-					canRemove = itemCanRemove,
-					owner = charIdentifier,
-					desc = ItemDesc
-				})
+						id = craftedItem.id,
+						count = amount,
+						limit = sourceItemLimit,
+						label = itemLabel,
+						metadata = SharedUtils.MergeTables(itemDefaultMetadata, metadata),
+						name = name,
+						type = itemType,
+						canUse = true,
+						canRemove = itemCanRemove,
+						owner = charIdentifier,
+						desc = ItemDesc
+					})
 				userInventory[craftedItem.id] = item
 				TriggerClientEvent("vorpCoreClient:addItem", _source, item)
 			end)
@@ -506,12 +506,42 @@ InventoryAPI.addItem = function(player, name, amount, metadata, cb)
 	end
 end
 
+InventoryAPI.getItemByMainId = function(player, mainid, cb)
+	local _source = player
+	local sourceCharacter = Core.getUser(_source).getUsedCharacter
+	local identifier = sourceCharacter.identifier
+	local userInventory = UsersInventories["default"][identifier]
+
+	if userInventory then
+		local itemRequested = {}
+		for _, item in pairs(userInventory) do
+			if mainid == item:getId() then
+				itemRequested = {
+					id = item:getId(),
+					label = item:getLabel(),
+					name = item:getName(),
+					metadata = item:getMetadata(),
+					type = item:getType(),
+					count = item:getCount(),
+					limit = item:getLimit(),
+					canUse = item:getCanUse()
+				}
+				return cb(itemRequested) -- send table of the item requested
+			end
+		end
+		return cb(nil)
+	end
+	return cb(nil)
+end
+
+
 InventoryAPI.subItemID = function(player, id, cb)
 	local _source = player
 	local sourceUser = Core.getUser(_source)
 
 	if cb == nil then
-		cb = function(r) end
+		cb = function(r)
+		end
 	end
 
 	if (sourceUser) == nil then
@@ -555,7 +585,8 @@ InventoryAPI.subItem = function(player, name, amount, metadata, cb)
 	local svItem = svItems[name]
 
 	if cb == nil then
-		cb = function(r) end
+		cb = function(r)
+		end
 	end
 
 	if svItem == nil then
@@ -669,6 +700,9 @@ InventoryAPI.getItem = function(player, itemName, cb, metadata)
 		cb(nil)
 	end
 end
+
+
+
 InventoryAPI.getcomps = function(player, weaponid, cb)
 	local _source = player
 	exports.oxmysql:execute('SELECT comps FROM loadout WHERE id = @id ', { ['id'] = weaponid }, function(result)
@@ -678,7 +712,6 @@ InventoryAPI.getcomps = function(player, weaponid, cb)
 			cb({})
 		end
 	end)
-
 end
 
 
@@ -706,7 +739,6 @@ InventoryAPI.registerWeapon = function(target, name, ammos, components, comps)
 			canGive = true
 			break
 		end
-
 	end
 
 
@@ -722,7 +754,8 @@ InventoryAPI.registerWeapon = function(target, name, ammos, components, comps)
 		if targetTotalWeaponCount > Config.MaxItemsInInventory.Weapons then
 			TriggerClientEvent("vorp:TipRight", _target, _U("cantweapons2"), 2000)
 			if Config.Debug then
-				Log.Warning(targetCharacter.firstname .. " " .. targetCharacter.lastname .. " ^1Can't carry more weapons^7")
+				Log.Warning(targetCharacter.firstname ..
+				" " .. targetCharacter.lastname .. " ^1Can't carry more weapons^7")
 			end
 			return
 		end
@@ -741,53 +774,55 @@ InventoryAPI.registerWeapon = function(target, name, ammos, components, comps)
 	end
 	if canGive then
 		if comps == nil then
-			exports.oxmysql:execute("INSERT INTO loadout (identifier, charidentifier, name, ammo, components) VALUES (@identifier, @charid, @name, @ammo, @components)"
+			exports.oxmysql:execute(
+				"INSERT INTO loadout (identifier, charidentifier, name, ammo, components) VALUES (@identifier, @charid, @name, @ammo, @components)"
 				, {
-					['identifier'] = targetIdentifier,
-					['charid'] = targetCharId,
-					['name'] = name,
-					['ammo'] = json.encode(ammo),
-					['components'] = json.encode(component)
-				}, function(result)
+				['identifier'] = targetIdentifier,
+				['charid'] = targetCharId,
+				['name'] = name,
+				['ammo'] = json.encode(ammo),
+				['components'] = json.encode(component)
+			}, function(result)
 				local weaponId = result.insertId
 				local newWeapon = Weapon:New({
-					id = weaponId,
-					propietary = targetIdentifier,
-					name = name,
-					ammo = ammo,
-					used = false,
-					used2 = false,
-					charId = targetCharId,
-					currInv = "default",
-					dropped = 0,
-				})
+						id = weaponId,
+						propietary = targetIdentifier,
+						name = name,
+						ammo = ammo,
+						used = false,
+						used2 = false,
+						charId = targetCharId,
+						currInv = "default",
+						dropped = 0,
+					})
 				UsersWeapons["default"][weaponId] = newWeapon
 
 				TriggerEvent("syn_weapons:registerWeapon", weaponId)
 				TriggerClientEvent("vorpInventory:receiveWeapon", _target, weaponId, targetIdentifier, name, ammo)
 			end)
 		else
-			exports.oxmysql:execute("INSERT INTO loadout (identifier, charidentifier, name, ammo, components, comps) VALUES (@identifier, @charid, @name, @ammo, @components, @comps)"
+			exports.oxmysql:execute(
+				"INSERT INTO loadout (identifier, charidentifier, name, ammo, components, comps) VALUES (@identifier, @charid, @name, @ammo, @components, @comps)"
 				, {
-					['identifier'] = targetIdentifier,
-					['charid'] = targetCharId,
-					['name'] = name,
-					['ammo'] = json.encode(ammo),
-					['components'] = json.encode(component),
-					['comps'] = json.encode(comps),
-				}, function(result)
+				['identifier'] = targetIdentifier,
+				['charid'] = targetCharId,
+				['name'] = name,
+				['ammo'] = json.encode(ammo),
+				['components'] = json.encode(component),
+				['comps'] = json.encode(comps),
+			}, function(result)
 				local weaponId = result.insertId
 				local newWeapon = Weapon:New({
-					id = weaponId,
-					propietary = targetIdentifier,
-					name = name,
-					ammo = ammo,
-					used = false,
-					used2 = false,
-					charId = targetCharId,
-					currInv = "default",
-					dropped = 0,
-				})
+						id = weaponId,
+						propietary = targetIdentifier,
+						name = name,
+						ammo = ammo,
+						used = false,
+						used2 = false,
+						charId = targetCharId,
+						currInv = "default",
+						dropped = 0,
+					})
 				UsersWeapons["default"][weaponId] = newWeapon
 
 				TriggerEvent("syn_weapons:registerWeapon", weaponId)
@@ -810,7 +845,6 @@ InventoryAPI.giveWeapon2 = function(player, weaponId, target)
 		local sourceTotalWeaponCount = InventoryAPI.getUserTotalCountWeapons(sourceIdentifier, sourceCharId) + 1
 
 		if sourceTotalWeaponCount > Config.MaxItemsInInventory.Weapons then
-
 			TriggerClientEvent("vorp:TipRight", _source, _U("cantweapons"), 2000)
 			if Config.Debug then
 				Log.print(sourceCharacter.firstname .. " " .. sourceCharacter.lastname .. " ^1Can't carry more weapons^7")
@@ -861,7 +895,6 @@ InventoryAPI.giveWeapon = function(player, weaponId, target)
 		local sourceTotalWeaponCount = InventoryAPI.getUserTotalCountWeapons(sourceIdentifier, sourceCharId) + 1
 
 		if sourceTotalWeaponCount > Config.MaxItemsInInventory.Weapons then
-
 			TriggerClientEvent("vorp:TipRight", _source, _U("cantweapons"), 2000)
 			if Config.Debug then
 				Log.print(sourceCharacter.firstname .. " " .. sourceCharacter.lastname .. " ^1Can't carry more weapons^7")
@@ -883,10 +916,12 @@ InventoryAPI.giveWeapon = function(player, weaponId, target)
 				['identifier'] = sourceIdentifier,
 				['charid'] = sourceCharId,
 				['id'] = weaponId
-			}, function() end)
+			}, function()
+		end)
 
 		if targetisPlayer then
-			TriggerClientEvent('vorp:ShowAdvancedRightNotification', _target, _U("youGaveWeapon"), "inventory_items", weaponName,
+			TriggerClientEvent('vorp:ShowAdvancedRightNotification', _target, _U("youGaveWeapon"), "inventory_items",
+				weaponName,
 				"COLOR_PURE_WHITE", 4000)
 			TriggerClientEvent("vorpCoreClient:subWeapon", _target, weaponId)
 		end
@@ -912,7 +947,8 @@ InventoryAPI.subWeapon = function(player, weaponId)
 				['identifier'] = '',
 				['charid'] = charId,
 				['id'] = weaponId
-			}, function() end)
+			}, function()
+		end)
 	end
 
 	TriggerClientEvent("vorpCoreClient:subWeapon", _source, weaponId)
@@ -987,7 +1023,7 @@ InventoryAPI.onNewCharacter = function(playerId)
 end
 
 InventoryAPI.registerInventory = function(id, name, limit, acceptWeapons, shared, ignoreItemStackLimit, whitelistItems,
-                                          UsePermissions, UseBlackList, whitelistWeapons)
+	                                      UsePermissions, UseBlackList, whitelistWeapons)
 	limit = limit and limit or -1
 	ignoreItemStackLimit = ignoreItemStackLimit and ignoreItemStackLimit or false
 	acceptWeapons = acceptWeapons == nil and true or acceptWeapons
@@ -1044,7 +1080,6 @@ InventoryAPI.AddPermissionMoveToCustom = function(id, jobName, grade)
 end
 
 InventoryAPI.AddPermissionTakeFromCustom = function(id, jobName, grade)
-
 	if not CustomInventoryInfos[id] then
 		return -- dont add
 	end
@@ -1059,7 +1094,6 @@ InventoryAPI.AddPermissionTakeFromCustom = function(id, jobName, grade)
 end
 
 InventoryAPI.BlackListCustom = function(id, name)
-
 	if not CustomInventoryInfos[id] then
 		return -- dont add
 	end
@@ -1142,14 +1176,14 @@ InventoryAPI.reloadInventory = function(player, id)
 	for weaponId, weapon in pairs(UsersWeapons[id]) do
 		if invData.shared or weapon.charId == sourceCharIdentifier then
 			itemList[#itemList + 1] = Item:New({
-				id = weaponId,
-				count = 1,
-				name = weapon.name,
-				label = weapon.name,
-				limit = 1,
-				type = "item_weapon",
-				desc = weapon.desc
-			})
+					id = weaponId,
+					count = 1,
+					name = weapon.name,
+					label = weapon.name,
+					limit = 1,
+					type = "item_weapon",
+					desc = weapon.desc
+				})
 		end
 	end
 
@@ -1183,19 +1217,19 @@ InventoryAPI.openCustomInventory = function(player, id)
 					if svItems[item.item] ~= nil then
 						local dbItem = svItems[item.item]
 						characterInventory[item.id] = Item:New({
-							count = tonumber(item.amount),
-							id = item.id,
-							limit = dbItem.limit,
-							label = dbItem.label,
-							metadata = SharedUtils.MergeTables(dbItem.metadata, item.metadata),
-							name = dbItem.item,
-							type = dbItem.type,
-							canUse = dbItem.usable,
-							canRemove = dbItem.can_remove,
-							createdAt = item.created_at,
-							owner = item.character_id,
-							desc = dbItem.desc
-						})
+								count = tonumber(item.amount),
+								id = item.id,
+								limit = dbItem.limit,
+								label = dbItem.label,
+								metadata = SharedUtils.MergeTables(dbItem.metadata, item.metadata),
+								name = dbItem.item,
+								type = dbItem.type,
+								canUse = dbItem.usable,
+								canRemove = dbItem.can_remove,
+								createdAt = item.created_at,
+								owner = item.character_id,
+								desc = dbItem.desc
+							})
 					end
 				end
 				UsersInventories[id] = characterInventory
@@ -1214,19 +1248,19 @@ InventoryAPI.openCustomInventory = function(player, id)
 					if svItems[item.item] ~= nil then
 						local dbItem = svItems[item.item]
 						characterInventory[item.id] = Item:New({
-							count = tonumber(item.amount),
-							id = item.id,
-							limit = dbItem.limit,
-							label = dbItem.label,
-							metadata = SharedUtils.MergeTables(dbItem.metadata, item.metadata),
-							name = dbItem.item,
-							type = dbItem.type,
-							canUse = dbItem.usable,
-							canRemove = dbItem.can_remove,
-							createdAt = item.created_at,
-							owner = charIdentifier,
-							desc = dbItem.desc
-						})
+								count = tonumber(item.amount),
+								id = item.id,
+								limit = dbItem.limit,
+								label = dbItem.label,
+								metadata = SharedUtils.MergeTables(dbItem.metadata, item.metadata),
+								name = dbItem.item,
+								type = dbItem.type,
+								canUse = dbItem.usable,
+								canRemove = dbItem.can_remove,
+								createdAt = item.created_at,
+								owner = charIdentifier,
+								desc = dbItem.desc
+							})
 					end
 				end
 				UsersInventories[id][identifier] = characterInventory
