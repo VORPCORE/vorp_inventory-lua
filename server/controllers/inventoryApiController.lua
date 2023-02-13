@@ -22,8 +22,8 @@ AddEventHandler("vorpCore:subItemID", InventoryAPI.subItemID)
 RegisterServerEvent("vorpCore:getItem")
 AddEventHandler("vorpCore:getItem", InventoryAPI.getItem)
 
-RegisterServerEvent("vorpCore:getUserInventory")
-AddEventHandler("vorpCore:getUserInventory", InventoryAPI.getInventory)
+RegisterServerEvent("vorpCore:getItemByMainId")
+AddEventHandler("vorpCore:getItemByMainId", InventoryAPI.getItemByMainId)
 
 RegisterServerEvent("vorpCore:getItemByName")
 AddEventHandler("vorpCore:getItemByName", InventoryAPI.getItemByName)
