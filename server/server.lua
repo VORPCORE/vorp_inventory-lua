@@ -15,7 +15,6 @@ function getIdentity(source)
     end
 
     return identifiers
-
 end
 
 RegisterServerEvent("vorpinventory:check_slots")
@@ -56,8 +55,6 @@ AddEventHandler("vorpinventory:itemlog", function(_source, targetHandle, itemNam
     local description = name .. Config.Language.gave .. amount .. " " .. itemName .. Config.Language.to .. name2
     --  Discord(Config.Language.gaveitem, _source, description)
     Core.AddWebhook(_source, Config.webhook, description, color, Name, logo, footerlogo, avatar)
-
-
 end)
 
 RegisterServerEvent("vorpinventory:weaponlog")
@@ -69,7 +66,6 @@ AddEventHandler("vorpinventory:weaponlog", function(targetHandle, data)
         data.item .. Config.Language.to .. name2 .. Config.Language.withid .. data.id
     -- Discord(Config.Language.gaveitem, _source, description)
     Core.AddWebhook(_source, Config.webhook, description, color, Name, logo, footerlogo, avatar) -- if undefined it will choose vorp default.
-
 end)
 
 RegisterServerEvent("vorpinventory:moneylog")
@@ -79,7 +75,6 @@ AddEventHandler("vorpinventory:moneylog", function(targetHandle, amount)
     local name2 = GetPlayerName(targetHandle)
     local description = name .. Config.Language.gave .. " $" .. amount .. " " .. Config.Language.to .. name2
     Core.AddWebhook(_source, Config.webhook, description, color, Name, logo, footerlogo, avatar)
-
 end)
 
 RegisterServerEvent("vorpinventory:netduplog")
@@ -110,57 +105,50 @@ if Config.DevMode then
         else
             print("This command was executed by the server console, RCON client, or a resource.")
         end
-    end, false--[[this command is not restricted, everyone can use this.]] )
+    end, false --[[this command is not restricted, everyone can use this.]])
 end
 
 --============================  CUSTOM INVENTORY CHECK UP ====================================--
 local InventoryBeingUsed = {}
 
---lock custom inventory
 RegisterServerEvent("vorp_inventory:Server:LockCustomInv", function(id)
     local _source = source
+    local CanOpen = true
 
-    if next(InventoryBeingUsed) then -- if is table is not empty
-        for _, value in pairs(InventoryBeingUsed) do
-            if value.invid == id then -- if id exist in table then block opening
-                local CanOpen = false
-                TriggerClientEvent("vorp_inventory:Client:CanOpenCustom", _source, CanOpen)
-                break
-            else -- if not let it open and insert
-                local CanOpen = true
-                TriggerClientEvent("vorp_inventory:Client:CanOpenCustom", _source, CanOpen)
-                InventoryBeingUsed[#InventoryBeingUsed + 1] = { invid = id, playerid = _source }
-                break
-            end
+    for _, value in pairs(InventoryBeingUsed) do
+        if value.invid == id then -- does this id exists
+            CanOpen = false
+            break
         end
-    else -- if empty let it open and insert to table
-        InventoryBeingUsed[#InventoryBeingUsed + 1] = { invid = id, playerid = _source }
-        local CanOpen = true
-        TriggerClientEvent("vorp_inventory:Client:CanOpenCustom", _source, CanOpen)
     end
 
+    if CanOpen then
+        InventoryBeingUsed[#InventoryBeingUsed + 1] = { invid = id, playerid = _source } -- insert player and inv he is in
+    end
+
+    TriggerClientEvent("vorp_inventory:Client:CanOpenCustom", _source, CanOpen)
 end)
 
--- remove from table
-local RemoveIndex = function(source)
-    if next(InventoryBeingUsed) then
-        for index, value in pairs(InventoryBeingUsed) do
-            if value.playerid == source then -- if source exists in the table then remove it the index
-                InventoryBeingUsed[index] = nil
-            end
-        end
-    end
-end
-
--- unlock custom inventory
 RegisterServerEvent("vorp_inventory:Server:UnlockCustomInv", function()
     local _source = source
-    RemoveIndex(_source)
+    for i, value in ipairs(InventoryBeingUsed) do
+        if value.playerid == _source then
+            table.remove(InventoryBeingUsed, i) -- remove index from table without creating a hole, this is why  should use table.remove
+            break
+        end
+    end
 end)
 
--- in case players drop the server while inventory open  take them out of the table
+-- for safe case
 AddEventHandler('playerDropped', function()
     local _source = source
-    RemoveIndex(_source)
+    for i, value in ipairs(InventoryBeingUsed) do
+        if value.playerid == _source then
+            table.remove(InventoryBeingUsed, i)
+            break
+        end
+    end
 end)
+
+
 --=============================================================================================--
