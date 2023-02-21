@@ -482,18 +482,18 @@ InventoryAPI.addItem = function(player, name, amount, metadata, cb)
 		else
 			DbService.CreateItem(charIdentifier, svItem:getId(), amount, metadata, function(craftedItem)
 				item = Item:New({
-						id = craftedItem.id,
-						count = amount,
-						limit = sourceItemLimit,
-						label = itemLabel,
-						metadata = SharedUtils.MergeTables(itemDefaultMetadata, metadata),
-						name = name,
-						type = itemType,
-						canUse = true,
-						canRemove = itemCanRemove,
-						owner = charIdentifier,
-						desc = ItemDesc
-					})
+					id = craftedItem.id,
+					count = amount,
+					limit = sourceItemLimit,
+					label = itemLabel,
+					metadata = SharedUtils.MergeTables(itemDefaultMetadata, metadata),
+					name = name,
+					type = itemType,
+					canUse = true,
+					canRemove = itemCanRemove,
+					owner = charIdentifier,
+					desc = ItemDesc
+				})
 				userInventory[craftedItem.id] = item
 				TriggerClientEvent("vorpCoreClient:addItem", _source, item)
 			end)
@@ -529,7 +529,6 @@ InventoryAPI.getItemByMainId = function(player, mainid, cb)
 				return cb(itemRequested) -- send table of the item requested
 			end
 		end
-		return cb(nil)
 	end
 	return cb(nil)
 end
@@ -785,16 +784,16 @@ InventoryAPI.registerWeapon = function(target, name, ammos, components, comps)
 			}, function(result)
 				local weaponId = result.insertId
 				local newWeapon = Weapon:New({
-						id = weaponId,
-						propietary = targetIdentifier,
-						name = name,
-						ammo = ammo,
-						used = false,
-						used2 = false,
-						charId = targetCharId,
-						currInv = "default",
-						dropped = 0,
-					})
+					id = weaponId,
+					propietary = targetIdentifier,
+					name = name,
+					ammo = ammo,
+					used = false,
+					used2 = false,
+					charId = targetCharId,
+					currInv = "default",
+					dropped = 0,
+				})
 				UsersWeapons["default"][weaponId] = newWeapon
 
 				TriggerEvent("syn_weapons:registerWeapon", weaponId)
@@ -813,16 +812,16 @@ InventoryAPI.registerWeapon = function(target, name, ammos, components, comps)
 			}, function(result)
 				local weaponId = result.insertId
 				local newWeapon = Weapon:New({
-						id = weaponId,
-						propietary = targetIdentifier,
-						name = name,
-						ammo = ammo,
-						used = false,
-						used2 = false,
-						charId = targetCharId,
-						currInv = "default",
-						dropped = 0,
-					})
+					id = weaponId,
+					propietary = targetIdentifier,
+					name = name,
+					ammo = ammo,
+					used = false,
+					used2 = false,
+					charId = targetCharId,
+					currInv = "default",
+					dropped = 0,
+				})
 				UsersWeapons["default"][weaponId] = newWeapon
 
 				TriggerEvent("syn_weapons:registerWeapon", weaponId)
@@ -1064,6 +1063,8 @@ InventoryAPI.registerInventory = function(id, name, limit, acceptWeapons, shared
 	end
 end
 
+
+
 InventoryAPI.AddPermissionMoveToCustom = function(id, jobName, grade)
 	if not CustomInventoryInfos[id] then
 		return -- dont add
@@ -1176,14 +1177,14 @@ InventoryAPI.reloadInventory = function(player, id)
 	for weaponId, weapon in pairs(UsersWeapons[id]) do
 		if invData.shared or weapon.charId == sourceCharIdentifier then
 			itemList[#itemList + 1] = Item:New({
-					id = weaponId,
-					count = 1,
-					name = weapon.name,
-					label = weapon.name,
-					limit = 1,
-					type = "item_weapon",
-					desc = weapon.desc
-				})
+				id = weaponId,
+				count = 1,
+				name = weapon.name,
+				label = weapon.name,
+				limit = 1,
+				type = "item_weapon",
+				desc = weapon.desc
+			})
 		end
 	end
 
@@ -1217,19 +1218,19 @@ InventoryAPI.openCustomInventory = function(player, id)
 					if svItems[item.item] ~= nil then
 						local dbItem = svItems[item.item]
 						characterInventory[item.id] = Item:New({
-								count = tonumber(item.amount),
-								id = item.id,
-								limit = dbItem.limit,
-								label = dbItem.label,
-								metadata = SharedUtils.MergeTables(dbItem.metadata, item.metadata),
-								name = dbItem.item,
-								type = dbItem.type,
-								canUse = dbItem.usable,
-								canRemove = dbItem.can_remove,
-								createdAt = item.created_at,
-								owner = item.character_id,
-								desc = dbItem.desc
-							})
+							count = tonumber(item.amount),
+							id = item.id,
+							limit = dbItem.limit,
+							label = dbItem.label,
+							metadata = SharedUtils.MergeTables(dbItem.metadata, item.metadata),
+							name = dbItem.item,
+							type = dbItem.type,
+							canUse = dbItem.usable,
+							canRemove = dbItem.can_remove,
+							createdAt = item.created_at,
+							owner = item.character_id,
+							desc = dbItem.desc
+						})
 					end
 				end
 				UsersInventories[id] = characterInventory
@@ -1248,19 +1249,19 @@ InventoryAPI.openCustomInventory = function(player, id)
 					if svItems[item.item] ~= nil then
 						local dbItem = svItems[item.item]
 						characterInventory[item.id] = Item:New({
-								count = tonumber(item.amount),
-								id = item.id,
-								limit = dbItem.limit,
-								label = dbItem.label,
-								metadata = SharedUtils.MergeTables(dbItem.metadata, item.metadata),
-								name = dbItem.item,
-								type = dbItem.type,
-								canUse = dbItem.usable,
-								canRemove = dbItem.can_remove,
-								createdAt = item.created_at,
-								owner = charIdentifier,
-								desc = dbItem.desc
-							})
+							count = tonumber(item.amount),
+							id = item.id,
+							limit = dbItem.limit,
+							label = dbItem.label,
+							metadata = SharedUtils.MergeTables(dbItem.metadata, item.metadata),
+							name = dbItem.item,
+							type = dbItem.type,
+							canUse = dbItem.usable,
+							canRemove = dbItem.can_remove,
+							createdAt = item.created_at,
+							owner = charIdentifier,
+							desc = dbItem.desc
+						})
 					end
 				end
 				UsersInventories[id][identifier] = characterInventory
