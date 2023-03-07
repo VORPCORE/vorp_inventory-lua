@@ -1,7 +1,7 @@
 SvUtils = {}
 local processingUser = {}
 
-SvUtils.FindAllWeaponsByName = function(invId, identifier, name)
+SvUtils.FindAllWeaponsByName = function(invId, name)
     local userWeapons = UsersWeapons[invId]
     local weapons = {}
 

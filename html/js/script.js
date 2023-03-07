@@ -6,11 +6,13 @@ $("document").ready(function () {
     $("#inventoryHud").hide();
     $("#secondInventoryHud").hide();
     $('#character-selection').hide();
+    $('#disabler').hide();
 
     $("body").on("keyup", function (key) {
         if (Config.closeKeys.includes(key.which)) {
             if ($('#character-selection').is(":visible")) {
                 $('#character-selection').hide();
+                $('#disabler').hide();
             } else {
                 closeInventory();
             }
@@ -18,7 +20,6 @@ $("document").ready(function () {
     });
 
     initSecondaryInventoryHandlers();
-
 });
 
 window.onload = initDivMouseOver;

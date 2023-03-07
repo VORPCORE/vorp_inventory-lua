@@ -8,7 +8,7 @@ UsersInventories = {
 	default = {}
 }
 
----@type table<invId, table<weaponId, Weapon>>
+---@type table<invId, table<weaponId, Weapon>> 
 UsersWeapons = {
 	default = {}
 }

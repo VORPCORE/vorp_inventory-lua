@@ -19,6 +19,7 @@ AddEventHandler("syn:stopscene", function(x) -- new
 	local _source = source
 	TriggerClientEvent("inv:dropstatus", _source, x)
 end)
+
 AddEventHandler('vorp_NewCharacter', function(source) -- new
 	local _source = source
 	local Character = Core.getUser(_source).getUsedCharacter
@@ -32,8 +33,7 @@ AddEventHandler('vorp_NewCharacter', function(source) -- new
 	end
 end)
 
-
-function contains(table, element) -- new
+contains = function(table, element) -- new
 	for k, v in pairs(table) do
 		if v == element then
 			return true
@@ -59,6 +59,7 @@ InventoryService.UseItem = function(itemName, itemId, args)
 		if item ~= nil then
 			local itemArgs = json.decode(json.encode(svItem))
 			itemArgs.metadata = item:getMetadata()
+			itemArgs.mainid = itemId
 			local arguments = {
 				source = _source,
 				item = itemArgs,
@@ -80,7 +81,6 @@ InventoryService.DropMoney = function(amount)
 		local charname = userCharacter.firstname .. ' ' .. userCharacter.lastname
 
 		if Config.NewPlayers then
-
 			if contains(newchar, charid) then -- new line
 				TriggerClientEvent("vorp:TipRight", _source, "Cant Drop Money as a new player", 5000) -- new line
 				SvUtils.Trem(_source) -- new line
@@ -95,11 +95,10 @@ InventoryService.DropMoney = function(amount)
 		else
 			userCharacter.removeCurrency(0, amount)
 			TriggerClientEvent("vorpInventory:createMoneyPickup", _source, amount)
+			local title = _U('drop')
+			local description = "**Money** `" .. amount .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+			Core.AddWebhook(title, Config.webhook, description, color, "ID:" .. _source, logo, footerlogo, avatar)
 		end
-		local title = _U('drop')
-		local description = "**Money** `" .. amount .. "`" .. "\n **Playername** `" .. charname .. "`\n"
-		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
-
 		SvUtils.Trem(_source)
 	end
 end
@@ -113,7 +112,6 @@ InventoryService.DropAllMoney = function()
 		local charid = userCharacter.charIdentifier -- new line
 
 		if Config.NewPlayers then
-
 			if contains(newchar, charid) then -- new line
 				TriggerClientEvent("vorp:TipRight", _source, "Cant Drop Money as a new player", 5000) -- new line
 				SvUtils.Trem(_source) -- new line
@@ -123,12 +121,10 @@ InventoryService.DropAllMoney = function()
 
 		if userMoney > 0 then
 			userCharacter.removeCurrency(0, userMoney)
-
 			TriggerClientEvent("vorpInventory:createMoneyPickup", _source, userMoney)
 		end
 		SvUtils.Trem(_source)
 	end
-
 end
 
 InventoryService.DropPartMoney = function()
@@ -140,7 +136,6 @@ InventoryService.DropPartMoney = function()
 	local charid = userCharacter.charIdentifier -- new line
 
 	if Config.NewPlayers then
-
 		if contains(newchar, charid) then -- new line
 			TriggerClientEvent("vorp:TipRight", _source, "Cant Drop Money as a new player", 5000) -- new line
 			SvUtils.Trem(_source) -- new line
@@ -169,7 +164,7 @@ InventoryService.giveMoneyToPlayer = function(target, amount)
 		local targetCharacter = Core.getUser(_target).getUsedCharacter
 		local sourceMoney = sourceCharacter.money
 		local charid = sourceCharacter.charIdentifier -- new line
-
+		local charname = sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname
 		if Config.NewPlayers then
 			if contains(newchar, charid) then -- new line
 				TriggerClientEvent("vorp:TipRight", _source, "Cant Give Money as a new player", 5000) -- new line
@@ -190,11 +185,13 @@ InventoryService.giveMoneyToPlayer = function(target, amount)
 		else
 			sourceCharacter.removeCurrency(0, amount)
 			targetCharacter.addCurrency(0, amount)
-
 			TriggerClientEvent("vorp:TipRight", _source, _U("YouPaid", tostring(amount), "ID: " .. _target), 3000)
 			TriggerClientEvent("vorp:TipRight", _target, _U("YouReceived", tostring(amount), "ID: " .. _source), 3000)
 			Wait(3000)
 			TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
+			local title = _U('gave')
+			local description = "**Money** `" .. amount .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+			Core.AddWebhook(title, Config.webhook, description, color, "ID:" .. _source, logo, footerlogo, avatar)
 		end
 		SvUtils.Trem(_source)
 	end
@@ -246,7 +243,7 @@ InventoryService.giveGoldToPlayer = function(target, amount)
 		return
 	end
 
-	if Core.getUser(_source) == nil or Core.getUser(_target) == nil then
+	if Core.getUser(_source) == nil or Core.getUser(target) == nil then
 		return
 	end
 
@@ -418,7 +415,8 @@ InventoryService.subWeapon = function(target, weaponId)
 		exports.oxmysql:execute("UPDATE loadout SET identifier = '', charidentifier = @charId WHERE id = @id", {
 			['charId'] = charId,
 			['id'] = weaponId
-		}, function() end)
+		}, function()
+		end)
 	end
 end
 
@@ -451,14 +449,17 @@ InventoryService.onPickup = function(obj)
 							if item ~= nil then
 								local title = _U('itempickup')
 								local description = "**Amount** `" ..
-									amount .. "`\n **Item** `" .. name .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+									amount ..
+									"`\n **Item** `" .. name .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+								Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo,
+									avatar)
 
-								Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
-
-								TriggerClientEvent("vorpInventory:sharePickupClient", -1, name, ItemPickUps[obj].obj, amount, metadata,
+								TriggerClientEvent("vorpInventory:sharePickupClient", -1, name, ItemPickUps[obj].obj,
+									amount, metadata,
 									ItemPickUps[obj].coords, 2)
 								TriggerClientEvent("vorpInventory:removePickupClient", -1, ItemPickUps[obj].obj)
-								TriggerClientEvent("vorpInventory:receiveItem", _source, name, item:getId(), amount, metadata)
+								TriggerClientEvent("vorpInventory:receiveItem", _source, name, item:getId(), amount,
+									metadata)
 								TriggerClientEvent("vorpInventory:playerAnim", _source, obj)
 
 								ItemPickUps[obj] = nil
@@ -482,7 +483,8 @@ InventoryService.onPickup = function(obj)
 					local description = "**Weapon** `" ..
 						userWeapons[weaponId]:getName() .. "`" .. "\n **Playername** `" .. charname .. "`\n"
 					Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
-					TriggerClientEvent("vorpInventory:sharePickupClient", -1, name, weaponObj, 1, metadata, ItemPickUps[obj].coords, 2,
+					TriggerClientEvent("vorpInventory:sharePickupClient", -1, name, weaponObj, 1, metadata,
+						ItemPickUps[obj].coords, 2,
 						weaponId)
 					TriggerClientEvent("vorpInventory:removePickupClient", -1, weaponObj)
 
@@ -511,7 +513,6 @@ InventoryService.onPickupMoney = function(obj)
 			local title = _U('itempickup')
 			local description = "**Money** `" .. moneyAmount .. " $`" .. "\n **Playername** `" .. charname .. "`\n"
 			Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
-
 			TriggerClientEvent("vorpInventory:shareMoneyPickupClient", -1, moneyObj, moneyAmount, moneyCoords, 2)
 			TriggerClientEvent("vorpInventory:removePickupClient", -1, moneyObj)
 			TriggerClientEvent("vorpInventory:playerAnim", _source, moneyObj)
@@ -584,7 +585,6 @@ InventoryService.DropWeapon = function(weaponId)
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local charname = sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname
 	if not SvUtils.InProcessing(_source) then
-
 		SvUtils.ProcessUser(_source)
 		InventoryService.subWeapon(_source, weaponId)
 		UsersWeapons["default"][weaponId]:setDropped(1)
@@ -593,7 +593,8 @@ InventoryService.DropWeapon = function(weaponId)
 		local description = "**Weapon** `" ..
 			UsersWeapons["default"][weaponId]:getName() .. "`" .. "\n **Playername** `" .. charname .. "`\n"
 		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
-		TriggerClientEvent("vorpInventory:createPickup", _source, UsersWeapons["default"][weaponId]:getName(), 1, {}, weaponId)
+		TriggerClientEvent("vorpInventory:createPickup", _source, UsersWeapons["default"][weaponId]:getName(), 1, {},
+			weaponId)
 		SvUtils.Trem(_source)
 	end
 end
@@ -603,7 +604,6 @@ InventoryService.DropItem = function(itemName, itemId, amount, metadata)
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local charname = sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname
 	if not SvUtils.InProcessing(_source) then
-
 		SvUtils.ProcessUser(_source)
 		InventoryService.subItem(_source, "default", itemId, amount)
 		local title = _U('drop')
@@ -618,6 +618,8 @@ end
 
 InventoryService.GiveWeapon = function(weaponId, target)
 	local _source = source
+	local sourceCharacter = Core.getUser(_source).getUsedCharacter
+	local charname = sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname
 	if not SvUtils.InProcessing(_source) then
 		TriggerClientEvent("vorp_inventory:transactionStarted", _source)
 		SvUtils.ProcessUser(_source)
@@ -626,7 +628,11 @@ InventoryService.GiveWeapon = function(weaponId, target)
 		if UsersWeapons["default"][weaponId] ~= nil then
 			InventoryAPI.giveWeapon2(_target, weaponId, _source)
 		end
+		local title = _U('drop')
+		local description = "**Amount** `" ..
+			1 .. "`\n **Weapon id** `" .. weaponId .. "`" .. "\n **Playername** `" .. charname .. "`\n"
 
+		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
 		TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
 		SvUtils.Trem(_source)
 	end
@@ -650,7 +656,8 @@ InventoryService.GiveItem = function(itemId, amount, target)
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local targetCharacter = Core.getUser(_target).getUsedCharacter
 	local charid = sourceCharacter.charIdentifier -- new line
-
+	local charname = sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname
+	local charname1 = targetCharacter.firstname .. ' ' .. targetCharacter.lastname
 	if Config.NewPlayers then
 		if contains(newchar, charid) then -- new line
 			TriggerClientEvent("vorp:TipRight", _source, "Cant Give Item as a new player", 5000) -- new line
@@ -675,13 +682,14 @@ InventoryService.GiveItem = function(itemId, amount, target)
 		return
 	end
 
+
 	if sourceInventory[itemId] == nil then
 		TriggerClientEvent("vorp:TipRight", _source, _U("itemerror"), 2000)
 
 		if Config.Debug then
 			Log.error("ServerGiveItem: User " ..
-				sourceCharacter.firstname ..
-				' ' .. sourceCharacter.lastname .. '#' .. _source .. ' ' .. 'inventory item ' .. itemName .. ' not found')
+			sourceCharacter.firstname ..
+			' ' .. sourceCharacter.lastname .. '#' .. _source .. ' ' .. 'inventory item ' .. itemName .. ' not found')
 		end
 		TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
 		SvUtils.Trem(_source)
@@ -689,8 +697,8 @@ InventoryService.GiveItem = function(itemId, amount, target)
 	end
 
 	local item = sourceInventory[itemId]
-	local itemName = item:getName()
 	local itemMetadata = item:getMetadata()
+	local itemName = item:getName()
 	local svItem = svItems[itemName]
 
 	if svItem == nil then
@@ -717,7 +725,12 @@ InventoryService.GiveItem = function(itemId, amount, target)
 
 		TriggerClientEvent("vorp:TipRight", _source, _U("yougive") .. amount .. _U("of") .. ItemsLabel .. "", 2000)
 		TriggerClientEvent("vorp:TipRight", _target, _U("youreceive") .. amount .. _U("of") .. ItemsLabel .. "", 2000)
-		TriggerEvent("vorpinventory:itemlog", _source, _target, itemName, amount)
+		--TriggerEvent("vorpinventory:itemlog", _source, _target, itemName, amount)
+		local title = _U('gave')
+		local description = "**Amount** `" ..
+			amount .. "`\n **Item** `" .. itemName .. "`" .. "\n **Playername** `" .. charname .. "`\n **to** `" ..
+			charname1 .. "`"
+		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
 	end
 
 	InventoryAPI.canCarryItem(_target, itemName, amount, function(canGive)
@@ -846,26 +859,24 @@ end
 InventoryService.canStoreWeapon = function(identifier, charIdentifier, invId, name, amount)
 	local invData = CustomInventoryInfos[invId]
 
-	if invData.limit > 0 then
+	if invData.limit > 0 then -- if inventory limit is bigger than 0
 		local sourceInventoryItemCount = InventoryService.getInventoryTotalCount(identifier, charIdentifier, invId)
-		sourceInventoryItemCount = sourceInventoryItemCount + amount
-
-		if sourceInventoryItemCount > invData.limit then
+		sourceInventoryItemCount = sourceInventoryItemCount + amount -- do the math
+		if sourceInventoryItemCount > invData.limit then -- if its less or equals  then return true
 			return false
 		end
 	end
 
-	if invData.limitedItems[string.lower(name)] ~= nil then
-		local weapons = SvUtils.FindAllWeaponsByName(invId, identifier, name)
-		local weaponCount = #weapons + amount
-
-		if weaponCount > invData.limitedItems[name] then
+	if invData.limitedWeapons[string.lower(name)] then -- if it does exists in the table the weapns name
+		local weapons = SvUtils.FindAllWeaponsByName(invId, name) -- find name
+		local weaponCount = #weapons + amount -- do the math
+		if weaponCount > invData.limitedWeapons[string.lower(name)] then -- if ammount is greater then cancel
 			return false
 		end
-	elseif invData.whitelistItems then
+	elseif invData.whitelistWeapons then -- if name isnt on the list and choose whitelist items reject, otherwise say you can store any weapon if whitelist is false
 		return false
 	end
-	return true
+	return true -- after all checks can store weapon
 end
 
 InventoryService.canStoreItem = function(identifier, charIdentifier, invId, name, amount)
@@ -880,7 +891,7 @@ InventoryService.canStoreItem = function(identifier, charIdentifier, invId, name
 		end
 	end
 
-	if invData.limitedItems[string.lower(name)] ~= nil then
+	if invData.limitedItems[string.lower(name)] then
 		local items = SvUtils.FindAllItemsByName(invId, identifier, name)
 
 		if #items ~= 0 then
@@ -937,21 +948,101 @@ InventoryService.getNearbyCharacters = function(obj, sources)
 	TriggerClientEvent('vorp_inventory:setNearbyCharacters', _source, obj, characters)
 end
 
+
+--================================== CUSTOM INVENTORY ================================================--
+
+InventoryService.DoesHavePermission = function(invId, job, grade, Table)
+	if not CustomInventoryInfos[invId].UsePermissions then -- allow everyone if false or nil by fefault is false
+		return true
+	end
+
+	if not next(Table) then -- if empty allow anyone by default is empty
+		return true
+	end
+	for jobname, jobgrade in pairs(Table) do
+		if jobname == job then
+			if grade == jobgrade then
+				return true
+			end
+		end
+	end
+	return false
+end
+
+InventoryService.CheckIsBlackListed = function(invId, ItemName)
+	local ItemsTable = CustomInventoryInfos[invId].BlackListItems
+	if not CustomInventoryInfos[invId].UseBlackList then -- if not want to black list
+		return true
+	end
+	if next(ItemsTable) then
+		for item, _ in pairs(ItemsTable) do
+			if item == ItemName then
+				return false
+			end
+		end
+	end
+	return true
+end
+
+InventoryService.DiscordLogs = function(inventory, itemName, amount, playerName, type)
+	local title = Config.WebHook.title
+	local color = Config.WebHook.color
+	local logo = Config.WebHook.logo
+	local footerlogo = Config.WebHook.footerlogo
+	local avatar = Config.WebHook.avatar
+	local names = Config.WebHook.webhookname
+
+	if type == "Move" then
+		local webhook = Config.WebHook.CustomInventoryMoveTo
+		local description = "**Player:**`" ..
+			playerName ..
+			"`\n **Moved to:** `" .. inventory .. "` \n**Weapon** `" ..
+			itemName .. "`\n **Count:** `" .. amount .. "`"
+		Core.AddWebhook(title, webhook, description, color, names, logo, footerlogo, avatar)
+	end
+
+	if type == "Take" then
+		local webhook = Config.WebHook.CustomInventoryTakeFrom
+		local description = "**Player:**`" ..
+			playerName ..
+			"`\n **Took from:** `" .. inventory .. "`\n **item** `" ..
+			itemName .. "`\n **amount:** `" .. amount .. "`"
+		Core.AddWebhook(title, webhook, description, color, names, logo, footerlogo, avatar)
+	end
+end
+
+
 InventoryService.MoveToCustom = function(obj)
 	local _source = source
 	local data = json.decode(obj)
 	local invId = tostring(data.id)
 	local item = data.item
 	local amount = tonumber(data.number)
-
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local sourceIdentifier = sourceCharacter.identifier
+	local sourceName = sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname
+	local job = sourceCharacter.job
+	local grade = sourceCharacter.jobGrade
 	local sourceCharIdentifier = sourceCharacter.charIdentifier
+	local Table = CustomInventoryInfos[invId].PermissionMoveTo
+	local CanMove = InventoryService.DoesHavePermission(invId, job, grade, Table)
+	local IsBlackListed = InventoryService.CheckIsBlackListed(invId, string.lower(item.name)) -- lower so we can checkitems and weapons
+
+	if not IsBlackListed then
+		Core.NotifyObjective(_source, "Item is blackListed", 5000) -- add your own notifications
+		return
+	end
+
+	if not CanMove then
+		Core.NotifyObjective(_source, "You dont have permision to move into the storage", 5000) -- add your own notifications
+		return
+	end
 
 	if item.type == "item_weapon" then
-		if CustomInventoryInfos[invId].acceptWeapons then
+		if CustomInventoryInfos[invId].acceptWeapons then -- if accept weapons
 			if InventoryService.canStoreWeapon(sourceIdentifier, sourceCharIdentifier, invId, item.name, amount) then
-				exports.oxmysql:execute("UPDATE loadout SET identifier = '',curr_inv = @invId WHERE charidentifier = @charid AND id = @weaponId;"
+				exports.oxmysql:execute(
+					"UPDATE loadout SET identifier = '',curr_inv = @invId WHERE charidentifier = @charid AND id = @weaponId;"
 					, {
 					['invId'] = invId,
 					['charid'] = sourceCharIdentifier,
@@ -964,22 +1055,34 @@ InventoryService.MoveToCustom = function(obj)
 
 				TriggerClientEvent("vorpCoreClient:subWeapon", _source, item.id)
 				InventoryAPI.reloadInventory(_source, invId)
+				InventoryService.DiscordLogs(invId, item.name, amount, sourceName, "Move")
+				local text = "you have moved to storage"
+
+				if string.lower(item.name) == "weapon_revolver_lemat" then
+					Icon = "weapon_revolver_doubleaction" -- theres no revolver lemat texture
+				else
+					Icon = item.name
+				end
+				Core.NotifyAvanced(_source, text, "inventory_items", Icon, "COLOR_PURE_WHITE", 4000)
 			else
 				TriggerClientEvent("vorp:TipRight", _source, _U("fullInventory"), 2000)
 			end
-		else
-			-- Print Error Client Side: Can't store weapon here
 		end
 	else
 		if item.count >= amount and
 			InventoryService.canStoreItem(sourceIdentifier, sourceCharIdentifier, invId, item.name, amount) then
 			InventoryService.subItem(_source, "default", item.id, amount)
 			TriggerClientEvent("vorpInventory:removeItem", _source, item.name, item.id, amount)
+
 			InventoryService.addItem(_source, invId, item.name, amount, item.metadata, function(itemAdded)
 				if itemAdded == nil then
 					return
 				end
+				TriggerClientEvent("vorp:TipRight", _source,
+					"you have Moved " .. amount .. " " .. item.label .. " to storage",
+					2000)
 				InventoryAPI.reloadInventory(_source, invId)
+				InventoryService.DiscordLogs(invId, item.name, amount, sourceName, "Move")
 			end)
 		else
 			TriggerClientEvent("vorp:TipRight", _source, _U("fullInventory"), 2000)
@@ -993,15 +1096,25 @@ InventoryService.TakeFromCustom = function(obj)
 	local invId = tostring(data.id)
 	local item = data.item
 	local amount = tonumber(data.number)
-
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
+	local sourceName = sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname
 	local sourceIdentifier = sourceCharacter.identifier
 	local sourceCharIdentifier = sourceCharacter.charIdentifier
+	local job = sourceCharacter.job
+	local grade = sourceCharacter.jobGrade
+	local Table = CustomInventoryInfos[invId].PermissionTakeFrom
+	local CanMove = InventoryService.DoesHavePermission(invId, job, grade, Table)
+
+	if not CanMove then
+		Core.NotifyObjective(_source, "you dont have permmissions to take from this storage", 5000) -- add your own notifications
+		return
+	end
 
 	if item.type == "item_weapon" then
 		InventoryAPI.canCarryAmountWeapons(_source, 1, function(res)
 			if res then
-				exports.oxmysql:execute("UPDATE loadout SET curr_inv = 'default', charidentifier = @charid, identifier = @identifier WHERE id = @weaponId;"
+				exports.oxmysql:execute(
+					"UPDATE loadout SET curr_inv = 'default', charidentifier = @charid, identifier = @identifier WHERE id = @weaponId;"
 					, {
 					['charid'] = sourceCharIdentifier,
 					['weaponId'] = item.id,
@@ -1009,19 +1122,28 @@ InventoryService.TakeFromCustom = function(obj)
 				})
 				UsersWeapons[invId][item.id]:setCurrInv("default")
 				UsersWeapons["default"][item.id] = UsersWeapons[invId][item.id]
+				UsersWeapons["default"][item.id].propietary = sourceIdentifier
+				UsersWeapons["default"][item.id].charId = sourceCharIdentifier
 				UsersWeapons[invId][item.id] = nil
 
 				local weapon = UsersWeapons["default"][item.id]
 
-				TriggerClientEvent("vorpInventory:receiveWeapon", _source, item.id, weapon:getPropietary(), weapon:getName(),
+				TriggerClientEvent("vorpInventory:receiveWeapon", _source, item.id, sourceIdentifier, weapon:getName(),
 					weapon:getAllAmmo())
 				InventoryAPI.reloadInventory(_source, invId)
+				InventoryService.DiscordLogs(invId, item.name, amount, sourceName, "Take")
+				local text = " you have Taken From storage "
+				if string.lower(item.name) == "weapon_revolver_lemat" then
+					Icon = "weapon_revolver_doubleaction" -- theres no revolver lemat texture
+				else
+					Icon = item.name
+				end
+				Core.NotifyAvanced(_source, text, "inventory_items", Icon, "COLOR_PURE_WHITE", 4000)
 			else
 				TriggerClientEvent("vorp:TipRight", _source, _U("fullInventory"), 2000)
 			end
 		end)
 	else
-
 		InventoryAPI.canCarryItem(_source, item.name, amount, function(res)
 			if res then
 				if amount > item.count then
@@ -1035,11 +1157,14 @@ InventoryService.TakeFromCustom = function(obj)
 					TriggerClientEvent("vorpInventory:receiveItem", _source, item.name, itemAdded:getId(), amount,
 						itemAdded:getMetadata())
 					InventoryAPI.reloadInventory(_source, invId)
+					InventoryService.DiscordLogs(invId, item.name, amount, sourceName, "Take")
+					TriggerClientEvent("vorp:TipRight", _source,
+						"you have Taken " .. amount .. " " .. item.label .. " from storage ",
+						2000)
 				end)
 			else
 				TriggerClientEvent("vorp:TipRight", _source, _U("fullInventory"), 2000)
 			end
-
-		end, item.metadata)
+		end)
 	end
 end
