@@ -5,7 +5,7 @@ GoldPickUps = {}
 Core = {}
 
 local newchar = {} -- new
-local timer = 120 -- new
+local timer = 120  -- new
 
 Citizen.CreateThread(function()
 	TriggerEvent("getCore", function(core)
@@ -81,11 +81,11 @@ InventoryService.DropMoney = function(amount)
 		local charname = userCharacter.firstname .. ' ' .. userCharacter.lastname
 
 		if Config.NewPlayers then
-			if contains(newchar, charid) then -- new line
+			if contains(newchar, charid) then                                             -- new line
 				TriggerClientEvent("vorp:TipRight", _source, "Cant Drop Money as a new player", 5000) -- new line
-				SvUtils.Trem(_source) -- new line
-				return -- new line
-			end -- new line
+				SvUtils.Trem(_source)                                                     -- new line
+				return                                                                    -- new line
+			end                                                                           -- new line
 		end
 
 		if amount <= 0 then
@@ -112,11 +112,11 @@ InventoryService.DropAllMoney = function()
 		local charid = userCharacter.charIdentifier -- new line
 
 		if Config.NewPlayers then
-			if contains(newchar, charid) then -- new line
+			if contains(newchar, charid) then                                             -- new line
 				TriggerClientEvent("vorp:TipRight", _source, "Cant Drop Money as a new player", 5000) -- new line
-				SvUtils.Trem(_source) -- new line
-				return -- new line
-			end -- new line
+				SvUtils.Trem(_source)                                                     -- new line
+				return                                                                    -- new line
+			end                                                                           -- new line
 		end
 
 		if userMoney > 0 then
@@ -136,11 +136,11 @@ InventoryService.DropPartMoney = function()
 	local charid = userCharacter.charIdentifier -- new line
 
 	if Config.NewPlayers then
-		if contains(newchar, charid) then -- new line
+		if contains(newchar, charid) then                                                -- new line
 			TriggerClientEvent("vorp:TipRight", _source, "Cant Drop Money as a new player", 5000) -- new line
-			SvUtils.Trem(_source) -- new line
-			return -- new line
-		end -- new line
+			SvUtils.Trem(_source)                                                        -- new line
+			return                                                                       -- new line
+		end                                                                              -- new line
 	end
 
 	if userMoney > 0 then
@@ -166,12 +166,12 @@ InventoryService.giveMoneyToPlayer = function(target, amount)
 		local charid = sourceCharacter.charIdentifier -- new line
 		local charname = sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname
 		if Config.NewPlayers then
-			if contains(newchar, charid) then -- new line
+			if contains(newchar, charid) then                                             -- new line
 				TriggerClientEvent("vorp:TipRight", _source, "Cant Give Money as a new player", 5000) -- new line
-				SvUtils.Trem(_source) -- new line
+				SvUtils.Trem(_source)                                                     -- new line
 				TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
-				return -- new line
-			end -- new line
+				return                                                                    -- new line
+			end                                                                           -- new line
 		end
 
 		if amount <= 0 then
@@ -393,6 +393,7 @@ InventoryService.addWeapon = function(target, weaponId)
 			weaponcomps = {}
 		end
 	end)
+
 	while weaponcomps == nil do
 		Wait(50)
 	end
@@ -659,12 +660,12 @@ InventoryService.GiveItem = function(itemId, amount, target)
 	local charname = sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname
 	local charname1 = targetCharacter.firstname .. ' ' .. targetCharacter.lastname
 	if Config.NewPlayers then
-		if contains(newchar, charid) then -- new line
+		if contains(newchar, charid) then                                               -- new line
 			TriggerClientEvent("vorp:TipRight", _source, "Cant Give Item as a new player", 5000) -- new line
 			TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
-			SvUtils.Trem(_source) -- new line
-			return -- new line
-		end -- new line
+			SvUtils.Trem(_source)                                                       -- new line
+			return                                                                      -- new line
+		end                                                                             -- new line
 	end
 
 	local sourceIdentifier = sourceCharacter.identifier
@@ -688,8 +689,8 @@ InventoryService.GiveItem = function(itemId, amount, target)
 
 		if Config.Debug then
 			Log.error("ServerGiveItem: User " ..
-			sourceCharacter.firstname ..
-			' ' .. sourceCharacter.lastname .. '#' .. _source .. ' ' .. 'inventory item ' .. itemName .. ' not found')
+				sourceCharacter.firstname ..
+				' ' .. sourceCharacter.lastname .. '#' .. _source .. ' ' .. 'inventory item ' .. itemName .. ' not found')
 		end
 		TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
 		SvUtils.Trem(_source)
@@ -777,7 +778,7 @@ InventoryService.getItemsTable = function()
 	end
 end
 
-InventoryService.getInventory = function()
+InventoryService.getInventory = function() 
 	local _source = source
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 
@@ -859,17 +860,17 @@ end
 InventoryService.canStoreWeapon = function(identifier, charIdentifier, invId, name, amount)
 	local invData = CustomInventoryInfos[invId]
 
-	if invData.limit > 0 then -- if inventory limit is bigger than 0
+	if invData.limit > 0 then                                  -- if inventory limit is bigger than 0
 		local sourceInventoryItemCount = InventoryService.getInventoryTotalCount(identifier, charIdentifier, invId)
 		sourceInventoryItemCount = sourceInventoryItemCount + amount -- do the math
-		if sourceInventoryItemCount > invData.limit then -- if its less or equals  then return true
+		if sourceInventoryItemCount > invData.limit then       -- if its less or equals  then return true
 			return false
 		end
 	end
 
-	if invData.limitedWeapons[string.lower(name)] then -- if it does exists in the table the weapns name
-		local weapons = SvUtils.FindAllWeaponsByName(invId, name) -- find name
-		local weaponCount = #weapons + amount -- do the math
+	if invData.limitedWeapons[string.lower(name)] then             -- if it does exists in the table the weapns name
+		local weapons = SvUtils.FindAllWeaponsByName(invId, name)  -- find name
+		local weaponCount = #weapons + amount                      -- do the math
 		if weaponCount > invData.limitedWeapons[string.lower(name)] then -- if ammount is greater then cancel
 			return false
 		end
@@ -1044,10 +1045,10 @@ InventoryService.MoveToCustom = function(obj)
 				exports.oxmysql:execute(
 					"UPDATE loadout SET identifier = '',curr_inv = @invId WHERE charidentifier = @charid AND id = @weaponId;"
 					, {
-					['invId'] = invId,
-					['charid'] = sourceCharIdentifier,
-					['weaponId'] = item.id,
-				})
+						['invId'] = invId,
+						['charid'] = sourceCharIdentifier,
+						['weaponId'] = item.id,
+					})
 
 				UsersWeapons["default"][item.id]:setCurrInv(invId)
 				UsersWeapons[invId][item.id] = UsersWeapons["default"][item.id]
@@ -1116,10 +1117,10 @@ InventoryService.TakeFromCustom = function(obj)
 				exports.oxmysql:execute(
 					"UPDATE loadout SET curr_inv = 'default', charidentifier = @charid, identifier = @identifier WHERE id = @weaponId;"
 					, {
-					['charid'] = sourceCharIdentifier,
-					['weaponId'] = item.id,
-					['identifier'] = sourceIdentifier
-				})
+						['charid'] = sourceCharIdentifier,
+						['weaponId'] = item.id,
+						['identifier'] = sourceIdentifier
+					})
 				UsersWeapons[invId][item.id]:setCurrInv("default")
 				UsersWeapons["default"][item.id] = UsersWeapons[invId][item.id]
 				UsersWeapons["default"][item.id].propietary = sourceIdentifier
