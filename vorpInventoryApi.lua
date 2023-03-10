@@ -34,8 +34,15 @@ exports('vorp_inventoryApi', function()
         TriggerEvent("vorp_inventory:Server:AddPermissionMoveToCustom", ...)
     end
 
+    self.RemovePermissionMoveToCustom = function(...)
+        TriggerEvent("vorp_inventory:Server:RemovePermissionMoveToCustom", ...)
+    end
+
     self.AddPermissionTakeFromCustom = function(...)
         TriggerEvent("vorp_inventory:Server:AddPermissionTakeFromCustom", ...)
+    end
+    self.RemovePermissionTakeFromCustom = function(...)
+        TriggerEvent("vorp_inventory:Server:RemovePermissionTakeFromCustom", ...)
     end
 
     self.setInventoryItemLimit = function(id, itemName, limit)

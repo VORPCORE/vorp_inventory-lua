@@ -1107,7 +1107,42 @@ InventoryAPI.AddPermissionMoveToCustom = function(id, jobName, grade)
 		Log.print("AdPermsMoveTo  for [^3" .. jobName .. "^7] and grade [^3" .. grade .. "^7]")
 	end
 
-	CustomInventoryInfos[id].PermissionMoveTo[jobName] = grade -- create table with item name and count
+	if not CustomInventoryInfos[id].PermissionMoveTo[jobName] then
+		CustomInventoryInfos[id].PermissionMoveTo[jobName] = {}
+	end
+
+	for _, existingGrade in ipairs(CustomInventoryInfos[id].PermissionMoveTo[jobName]) do
+		if existingGrade == grade then
+			return -- dont add
+		end
+	end
+
+	table.insert(CustomInventoryInfos[id].PermissionMoveTo[jobName], grade) -- create table with item name and count
+end
+
+InventoryAPI.RemovePermissionMoveToCustom = function(id, jobName, grade)
+	if not CustomInventoryInfos[id] then
+		return -- dont add
+	end
+
+	if not jobName and not grade then
+		return -- dont add
+	end
+	if Config.DevMode then
+		Log.print("RemovePermsMoveTo  for [^3" .. jobName .. "^7] and grade [^3" .. grade .. "^7]")
+	end
+
+	if not CustomInventoryInfos[id].PermissionMoveTo[jobName] then
+		return -- dont add
+	end
+
+	local newPerms = {}
+	for _, currentGrade in ipairs(CustomInventoryInfos[id].PermissionMoveTo[jobName]) do
+		if grade ~= currentGrade then
+			table.insert(newPerms, currentGrade)
+		end
+	end
+	CustomInventoryInfos[id].PermissionMoveTo[jobName] = newPerms -- update table with item name and count
 end
 
 InventoryAPI.AddPermissionTakeFromCustom = function(id, jobName, grade)
@@ -1121,7 +1156,45 @@ InventoryAPI.AddPermissionTakeFromCustom = function(id, jobName, grade)
 	if Config.DevMode then
 		Log.print("AdPermsTakeFrom  for [^3" .. jobName .. "^7] and grade [^3" .. grade .. "^7]")
 	end
-	CustomInventoryInfos[id].PermissionTakeFrom[jobName] = grade -- create table with item name and count
+
+	if not CustomInventoryInfos[id].PermissionTakeFrom[jobName] then
+		CustomInventoryInfos[id].PermissionTakeFrom[jobName] = {}
+	end
+
+	for _, existingGrade in ipairs(CustomInventoryInfos[id].PermissionTakeFrom[jobName]) do
+		if existingGrade == grade then
+			return -- dont add
+		end
+	end
+
+	table.insert(CustomInventoryInfos[id].PermissionTakeFrom[jobName], grade) -- create table with item name and count
+end
+
+InventoryAPI.RemovePermissionTakeFromCustom = function(id, jobName, grade)
+	if not CustomInventoryInfos[id] then
+		return -- dont add
+	end
+
+	if not jobName and not grade then
+		return -- dont add
+	end
+
+	if Config.DevMode then
+		Log.print("AdPermsTakeFrom  for [^3" .. jobName .. "^7] and grade [^3" .. grade .. "^7]")
+	end
+
+	if not CustomInventoryInfos[id].PermissionTakeFrom[jobName] then
+		return -- dont add
+	end
+
+	local newPerms = {}
+	for _, currentGrade in ipairs(CustomInventoryInfos[id].PermissionTakeFrom[jobName]) do
+		if grade ~= currentGrade then
+			table.insert(newPerms, currentGrade)
+		end
+	end
+
+	CustomInventoryInfos[id].PermissionTakeFrom[jobName] = newPerms -- update table with item name and count
 end
 
 InventoryAPI.BlackListCustom = function(id, name)

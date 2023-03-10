@@ -960,10 +960,12 @@ InventoryService.DoesHavePermission = function(invId, job, grade, Table)
 	if not next(Table) then -- if empty allow anyone by default is empty
 		return true
 	end
-	for jobname, jobgrade in pairs(Table) do
+	for jobname, jobgrades in pairs(Table) do
 		if jobname == job then
-			if grade == jobgrade then
-				return true
+			for _, jobgrade in ipairs(jobgrades) do
+				if grade == jobgrade then
+					return true
+				end
 			end
 		end
 	end

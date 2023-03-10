@@ -97,8 +97,10 @@ RegisterServerEvent("vorpCore:setInventoryItemLimit")
 AddEventHandler("vorpCore:setInventoryItemLimit", InventoryAPI.setCustomInventoryItemLimit)
 
 AddEventHandler("vorp_inventory:Server:AddPermissionMoveToCustom", InventoryAPI.AddPermissionMoveToCustom)
+AddEventHandler("vorp_inventory:Server:RemovePermissionMoveToCustom", InventoryAPI.RemovePermissionMoveToCustom)
 
 AddEventHandler("vorp_inventory:Server:AddPermissionTakeFromCustom", InventoryAPI.AddPermissionTakeFromCustom)
+AddEventHandler("vorp_inventory:Server:RemovePermissionTakeFromCustom", InventoryAPI.RemovePermissionTakeFromCustom)
 
 AddEventHandler("vorp_inventory:Server:BlackListCustom", InventoryAPI.BlackListCustom)
 
