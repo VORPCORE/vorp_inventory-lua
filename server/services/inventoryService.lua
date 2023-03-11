@@ -385,11 +385,21 @@ end
 InventoryService.addWeapon = function(target, weaponId)
 	local _source = target
 	local userWeapons = UsersWeapons["default"]
-	local weaponcomps
-	exports.oxmysql:execute('SELECT comps FROM loadout WHERE id = @id ', { ['id'] = weaponId }, function(result)
-		if result[1] ~= nil then
-			weaponcomps = json.decode(result[1].comps)
+
+	local weaponcomps, weaponprops
+	exports.ghmattimysql:execute('SELECT comps, dirtLevel, mudLevel, conditionLevel, rustLevel FROM loadout WHERE id = @id ' , {['id'] = weaponId}, function(result)
+		result = result[1]
+
+		if result then
+			weaponcomps = json.decode(result.comps)
+			weaponprops = {
+				dirtLevel = result.dirtLevel,
+				mudLevel = result.mudLevel,
+				conditionLevel = result.conditionLevel,
+				rustLevel = result.rustLevel
+			}
 		else
+			weaponprops = {}
 			weaponcomps = {}
 		end
 	end)
@@ -400,7 +410,7 @@ InventoryService.addWeapon = function(target, weaponId)
 	local weaponname = userWeapons[weaponId]:getName()
 	local ammo = { ["nothing"] = 0 }
 	local components = { ["nothing"] = 0 }
-	InventoryAPI.registerWeapon(_source, weaponname, ammo, components, weaponcomps)
+	InventoryAPI.registerWeapon(_source, weaponname, ammo, components, weaponcomps, weaponprops)
 	InventoryAPI.deletegun(_source, weaponId)
 end
 
@@ -608,11 +618,10 @@ InventoryService.DropItem = function(itemName, itemId, amount, metadata)
 		SvUtils.ProcessUser(_source)
 		InventoryService.subItem(_source, "default", itemId, amount)
 		local title = _U('drop')
-		local description = "**Amount** `" ..
-			amount .. "`\n **Item** `" .. itemName .. "`" .. "\n **Playername** `" .. charname .. "`\n"
-
-		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
+		local description = _U('drop') .. " "..amount.." "..itemName
+		Discord(title, _source, description)
 		TriggerClientEvent("vorpInventory:createPickup", _source, itemName, amount, metadata, 1)
+		TriggerClientEvent('redm_weapon_maintenance:vorp:dropItem', _source, itemId, amount)
 		SvUtils.Trem(_source)
 	end
 end

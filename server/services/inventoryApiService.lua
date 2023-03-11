@@ -752,7 +752,7 @@ InventoryAPI.deletegun = function(player, weaponid)
 	exports.oxmysql:execute("DELETE FROM loadout WHERE id=@id", { ['id'] = weaponid })
 end
 
-InventoryAPI.registerWeapon = function(target, name, ammos, components, comps)
+InventoryAPI.registerWeapon = function(target, name, ammos, components, comps, props)
 	local _target = target
 	local targetUser = Core.getUser(_target)
 	local targetCharacter
@@ -802,66 +802,43 @@ InventoryAPI.registerWeapon = function(target, name, ammos, components, comps)
 		end
 	end
 	if canGive then
-		if comps == nil then
-			exports.oxmysql:execute(
-				"INSERT INTO loadout (identifier, charidentifier, name, ammo, components) VALUES (@identifier, @charid, @name, @ammo, @components)"
-				, {
-					['identifier'] = targetIdentifier,
-					['charid'] = targetCharId,
-					['name'] = name,
-					['ammo'] = json.encode(ammo),
-					['components'] = json.encode(component)
-				}, function(result)
-					local weaponId = result.insertId
-					local newWeapon = Weapon:New({
-						id = weaponId,
-						propietary = targetIdentifier,
-						name = name,
-						ammo = ammo,
-						used = false,
-						used2 = false,
-						charId = targetCharId,
-						currInv = "default",
-						dropped = 0,
-					})
-					UsersWeapons["default"][weaponId] = newWeapon
+		comps = comps or {}
+		props = props or {}
 
-					TriggerEvent("syn_weapons:registerWeapon", weaponId)
-					TriggerClientEvent("vorpInventory:receiveWeapon", _target, weaponId, targetIdentifier, name, ammo)
-				end)
-		else
-			exports.oxmysql:execute(
-				"INSERT INTO loadout (identifier, charidentifier, name, ammo, components, comps) VALUES (@identifier, @charid, @name, @ammo, @components, @comps)"
-				, {
-					['identifier'] = targetIdentifier,
-					['charid'] = targetCharId,
-					['name'] = name,
-					['ammo'] = json.encode(ammo),
-					['components'] = json.encode(component),
-					['comps'] = json.encode(comps),
-				}, function(result)
-					local weaponId = result.insertId
-					local newWeapon = Weapon:New({
-						id = weaponId,
-						propietary = targetIdentifier,
-						name = name,
-						ammo = ammo,
-						used = false,
-						used2 = false,
-						charId = targetCharId,
-						currInv = "default",
-						dropped = 0,
-					})
-					UsersWeapons["default"][weaponId] = newWeapon
+		exports.ghmattimysql:execute("INSERT INTO loadout (identifier, charidentifier, name, ammo, components, comps, dirtLevel, mudLevel, conditionLevel, rustLevel) VALUES (@identifier, @charid, @name, @ammo, @components, @comps, @dirtLevel, @mudLevel, @conditionLevel, @rustLevel)", {
+			['identifier'] = targetIdentifier,
+			['charid'] = targetCharId,
+			['name'] = name,
+			['ammo'] = json.encode(ammo),
+			['components'] = json.encode(component),
+			['comps'] = json.encode(comps),
+			['dirtLevel'] = props.dirtLevel or 0,
+			['mudLevel'] = props.mudLevel or 0,
+			['conditionLevel'] = props.conditionLevel or 0,
+			['rustLevel'] = props.rustLevel or 0
+		}, function(result)
+			local weaponId = result.insertId
+			local newWeapon = Weapon:New({
+				id = weaponId,
+				propietary = targetIdentifier,
+				name = name,
+				ammo = ammo,
+				used = false,
+				used2 = false,
+				charId = targetCharId,
+				currInv = "default",
+				dropped = 0,
+			})
+			UsersWeapons["default"][weaponId] = newWeapon
 
-					TriggerEvent("syn_weapons:registerWeapon", weaponId)
-					TriggerClientEvent("vorpInventory:receiveWeapon", _target, weaponId, targetIdentifier, name, ammo)
-				end)
-		end
+			TriggerEvent("syn_weapons:registerWeapon", weaponId)
+			TriggerClientEvent("vorpInventory:receiveWeapon", _target, weaponId, targetIdentifier, name, ammo)
+		end)
 	else
 		Log.Warning("Weapon: [^2" .. name .. "^7] ^1 do not exist on the config or its a WRONG HASH")
 	end
 end
+
 InventoryAPI.giveWeapon2 = function(player, weaponId, target)
 	local _source = player
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
@@ -881,11 +858,21 @@ InventoryAPI.giveWeapon2 = function(player, weaponId, target)
 			return
 		end
 	end
-	local weaponcomps
-	exports.oxmysql:execute('SELECT comps FROM loadout WHERE id = @id ', { ['id'] = weaponId }, function(result)
-		if result[1] ~= nil then
-			weaponcomps = json.decode(result[1].comps)
+
+	local weaponcomps, weaponprops
+	exports.ghmattimysql:execute('SELECT comps, dirtLevel, mudLevel, conditionLevel, rustLevel FROM loadout WHERE id = @id ' , {['id'] = weaponId}, function(result)
+		result = result[1]
+
+		if result then
+			weaponcomps = json.decode(result.comps)
+			weaponprops = {
+				dirtLevel = result.dirtLevel,
+				mudLevel = result.mudLevel,
+				conditionLevel = result.conditionLevel,
+				rustLevel = result.rustLevel
+			}
 		else
+			weaponprops = {}
 			weaponcomps = {}
 		end
 	end)
@@ -895,7 +882,7 @@ InventoryAPI.giveWeapon2 = function(player, weaponId, target)
 	local weaponname = userWeapons[weaponId]:getName()
 	local ammo = { ["nothing"] = 0 }
 	local components = { ["nothing"] = 0 }
-	InventoryAPI.registerWeapon(_source, weaponname, ammo, components, weaponcomps)
+	InventoryAPI.registerWeapon(_source, weaponname, ammo, components, weaponcomps, weaponprops)
 	InventoryAPI.deletegun(_source, weaponId)
 	TriggerClientEvent("vorp:TipRight", _target, _U("youGaveWeapon"), 2000)
 	TriggerClientEvent("vorp:TipRight", _source, _U("youReceivedWeapon"), 2000)
