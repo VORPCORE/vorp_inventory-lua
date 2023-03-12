@@ -382,8 +382,8 @@ InventoryAPI.getItemContainingMetadata = function(player, itemName, metadata, cb
 		return
 	end
 
-	metadata = SharedUtils.MergeTables(svItem.metadata or {}, metadata or {})
 	local item = SvUtils.FindItemByNameAndContainingMetadata("default", identifier, itemName, metadata)
+	
 	if item then
 		cb(item)
 	else
