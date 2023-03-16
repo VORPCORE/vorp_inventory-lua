@@ -59,5 +59,5 @@ Locales["nl_lang"] = {
     cantdrophere              = "Kan nu niet neerleggen",
     cantgivehere              = "Kan nu niet geven",
     noplayersnearby           = "Geen spelers in de buurt",
-    gave                      = "Gave money",
+    gave                      = "Gaf geld",
 }
