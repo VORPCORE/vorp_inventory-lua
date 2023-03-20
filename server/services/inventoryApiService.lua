@@ -41,6 +41,7 @@ local function contains(table, element)
 	return false
 end
 
+
 InventoryAPI.canCarryAmountItem = function(player, amount, cb)
 	local _source = player
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
@@ -49,8 +50,9 @@ InventoryAPI.canCarryAmountItem = function(player, amount, cb)
 	local userInventory = UsersInventories["default"][identifier]
 
 	if userInventory and Config.MaxItemsInInventory.Items ~= -1 then
-		local sourceInventoryItemCount = InventoryAPI.getUserTotalCount(identifier, charid) + amount
-		if sourceInventoryItemCount <= Config.MaxItemsInInventory.Items then
+		local sourceInventoryItemCount = InventoryAPI.getUserTotalCount(identifier, charid)
+		local finalAmount = sourceInventoryItemCount + amount
+		if finalAmount <= Config.MaxItemsInInventory.Items then
 			cb(true)
 		else
 			cb(false)
@@ -59,6 +61,9 @@ InventoryAPI.canCarryAmountItem = function(player, amount, cb)
 		cb(false)
 	end
 end
+
+
+
 
 InventoryAPI.canCarryItem = function(player, itemName, amount, cb)
 	local _source = player
@@ -712,6 +717,7 @@ InventoryAPI.canCarryAmountWeapons = function(player, amount, cb)
 		cb(true)
 	end
 end
+
 InventoryAPI.getItem = function(player, itemName, cb, metadata)
 	local _source = player
 	if not Core.getUser(_source) then
@@ -770,7 +776,8 @@ InventoryAPI.registerWeapon = function(target, name, ammos, components, comps)
 	local targetCharId
 	local ammo = {}
 	local component = {}
-
+	local job
+	local DefaultAmount = Config.MaxItemsInInventory.Weapons
 	local canGive = false
 
 	for index, weapons in pairs(Config.Weapons) do
@@ -785,12 +792,17 @@ InventoryAPI.registerWeapon = function(target, name, ammos, components, comps)
 		targetCharacter = targetUser.getUsedCharacter
 		targetIdentifier = targetCharacter.identifier
 		targetCharId = targetCharacter.charIdentifier
+		job = targetCharacter.job
 	end
 
-	if Config.MaxItemsInInventory.Weapons ~= 0 then
+	if Config.JobsAllowed[job] then
+		DefaultAmount = Config.JobsAllowed[job]
+	end
+
+	if DefaultAmount ~= 0 then
 		local targetTotalWeaponCount = InventoryAPI.getUserTotalCountWeapons(targetIdentifier, targetCharId) + 1
 
-		if targetTotalWeaponCount > Config.MaxItemsInInventory.Weapons then
+		if targetTotalWeaponCount > DefaultAmount then
 			TriggerClientEvent("vorp:TipRight", _target, _U("cantweapons2"), 2000)
 			if Config.Debug then
 				Log.Warning(targetCharacter.firstname ..
@@ -877,16 +889,24 @@ InventoryAPI.giveWeapon2 = function(player, weaponId, target)
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local sourceIdentifier = sourceCharacter.identifier
 	local sourceCharId = sourceCharacter.charIdentifier
+	local job = sourceCharacter.job
 	local _target = tonumber(target)
 	local userWeapons = UsersWeapons["default"]
 	userWeapons[weaponId]:setPropietary('')
-	if Config.MaxItemsInInventory.Weapons ~= 0 then
+	local DefaultAmount = Config.MaxItemsInInventory.Weapons
+
+	if Config.JobsAllowed[job] then
+		DefaultAmount = Config.JobsAllowed[job]
+	end
+
+	if DefaultAmount ~= 0 then
 		local sourceTotalWeaponCount = InventoryAPI.getUserTotalCountWeapons(sourceIdentifier, sourceCharId) + 1
 
-		if sourceTotalWeaponCount > Config.MaxItemsInInventory.Weapons then
+		if sourceTotalWeaponCount > DefaultAmount then
 			TriggerClientEvent("vorp:TipRight", _source, _U("cantweapons"), 2000)
 			if Config.Debug then
-				Log.print(sourceCharacter.firstname .. " " .. sourceCharacter.lastname .. " ^1Can't carry more weapons^7")
+				Log.print(sourceCharacter.firstname ..
+					" " .. sourceCharacter.lastname .. " ^1Can't carry more weapons^7")
 			end
 			return
 		end
@@ -919,9 +939,11 @@ InventoryAPI.giveWeapon = function(player, weaponId, target)
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local sourceIdentifier = sourceCharacter.identifier
 	local sourceCharId = sourceCharacter.charIdentifier
+	local job = sourceCharacter.job
 	local _target = tonumber(target)
 	local targetisPlayer = false
 	local userWeapons = UsersWeapons["default"]
+	local DefaultAmount = Config.MaxItemsInInventory.Weapons
 
 	for _, pl in pairs(GetPlayers()) do
 		if tonumber(pl) == _target then
@@ -930,13 +952,18 @@ InventoryAPI.giveWeapon = function(player, weaponId, target)
 		end
 	end
 
-	if Config.MaxItemsInInventory.Weapons ~= 0 then
+	if Config.JobsAllowed[job] then
+		DefaultAmount = Config.JobsAllowed[job]
+	end
+
+	if DefaultAmount ~= 0 then
 		local sourceTotalWeaponCount = InventoryAPI.getUserTotalCountWeapons(sourceIdentifier, sourceCharId) + 1
 
-		if sourceTotalWeaponCount > Config.MaxItemsInInventory.Weapons then
+		if sourceTotalWeaponCount > DefaultAmount then
 			TriggerClientEvent("vorp:TipRight", _source, _U("cantweapons"), 2000)
 			if Config.Debug then
-				Log.print(sourceCharacter.firstname .. " " .. sourceCharacter.lastname .. " ^1Can't carry more weapons^7")
+				Log.print(sourceCharacter.firstname ..
+					" " .. sourceCharacter.lastname .. " ^1Can't carry more weapons^7")
 			end
 			return
 		end

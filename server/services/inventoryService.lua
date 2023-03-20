@@ -473,10 +473,16 @@ InventoryService.onPickup = function(obj)
 				end)
 			end
 		else
-			if Config.MaxItemsInInventory.Weapons ~= 0 then
+			local DefaultAmount = Config.MaxItemsInInventory.Weapons
+
+			if Config.JobsAllowed[job] then
+				DefaultAmount = Config.JobsAllowed[job]
+			end
+
+			if DefaultAmount ~= 0 then
 				local sourceInventoryWeaponCount = InventoryAPI.getUserTotalCountWeapons(identifier, charId) + 1
 
-				if sourceInventoryWeaponCount <= Config.MaxItemsInInventory.Weapons then
+				if sourceInventoryWeaponCount <= DefaultAmount then
 					local weaponId = ItemPickUps[obj].weaponid
 					local weaponObj = ItemPickUps[obj].obj
 					UsersWeapons["default"][weaponId]:setDropped(0)
@@ -778,7 +784,7 @@ InventoryService.getItemsTable = function()
 	end
 end
 
-InventoryService.getInventory = function() 
+InventoryService.getInventory = function()
 	local _source = source
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 
