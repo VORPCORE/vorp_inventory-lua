@@ -908,10 +908,10 @@ InventoryService.canStoreItem = function(identifier, charIdentifier, invId, name
 			end
 			local totalAmount = amount + itemCount
 
-			if totalAmount > invData.limitedItems[name] then
+			if totalAmount > invData.limitedItems[string.lower(name)] then
 				return false
 			end
-		elseif amount > invData.limitedItems[name] then
+		elseif amount > invData.limitedItems[string.lower(name)] then
 			return false
 		end
 		return true
@@ -921,7 +921,6 @@ InventoryService.canStoreItem = function(identifier, charIdentifier, invId, name
 
 	if not invData.ignoreItemStackLimit then
 		local item = SvUtils.FindItemByNameAndMetadata(invId, identifier, name, metadata)
-
 		if item ~= nil then
 			local totalCount = item:getCount() + amount
 
