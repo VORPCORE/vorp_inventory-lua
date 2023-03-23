@@ -113,6 +113,11 @@ PickupsService.sharePickupClient = function(name, entityHandle, amount, metadata
 			if Config.Debug then
 				print('Item pickup added: ' .. tostring(pickup.name))
 			end
+			if Config.RemovebyDrop then
+				Wait(Config.TimetoRemove)
+				removeDropItem(entityHandle)
+				Utils.TableRemoveByKey(WorldPickups, entityHandle)
+			end
 		end
 	else
 		if WorldPickups[entityHandle] ~= nil then
@@ -120,6 +125,12 @@ PickupsService.sharePickupClient = function(name, entityHandle, amount, metadata
 			Utils.TableRemoveByKey(WorldPickups, entityHandle)
 		end
 	end
+end
+
+function removeDropItem(entityHandle)
+	if DoesEntityExist(entityHandle) then 
+	    DeleteEntity(entityHandle) 
+	end           
 end
 
 PickupsService.shareMoneyPickupClient = function(entityHandle, amount, position, value)
