@@ -25,7 +25,7 @@ Config = {
   OpenKey = 0xC1989F95,
   --RMB mouse PROMPT PICKUP
   PickupKey = 0xF84FA74F,
-  RemovebyDrop = true,--dropped item will be removed after a period of time then true
+  RemovebyDrop = false,--dropped item will be removed after a period of time then true
   TimetoRemove = 300000,-- 5 minutes, enter the time in milliseconds when the dropped item should be removed
   -- NORMAL LOGS
   webhookavatar = "",
