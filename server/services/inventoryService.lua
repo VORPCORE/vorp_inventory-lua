@@ -255,9 +255,11 @@ InventoryService.giveGoldToPlayer = function(target, amount)
 
 	if amount <= 0 then
 		TriggerClientEvent("vorp:TipRight", _source, _U("TryExploits"), 3000)
+		TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
 		Wait(3000)
 	elseif sourceGold < amount then
 		TriggerClientEvent("vorp:TipRight", _source, _U("NotEnoughGold"), 3000)
+		TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
 		Wait(3000)
 	else
 		sourceCharacter.removeCurrency(1, amount)
@@ -265,6 +267,7 @@ InventoryService.giveGoldToPlayer = function(target, amount)
 
 		TriggerClientEvent("vorp:TipRight", _source, _U("YouPaid", tostring(amount), "ID: " .. _target), 3000)
 		TriggerClientEvent("vorp:TipRight", _target, _U("YouReceived", tostring(amount), "ID: " .. _source), 3000)
+		TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
 		Wait(3000)
 	end
 	SvUtils.Trem(_source)
@@ -1174,3 +1177,4 @@ InventoryService.TakeFromCustom = function(obj)
 		end)
 	end
 end
+
