@@ -55,7 +55,14 @@ exports('vorp_inventoryApi', function()
     end
 
     self.deletegun = function(source, id)
-        TriggerEvent("vorpCore:deletegun", source, tonumber(id))
+        local result_promise = promise.new()
+
+        TriggerEvent("vorpCore:deletegun", source, tonumber(id), function(res)
+            result_promise:resolve(res)
+        end)
+
+        return Citizen.Await(result_promise)
+
     end
 
     self.canCarryWeapons = function(source, amount, cb)
