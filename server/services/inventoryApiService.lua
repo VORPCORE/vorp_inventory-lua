@@ -766,7 +766,9 @@ InventoryAPI.deletegun = function(player, weaponid,cb)
 	local userWeapons = UsersWeapons["default"]
 	userWeapons[weaponid]:setPropietary('')
 	exports.oxmysql:execute("DELETE FROM loadout WHERE id=@id", { ['id'] = weaponid })
-	cb(true)
+	if cb then 
+		cb(true)
+	end
 end
 
 InventoryAPI.registerWeapon = function(target, name, ammos, components, comps)
