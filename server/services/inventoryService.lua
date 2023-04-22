@@ -970,7 +970,7 @@ InventoryService.DoesHavePermission = function(invId, job, grade, Table)
 	end
 	for jobname, jobgrade in pairs(Table) do
 		if jobname == job then
-			if grade == jobgrade then
+			if grade >= jobgrade then
 				return true
 			end
 		end
@@ -1177,4 +1177,3 @@ InventoryService.TakeFromCustom = function(obj)
 		end)
 	end
 end
-
