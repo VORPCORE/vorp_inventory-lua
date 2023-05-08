@@ -2,7 +2,6 @@ function processEventValidation(ms = 1000) {
     isValidating = true;
     const timer = setTimeout(() => {
         isValidating = false;
-        clearTimeout(timer);
     }, ms)
 }
 
@@ -48,7 +47,7 @@ function hideSecondaryCapacity() {
     $(".capacity").hide();
 }
 
-function initiateSecondaryInventory(id, title, capacity) {
+function initiateSecondaryInventory(title, capacity) {
     $("#secondInventoryHud").append(
         `<div class='controls'><div class='controls-center'><input type='text' id='secondarysearch' placeholder='Search'/></div></div>`
     );

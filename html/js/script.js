@@ -87,7 +87,6 @@ window.addEventListener('message', function (event) {
         }
         if (event.data.id) {
             $("#id-value").text("ID " + event.data.id);
-
         }
 
     } else if (event.data.action == "transaction") {
@@ -134,52 +133,12 @@ window.addEventListener('message', function (event) {
             });
         });
 
-        type = event.data.type
+        const { title, capacity } = event.data;
+        type = event.data.type;
+        Id = event.data.id;
+        console.log("Opening inventory type : ", type + " Id : " , event.data.id);
 
-        if (event.data.type == "custom") {
-            customId = event.data.id;
-            initiateSecondaryInventory(id, event.data.title, event.data.capacity)
-        }
-
-        if (event.data.type == "horse") {
-            horseid = event.data.horseid;
-            initiateSecondaryInventory(horseid, event.data.title, event.data.capacity)
-        }
-
-        if (event.data.type == "cart") {
-            wagonid = event.data.wagonid;
-            initiateSecondaryInventory(wagonid, event.data.title, event.data.capacity)
-        }
-
-        if (event.data.type == "house") {
-            houseId = event.data.houseId;
-            initiateSecondaryInventory(houseId, event.data.title, event.data.capacity)
-        }
-        if (event.data.type == "hideout") {
-            hideoutId = event.data.hideoutId;
-            initiateSecondaryInventory(hideoutId, event.data.title, event.data.capacity)
-        }
-        if (event.data.type == "bank") {
-            bankId = event.data.bankId;
-            initiateSecondaryInventory(bankId, event.data.title, event.data.capacity)
-        }
-        if (event.data.type == "clan") {
-            clanid = event.data.clanid;
-            initiateSecondaryInventory(clanid, event.data.title, event.data.capacity)
-        }
-        if (event.data.type == "store") {
-            StoreId = event.data.StoreId;
-            geninfo = event.data.geninfo;
-            initiateSecondaryInventory(StoreId, event.data.title, event.data.capacity)
-        }
-        if (event.data.type == "steal") {
-            stealid = event.data.stealId;
-            initiateSecondaryInventory(stealid, event.data.title, event.data.capacity)
-        }
-        if (event.data.type == "Container") {
-            Containerid = event.data.Containerid;
-            initiateSecondaryInventory(Containerid, event.data.title, event.data.capacity)
-        }
+        type && initiateSecondaryInventory(title, capacity);
 
         disabled = false;
 
@@ -195,6 +154,7 @@ window.addEventListener('message', function (event) {
             closeInventory();
         });
     } else if (event.data.action == "hide") {
+        Id = null;
         $("#inventoryHud").fadeOut();
         $(".controls").fadeOut();
         $(".site-cm-box").remove();
@@ -246,7 +206,7 @@ window.addEventListener('message', function (event) {
 
     } else if (event.data.action == "setSecondInventoryItems") {
         secondInventorySetup(event.data.itemList);
-        if (secondaryCapacityAvailable == true) {
+        if (secondaryCapacityAvailable) {
             // Get how many items are in inventory
             let l = event.data.itemList.length
             let itemlist = event.data.itemList
