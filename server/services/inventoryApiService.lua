@@ -255,9 +255,9 @@ AddEventHandler("vorpinventory:servergiveammo", function(ammotype, amount, targe
 	local charidentifier = allplayersammo[_source]["charidentifier"]
 	local charidentifier2 = allplayersammo[target]["charidentifier"]
 	exports.oxmysql:execute("UPDATE characters Set ammo=@ammo WHERE charidentifier=@charidentifier",
-		{ ['charidentifier'] = charidentifier,['ammo'] = json.encode(allplayersammo[_source]["ammo"]) })
+		{ ['charidentifier'] = charidentifier, ['ammo'] = json.encode(allplayersammo[_source]["ammo"]) })
 	exports.oxmysql:execute("UPDATE characters Set ammo=@ammo WHERE charidentifier=@charidentifier",
-		{ ['charidentifier'] = charidentifier2,['ammo'] = json.encode(allplayersammo[target]["ammo"]) })
+		{ ['charidentifier'] = charidentifier2, ['ammo'] = json.encode(allplayersammo[target]["ammo"]) })
 	TriggerClientEvent("vorpinventory:updateuiammocount", _source, allplayersammo[_source]["ammo"])
 	TriggerClientEvent("vorpinventory:updateuiammocount", target, allplayersammo[target]["ammo"])
 	TriggerClientEvent("vorpinventory:setammotoped", _source, allplayersammo[_source]["ammo"])
@@ -272,7 +272,7 @@ AddEventHandler("vorpinventory:updateammo", function(ammoinfo)
 	local _source = source
 	allplayersammo[_source] = ammoinfo
 	exports.oxmysql:execute("UPDATE characters Set ammo=@ammo WHERE charidentifier=@charidentifier",
-		{ ['charidentifier'] = ammoinfo["charidentifier"],['ammo'] = json.encode(ammoinfo["ammo"]) })
+		{ ['charidentifier'] = ammoinfo["charidentifier"], ['ammo'] = json.encode(ammoinfo["ammo"]) })
 end)
 
 InventoryAPI.LoadAllAmmo = function()
@@ -310,7 +310,7 @@ InventoryAPI.addBullets = function(player, bulletType, amount)
 			TriggerClientEvent("vorpinventory:updateuiammocount", _source, allplayersammo[_source]["ammo"])
 			TriggerClientEvent("vorpCoreClient:addBullets", _source, bulletType, ammo[bulletType])
 			exports.oxmysql:execute("UPDATE characters Set ammo=@ammo WHERE charidentifier=@charidentifier",
-				{ ['charidentifier'] = charidentifier,['ammo'] = json.encode(ammo) })
+				{ ['charidentifier'] = charidentifier, ['ammo'] = json.encode(ammo) })
 		end)
 end
 
@@ -761,17 +761,17 @@ end
 
 
 
-InventoryAPI.deletegun = function(player, weaponid,cb)
+InventoryAPI.deletegun = function(player, weaponid, cb)
 	local _source = player
 	local userWeapons = UsersWeapons["default"]
 	userWeapons[weaponid]:setPropietary('')
 	exports.oxmysql:execute("DELETE FROM loadout WHERE id=@id", { ['id'] = weaponid })
-	if cb then 
+	if cb then
 		cb(true)
 	end
 end
 
-InventoryAPI.registerWeapon = function(target, name, ammos, components, comps)
+InventoryAPI.registerWeapon = function(target, name, ammos, components, comps, cb)
 	local _target = target
 	local targetUser = Core.getUser(_target)
 	local targetCharacter
@@ -783,13 +783,17 @@ InventoryAPI.registerWeapon = function(target, name, ammos, components, comps)
 	local DefaultAmount = Config.MaxItemsInInventory.Weapons
 	local canGive = false
 
-	for index, weapons in pairs(Config.Weapons) do
+	if cb == nil then
+		cb = function(r)
+		end
+	end
+
+	for _, weapons in pairs(Config.Weapons) do
 		if weapons.HashName == name then
 			canGive = true
 			break
 		end
 	end
-
 
 	if targetUser then
 		targetCharacter = targetUser.getUsedCharacter
@@ -811,7 +815,7 @@ InventoryAPI.registerWeapon = function(target, name, ammos, components, comps)
 				Log.Warning(targetCharacter.firstname ..
 					" " .. targetCharacter.lastname .. " ^1Can't carry more weapons^7")
 			end
-			return
+			return cb(nil)
 		end
 	end
 
@@ -836,6 +840,7 @@ InventoryAPI.registerWeapon = function(target, name, ammos, components, comps)
 					['name'] = name,
 					['ammo'] = json.encode(ammo),
 					['components'] = json.encode(component)
+
 				}, function(result)
 					local weaponId = result.insertId
 					local newWeapon = Weapon:New({
@@ -853,6 +858,7 @@ InventoryAPI.registerWeapon = function(target, name, ammos, components, comps)
 
 					TriggerEvent("syn_weapons:registerWeapon", weaponId)
 					TriggerClientEvent("vorpInventory:receiveWeapon", _target, weaponId, targetIdentifier, name, ammo)
+					return cb(true)
 				end)
 		else
 			exports.oxmysql:execute(
@@ -881,12 +887,17 @@ InventoryAPI.registerWeapon = function(target, name, ammos, components, comps)
 
 					TriggerEvent("syn_weapons:registerWeapon", weaponId)
 					TriggerClientEvent("vorpInventory:receiveWeapon", _target, weaponId, targetIdentifier, name, ammo)
+
+					return cb(true)
 				end)
 		end
 	else
 		Log.Warning("Weapon: [^2" .. name .. "^7] ^1 do not exist on the config or its a WRONG HASH")
+		return cb(nil)
 	end
 end
+
+
 InventoryAPI.giveWeapon2 = function(player, weaponId, target)
 	local _source = player
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
