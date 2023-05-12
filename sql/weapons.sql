@@ -1,13 +1,8 @@
-ALTER TABLE `loadout` ADD COLUMN `dropped` INT(11) NOT NULL DEFAULT 0;
-ALTER TABLE `loadout` ADD COLUMN `comps` LONGTEXT NOT NULL DEFAULT '{}';
-ALTER TABLE `loadout` ADD COLUMN `used2` tinyint(4) NOT NULL DEFAULT 0;
-
 INSERT INTO `items`(`item`, `label`, `limit`, `can_remove`, `type`, `usable`) VALUES ('ammorepeaterexplosive', 'Repeater Ammo Explosive', 10, 1, 'item_standard', 1);
 INSERT INTO `items`(`item`, `label`, `limit`, `can_remove`, `type`, `usable`) VALUES ('ammorepeaterexpress', 'Repeater Ammo Express', 10, 1, 'item_standard', 1);
 INSERT INTO `items`(`item`, `label`, `limit`, `can_remove`, `type`, `usable`) VALUES ('ammorepeaternormal', 'Repeater Ammo Normal', 10, 1, 'item_standard', 1);
 INSERT INTO `items`(`item`, `label`, `limit`, `can_remove`, `type`, `usable`) VALUES ('ammorepeatervelocity', 'Repeater Ammo Velocity', 10, 1, 'item_standard', 1);
 INSERT INTO `items`(`item`, `label`, `limit`, `can_remove`, `type`, `usable`) VALUES ('ammorepeatersplitpoint', 'Repeater Ammo Splitpoint', 10, 1, 'item_standard', 1);
-
 
 INSERT INTO `items`(`item`, `label`, `limit`, `can_remove`, `type`, `usable`) VALUES ('ammorevolverexplosive', 'Revolver Ammo Explosive', 10, 1, 'item_standard', 1);
 INSERT INTO `items`(`item`, `label`, `limit`, `can_remove`, `type`, `usable`) VALUES ('ammorevolverexpress', 'Revolver Ammo Express', 10, 1, 'item_standard', 1);

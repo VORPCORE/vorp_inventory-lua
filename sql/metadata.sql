@@ -1,37 +1,29 @@
-ALTER TABLE items ADD COLUMN IF NOT EXISTS `id` int UNIQUE AUTO_INCREMENT;
-ALTER TABLE items ADD COLUMN IF NOT EXISTS `metadata` JSON DEFAULT ('{}');
+CREATE TABLE IF NOT EXISTS `items_crafted` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`character_id` INT(11) NOT NULL,
+	`item_id` INT(11) NOT NULL,
+	`updated_at` TIMESTAMP NOT NULL DEFAULT current_timestamp(),
+	`metadata` LONGTEXT NOT NULL COLLATE 'utf8mb4_bin',
+	PRIMARY KEY (`id`) USING BTREE,
+	UNIQUE INDEX `ID` (`id`) USING BTREE,
+	INDEX `crafted_item_idx` (`character_id`) USING BTREE,
+	CONSTRAINT `metadata` CHECK (json_valid(`metadata`))
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+;
 
-ALTER TABLE loadout ADD COLUMN IF NOT EXISTS `curr_inv` VARCHAR(100) DEFAULT 'default' NOT NULL;
-
-
-CREATE TABLE IF NOT EXISTS items_crafted (
-    id           int auto_increment primary key,
-    character_id int                                 not null,
-    item_id      int                                 not null,
-    updated_at   timestamp default CURRENT_TIMESTAMP not null,
-    metadata     json                                not null,
-    constraint ID unique (id)
-) COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;
-
--- Create index to speed up request for each character inventory
-CREATE INDEX crafted_item_idx
-    ON items_crafted (character_id);
-
-
-CREATE TABLE IF NOT EXISTS character_inventories
-(
-    character_id    int                                    null,
-    inventory_type  varchar(100) default 'default'         not null,
-    item_crafted_id int                                    not null,
-    amount          int                                    null,
-    created_at      timestamp    default CURRENT_TIMESTAMP null
-) COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;
-
--- Create index to speed up request for each character inventory
-CREATE INDEX character_inventory_idx
-    ON character_inventories (character_id, inventory_type);
-
-
+CREATE TABLE IF NOT EXISTS `character_inventories` (
+	`character_id` INT(11) NULL DEFAULT NULL,
+	`inventory_type` VARCHAR(100) NOT NULL DEFAULT 'default' COLLATE 'utf8mb4_general_ci',
+	`item_crafted_id` INT(11) NOT NULL,
+	`amount` INT(11) NULL DEFAULT NULL,
+	`created_at` TIMESTAMP NULL DEFAULT current_timestamp(),
+	INDEX `character_inventory_idx` (`character_id`, `inventory_type`) USING BTREE
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+;
 
 -- If you want to convert the old inventory format to the new one, run this part of the file.
 -- It will keep the old inventory in the characters table, but all data will be copied and parsed into the new tables.
