@@ -61,7 +61,6 @@ function initSecondaryInventoryHandlers() {
           PostAction("TakeFromHorse", itemData);
         } else if (type === "store") {
           disableInventory(500);
-
           if (itemData.type != "item_weapon") {
             dialog.prompt({
               title: LANGUAGE.prompttitle,
@@ -317,13 +316,15 @@ function secondInventorySetup(items) {
 
     if (item.type !== "item_weapon") {
       $("#secondInventoryElement").append(`
-                <div data-label="${item.label}"' 
-                style='background-image: url(\"img/items/${item.name.toLowerCase()}.png\"), url(); background-size: 90px 90px, 90px 90px; background-repeat: no-repeat; background-position: center;'
-                id="item-${index}" class='item'>
-                    ${count > 0 ? `<div class='count'>${count}</div>` : ``}
-                    <div class='text'></div>
-                </div>
-            `);
+      <div data-label="${item.label}"' 
+      style='background-image: url(\"img/items/${
+        item.name ? item.name.toLowerCase() : ""
+      }.png\"), url(); background-size: 90px 90px, 90px 90px; background-repeat: no-repeat; background-position: center;'
+      id="item-${index}" class='item'>
+          ${count > 0 ? `<div class='count'>${count}</div>` : ``}
+          <div class='text'></div>
+      </div>
+  `);
     } else {
       $("#secondInventoryElement").append(
         "<div data-label='" +
