@@ -61,7 +61,61 @@ function initSecondaryInventoryHandlers() {
           PostAction("TakeFromHorse", itemData);
         } else if (type === "store") {
           disableInventory(500);
-          PostAction("TakeFromStore", itemData);
+
+          if (itemData.type != "item_weapon") {
+            dialog.prompt({
+              title: LANGUAGE.prompttitle,
+              button: LANGUAGE.promptaccept,
+              required: true,
+              item: itemData,
+              type: itemData.type,
+              input: {
+                type: "number",
+                autofocus: "true",
+              },
+
+              validate: function (value, item, type) {
+                if (!value) {
+                  dialog.close();
+                  return;
+                }
+
+                if (!isInt(value)) {
+                  return;
+                }
+
+                if (!isValidating) {
+                  processEventValidation();
+                  $.post(
+                    `https://${GetParentResourceName()}/TakeFromStore`,
+                    JSON.stringify({
+                      item: itemData,
+                      type: type,
+                      number: value,
+                      price: itemData.price,
+                      geninfo: geninfo,
+                      store: StoreId,
+                    })
+                  );
+                }
+              },
+            });
+          } else {
+            if (!isValidating) {
+              processEventValidation();
+              $.post(
+                `https://${GetParentResourceName()}/TakeFromStore`,
+                JSON.stringify({
+                  item: itemData,
+                  type: itemData.type,
+                  number: 1,
+                  price: itemData.price,
+                  geninfo: geninfo,
+                  store: StoreId,
+                })
+              );
+            }
+          }
         } else if (type === "cart") {
           disableInventory(500);
           PostAction("TakeFromCart", itemData);
