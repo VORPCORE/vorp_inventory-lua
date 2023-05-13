@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-global
 InventoryService = {}
 ItemPickUps = {}
 MoneyPickUps = {}
@@ -187,8 +188,10 @@ InventoryService.giveMoneyToPlayer = function(target, amount)
 		else
 			sourceCharacter.removeCurrency(0, amount)
 			targetCharacter.addCurrency(0, amount)
-			TriggerClientEvent("vorp:TipRight", _source, T.YouPaid, tostring(amount), "ID: " .. _target, 3000)
-			TriggerClientEvent("vorp:TipRight", _target, T.YouReceived, tostring(amount), "ID: " .. _source, 3000)
+			TriggerClientEvent("vorp:TipRight", _source, string.format(T.YouPaid, tostring(amount) .. " ID: " .. _target),
+				3000)
+			TriggerClientEvent("vorp:TipRight", _target,
+				string.format(T.YouReceived, tostring(amount) .. " ID: " .. _source), 3000)
 			Wait(3000)
 			TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
 			local title = T.gaveMoney
