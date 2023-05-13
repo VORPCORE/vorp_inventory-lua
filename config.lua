@@ -50,8 +50,17 @@ Config = {
       descriptionend = "`\n"
     }
   },
+  -- Only remove all after death
+  ClearOnRespawn = {
+    Active   = false,        -- Active this module
+    AllMoney = false,
+    Gold     = false,        -- TRUE ONLY IF UseGoldItem = true
+    Weapons  = false,
+    Items    = false
+  },
   -- NEED TO TEST
   DropOnRespawn = {
+    Active         = false, -- Active this module
     AllMoney       = false,
     PartMoney      = false,
     PartPercentage = 25,

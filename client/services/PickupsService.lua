@@ -10,19 +10,20 @@ PickupsService.CreateObject = function(model, position)
 	local objectHash = GetHashKey(model)
 
 	if not Citizen.InvokeNative(0x1283B8B89DD5D1B6, objectHash) then -- HasModelLoaded
-		Citizen.InvokeNative(0xFA28FE3A6246FC30, objectHash) -- RequestModel
+		Citizen.InvokeNative(0xFA28FE3A6246FC30, objectHash)      -- RequestModel
 	end
 
 	while not Citizen.InvokeNative(0x1283B8B89DD5D1B6, objectHash) do -- HasModelLoaded
 		Wait(1)
 	end
 
-	local entityHandle = Citizen.InvokeNative(0x509D5878EB39E842, objectHash, position.x, position.y, position.z, true, true, true) -- CreateObject
+	local entityHandle = Citizen.InvokeNative(0x509D5878EB39E842, objectHash, position.x, position.y, position.z, true,
+		true, true)                                                  -- CreateObject
 
-	Citizen.InvokeNative(0x58A850EAEE20FAA3, entityHandle) -- PlaceObjectOnGroundProperly
+	Citizen.InvokeNative(0x58A850EAEE20FAA3, entityHandle)           -- PlaceObjectOnGroundProperly
 	Citizen.InvokeNative(0xDC19C288082E586E, entityHandle, true, false) -- SetEntityAsMissionEntity
-	Citizen.InvokeNative(0x7D9EFB7AD6B19754, entityHandle, true) -- FreezeEntityPosition
-	Citizen.InvokeNative(0x7DFB49BCDB73089A, entityHandle, true) -- SetPickupLight
+	Citizen.InvokeNative(0x7D9EFB7AD6B19754, entityHandle, true)     -- FreezeEntityPosition
+	Citizen.InvokeNative(0x7DFB49BCDB73089A, entityHandle, true)     -- SetPickupLight
 	Citizen.InvokeNative(0xF66F820909453B8C, entityHandle, false, true) -- SetEntityCollision
 
 	SetModelAsNoLongerNeeded(objectHash)
@@ -208,7 +209,8 @@ PickupsService.playerAnim = function(obj)
 		Wait(10)
 	end
 
-	Citizen.InvokeNative(0xEA47FE3719165B94, PlayerPedId(), animDict, "exit_front", 1.0, 8.0, -1, 1, 0, false, false, false)
+	Citizen.InvokeNative(0xEA47FE3719165B94, PlayerPedId(), animDict, "exit_front", 1.0, 8.0, -1, 1, 0, false, false,
+		false)
 	Wait(1200)
 	PlaySoundFrontend("CHECKPOINT_PERFECT", "HUD_MINI_GAME_SOUNDSET", true, 1)
 	Wait(1000)
@@ -219,8 +221,70 @@ PickupsService.DeadActions = function()
 	local playerPed = PlayerPedId()
 
 	lastCoords = GetEntityCoords(playerPed, true, true)
-	dropAll = true
-	PickupsService.dropAllPlease()
+	if Config.ClearOnRespawn.Active then
+		PickupsService.clearAllPlease()
+		Wait(200)
+	end
+	if Config.DropOnRespawn.Active then
+		dropAll = true
+		PickupsService.dropAllPlease()
+		Wait(200)
+	end
+end
+
+PickupsService.clearAllPlease = function()
+	Wait(200)
+
+	if Config.ClearOnRespawn.AllMoney then
+		TriggerServerEvent("vorpinventory:serverClearAllMoney")
+		Wait(200)
+	end
+
+	if Config.UseGoldItem and Config.ClearOnRespawn.Gold then
+		TriggerServerEvent("vorpinventory:serverClearAllGold")
+		Wait(200)
+	end
+
+	if Config.ClearOnRespawn.Items then
+		local items = UserInventory
+
+		for _, item in pairs(items) do
+			local itemName = item:getName()
+			local itemCount = item:getCount()
+			local itemMetadata = item:getMetadata()
+
+			TriggerServerEvent("vorpinventory:serverClearAllItems", itemName, item["id"], itemCount, itemMetadata)
+			item:quitCount(itemCount)
+
+			if item:getCount() == 0 then
+				UserInventory[item.id] = nil
+			end
+
+			Wait(200)
+		end
+	end
+
+	if Config.ClearOnRespawn.Weapons then
+		local weapons = UserWeapons
+
+		for index, weapon in pairs(weapons) do
+			TriggerServerEvent("vorpinventory:serverClearAllWeapons", index)
+
+			if next(UserWeapons[index]) ~= nil then
+				local currentWeapon = UserWeapons[index]
+
+				if currentWeapon:getUsed() then
+					currentWeapon:setUsed(false)
+					RemoveWeaponFromPed(PlayerPedId(), GetHashKey(currentWeapon:getName()), true, 0)
+				end
+
+				UserWeapons[index] = nil
+				Wait(200)
+			end
+		end
+	end
+
+	Wait(200)
 end
 
 PickupsService.dropAllPlease = function()
@@ -264,7 +328,7 @@ PickupsService.dropAllPlease = function()
 		local weapons = UserWeapons
 
 		for index, weapon in pairs(weapons) do
-			TriggerServerEvent("vorpinventory:serverDropWeapon", index)
+			TriggerServerEvent("vorpinventory:serverClearAllWeapons", index)
 
 			if next(UserWeapons[index]) ~= nil then
 				local currentWeapon = UserWeapons[index]
@@ -279,10 +343,6 @@ PickupsService.dropAllPlease = function()
 			end
 		end
 	end
-
-
-
-
 
 	Wait(200)
 	dropAll = false
@@ -322,8 +382,8 @@ PickupsService.OnWorldPickup = function()
 			if pickup.prompt:HasHoldModeCompleted() then
 				if pickup.isMoney then
 					TriggerServerEvent("vorpinventory:onPickupMoney", pickup.entityId)
-				elseif Config.UseGoldItem and pickup.isGold then 
-					TriggerServerEvent("vorpinventory:onPickupGold", pickup.entityId )
+				elseif Config.UseGoldItem and pickup.isGold then
+					TriggerServerEvent("vorpinventory:onPickupGold", pickup.entityId)
 				else
 					TriggerServerEvent("vorpinventory:onPickup", pickup.entityId)
 				end

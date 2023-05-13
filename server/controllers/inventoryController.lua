@@ -13,11 +13,17 @@ AddEventHandler("vorpinventory:serverGiveWeapon", InventoryService.GiveWeapon)
 RegisterServerEvent("vorpinventory:serverDropItem")
 AddEventHandler("vorpinventory:serverDropItem", InventoryService.DropItem)
 
+RegisterServerEvent("vorpinventory:serverClearAllItems")
+AddEventHandler("vorpinventory:serverClearAllItems", InventoryService.ClearAllItems)
+
 RegisterServerEvent("vorpinventory:serverDropMoney")
 AddEventHandler("vorpinventory:serverDropMoney", InventoryService.DropMoney)
 
 RegisterServerEvent("vorpinventory:serverDropAllMoney")
 AddEventHandler("vorpinventory:serverDropAllMoney", InventoryService.DropAllMoney)
+
+RegisterServerEvent("vorpinventory:serverClearAllMoney")
+AddEventHandler("vorpinventory:serverClearAllMoney", InventoryService.ClearAllMoney)
 
 RegisterServerEvent("vorpinventory:serverDropPartMoney")
 AddEventHandler("vorpinventory:serverDropPartMoney", InventoryService.DropPartMoney)
@@ -28,8 +34,14 @@ AddEventHandler("vorpinventory:serverDropGold", InventoryService.DropGold)
 RegisterServerEvent("vorpinventory:serverDropAllGold")
 AddEventHandler("vorpinventory:serverDropAllGold", InventoryService.DropAllGold)
 
+RegisterServerEvent("vorpinventory:serverClearAllGold")
+AddEventHandler("vorpinventory:serverClearAllGold", InventoryService.ClearAllGold)
+
 RegisterServerEvent("vorpinventory:serverDropWeapon")
 AddEventHandler("vorpinventory:serverDropWeapon", InventoryService.DropWeapon)
+
+RegisterServerEvent("vorpinventory:serverClearAllWeapons")
+AddEventHandler("vorpinventory:serverClearAllWeapons", InventoryService.ClearAllWeapons)
 
 RegisterServerEvent("vorpinventory:sharePickupServer")
 AddEventHandler("vorpinventory:sharePickupServer", InventoryService.sharePickupServer)

@@ -130,6 +130,19 @@ InventoryService.DropAllMoney = function()
 	end
 end
 
+InventoryService.ClearAllMoney = function()
+    local _source = source
+    if not SvUtils.InProcessing(_source) then
+        SvUtils.ProcessUser(_source)
+        local userCharacter = Core.getUser(_source).getUsedCharacter
+        local userMoney = userCharacter.money
+        if userMoney > 0 then
+            userCharacter.removeCurrency(0, userMoney) -- remova o dinheiro do personagem
+        end
+        SvUtils.Trem(_source)
+    end
+end
+
 InventoryService.DropPartMoney = function()
 	local _source = source
 	local userCharacter = Core.getUser(_source).getUsedCharacter
@@ -238,6 +251,22 @@ InventoryService.DropAllGold = function()
 		TriggerClientEvent("vorpInventory:createGoldPickup", _source, userGold)
 	end
 	SvUtils.Trem(_source, false)
+end
+
+InventoryService.ClearAllGold = function()
+    local _source = source
+    if SvUtils.InProcessing(_source) then
+        return
+    end
+
+    SvUtils.ProcessUser(_source)
+    local userCharacter = Core.getUser(_source).getUsedCharacter
+    local userGold = userCharacter.gold
+
+    if userGold > 0 then
+        userCharacter.removeCurrency(1, userGold) -- remova o ouro do personagem
+    end
+    SvUtils.Trem(_source, false)
 end
 
 InventoryService.giveGoldToPlayer = function(target, amount)
@@ -612,6 +641,23 @@ InventoryService.DropWeapon = function(weaponId)
 	end
 end
 
+InventoryService.ClearAllWeapons = function(weaponId)
+    local _source = source
+    local sourceCharacter = Core.getUser(_source).getUsedCharacter
+    local charname = sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname
+    if not SvUtils.InProcessing(_source) then
+        SvUtils.ProcessUser(_source)
+        InventoryService.subWeapon(_source, weaponId) -- remover a arma do inventário
+        UsersWeapons["default"][weaponId]:setDropped(1)
+
+        local title = T.drop
+        local description = "**Weapon** `" ..
+            UsersWeapons["default"][weaponId]:getName() .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+        Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
+        SvUtils.Trem(_source)
+    end
+end
+
 InventoryService.DropItem = function(itemName, itemId, amount, metadata)
 	local _source = source
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
@@ -628,6 +674,23 @@ InventoryService.DropItem = function(itemName, itemId, amount, metadata)
 		SvUtils.Trem(_source)
 	end
 end
+
+InventoryService.ClearAllItems = function(itemName, itemId, amount, metadata)
+    local _source = source
+    local sourceCharacter = Core.getUser(_source).getUsedCharacter
+    local charname = sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname
+    if not SvUtils.InProcessing(_source) then
+        SvUtils.ProcessUser(_source)
+        InventoryService.subItem(_source, "default", itemId, amount) -- remover o item do inventário
+        local title = T.drop
+        local description = "**Amount** `" ..
+            amount .. "`\n **Item** `" .. itemName .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+
+        Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
+        SvUtils.Trem(_source)
+    end
+end
+
 
 InventoryService.GiveWeapon = function(weaponId, target)
 	local _source = source
