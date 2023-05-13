@@ -1,6 +1,9 @@
 InventoryAPI = {}
 UsableItemsFunctions = {}
 local allplayersammo = {}
+
+T = TranslationInv.Langs[Lang]
+
 -- by default assign this
 CustomInventoryInfos = {
 	default = {
@@ -241,12 +244,12 @@ AddEventHandler("vorpinventory:servergiveammo", function(ammotype, amount, targe
 		return
 	end
 	if 0 > (player1ammo - amount) then
-		TriggerClientEvent("vorp:Tip", _source, _U("notenoughammo"), 2000)
+		TriggerClientEvent("vorp:Tip", _source, T.notenoughammo, 2000)
 		TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
 		return
 	elseif (player2ammo + amount) > maxcount then
-		TriggerClientEvent("vorp:Tip", _source, _U("fullammoyou"), 2000)
-		TriggerClientEvent("vorp:Tip", target, _U("fullammo"), 2000)
+		TriggerClientEvent("vorp:Tip", _source, T.fullammoyou, 2000)
+		TriggerClientEvent("vorp:Tip", target, T.fullammo, 2000)
 		TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
 		return
 	end
@@ -262,8 +265,8 @@ AddEventHandler("vorpinventory:servergiveammo", function(ammotype, amount, targe
 	TriggerClientEvent("vorpinventory:updateuiammocount", target, allplayersammo[target]["ammo"])
 	TriggerClientEvent("vorpinventory:setammotoped", _source, allplayersammo[_source]["ammo"])
 	TriggerClientEvent("vorpinventory:setammotoped", target, allplayersammo[target]["ammo"])
-	TriggerClientEvent("vorp:Tip", _source, _U("transferedammo") .. Config.Ammolabels[ammotype] .. " : " .. amount, 2000)
-	TriggerClientEvent("vorp:Tip", target, _U("recammo") .. Config.Ammolabels[ammotype] .. " : " .. amount, 2000)
+	TriggerClientEvent("vorp:Tip", _source, T.transferedammo .. Config.Ammolabels[ammotype] .. " : " .. amount, 2000)
+	TriggerClientEvent("vorp:Tip", target, T.recammo .. Config.Ammolabels[ammotype] .. " : " .. amount, 2000)
 	TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
 end)
 
@@ -508,7 +511,7 @@ InventoryAPI.addItem = function(player, name, amount, metadata, cb)
 		end
 	else
 		-- inventory is full
-		TriggerClientEvent("vorp:Tip", _source, _U("fullInventory"), 2000)
+		TriggerClientEvent("vorp:Tip", _source, T.fullInventory, 2000)
 		cb(false)
 	end
 end
@@ -810,7 +813,7 @@ InventoryAPI.registerWeapon = function(target, name, ammos, components, comps, c
 		local targetTotalWeaponCount = InventoryAPI.getUserTotalCountWeapons(targetIdentifier, targetCharId) + 1
 
 		if targetTotalWeaponCount > DefaultAmount then
-			TriggerClientEvent("vorp:TipRight", _target, _U("cantweapons2"), 2000)
+			TriggerClientEvent("vorp:TipRight", _target, T.cantweapons2, 2000)
 			if Config.Debug then
 				Log.Warning(targetCharacter.firstname ..
 					" " .. targetCharacter.lastname .. " ^1Can't carry more weapons^7")
@@ -917,7 +920,7 @@ InventoryAPI.giveWeapon2 = function(player, weaponId, target)
 		local sourceTotalWeaponCount = InventoryAPI.getUserTotalCountWeapons(sourceIdentifier, sourceCharId) + 1
 
 		if sourceTotalWeaponCount > DefaultAmount then
-			TriggerClientEvent("vorp:TipRight", _source, _U("cantweapons"), 2000)
+			TriggerClientEvent("vorp:TipRight", _source, T.cantweapons, 2000)
 			if Config.Debug then
 				Log.print(sourceCharacter.firstname ..
 					" " .. sourceCharacter.lastname .. " ^1Can't carry more weapons^7")
@@ -941,8 +944,8 @@ InventoryAPI.giveWeapon2 = function(player, weaponId, target)
 	local components = { ["nothing"] = 0 }
 	InventoryAPI.registerWeapon(_source, weaponname, ammo, components, weaponcomps)
 	InventoryAPI.deletegun(_source, weaponId)
-	TriggerClientEvent("vorp:TipRight", _target, _U("youGaveWeapon"), 2000)
-	TriggerClientEvent("vorp:TipRight", _source, _U("youReceivedWeapon"), 2000)
+	TriggerClientEvent("vorp:TipRight", _target, T.youGaveWeapon, 2000)
+	TriggerClientEvent("vorp:TipRight", _source, T.youReceivedWeapon, 2000)
 	TriggerClientEvent("vorpinventory:updateinventorystuff", _target)
 	TriggerClientEvent("vorpinventory:updateinventorystuff", _source)
 	TriggerClientEvent("vorpCoreClient:subWeapon", _target, weaponId)
@@ -974,7 +977,7 @@ InventoryAPI.giveWeapon = function(player, weaponId, target)
 		local sourceTotalWeaponCount = InventoryAPI.getUserTotalCountWeapons(sourceIdentifier, sourceCharId) + 1
 
 		if sourceTotalWeaponCount > DefaultAmount then
-			TriggerClientEvent("vorp:TipRight", _source, _U("cantweapons"), 2000)
+			TriggerClientEvent("vorp:TipRight", _source, T.cantweapons, 2000)
 			if Config.Debug then
 				Log.print(sourceCharacter.firstname ..
 					" " .. sourceCharacter.lastname .. " ^1Can't carry more weapons^7")
@@ -1000,13 +1003,13 @@ InventoryAPI.giveWeapon = function(player, weaponId, target)
 			end)
 
 		if targetisPlayer then
-			TriggerClientEvent('vorp:ShowAdvancedRightNotification', _target, _U("youGaveWeapon"), "inventory_items",
+			TriggerClientEvent('vorp:ShowAdvancedRightNotification', _target, T.youGaveWeapon, "inventory_items",
 				weaponName,
 				"COLOR_PURE_WHITE", 4000)
 			TriggerClientEvent("vorpCoreClient:subWeapon", _target, weaponId)
 		end
 
-		TriggerClientEvent('vorp:ShowAdvancedRightNotification', _source, _U("youReceivedWeapon"), "inventory_items",
+		TriggerClientEvent('vorp:ShowAdvancedRightNotification', _source, T.youReceivedWeapon, "inventory_items",
 			weaponName, "COLOR_PURE_WHITE", 4000)
 
 		TriggerClientEvent("vorpInventory:receiveWeapon", _source, weaponId, weaponPropietary, weaponName, weaponAmmo)
