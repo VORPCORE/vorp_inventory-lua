@@ -328,7 +328,7 @@ PickupsService.dropAllPlease = function()
 		local weapons = UserWeapons
 
 		for index, weapon in pairs(weapons) do
-			TriggerServerEvent("vorpinventory:serverClearAllWeapons", index)
+			TriggerServerEvent("vorpinventory:serverDropWeapon", index)
 
 			if next(UserWeapons[index]) ~= nil then
 				local currentWeapon = UserWeapons[index]
