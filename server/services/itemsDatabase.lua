@@ -58,6 +58,9 @@ function LoadDatabase(charid)
 						end
 
 						UsersWeapons[db_weapon.curr_inv][weapon:getId()] = weapon
+					elseif db_weapon.dropped == 1 then
+						-- delete from database this will help clean up the databse
+						exports.oxmysql:execute('DELETE FROM loadout WHERE id = ?', {db_weapon.id})
 					end
 				end
 			end
