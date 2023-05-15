@@ -293,7 +293,7 @@ InventoryService.usedWeapon = function(id, _used, _used2)
 	if _used then used = 1 end
 	if _used2 then used2 = 1 end
 
-	exports.oxmysql:execute('UPDATE loadout SET used = @used, used2 = @used2 WHERE id = @id', {
+	MySQL.update('UPDATE loadout SET used = @used, used2 = @used2 WHERE id = @id', {
 		['used'] = used,
 		['used2'] = used2,
 		['id'] = id
@@ -394,17 +394,14 @@ InventoryService.addWeapon = function(target, weaponId)
 	local _source = target
 	local userWeapons = UsersWeapons["default"]
 	local weaponcomps
-	exports.oxmysql:execute('SELECT comps FROM loadout WHERE id = @id ', { ['id'] = weaponId }, function(result)
-		if result[1] ~= nil then
-			weaponcomps = json.decode(result[1].comps)
-		else
-			weaponcomps = {}
-		end
-	end)
+	local result = MySQL.query.await('SELECT comps FROM loadout WHERE id = @id ', { ['id'] = weaponId })
 
-	while weaponcomps == nil do
-		Wait(50)
+	if result[1] ~= nil then
+		weaponcomps = json.decode(result[1].comps)
+	else
+		weaponcomps = {}
 	end
+
 	local weaponname = userWeapons[weaponId]:getName()
 	local ammo = { ["nothing"] = 0 }
 	local components = { ["nothing"] = 0 }
@@ -414,14 +411,20 @@ end
 
 InventoryService.subWeapon = function(target, weaponId)
 	local _source = target
-	local sourceCharacter = Core.getUser(_source).getUsedCharacter
+	local User = Core.getUser(_source)
+
+	if not User then
+		return Log.error("User not found")
+	end
+
+	local sourceCharacter = User.getUsedCharacter
 	local charId = sourceCharacter.charIdentifier
 	local userWeapons = UsersWeapons["default"]
 
-	if userWeapons[weaponId] ~= nil then
+	if weaponid and userWeapons[weaponId] then
 		userWeapons[weaponId]:setPropietary('')
 
-		exports.oxmysql:execute("UPDATE loadout SET identifier = '', charidentifier = @charId WHERE id = @id", {
+		MySQL.update("UPDATE loadout SET identifier = '', charidentifier = @charId WHERE id = @id", {
 			['charId'] = charId,
 			['id'] = weaponId
 		}, function()
@@ -1055,7 +1058,7 @@ InventoryService.MoveToCustom = function(obj)
 	if item.type == "item_weapon" then
 		if CustomInventoryInfos[invId].acceptWeapons then -- if accept weapons
 			if InventoryService.canStoreWeapon(sourceIdentifier, sourceCharIdentifier, invId, item.name, amount) then
-				exports.oxmysql:execute(
+				MySQL.update(
 					"UPDATE loadout SET identifier = '',curr_inv = @invId WHERE charidentifier = @charid AND id = @weaponId;"
 					, {
 						['invId'] = invId,
@@ -1083,6 +1086,10 @@ InventoryService.MoveToCustom = function(obj)
 			end
 		end
 	else
+		if not item.count or not amount then
+			return
+		end
+
 		if item.count >= amount and
 			InventoryService.canStoreItem(sourceIdentifier, sourceCharIdentifier, invId, item.name, amount) then
 			InventoryService.subItem(_source, "default", item.id, amount)
@@ -1127,7 +1134,7 @@ InventoryService.TakeFromCustom = function(obj)
 	if item.type == "item_weapon" then
 		InventoryAPI.canCarryAmountWeapons(_source, 1, function(res)
 			if res then
-				exports.oxmysql:execute(
+				MySQL.update(
 					"UPDATE loadout SET curr_inv = 'default', charidentifier = @charid, identifier = @identifier WHERE id = @weaponId;"
 					, {
 						['charid'] = sourceCharIdentifier,

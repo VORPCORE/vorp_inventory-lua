@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-global
 InventoryAPI = {}
 UsableItemsFunctions = {}
 local allplayersammo = {}
@@ -239,10 +240,12 @@ AddEventHandler("vorpinventory:servergiveammo", function(ammotype, amount, targe
 	if allplayersammo[target]["ammo"][ammotype] == nil then
 		allplayersammo[target]["ammo"][ammotype] = 0
 	end
+
 	if player1ammo == nil or player2ammo == nil then
 		TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
 		return
 	end
+
 	if 0 > (player1ammo - amount) then
 		TriggerClientEvent("vorp:Tip", _source, T.notenoughammo, 2000)
 		TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
@@ -253,13 +256,14 @@ AddEventHandler("vorpinventory:servergiveammo", function(ammotype, amount, targe
 		TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
 		return
 	end
+
 	allplayersammo[_source]["ammo"][ammotype] = allplayersammo[_source]["ammo"][ammotype] - amount
 	allplayersammo[target]["ammo"][ammotype] = allplayersammo[target]["ammo"][ammotype] + amount
 	local charidentifier = allplayersammo[_source]["charidentifier"]
 	local charidentifier2 = allplayersammo[target]["charidentifier"]
-	exports.oxmysql:execute("UPDATE characters Set ammo=@ammo WHERE charidentifier=@charidentifier",
+	MySQL.update("UPDATE characters Set ammo=@ammo WHERE charidentifier=@charidentifier",
 		{ ['charidentifier'] = charidentifier, ['ammo'] = json.encode(allplayersammo[_source]["ammo"]) })
-	exports.oxmysql:execute("UPDATE characters Set ammo=@ammo WHERE charidentifier=@charidentifier",
+	MySQL.update("UPDATE characters Set ammo=@ammo WHERE charidentifier=@charidentifier",
 		{ ['charidentifier'] = charidentifier2, ['ammo'] = json.encode(allplayersammo[target]["ammo"]) })
 	TriggerClientEvent("vorpinventory:updateuiammocount", _source, allplayersammo[_source]["ammo"])
 	TriggerClientEvent("vorpinventory:updateuiammocount", target, allplayersammo[target]["ammo"])
@@ -273,24 +277,36 @@ end)
 RegisterServerEvent("vorpinventory:updateammo")
 AddEventHandler("vorpinventory:updateammo", function(ammoinfo)
 	local _source = source
+
+	if not _source then
+		return
+	end
+
 	allplayersammo[_source] = ammoinfo
-	exports.oxmysql:execute("UPDATE characters Set ammo=@ammo WHERE charidentifier=@charidentifier",
+	MySQL.update("UPDATE characters Set ammo=@ammo WHERE charidentifier=@charidentifier",
 		{ ['charidentifier'] = ammoinfo["charidentifier"], ['ammo'] = json.encode(ammoinfo["ammo"]) })
 end)
 
 InventoryAPI.LoadAllAmmo = function()
 	local _source = source
+
+	if not _source then
+		return
+	end
+
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local charidentifier = sourceCharacter.charIdentifier
-	exports.oxmysql:execute('SELECT ammo FROM characters WHERE charidentifier = @charidentifier ',
+	MySQL.query('SELECT ammo FROM characters WHERE charidentifier = @charidentifier ',
 		{ ['charidentifier'] = charidentifier }, function(result)
-			local ammo = json.decode(result[1].ammo)
-			allplayersammo[_source] = { charidentifier = charidentifier, ammo = ammo }
-			if next(ammo) then
-				for k, v in pairs(ammo) do
-					local ammocount = tonumber(v)
-					if ammocount and ammocount > 0 then
-						TriggerClientEvent("vorpCoreClient:addBullets", _source, k, ammocount)
+			if result then
+				local ammo = json.decode(result[1].ammo)
+				allplayersammo[_source] = { charidentifier = charidentifier, ammo = ammo }
+				if next(ammo) then
+					for k, v in pairs(ammo) do
+						local ammocount = tonumber(v)
+						if ammocount and ammocount > 0 then
+							TriggerClientEvent("vorpCoreClient:addBullets", _source, k, ammocount)
+						end
 					end
 				end
 			end
@@ -301,7 +317,7 @@ InventoryAPI.addBullets = function(player, bulletType, amount)
 	local _source = player
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local charidentifier = sourceCharacter.charIdentifier
-	exports.oxmysql:execute('SELECT ammo FROM characters WHERE charidentifier = @charidentifier;',
+	MySQL.query('SELECT ammo FROM characters WHERE charidentifier = @charidentifier;',
 		{ ['charidentifier'] = charidentifier }, function(result)
 			local ammo = json.decode(result[1].ammo)
 			if ammo[bulletType] then
@@ -312,7 +328,7 @@ InventoryAPI.addBullets = function(player, bulletType, amount)
 			allplayersammo[_source]["ammo"] = ammo
 			TriggerClientEvent("vorpinventory:updateuiammocount", _source, allplayersammo[_source]["ammo"])
 			TriggerClientEvent("vorpCoreClient:addBullets", _source, bulletType, ammo[bulletType])
-			exports.oxmysql:execute("UPDATE characters Set ammo=@ammo WHERE charidentifier=@charidentifier",
+			MySQL.update("UPDATE characters Set ammo=@ammo WHERE charidentifier=@charidentifier",
 				{ ['charidentifier'] = charidentifier, ['ammo'] = json.encode(ammo) })
 		end)
 end
@@ -333,21 +349,31 @@ end
 
 InventoryAPI.getItems = function(player, cb, itemName, metadata)
 	local _source = player
-	local sourceCharacter = Core.getUser(_source).getUsedCharacter
-	local identifier = sourceCharacter.identifier
+
+	if not _source then
+		return Log.error("InventoryAPI.getItems: specify a source")
+	end
+
+	local User = Core.getUser(_source)
+	if not User then
+		return Log.error("InventoryAPI.getItems: User dont exist ")
+	end
+
+	local identifier = User.getUsedCharacter.identifier
 	local svItem = svItems[itemName]
 
-	if svItem == nil then
+	if not svItem then
 		Log.print("[^2API GetItems^7] ^1Error^7: Item [^3" .. tostring(itemName) .. "^7] does not exist in DB.")
 		cb(0)
 		return
 	end
+
 	metadata = SharedUtils.MergeTables(svItem.metadata, metadata or {})
 	local userInventory = UsersInventories["default"][identifier]
 
 	if userInventory then
 		local item = SvUtils.FindItemByNameAndMetadata("default", identifier, itemName, metadata)
-		if item == nil then
+		if not item then
 			item = SvUtils.FindItemByNameAndMetadata("default", identifier, itemName, nil)
 		end
 		if item then
@@ -423,24 +449,31 @@ InventoryAPI.getItemMatchingMetadata = function(player, itemName, metadata, cb)
 	end
 end
 
+
 InventoryAPI.addItem = function(player, name, amount, metadata, cb)
 	local _source = player
-	local sourceUser = Core.getUser(_source)
 
-	if cb == nil then
-		cb = function(r)
-		end
+	if not _source then
+		return Log.error("InventoryAPI.addItem: specify a source")
 	end
 
-	if (sourceUser) == nil then
-		return
+	local sourceUser = Core.getUser(_source)
+
+	if not sourceUser then
+		Log.error("InventoryAPI.addItem: User dont exist ")
+		return cb(false)
+	end
+
+	if cb == nil then
+		cb = function(result)
+		end
 	end
 
 	local svItem = svItems[name]
 
 	if svItem == nil then
-		Log.print("[^2API AddItem^7] ^1Error^7: Item [^3" .. tostring(name) .. "^7] does not exist in DB.")
-		return
+		Log.Warning("[^2API AddItem^7] ^1Error^7: Item [^3" .. tostring(name) .. "^7] does not exist in DB.")
+		return cb(false)
 	end
 
 	metadata = SharedUtils.MergeTables(svItem.metadata, metadata or {})
@@ -455,14 +488,8 @@ InventoryAPI.addItem = function(player, name, amount, metadata, cb)
 		userInventory = UsersInventories["default"][identifier] -- create reference to actual table
 	end
 
-	if userInventory == nil then
-		cb(false)
-		return
-	end
-
-	if amount <= 0 then
-		cb(false)
-		return
+	if not userInventory or amount <= 0 then
+		return cb(false)
 	end
 
 	local sourceItemLimit = svItem:getLimit()
@@ -472,48 +499,42 @@ InventoryAPI.addItem = function(player, name, amount, metadata, cb)
 	local itemDefaultMetadata = svItem:getMetadata()
 	local ItemDesc = svItem:getDesc()
 
-	local canAdd = nil
-	InventoryAPI.canCarryItem(_source, name, amount, function(res)
-		canAdd = res
-	end)
 
-	while canAdd == nil do
-		Citizen.Wait(100)
-	end
+	InventoryAPI.canCarryItem(_source, name, amount, function(result)
+		if result then
+			local item = SvUtils.FindItemByNameAndMetadata("default", identifier, name, metadata)
 
-	if canAdd then
-		local item = SvUtils.FindItemByNameAndMetadata("default", identifier, name, metadata)
-
-		if item ~= nil then -- Item already exist in inventory
-			item:addCount(amount)
-			DbService.SetItemAmount(charIdentifier, item:getId(), item:getCount())
-			TriggerClientEvent("vorpCoreClient:addItem", _source, item)
-			cb(true)
-		else
-			DbService.CreateItem(charIdentifier, svItem:getId(), amount, metadata, function(craftedItem)
-				item = Item:New({
-					id = craftedItem.id,
-					count = amount,
-					limit = sourceItemLimit,
-					label = itemLabel,
-					metadata = SharedUtils.MergeTables(itemDefaultMetadata, metadata),
-					name = name,
-					type = itemType,
-					canUse = true,
-					canRemove = itemCanRemove,
-					owner = charIdentifier,
-					desc = ItemDesc
-				})
-				userInventory[craftedItem.id] = item
+			if item ~= nil then -- Item already exist in inventory
+				item:addCount(amount)
+				DbService.SetItemAmount(charIdentifier, item:getId(), item:getCount())
 				TriggerClientEvent("vorpCoreClient:addItem", _source, item)
-			end)
-			cb(true)
+				return cb(true)
+			else
+				DbService.CreateItem(charIdentifier, svItem:getId(), amount, metadata, function(craftedItem)
+					item = Item:New({
+						id = craftedItem.id,
+						count = amount,
+						limit = sourceItemLimit,
+						label = itemLabel,
+						metadata = SharedUtils.MergeTables(itemDefaultMetadata, metadata),
+						name = name,
+						type = itemType,
+						canUse = true,
+						canRemove = itemCanRemove,
+						owner = charIdentifier,
+						desc = ItemDesc
+					})
+					userInventory[craftedItem.id] = item
+					TriggerClientEvent("vorpCoreClient:addItem", _source, item)
+				end)
+				return cb(true)
+			end
+		else
+			-- inventory is full
+			TriggerClientEvent("vorp:Tip", _source, T.fullInventory, 2000)
+			return cb(false)
 		end
-	else
-		-- inventory is full
-		TriggerClientEvent("vorp:Tip", _source, T.fullInventory, 2000)
-		cb(false)
-	end
+	end)
 end
 
 InventoryAPI.getItemByMainId = function(player, mainid, cb)
@@ -553,8 +574,9 @@ InventoryAPI.subItemID = function(player, id, cb)
 		end
 	end
 
-	if (sourceUser) == nil then
-		return
+	if not sourceUser then
+		Log.error("InventoryAPI.subItemID: User dont exist ")
+		return cb(false)
 	end
 
 	local sourceCharacter = sourceUser.getUsedCharacter
@@ -592,23 +614,29 @@ end
 
 InventoryAPI.subItem = function(player, name, amount, metadata, cb)
 	local _source = player
-	local sourceUser = Core.getUser(_source)
-	local svItem = svItems[name]
 
 	if cb == nil then
 		cb = function(r)
 		end
 	end
 
+	if not _source then
+		Log.error("InventoryAPI.subItem: specify a source")
+		return cb(false)
+	end
+
+	local sourceUser = Core.getUser(_source)
+	if (sourceUser) == nil then
+		return cb(false)
+	end
+
+	local svItem = svItems[name]
 	if svItem == nil then
 		Log.print("[^2API SubItem^7] ^1Error^7: Item [^3" .. tostring(name) .. "^7] does not exist in DB.")
-		return
+		return cb(false)
 	end
-	metadata = SharedUtils.MergeTables(svItem.metadata, metadata or {})
 
-	if (sourceUser) == nil then
-		return
-	end
+	metadata = SharedUtils.MergeTables(svItem.metadata, metadata or {})
 
 	local sourceCharacter = sourceUser.getUsedCharacter
 	local identifier = sourceCharacter.identifier
@@ -626,7 +654,7 @@ InventoryAPI.subItem = function(player, name, amount, metadata, cb)
 			if amount <= sourceItemCount then
 				item:quitCount(amount)
 			else
-				return
+				return cb(false)
 			end
 
 			TriggerClientEvent("vorpCoreClient:subItem", _source, item:getId(), item:getCount())
@@ -637,9 +665,9 @@ InventoryAPI.subItem = function(player, name, amount, metadata, cb)
 			else
 				DbService.SetItemAmount(charIdentifier, item:getId(), item:getCount())
 			end
-			cb(true)
+			return cb(true)
 		else
-			cb(false)
+			return cb(false)
 		end
 	end
 end
@@ -723,18 +751,24 @@ end
 
 InventoryAPI.getItem = function(player, itemName, cb, metadata)
 	local _source = player
-	if not Core.getUser(_source) then
-		print("getitem function source does not exist , make sure its specified")
-		return
+
+	if not _source then
+		Log.error("InventoryAPI.getItem: specify a source")
+		return cb(false)
 	end
+
+	if not Core.getUser(_source) then
+		Log.error("InventoryAPI.getItem: User dont exist ")
+		return cb(false)
+	end
+
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local identifier = sourceCharacter.identifier
 	local svItem = svItems[itemName]
 
-	if svItem == nil then
+	if not svItem then
 		Log.print("[^2API GetItem^7] ^1Error^7: Item [^3" .. tostring(itemName) .. "^7] does not exist in DB.")
-		cb(nil)
-		return
+		return cb(nil)
 	end
 
 	metadata = SharedUtils.MergeTables(svItem.metadata or {}, metadata or {})
@@ -753,7 +787,7 @@ end
 
 InventoryAPI.getcomps = function(player, weaponid, cb)
 	local _source = player
-	exports.oxmysql:execute('SELECT comps FROM loadout WHERE id = @id ', { ['id'] = weaponid }, function(result)
+	MySQL.single('SELECT comps FROM loadout WHERE id = @id ', { ['id'] = weaponid }, function(result)
 		if result[1] ~= nil then
 			cb(json.decode(result[1].comps))
 		else
@@ -768,9 +802,9 @@ InventoryAPI.deletegun = function(player, weaponid, cb)
 	local _source = player
 	local userWeapons = UsersWeapons["default"]
 	userWeapons[weaponid]:setPropietary('')
-	exports.oxmysql:execute("DELETE FROM loadout WHERE id=@id", { ['id'] = weaponid })
+	MySQL.query("DELETE FROM loadout WHERE id=@id", { ['id'] = weaponid })
 	if cb then
-		cb(true)
+		return cb(true)
 	end
 end
 
@@ -834,10 +868,10 @@ InventoryAPI.registerWeapon = function(target, name, ammos, components, comps, c
 		end
 	end
 	if canGive then
-		if comps == nil then
-			exports.oxmysql:execute(
-				"INSERT INTO loadout (identifier, charidentifier, name, ammo, components) VALUES (@identifier, @charid, @name, @ammo, @components)"
-				, {
+		if not comps then
+			MySQL.query(
+				"INSERT INTO loadout (identifier, charidentifier, name, ammo, components) VALUES (@identifier, @charid, @name, @ammo, @components)",
+				{
 					['identifier'] = targetIdentifier,
 					['charid'] = targetCharId,
 					['name'] = name,
@@ -858,22 +892,22 @@ InventoryAPI.registerWeapon = function(target, name, ammos, components, comps, c
 						dropped = 0,
 					})
 					UsersWeapons["default"][weaponId] = newWeapon
-
 					TriggerEvent("syn_weapons:registerWeapon", weaponId)
 					TriggerClientEvent("vorpInventory:receiveWeapon", _target, weaponId, targetIdentifier, name, ammo)
 					return cb(true)
 				end)
 		else
-			exports.oxmysql:execute(
-				"INSERT INTO loadout (identifier, charidentifier, name, ammo, components, comps) VALUES (@identifier, @charid, @name, @ammo, @components, @comps)"
-				, {
+			MySQL.query(
+				"INSERT INTO loadout (identifier, charidentifier, name, ammo, components, comps) VALUES (@identifier, @charid, @name, @ammo, @components, @comps)",
+				{
 					['identifier'] = targetIdentifier,
 					['charid'] = targetCharId,
 					['name'] = name,
 					['ammo'] = json.encode(ammo),
 					['components'] = json.encode(component),
 					['comps'] = json.encode(comps),
-				}, function(result)
+				},
+				function(result)
 					local weaponId = result.insertId
 					local newWeapon = Weapon:New({
 						id = weaponId,
@@ -886,8 +920,8 @@ InventoryAPI.registerWeapon = function(target, name, ammos, components, comps, c
 						currInv = "default",
 						dropped = 0,
 					})
-					UsersWeapons["default"][weaponId] = newWeapon
 
+					UsersWeapons["default"][weaponId] = newWeapon
 					TriggerEvent("syn_weapons:registerWeapon", weaponId)
 					TriggerClientEvent("vorpInventory:receiveWeapon", _target, weaponId, targetIdentifier, name, ammo)
 
@@ -928,27 +962,23 @@ InventoryAPI.giveWeapon2 = function(player, weaponId, target)
 			return
 		end
 	end
-	local weaponcomps
-	exports.oxmysql:execute('SELECT comps FROM loadout WHERE id = @id ', { ['id'] = weaponId }, function(result)
-		if result[1] ~= nil then
-			weaponcomps = json.decode(result[1].comps)
-		else
-			weaponcomps = {}
-		end
-	end)
-	while weaponcomps == nil do
-		Wait(50)
+	local weaponcomps = {}
+	local result = MySQL.single.await('SELECT comps FROM loadout WHERE id = @id ', { ['id'] = weaponId })
+	if result then
+		weaponcomps = json.decode(result.comps)
 	end
+
 	local weaponname = userWeapons[weaponId]:getName()
 	local ammo = { ["nothing"] = 0 }
 	local components = { ["nothing"] = 0 }
 	InventoryAPI.registerWeapon(_source, weaponname, ammo, components, weaponcomps)
 	InventoryAPI.deletegun(_source, weaponId)
-	TriggerClientEvent("vorp:TipRight", _target, T.youGaveWeapon, 2000)
-	TriggerClientEvent("vorp:TipRight", _source, T.youReceivedWeapon, 2000)
 	TriggerClientEvent("vorpinventory:updateinventorystuff", _target)
 	TriggerClientEvent("vorpinventory:updateinventorystuff", _source)
 	TriggerClientEvent("vorpCoreClient:subWeapon", _target, weaponId)
+	-- notify
+	TriggerClientEvent("vorp:TipRight", _target, T.youGaveWeapon, 2000)
+	TriggerClientEvent("vorp:TipRight", _source, T.youReceivedWeapon, 2000)
 end
 
 InventoryAPI.giveWeapon = function(player, weaponId, target)
@@ -994,7 +1024,7 @@ InventoryAPI.giveWeapon = function(player, weaponId, target)
 		local weaponName = userWeapons[weaponId]:getName()
 		local weaponAmmo = userWeapons[weaponId]:getAllAmmo()
 
-		exports.oxmysql:execute("UPDATE loadout SET identifier = @identifier, charidentifier = @charid WHERE id = @id",
+		MySQL.update("UPDATE loadout SET identifier = @identifier, charidentifier = @charid WHERE id = @id",
 			{
 				['identifier'] = sourceIdentifier,
 				['charid'] = sourceCharId,
@@ -1018,14 +1048,26 @@ end
 
 InventoryAPI.subWeapon = function(player, weaponId)
 	local _source = player
-	local sourceCharacter = Core.getUser(_source).getUsedCharacter
-	local charId = sourceCharacter.charIdentifier
+
+	if not _source then
+		Log.error("InventoryAPI.subWeapon: specify a source")
+		return
+	end
+
+	local User = Core.getUser(_source)
+
+	if not User then
+		Log.error("InventoryAPI.subWeapon: User dont exist ")
+		return
+	end
+
+	local charId = User.getUsedCharacter.charIdentifier
 	local userWeapons = UsersWeapons["default"]
 
 	if (userWeapons[weaponId]) then
 		userWeapons[weaponId]:setPropietary('')
 
-		exports.oxmysql:execute("UPDATE loadout SET identifier = @identifier, charidentifier = @charid WHERE id = @id",
+		MySQL.update("UPDATE loadout SET identifier = @identifier, charidentifier = @charid WHERE id = @id",
 			{
 				['identifier'] = '',
 				['charid'] = charId,
@@ -1037,6 +1079,7 @@ InventoryAPI.subWeapon = function(player, weaponId)
 	TriggerClientEvent("vorpCoreClient:subWeapon", _source, weaponId)
 end
 
+-- inventory total items count
 InventoryAPI.getUserTotalCount = function(identifier, charid)
 	local userTotalItemCount = 0
 	local userInventory = UsersInventories["default"][identifier]
@@ -1067,7 +1110,7 @@ InventoryAPI.onNewCharacter = function(playerId)
 	Wait(5000)
 	local player = Core.getUser(playerId)
 
-	if player == nil then
+	if not player then
 		if Config.Debug then
 			Log.print("Player [^2" .. playerId .. "^7] ^1 was not found^7")
 		end
@@ -1162,7 +1205,7 @@ InventoryAPI.AddPermissionMoveToCustom = function(id, jobName, grade)
 	if not jobName and not grade then
 		return -- dont add
 	end
-	if Config.DevMode then
+	if Config.Debug then
 		Log.print("AdPermsMoveTo  for [^3" .. jobName .. "^7] and grade [^3" .. grade .. "^7]")
 	end
 
@@ -1177,7 +1220,7 @@ InventoryAPI.AddPermissionTakeFromCustom = function(id, jobName, grade)
 	if not jobName and not grade then
 		return -- dont add
 	end
-	if Config.DevMode then
+	if Config.Debug then
 		Log.print("AdPermsTakeFrom  for [^3" .. jobName .. "^7] and grade [^3" .. grade .. "^7]")
 	end
 	CustomInventoryInfos[id].PermissionTakeFrom[jobName] = grade -- create table with item name and count
@@ -1191,7 +1234,7 @@ InventoryAPI.BlackListCustom = function(id, name)
 	if not name then
 		return -- dont add
 	end
-	if Config.DevMode then
+	if Config.Debug then
 		Log.print("Blacklisted [^3" .. name .. "^7]")
 	end
 	CustomInventoryInfos[id].BlackListItems[name] = name
@@ -1303,6 +1346,7 @@ InventoryAPI.openCustomInventory = function(player, id)
 		else
 			DbService.GetSharedInventory(id, function(inventory)
 				local characterInventory = {}
+
 				for _, item in pairs(inventory) do
 					if svItems[item.item] ~= nil then
 						local dbItem = svItems[item.item]
@@ -1322,6 +1366,7 @@ InventoryAPI.openCustomInventory = function(player, id)
 						})
 					end
 				end
+
 				UsersInventories[id] = characterInventory
 				TriggerClientEvent("vorp_inventory:OpenCustomInv", _source, CustomInventoryInfos[id].name, id, capacity)
 				InventoryAPI.reloadInventory(_source, id)
@@ -1353,6 +1398,7 @@ InventoryAPI.openCustomInventory = function(player, id)
 						})
 					end
 				end
+
 				UsersInventories[id][identifier] = characterInventory
 				TriggerClientEvent("vorp_inventory:OpenCustomInv", _source, CustomInventoryInfos[id].name, id, capacity)
 				InventoryAPI.reloadInventory(_source, id)

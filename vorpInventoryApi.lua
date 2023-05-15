@@ -13,7 +13,7 @@ exports('vorp_inventoryApi', function()
             query_promise:resolve(result)
         end
 
-        exports.oxmysql:execute(query, params, on_result)
+        MySQL.query(query, params, on_result)
 
         return Citizen.Await(query_promise)
     end
