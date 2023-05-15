@@ -1,4 +1,5 @@
-function PostAction(eventName, itemData) {
+function PostAction(eventName, itemData, id, propertyName) {
+  disableInventory(500);
   if (itemData.type != "item_weapon") {
     dialog.prompt({
       title: LANGUAGE.prompttitle,
@@ -12,7 +13,10 @@ function PostAction(eventName, itemData) {
       },
 
       validate: function (value, item, type) {
-        if (value || value > 0 || value < 200 || isInt(value)) {
+        if (!value || value <= 0 || value > 200 || !isInt(value)) {
+          dialog.close();
+          return;
+        } else {
           if (!isValidating) {
             processEventValidation();
             $.post(
@@ -21,13 +25,10 @@ function PostAction(eventName, itemData) {
                 item: itemData,
                 type: type,
                 number: value,
-                id: customId,
+                [propertyName]: id,
               })
             );
           }
-        } else {
-          dialog.close();
-          return;
         }
       },
     });
@@ -40,12 +41,35 @@ function PostAction(eventName, itemData) {
           item: itemData,
           type: itemData.type,
           number: 1,
-          id: customId,
+          [propertyName]: id,
         })
       );
     }
   }
 }
+const ActionTakeList = {
+  custom: { action: "TakeFromCustom", id: () => customId },
+  cart: { action: "TakeFromCart", id: () => wagonid },
+  house: { action: "TakeFromHouse", id: () => houseId },
+  hideout: { action: "TakeFromHideout", id: () => hideoutid },
+  bank: { action: "TakeFromBank", id: () => bankId },
+  clan: { action: "TakeFromClan", id: () => clanid },
+  steal: { action: "TakeFromSteal", id: () => stealid },
+  Container: { action: "TakeFromContainer", id: () => Containerid },
+  horse: { action: "TakeFromHorse", id: () => horseid },
+};
+
+const ActionMoveList = {
+  custom: { action: "MoveToCustom", id: () => customId },
+  cart: { action: "MoveToCart", id: () => wagonid },
+  house: { action: "MoveToHouse", id: () => houseId },
+  hideout: { action: "MoveToHideout", id: () => hideoutid },
+  bank: { action: "MoveToBank", id: () => bankId },
+  clan: { action: "MoveToClan", id: () => clanid },
+  steal: { action: "MoveToSteal", id: () => stealid },
+  Container: { action: "MoveToContainer", id: () => Containerid },
+  horse: { action: "MoveToHorse", id: () => horseid },
+};
 
 function initSecondaryInventoryHandlers() {
   $("#inventoryElement").droppable({
@@ -53,12 +77,16 @@ function initSecondaryInventoryHandlers() {
       itemData = ui.draggable.data("item");
       itemInventory = ui.draggable.data("inventory");
       if (itemInventory === "second") {
-        if (type === "custom") {
-          disableInventory(500);
-          PostAction("TakeFromCustom", itemData);
-        } else if (type === "horse") {
-          disableInventory(500);
-          PostAction("TakeFromHorse", itemData);
+        // get matching type from list
+        if (type in ActionTakeList) {
+          const { action, id } = ActionTakeList[type];
+          const Id = id();
+          if (type === "custom") {
+            PostAction(action, itemData, Id, "id");
+          } else {
+            PostAction(action, itemData, Id, type);
+          }
+          //end
         } else if (type === "store") {
           disableInventory(500);
           if (itemData.type != "item_weapon") {
@@ -115,27 +143,6 @@ function initSecondaryInventoryHandlers() {
               );
             }
           }
-        } else if (type === "cart") {
-          disableInventory(500);
-          PostAction("TakeFromCart", itemData);
-        } else if (type === "house") {
-          disableInventory(500);
-          PostAction("TakeFromHouse", itemData);
-        } else if (type === "hideout") {
-          disableInventory(500);
-          PostAction("TakeFromHideout", itemData);
-        } else if (type === "bank") {
-          disableInventory(500);
-          PostAction("TakeFromBank", itemData);
-        } else if (type === "clan") {
-          disableInventory(500);
-          PostAction("TakeFromClan", itemData);
-        } else if (type === "steal") {
-          disableInventory(500);
-          PostAction("TakeFromsteal", itemData);
-        } else if (type === "Container") {
-          disableInventory(500);
-          PostAction("TakeFromContainer", itemData);
         }
       }
     },
@@ -147,12 +154,14 @@ function initSecondaryInventoryHandlers() {
       itemInventory = ui.draggable.data("inventory");
 
       if (itemInventory === "main") {
-        if (type === "custom") {
-          disableInventory(500);
-          PostAction("MoveToCustom", itemData);
-        } else if (type === "horse") {
-          disableInventory(500);
-          PostAction("MoveToHorse", itemData);
+        if (type in ActionMoveList) {
+          const { action, id } = ActionMoveList[type];
+          const Id = id();
+          if (type === "custom") {
+            PostAction(action, itemData, Id, "id");
+          } else {
+            PostAction(action, itemData, Id, type);
+          }
         } else if (type === "store") {
           disableInventory(500);
           // this action is different than all the others
@@ -280,27 +289,6 @@ function initSecondaryInventoryHandlers() {
               }
             }
           }
-        } else if (type === "cart") {
-          disableInventory(500);
-          PostAction("MoveToCart", itemData);
-        } else if (type === "house") {
-          disableInventory(500);
-          PostAction("MoveToHouse", itemData);
-        } else if (type === "hideout") {
-          disableInventory(500);
-          PostAction("MoveToHideout", itemData);
-        } else if (type === "bank") {
-          disableInventory(500);
-          PostAction("MoveToBank", itemData);
-        } else if (type === "clan") {
-          disableInventory(500);
-          PostAction("MoveToClan", itemData);
-        } else if (type === "steal") {
-          disableInventory(500);
-          PostAction("MoveTosteal", itemData);
-        } else if (type === "Container") {
-          disableInventory(500);
-          PostAction("MoveToContainer", itemData);
         }
       }
     },
