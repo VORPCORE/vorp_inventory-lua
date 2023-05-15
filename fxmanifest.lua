@@ -18,6 +18,7 @@ server_scripts {
   'server/controllers/*.lua',
   'vorpInventoryApi.lua',
   'server/*.lua',
+  '@oxmysql/lib/MySQL.lua'
 }
 
 shared_scripts {
