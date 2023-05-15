@@ -217,8 +217,8 @@ RegisterNetEvent("vorp:PlayerForceRespawn", function()
                     for index, value in ipairs(_value.Weapons.WeaponWhitelisted) do
                         if value ~= weapon.name then
                             InventoryAPI.subWeapon(_source, weapon.id)
-                            --InventoryAPI.deletegun(_source, weapon.id, function()
-                            --end)
+                            InventoryAPI.deletegun(_source, weapon.id, function()
+                            end)
                         end
                     end
                 end
