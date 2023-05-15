@@ -77,7 +77,6 @@ function initSecondaryInventoryHandlers() {
       itemData = ui.draggable.data("item");
       itemInventory = ui.draggable.data("inventory");
       if (itemInventory === "second") {
-        // get matching type from list
         if (type in ActionTakeList) {
           const { action, id } = ActionTakeList[type];
           const Id = id();
@@ -86,7 +85,6 @@ function initSecondaryInventoryHandlers() {
           } else {
             PostAction(action, itemData, Id, type);
           }
-          //end
         } else if (type === "store") {
           disableInventory(500);
           if (itemData.type != "item_weapon") {
@@ -158,6 +156,7 @@ function initSecondaryInventoryHandlers() {
           const { action, id } = ActionMoveList[type];
           const Id = id();
           if (type === "custom") {
+         
             PostAction(action, itemData, Id, "id");
           } else {
             PostAction(action, itemData, Id, type);
