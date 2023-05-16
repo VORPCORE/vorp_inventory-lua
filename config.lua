@@ -52,7 +52,7 @@ Config = {
 	},
 	-- =================== CLEAR ITEMS WEAPONS MONEY GOLD =====================--
 
-	UseClearAll              = true, -- if you want to use the clear item function if false will use DropOnDeath function
+	UseClearAll              = false, -- if you want to use the clear item function if false will use DropOnDeath function
 	OnPlayerRespawn          = {
 		Money = {
 			JobLock         = { "police", "doctor" },
