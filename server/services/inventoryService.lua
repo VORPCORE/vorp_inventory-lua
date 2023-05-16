@@ -270,8 +270,10 @@ InventoryService.giveGoldToPlayer = function(target, amount)
 		sourceCharacter.removeCurrency(1, amount)
 		targetCharacter.addCurrency(1, amount)
 
-		TriggerClientEvent("vorp:TipRight", _source, T.YouPaid, tostring(amount), "ID: " .. _target, 3000)
-		TriggerClientEvent("vorp:TipRight", _target, T.YouReceived, tostring(amount), "ID: " .. _source, 3000)
+		TriggerClientEvent("vorp:TipRight", _source, string.format(T.YouPaid, tostring(amount) .. "ID: " .. _target),
+			3000)
+		TriggerClientEvent("vorp:TipRight", _target, string.format(T.YouReceived, tostring(amount) .. "ID: " .. _source),
+			3000)
 		TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
 		Wait(3000)
 	end
