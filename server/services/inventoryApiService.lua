@@ -3,7 +3,7 @@ InventoryAPI = {}
 UsableItemsFunctions = {}
 local allplayersammo = {}
 
-T = TranslationInv.Langs[Lang]
+
 
 -- by default assign this
 CustomInventoryInfos = {

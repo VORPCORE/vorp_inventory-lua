@@ -8,7 +8,6 @@ Core = {}
 local newchar = {} -- new
 local timer = 120  -- new
 
-T = TranslationInv.Langs[Lang]
 
 Citizen.CreateThread(function()
 	TriggerEvent("getCore", function(core)
