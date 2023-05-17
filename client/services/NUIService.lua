@@ -164,6 +164,7 @@ NUIService.CloseInv = function()
 	TriggerEvent("vorp_stables:setClosedInv", false)
 	TriggerEvent("syn:closeinv")
 end
+
 NUIService.OpenHorseInventory = function(horseTitle, horseId, capacity)
 	SetNuiFocus(true, true)
 	SendNUIMessage({

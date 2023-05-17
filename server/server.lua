@@ -151,7 +151,7 @@ AddEventHandler('playerDropped', function()
 end)
 
 
---=================================== LEAR ITEMS WEAPONS AND MONEY=====================================--
+--=================================== CLEAR ITEMS WEAPONS AND MONEY=====================================--
 
 
 RegisterNetEvent("vorp:PlayerForceRespawn", function()

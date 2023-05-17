@@ -51,19 +51,11 @@ const ActionTakeList = {
   custom: { action: "TakeFromCustom", id: () => customId, customtype: "id" },
   cart: { action: "TakeFromCart", id: () => wagonid, customtype: "wagon" },
   house: { action: "TakeFromHouse", id: () => houseId, customtype: "house" },
-  hideout: {
-    action: "TakeFromHideout",
-    id: () => hideoutid,
-    customtype: "hideout",
-  },
+  hideout: {action: "TakeFromHideout",id: () => hideoutid, customtype: "hideout",},
   bank: { action: "TakeFromBank", id: () => bankId, customtype: "bank" },
   clan: { action: "TakeFromClan", id: () => clanid, customtype: "clan" },
   steal: { action: "TakeFromSteal", id: () => stealid, customtype: "steal" },
-  Container: {
-    action: "TakeFromContainer",
-    id: () => Containerid,
-    type: "Container",
-  },
+  Container: { action: "TakeFromContainer", id: () => Containerid, customtype: "Container"},
   horse: { action: "TakeFromHorse", id: () => horseid, customtype: "horse" },
 };
 
@@ -71,20 +63,12 @@ const ActionMoveList = {
   custom: { action: "MoveToCustom", id: () => customId, customtype: "id" },
   cart: { action: "MoveToCart", id: () => wagonid, customtype: "wagon" },
   house: { action: "MoveToHouse", id: () => houseId, customtype: "house" },
-  hideout: {
-    action: "MoveToHideout",
-    id: () => hideoutid,
-    customtype: "hideout",
-  },
+  hideout: { action: "MoveToHideout", id: () => hideoutid, customtype: "hideout",},
   bank: { action: "MoveToBank", id: () => bankId, customtype: "bank" },
   clan: { action: "MoveToClan", id: () => clanid, customtype: "clan" },
   steal: { action: "MoveToSteal", id: () => stealid, customtype: "steal" },
-  Container: {
-    action: "MoveToContainer",
-    id: () => Containerid,
-    customtype: "Container",
-  },
-  horse: { action: "MoveToHorse", id: () => horseid, type: "horse" },
+  Container: { action: "MoveToContainer", id: () => Containerid, customtype: "Container"},
+  horse: { action: "MoveToHorse", id: () => horseid, customtype: "horse" },
 };
 
 function initSecondaryInventoryHandlers() {
