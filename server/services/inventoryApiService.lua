@@ -787,7 +787,7 @@ end
 
 InventoryAPI.getcomps = function(player, weaponid, cb)
 	local _source = player
-	MySQL.single('SELECT comps FROM loadout WHERE id = @id ', { ['id'] = weaponid }, function(result)
+	MySQL.query('SELECT comps FROM loadout WHERE id = @id ', { ['id'] = weaponid }, function(result)
 		if result[1] ~= nil then
 			cb(json.decode(result[1].comps))
 		else
