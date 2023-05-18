@@ -73,6 +73,15 @@ RegisterNetEvent("vorp:SelectedCharacter", function(source, character)
 	LoadDatabase(charid)
 end)
 
+if Config.DevMode then
+	RegisterNetEvent("DEV:loadweapons", function()
+		local _source = source
+		local character = Core.getUser(_source).getUsedCharacter
+		local charid = character.charIdentifier
+		LoadDatabase(charid)
+	end)
+end
+
 -- load all items from database
 Citizen.CreateThread(function()
 	MySQL.query('SELECT * FROM items', {}, function(result)

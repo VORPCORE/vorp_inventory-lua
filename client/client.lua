@@ -32,6 +32,7 @@ if Config.DevMode then
         print('loading resource')
         SetNuiFocus(false, false)
         SendNUIMessage({ action = "hide" })
+        TriggerServerEvent("DEV:loadweapons")
         print("Loading Inventory")
         TriggerServerEvent("vorpinventory:getItemsTable")
         Wait(300)
