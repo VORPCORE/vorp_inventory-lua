@@ -169,7 +169,6 @@ InventoryAPI.getUserWeapon = function(player, cb, weaponId)
 		weapon.ammo = foundWeapon:getAllAmmo()
 		weapon.desc = foundWeapon:getDesc()
 	end
-
 	cb(weapon)
 end
 
