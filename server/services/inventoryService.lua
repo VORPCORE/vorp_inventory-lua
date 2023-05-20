@@ -188,7 +188,7 @@ InventoryService.giveMoneyToPlayer = function(target, amount)
 			sourceCharacter.removeCurrency(0, amount)
 			targetCharacter.addCurrency(0, amount)
 			TriggerClientEvent("vorp:TipRight", _source, T.YouPaid .. amount .. " ID: " .. _target, 3000)
-			TriggerClientEvent("vorp:TipRight", _target, T.YouReceivedamount .. " ID: " .. _source, 3000)
+			TriggerClientEvent("vorp:TipRight", _target, T.YouReceived .. amount .. " ID: " .. _source, 3000)
 			Wait(3000)
 			TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
 			local title = T.gaveMoney
@@ -268,7 +268,7 @@ InventoryService.giveGoldToPlayer = function(target, amount)
 		targetCharacter.addCurrency(1, amount)
 
 		TriggerClientEvent("vorp:TipRight", _source, T.YouPaid .. amount .. "ID: " .. _target, 3000)
-		TriggerClientEvent("vorp:TipRight", _target, T.YouReceived.amount .. "ID: " .. _source, 3000)
+		TriggerClientEvent("vorp:TipRight", _target, T.YouReceived .. amount .. "ID: " .. _source, 3000)
 		TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
 		Wait(3000)
 	end
