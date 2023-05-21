@@ -18,7 +18,7 @@ svItems = {}
 
 function LoadDatabase(charid)
 	local result = MySQL.query.await('SELECT * FROM loadout ', {})
-	if next(result[1]) then
+	if next(result) then
 		for _, db_weapon in pairs(result) do
 			if tonumber(charid) == tonumber(db_weapon.charidentifier) then
 				local ammo = json.decode(db_weapon.ammo)
