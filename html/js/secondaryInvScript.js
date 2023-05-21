@@ -58,7 +58,7 @@ const ActionTakeList = {
   },
   bank: { action: "TakeFromBank", id: () => bankId, customtype: "bank" },
   clan: { action: "TakeFromClan", id: () => clanid, customtype: "clan" },
-  steal: { action: "TakeFromSteal", id: () => stealid, customtype: "steal" },
+  steal: { action: "TakeFromsteal", id: () => stealid, customtype: "steal" },
   Container: {
     action: "TakeFromContainer",
     id: () => Containerid,
@@ -78,7 +78,7 @@ const ActionMoveList = {
   },
   bank: { action: "MoveToBank", id: () => bankId, customtype: "bank" },
   clan: { action: "MoveToClan", id: () => clanid, customtype: "clan" },
-  steal: { action: "MoveToSteal", id: () => stealid, customtype: "steal" },
+  steal: { action: "MoveTosteal", id: () => stealid, customtype: "steal" },
   Container: {
     action: "MoveToContainer",
     id: () => Containerid,
