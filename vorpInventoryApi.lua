@@ -193,8 +193,8 @@ exports('vorp_inventoryApi', function()
         local result = dbQuery(query, params)
 
         -- Add check for if the item exists.
-        if result[1] then
-            item = result[1]
+        if result then
+            item = result
         else
             print('Item does not exist in Items table. Item: ' .. itemName)
         end
