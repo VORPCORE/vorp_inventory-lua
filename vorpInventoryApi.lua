@@ -186,7 +186,7 @@ exports('vorp_inventoryApi', function()
         return Citizen.Await(count_promise)
     end
 
-    self.getDBItem = function(itemName)
+    self.getDBItem = function(target, itemName)
         local item
         local query = "SELECT * FROM items WHERE item=@id;"
         local params = { ['@id'] = itemName }
