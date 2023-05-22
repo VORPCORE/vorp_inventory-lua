@@ -193,8 +193,8 @@ exports('vorp_inventoryApi', function()
         local result = dbQuery(query, params)
 
         -- Add check for if the item exists.
-        if result then
-            item = result
+        if result[1] then
+            item = result[1]
         else
             print('Item does not exist in Items table. Item: ' .. itemName)
         end
@@ -262,8 +262,8 @@ exports('vorp_inventoryApi', function()
         local itemcount = self.getItemCount(source, item)
         local reqCount = itemcount + amount
 
-        if result then
-            local limit = tonumber(result.limit)
+        if result[1] then
+            local limit = tonumber(result[1].limit)
             can = reqCount <= limit
         else
             -- Object does not exist in inventory, it can not be added
