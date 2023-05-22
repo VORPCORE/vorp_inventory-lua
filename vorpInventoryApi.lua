@@ -186,10 +186,7 @@ exports('vorp_inventoryApi', function()
         return Citizen.Await(count_promise)
     end
 
-    ---@param source number
-    ---@param itemName string
-    ---@return table|nil
-    self.getDBItem = function(source, itemName)
+    self.getDBItem = function(itemName)
         local item
         local query = "SELECT * FROM items WHERE item=@id;"
         local params = { ['@id'] = itemName }
@@ -199,7 +196,7 @@ exports('vorp_inventoryApi', function()
         if result[1] then
             item = result[1]
         else
-            print('Item does not exist in Items table. Item: ' .. tostring(itemName))
+            print('Item does not exist in Items table. Item: ' .. itemName)
         end
 
         return item
