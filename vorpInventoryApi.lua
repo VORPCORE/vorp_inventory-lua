@@ -262,8 +262,8 @@ exports('vorp_inventoryApi', function()
         local itemcount = self.getItemCount(source, item)
         local reqCount = itemcount + amount
 
-        if result and result[1] then
-            local limit = tonumber(result[1].limit)
+        if result then
+            local limit = tonumber(result.limit)
             can = reqCount <= limit
         else
             -- Object does not exist in inventory, it can not be added

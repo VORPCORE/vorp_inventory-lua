@@ -363,8 +363,7 @@ InventoryAPI.getItems = function(player, cb, itemName, metadata)
 
 	if not svItem then
 		Log.print("[^2API GetItems^7] ^1Error^7: Item [^3" .. tostring(itemName) .. "^7] does not exist in DB.")
-		cb(0)
-		return
+		return cb(0)
 	end
 
 	metadata = SharedUtils.MergeTables(svItem.metadata, metadata or {})
@@ -376,9 +375,9 @@ InventoryAPI.getItems = function(player, cb, itemName, metadata)
 			item = SvUtils.FindItemByNameAndMetadata("default", identifier, itemName, nil)
 		end
 		if item then
-			cb(item:getCount())
+			return cb(item:getCount())
 		else
-			cb(0)
+			return cb(0)
 		end
 	end
 end
