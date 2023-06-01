@@ -17,19 +17,14 @@ svItems = {}
 
 
 function LoadDatabase(charid)
-	local result = MySQL.query.await('SELECT * FROM loadout ', {})
+	local result = MySQL.query.await('SELECT * FROM loadout WHERE charidentifier = ? ', { charid })
 	if next(result) then
 		for _, db_weapon in pairs(result) do
-			if tonumber(charid) == tonumber(db_weapon.charidentifier) then
+			if db_weapon.charidentifier then
 				local ammo = json.decode(db_weapon.ammo)
 				local comp = json.decode(db_weapon.components)
-				local charId = nil
 				local used = false
 				local used2 = false
-
-				if db_weapon.charidentifier ~= nil then
-					charId = db_weapon.charidentifier
-				end
 
 				if db_weapon.used == 1 then
 					used = true
@@ -48,12 +43,12 @@ function LoadDatabase(charid)
 						components = comp,
 						used = used,
 						used2 = used2,
-						charId = charId,
+						charId = db_weapon.charidentifier,
 						currInv = db_weapon.curr_inv,
 						dropped = db_weapon.dropped
 					})
 
-					if UsersWeapons[db_weapon.curr_inv] == nil then
+					if not UsersWeapons[db_weapon.curr_inv] then
 						UsersWeapons[db_weapon.curr_inv] = {}
 					end
 
