@@ -407,26 +407,36 @@ InventoryService.addWeapon = function(target, weaponId)
 end
 
 InventoryService.subWeapon = function(target, weaponId)
+
+    if not weaponId then
+        return Log.error("InventoryService.subWeapon: No weapon id given")
+    end
+
+    local weapon = (UsersWeapons["default"] or {})[weaponId]
+
+    if not weapon then
+        return
+    end
+
 	local _source = target
 	local User = Core.getUser(_source)
 
 	if not User then
-		return Log.error("User not found")
+        return Log.error("InventoryService.subWeapon: User not found")
 	end
 
 	local sourceCharacter = User.getUsedCharacter
 	local charId = sourceCharacter.charIdentifier
-	local userWeapons = UsersWeapons["default"]
 
-	if weaponid and userWeapons[weaponId] then
-		userWeapons[weaponId]:setPropietary('')
+    -- TODO If subWeapon means the weapon will be removed from game or destroyed should the weapon deleted from database?
 
-		MySQL.update("UPDATE loadout SET identifier = '', charidentifier = @charId WHERE id = @id", {
-			['charId'] = charId,
-			['id'] = weaponId
-		}, function()
-		end)
-	end
+    _removeWeaponFromCache("default", weapon)
+
+	MySQL.update("UPDATE loadout SET identifier = '', charidentifier = @charId WHERE id = @id", {
+		['charId'] = charId,
+		['id'] = weaponId
+	}, function()
+	end)
 end
 
 InventoryService.onPickup = function(obj)
@@ -830,11 +840,10 @@ InventoryService.getInventory = function()
 			TriggerClientEvent("vorpInventory:giveInventory", _source, json.encode(inventory))
 		end)
 
-
+        local charWeapons = _getWeaponsFromCacheByCharId('default', sourceCharId)
 		local userWeapons = {}
-		for _, weapon in pairs(UsersWeapons["default"]) do
-			if weapon.propietary == sourceIdentifier and weapon.charId == sourceCharId and weapon.currInv == "default" and
-				weapon.dropped == 0 then
+        for _, weapon in pairs(charWeapons) do
+            if weapon.currInv == "default" and weapon.dropped == 0 then
 				userWeapons[#userWeapons + 1] = weapon
 			end
 		end
@@ -1063,9 +1072,7 @@ InventoryService.MoveToCustom = function(obj)
 						['weaponId'] = item.id,
 					})
 
-				UsersWeapons["default"][item.id]:setCurrInv(invId)
-				UsersWeapons[invId][item.id] = UsersWeapons["default"][item.id]
-				UsersWeapons["default"][item.id] = nil
+                _transferCachedWeapon(item.id, "default", invId, sourceCharIdentifier)
 
 				TriggerClientEvent("vorpCoreClient:subWeapon", _source, item.id)
 				InventoryAPI.reloadInventory(_source, invId)
@@ -1138,11 +1145,8 @@ InventoryService.TakeFromCustom = function(obj)
 						['weaponId'] = item.id,
 						['identifier'] = sourceIdentifier
 					})
-				UsersWeapons[invId][item.id]:setCurrInv("default")
-				UsersWeapons["default"][item.id] = UsersWeapons[invId][item.id]
-				UsersWeapons["default"][item.id].propietary = sourceIdentifier
-				UsersWeapons["default"][item.id].charId = sourceCharIdentifier
-				UsersWeapons[invId][item.id] = nil
+
+                _transferCachedWeapon(item.id, invId, "default", sourceCharIdentifier, sourceIdentifier)
 
 				local weapon = UsersWeapons["default"][item.id]
 
