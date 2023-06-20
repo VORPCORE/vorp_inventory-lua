@@ -276,10 +276,11 @@ InventoryService.giveGoldToPlayer = function(target, amount)
 end
 
 InventoryService.setWeaponBullets = function(weaponId, type, amount)
-	local userWeapons = UsersWeapons["default"]
 
-	if userWeapons[weaponId] ~= nil then
-		userWeapons[weaponId]:setAmmo(type, amount)
+    local weapon = _getWeaponFromCache('default', weaponId)
+
+    if weapon then
+        weapon:setAmmo(type, amount)
 	end
 end
 
@@ -389,7 +390,7 @@ end
 
 InventoryService.addWeapon = function(target, weaponId)
 	local _source = target
-	local userWeapons = UsersWeapons["default"]
+    local weapon = _getWeaponFromCache('default', weaponId)
 	local weaponcomps
 	local result = MySQL.query.await('SELECT comps FROM loadout WHERE id = @id ', { ['id'] = weaponId })
 
@@ -399,7 +400,7 @@ InventoryService.addWeapon = function(target, weaponId)
 		weaponcomps = {}
 	end
 
-	local weaponname = userWeapons[weaponId]:getName()
+    local weaponname = weapon:getName()
 	local ammo = { ["nothing"] = 0 }
 	local components = { ["nothing"] = 0 }
 	InventoryAPI.registerWeapon(_source, weaponname, ammo, components, weaponcomps)
@@ -412,28 +413,15 @@ InventoryService.subWeapon = function(target, weaponId)
         return Log.error("InventoryService.subWeapon: No weapon id given")
     end
 
-    local weapon = (UsersWeapons["default"] or {})[weaponId]
+    local weapon = _getWeaponFromCache("default", weaponId)
 
     if not weapon then
         return
     end
 
-	local _source = target
-	local User = Core.getUser(_source)
+    _removeWeaponFromCache("default", weapon, true)
 
-	if not User then
-        return Log.error("InventoryService.subWeapon: User not found")
-	end
-
-	local sourceCharacter = User.getUsedCharacter
-	local charId = sourceCharacter.charIdentifier
-
-    -- TODO If subWeapon means the weapon will be removed from game or destroyed should the weapon deleted from database?
-
-    _removeWeaponFromCache("default", weapon)
-
-	MySQL.update("UPDATE loadout SET identifier = '', charidentifier = @charId WHERE id = @id", {
-		['charId'] = charId,
+    MySQL.update("UPDATE loadout SET identifier = '', charidentifier = '' WHERE id = @id", {
 		['id'] = weaponId
 	}, function()
 	end)
@@ -452,8 +440,6 @@ InventoryService.onPickup = function(obj)
 	local charId = sourceCharacter.charIdentifier
 	local charname = sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname
 	local userInventory = UsersInventories["default"][identifier]
-	local userWeapons = UsersWeapons["default"]
-
 
 	if ItemPickUps[obj] ~= nil then
 		local name = ItemPickUps[obj].name
@@ -503,10 +489,11 @@ InventoryService.onPickup = function(obj)
 				if sourceInventoryWeaponCount <= DefaultAmount then
 					local weaponId = ItemPickUps[obj].weaponid
 					local weaponObj = ItemPickUps[obj].obj
-					UsersWeapons["default"][weaponId]:setDropped(0)
+                    local weapon = _getWeaponFromCache('default', weaponId)
+                    weapon:setDropped(0)
 					local title = T.weppickup
 					local description = "**Weapon** `" ..
-						userWeapons[weaponId]:getName() .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+                            weapon:getName() .. "`" .. "\n **Playername** `" .. charname .. "`\n"
 					Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
 					TriggerClientEvent("vorpInventory:sharePickupClient", -1, name, weaponObj, 1, metadata,
 						ItemPickUps[obj].coords, 2,
@@ -612,13 +599,14 @@ InventoryService.DropWeapon = function(weaponId)
 	if not SvUtils.InProcessing(_source) then
 		SvUtils.ProcessUser(_source)
 		InventoryService.subWeapon(_source, weaponId)
-		UsersWeapons["default"][weaponId]:setDropped(1)
+        local weapon = _getWeaponFromCache("default", weaponId)
+        weapon:setDropped(1)
 
 		local title = T.drop
 		local description = "**Weapon** `" ..
-			UsersWeapons["default"][weaponId]:getName() .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+                weapon:getName() .. "`" .. "\n **Playername** `" .. charname .. "`\n"
 		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
-		TriggerClientEvent("vorpInventory:createPickup", _source, UsersWeapons["default"][weaponId]:getName(), 1, {},
+        TriggerClientEvent("vorpInventory:createPickup", _source, weapon:getName(), 1, {},
 			weaponId)
 		SvUtils.Trem(_source)
 	end
@@ -649,8 +637,9 @@ InventoryService.GiveWeapon = function(weaponId, target)
 		TriggerClientEvent("vorp_inventory:transactionStarted", _source)
 		SvUtils.ProcessUser(_source)
 		local _target = target
+        local weapon = _getWeaponFromCache("default", weaponId)
 
-		if UsersWeapons["default"][weaponId] ~= nil then
+        if weapon then
 			InventoryAPI.giveWeapon2(_target, weaponId, _source)
 		end
 		local title = T.drop
@@ -1148,7 +1137,7 @@ InventoryService.TakeFromCustom = function(obj)
 
                 _transferCachedWeapon(item.id, invId, "default", sourceCharIdentifier, sourceIdentifier)
 
-				local weapon = UsersWeapons["default"][item.id]
+                local weapon = _getWeaponFromCache("default", item.id)
 
 				TriggerClientEvent("vorpInventory:receiveWeapon", _source, item.id, sourceIdentifier, weapon:getName(),
 					weapon:getAllAmmo())
