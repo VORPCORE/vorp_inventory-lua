@@ -419,7 +419,7 @@ InventoryService.subWeapon = function(target, weaponId)
         return
     end
 
-    _removeWeaponFromCache("default", weapon, true)
+    _removeWeaponFromCacheAfterServerRestart("default", weapon)
 
     MySQL.update("UPDATE loadout SET identifier = '', charidentifier = '' WHERE id = @id", {
 		['id'] = weaponId

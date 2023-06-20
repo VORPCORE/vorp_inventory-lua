@@ -81,6 +81,12 @@ function _removeWeaponFromCache(invId, weapon, keepWithoutOwnerUntilServerRestar
 end
 
 ---@param invId invId
+---@param weapon Weapon
+function _removeWeaponFromCacheAfterServerRestart(invId, weapon)
+    _removeWeaponFromCache(invId, weapon, true)
+end
+
+---@param invId invId
 ---@param weaponId weaponId
 ---@return Weapon|nil
 function _getWeaponFromCache(invId, weaponId)
