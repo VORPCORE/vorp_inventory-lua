@@ -452,6 +452,7 @@ InventoryService.onPickup = function(obj)
     local sourceCharacter = Core.getUser(_source).getUsedCharacter
     local identifier = sourceCharacter.identifier
     local charId = sourceCharacter.charIdentifier
+    local job = sourceCharacter.job
     local charname = sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname
     local userInventory = UsersInventories["default"][identifier]
 
