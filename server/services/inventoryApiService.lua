@@ -733,14 +733,23 @@ InventoryAPI.canCarryAmountWeapons = function(player, amount, cb)
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local identifier = sourceCharacter.identifier
 	local charId = sourceCharacter.charIdentifier
+	local job = sourceCharacter.job
 
 	local sourceInventoryWeaponCount = InventoryAPI.getUserTotalCountWeapons(identifier, charId) + amount
 
 	if Config.MaxItemsInInventory.Weapons ~= -1 then
-		if sourceInventoryWeaponCount <= Config.MaxItemsInInventory.Weapons then
-			cb(true)
+		if Config.JobsAllowed[job] then
+			if sourceInventoryWeaponCount > Config.JobsAllowed[job] then
+				cb(false)
+			else
+				cb(true)
+			end
 		else
-			cb(false)
+			if sourceInventoryWeaponCount <= Config.MaxItemsInInventory.Weapons then
+				cb(true)
+			else
+				cb(false)
+			end
 		end
 	else
 		cb(true)
