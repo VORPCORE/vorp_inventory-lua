@@ -2,7 +2,7 @@ SvUtils = {}
 local processingUser = {}
 
 SvUtils.FindAllWeaponsByName = function(invId, name)
-    local userWeapons = UsersWeapons[invId]
+    local userWeapons = UserWeaponsCacheService:getInv(invId)
     local weapons = {}
 
     if userWeapons == nil then

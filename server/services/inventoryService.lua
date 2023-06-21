@@ -283,7 +283,7 @@ end
 
 InventoryService.setWeaponBullets = function(weaponId, type, amount)
 
-    local weapon = _getWeaponFromCache('default', weaponId)
+    local weapon = UserWeaponsCacheService:getWeapon('default', weaponId)
 
     if weapon then
         weapon:setAmmo(type, amount)
@@ -400,7 +400,7 @@ end
 
 InventoryService.addWeapon = function(target, weaponId)
     local _source = target
-    local weapon = _getWeaponFromCache('default', weaponId)
+    local weapon = UserWeaponsCacheService:getWeapon('default', weaponId)
     local weaponcomps
     local result = MySQL.query.await('SELECT comps FROM loadout WHERE id = @id ', { ['id'] = weaponId })
 
@@ -425,11 +425,11 @@ InventoryService.subWeapon = function(target, weaponId)
         return Log.error("InventoryService.subWeapon: No weapon id given")
     end
 
-    local weapon = _getWeaponFromCache("default", weaponId)
+    local weapon = UserWeaponsCacheService:getWeapon("default", weaponId)
 
     if weapon then
 
-        _removeWeaponFromCacheAfterServerRestart("default", weapon)
+        UserWeaponsCacheService:removeAfterServerRestart("default", weapon)
 
         MySQL.update("UPDATE loadout SET identifier = '', charidentifier = null WHERE id = @id",
                 {
@@ -503,7 +503,7 @@ InventoryService.onPickup = function(obj)
                 if sourceInventoryWeaponCount <= DefaultAmount then
                     local weaponId = ItemPickUps[obj].weaponid
                     local weaponObj = ItemPickUps[obj].obj
-                    local weapon = _getWeaponFromCache('default', weaponId)
+                    local weapon = UserWeaponsCacheService:getWeapon('default', weaponId)
                     weapon:setDropped(0)
                     local title = T.weppickup
                     local description = "**Weapon** `" ..
@@ -613,7 +613,7 @@ InventoryService.DropWeapon = function(weaponId)
     if not SvUtils.InProcessing(_source) then
         SvUtils.ProcessUser(_source)
         InventoryService.subWeapon(_source, weaponId)
-        local weapon = _getWeaponFromCache("default", weaponId)
+        local weapon = UserWeaponsCacheService:getWeapon("default", weaponId)
         weapon:setDropped(1)
 
         local title = T.drop
@@ -651,7 +651,7 @@ InventoryService.GiveWeapon = function(weaponId, target)
         TriggerClientEvent("vorp_inventory:transactionStarted", _source)
         SvUtils.ProcessUser(_source)
         local _target = target
-        local weapon = _getWeaponFromCache("default", weaponId)
+        local weapon = UserWeaponsCacheService:getWeapon("default", weaponId)
 
         if weapon then
             InventoryAPI.giveWeapon2(_target, weaponId, _source)
@@ -842,7 +842,7 @@ InventoryService.getInventory = function()
             TriggerClientEvent("vorpInventory:giveInventory", _source, json.encode(inventory))
         end)
 
-        local charWeapons = _getWeaponsFromCacheByCharId('default', sourceCharId)
+        local charWeapons = UserWeaponsCacheService:getByCharId('default', sourceCharId)
         local userWeapons = {}
         for _, weapon in pairs(charWeapons) do
             if weapon.currInv == "default" and weapon.dropped == 0 then
@@ -863,7 +863,7 @@ InventoryService.getInventoryTotalCount = function(identifier, charIdentifier, i
     invId = invId ~= nil and invId or "default"
     local userTotalItemCount = 0
     local userInventory = {}
-    local userWeapons = UsersWeapons[invId]
+    local userWeapons = UserWeaponsCacheService:getInv(invId)
 
     if CustomInventoryInfos[invId].shared then
         userInventory = UsersInventories[invId]
@@ -1082,7 +1082,7 @@ InventoryService.MoveToCustom = function(obj)
                             ['weaponId'] = item.id,
                         })
 
-                _transferCachedWeapon(item.id, "default", invId, sourceCharIdentifier)
+                UserWeaponsCacheService:transfer(item.id, "default", invId, sourceCharIdentifier)
 
                 TriggerClientEvent("vorpCoreClient:subWeapon", _source, item.id)
                 InventoryAPI.reloadInventory(_source, invId)
@@ -1156,9 +1156,9 @@ InventoryService.TakeFromCustom = function(obj)
                             ['identifier'] = sourceIdentifier
                         })
 
-                _transferCachedWeapon(item.id, invId, "default", sourceCharIdentifier, sourceIdentifier)
+                UserWeaponsCacheService:transfer(item.id, invId, "default", sourceCharIdentifier, sourceIdentifier)
 
-                local weapon = _getWeaponFromCache("default", item.id)
+                local weapon = UserWeaponsCacheService:getWeapon("default", item.id)
 
                 TriggerClientEvent("vorpInventory:receiveWeapon", _source, item.id, sourceIdentifier, weapon:getName(),
                         weapon:getAllAmmo())
