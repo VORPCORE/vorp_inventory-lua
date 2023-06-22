@@ -59,8 +59,8 @@ function UserWeaponsCacheService:remove(invId, weapon, keepWithoutOwnerUntilServ
     weapon:setCharId(0)
 
     if not keepWithoutOwnerUntilServerRestart then
-            self._userWeapons[invId][weaponId] = nil
-        end
+        self._userWeapons[invId][weaponId] = nil
+    end
 
     if self:existsInChar(invId, charId, weaponId) then
         self._userWeaponsByCharId[invId][charId][weaponId] = nil
@@ -87,9 +87,10 @@ function UserWeaponsCacheService:getInv(invId)
 end
 
 ---@param invId invId
----@param charId number
+---@param charId charId
+---@param identifier identifier|nil
 ---@return Weapon[]
-function UserWeaponsCacheService:getByCharId(invId, charId)
+function UserWeaponsCacheService:getByCharId(invId, charId, identifier)
 
     local weaponsIdsOfChar = (self._userWeaponsByCharId[invId] or {})[charId] or {}
 
@@ -101,7 +102,9 @@ function UserWeaponsCacheService:getByCharId(invId, charId)
         local weapon = self:getWeapon(invId, weaponId)
 
         if weapon then
-            table.insert(charWeapons, weapon)
+            if not identifier or weapon:getPropietary() == identifier then
+                table.insert(charWeapons, weapon)
+            end
         end
     end
 
@@ -181,4 +184,10 @@ end
 ---@return charId|nil
 function UserWeaponsCacheService:getCharId(player)
     return ((Core.getUser(player) or {}).getUsedCharacter or {}).charIdentifier or nil
+end
+
+---@param player number
+---@return identifier|nil
+function UserWeaponsCacheService:getIdentifier(player)
+    return ((Core.getUser(player) or {}).getUsedCharacter or {}).identifier or nil
 end
