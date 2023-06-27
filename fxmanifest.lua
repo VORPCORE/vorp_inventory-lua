@@ -2,9 +2,14 @@ game 'rdr3'
 fx_version 'cerulean'
 
 author 'VORP Core'
+
 description 'VORP Inventory'
+
 rdr3_warning 'I acknowledge that this is a prerelease build of RedM, and I am aware my resources *will* become incompatible once RedM ships.'
+
 ui_page 'html/ui.html'
+
+lua54 'yes'
 
 client_scripts {
   'client/models/*.lua',
@@ -13,6 +18,7 @@ client_scripts {
   'client/controllers/*.lua',
   'client/*.lua',
 }
+
 server_scripts {
   'server/models/*.lua',
   'server/handler/*.lua',
@@ -33,7 +39,7 @@ shared_scripts {
 
 files { 'html/**/*' }
 
-server_exports { 'vorp_inventoryApi' }
+server_exports { 'vorp_inventoryApi' } -- dont use this, use the vorp_inventoryApi.lua file instead
 
 
 version '2.6'
