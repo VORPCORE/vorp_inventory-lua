@@ -495,8 +495,9 @@ NUIService.NUIDropItem = function(obj)
 
 					if weapon:getUsed() then
 						weapon:setUsed(false)
-						weapon:UnequipWeapon()
+						RemoveWeaponFromPed(PlayerPedId(), GetHashKey(weapon:getName()), true, 0)
 					end
+
 					UserWeapons[aux.id] = nil
 				end
 			end
