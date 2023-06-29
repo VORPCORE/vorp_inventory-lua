@@ -963,7 +963,7 @@ InventoryAPI.giveWeapon2 = function(player, weaponId, target)
 	local userWeapons = UsersWeapons["default"]
 	userWeapons[weaponId]:setPropietary('')
 	local DefaultAmount = Config.MaxItemsInInventory.Weapons
-	local weaponname = userWeapons[weaponId]:getName()
+	local weaponName = userWeapons[weaponId]:getName()
 	local notListed = false
 
 	if Config.JobsAllowed[job] then
@@ -971,9 +971,9 @@ InventoryAPI.giveWeapon2 = function(player, weaponId, target)
 	end
 
 	if DefaultAmount ~= 0 then
-		if weaponname then
+		if weaponName then
 			-- does weapon given matches the list of weapons that do not count as weapons
-			if SharedUtils.IsValueInArray(string.upper(weaponname), Config.notweapons) then
+			if SharedUtils.IsValueInArray(string.upper(weaponName), Config.notweapons) then
 				notListed = true
 			end
 		end
@@ -1001,7 +1001,7 @@ InventoryAPI.giveWeapon2 = function(player, weaponId, target)
 
 	local ammo = { ["nothing"] = 0 }
 	local components = { ["nothing"] = 0 }
-	InventoryAPI.registerWeapon(_source, weaponname, ammo, components, weaponcomps)
+	InventoryAPI.registerWeapon(_source, weaponName, ammo, components, weaponcomps)
 	InventoryAPI.deletegun(_source, weaponId)
 	TriggerClientEvent("vorpinventory:updateinventorystuff", _target)
 	TriggerClientEvent("vorpinventory:updateinventorystuff", _source)
@@ -1036,9 +1036,9 @@ InventoryAPI.giveWeapon = function(player, weaponId, target)
 	end
 
 	if DefaultAmount ~= 0 then
-		if weaponname then
+		if weaponName then
 			-- does weapon given matches the list of weapons that do not count as weapons
-			if SharedUtils.IsValueInArray(string.upper(weaponname), Config.notweapons) then
+			if SharedUtils.IsValueInArray(string.upper(weaponName), Config.notweapons) then
 				notListed = true
 			end
 		end

@@ -567,7 +567,6 @@ NUIService.NUIUseItem = function(data)
 		else
 			TriggerEvent('vorp:TipRight', T.slow, 5000)
 		end
-
 	elseif data.type == "item_weapon" then
 		local ped = PlayerPedId()
 		local _, weaponHash = GetCurrentPedWeapon(ped, false, 0, false)
@@ -575,7 +574,7 @@ NUIService.NUIUseItem = function(data)
 		local weapName = joaat(UserWeapons[weaponId]:getName())
 		local isWeaponAGun = Citizen.InvokeNative(0x705BE297EEBDB95D, weapName)
 		local isWeaponOneHanded = Citizen.InvokeNative(0xD955FEE4B87AFA07, weapName)
-		local isArmed = Citizen.InvokeNative(0xCB690F680A3EA971,ped, 4)
+		local isArmed = Citizen.InvokeNative(0xCB690F680A3EA971, ped, 4)
 		local notdual = false
 
 		if (isWeaponAGun and isWeaponOneHanded) and isArmed then
