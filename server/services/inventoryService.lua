@@ -420,7 +420,6 @@ InventoryService.addWeapon = function(target, weaponId)
 end
 
 InventoryService.subWeapon = function(target, weaponId)
-
     if not weaponId then
         return Log.error("InventoryService.subWeapon: No weapon id given")
     end
@@ -462,6 +461,7 @@ InventoryService.onPickup = function(obj)
         local metadata = ItemPickUps[obj].metadata
 
         if ItemPickUps[obj].weaponid == 1 then
+            -- items
             if userInventory ~= nil then
                 InventoryAPI.canCarryItem(_source, name, amount, function(canAdd)
                     if canAdd then
@@ -492,19 +492,30 @@ InventoryService.onPickup = function(obj)
                 end)
             end
         else
+            -- weapons
+            local notListed = false
+            local sourceInventoryWeaponCount = 0
             local DefaultAmount = Config.MaxItemsInInventory.Weapons
-
+            local weaponId = ItemPickUps[obj].weaponid
+            local weapon =  UserWeaponsCacheService:getWeapon("default", weaponId)
+            local wepname = weapon:getName()
             if Config.JobsAllowed[job] then
                 DefaultAmount = Config.JobsAllowed[job]
             end
 
             if DefaultAmount ~= 0 then
-                local sourceInventoryWeaponCount = InventoryAPI.getUserTotalCountWeapons(identifier, charId) + 1
+                if wepname then
+                    if SharedUtils.IsValueInArray(string.upper(wepname), Config.notweapons) then
+                        notListed = true
+                    end
+                end
+
+                if not notListed then
+                    sourceInventoryWeaponCount = InventoryAPI.getUserTotalCountWeapons(identifier, charId) + 1
+                end
 
                 if sourceInventoryWeaponCount <= DefaultAmount then
-                    local weaponId = ItemPickUps[obj].weaponid
                     local weaponObj = ItemPickUps[obj].obj
-                    local weapon = UserWeaponsCacheService:getWeapon('default', weaponId)
                     weapon:setDropped(0)
                     local title = T.weppickup
                     local description = "**Weapon** `" ..
@@ -1175,7 +1186,7 @@ InventoryService.TakeFromCustom = function(obj)
             else
                 TriggerClientEvent("vorp:TipRight", _source, T.fullInventory, 2000)
             end
-        end)
+        end, weapon:getName())
     else
         InventoryAPI.canCarryItem(_source, item.name, amount, function(res)
             if res then
