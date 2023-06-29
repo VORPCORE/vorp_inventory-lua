@@ -3,8 +3,6 @@ InventoryAPI = {}
 UsableItemsFunctions = {}
 local allplayersammo = {}
 
-
-
 -- by default assign this
 CustomInventoryInfos = {
 	default = {
@@ -741,6 +739,7 @@ InventoryAPI.canCarryAmountWeapons = function(player, amount, cb, weaponName)
 			return cb(true)
 		end
 	end
+
 	if Config.JobsAllowed[job] then
 		DefaultAmount = Config.JobsAllowed[job]
 	end
@@ -864,7 +863,6 @@ InventoryAPI.registerWeapon = function(_target, wepname, ammos, components, comp
 
 		if not notListed then
 			local targetTotalWeaponCount = InventoryAPI.getUserTotalCountWeapons(targetIdentifier, targetCharId) + 1
-
 			if targetTotalWeaponCount > DefaultAmount then
 				TriggerClientEvent("vorp:TipRight", _target, T.cantweapons2, 2000)
 				if Config.Debug then
@@ -965,30 +963,42 @@ InventoryAPI.giveWeapon2 = function(player, weaponId, target)
 	local userWeapons = UsersWeapons["default"]
 	userWeapons[weaponId]:setPropietary('')
 	local DefaultAmount = Config.MaxItemsInInventory.Weapons
+	local weaponname = userWeapons[weaponId]:getName()
+	local notListed = false
 
 	if Config.JobsAllowed[job] then
 		DefaultAmount = Config.JobsAllowed[job]
 	end
 
 	if DefaultAmount ~= 0 then
-		local sourceTotalWeaponCount = InventoryAPI.getUserTotalCountWeapons(sourceIdentifier, sourceCharId) + 1
-
-		if sourceTotalWeaponCount > DefaultAmount then
-			TriggerClientEvent("vorp:TipRight", _source, T.cantweapons, 2000)
-			if Config.Debug then
-				Log.print(sourceCharacter.firstname ..
-					" " .. sourceCharacter.lastname .. " ^1Can't carry more weapons^7")
+		if weaponname then
+			-- does weapon given matches the list of weapons that do not count as weapons
+			if SharedUtils.IsValueInArray(string.upper(weaponname), Config.notweapons) then
+				notListed = true
 			end
-			return
+		end
+
+		if not notListed then
+			local sourceTotalWeaponCount = InventoryAPI.getUserTotalCountWeapons(sourceIdentifier, sourceCharId) + 1
+
+			if sourceTotalWeaponCount > DefaultAmount then
+				TriggerClientEvent("vorp:TipRight", _source, T.cantweapons, 2000)
+				if Config.Debug then
+					Log.print(sourceCharacter.firstname ..
+						" " .. sourceCharacter.lastname .. " ^1Can't carry more weapons^7")
+				end
+				return
+			end
 		end
 	end
+
 	local weaponcomps = {}
 	local result = MySQL.single.await('SELECT comps FROM loadout WHERE id = @id ', { ['id'] = weaponId })
 	if result then
 		weaponcomps = json.decode(result.comps)
 	end
 
-	local weaponname = userWeapons[weaponId]:getName()
+
 	local ammo = { ["nothing"] = 0 }
 	local components = { ["nothing"] = 0 }
 	InventoryAPI.registerWeapon(_source, weaponname, ammo, components, weaponcomps)
@@ -1011,6 +1021,8 @@ InventoryAPI.giveWeapon = function(player, weaponId, target)
 	local targetisPlayer = false
 	local userWeapons = UsersWeapons["default"]
 	local DefaultAmount = Config.MaxItemsInInventory.Weapons
+	local weaponName = userWeapons[weaponId]:getName()
+	local notListed = false
 
 	for _, pl in pairs(GetPlayers()) do
 		if tonumber(pl) == _target then
@@ -1024,15 +1036,23 @@ InventoryAPI.giveWeapon = function(player, weaponId, target)
 	end
 
 	if DefaultAmount ~= 0 then
-		local sourceTotalWeaponCount = InventoryAPI.getUserTotalCountWeapons(sourceIdentifier, sourceCharId) + 1
-
-		if sourceTotalWeaponCount > DefaultAmount then
-			TriggerClientEvent("vorp:TipRight", _source, T.cantweapons, 2000)
-			if Config.Debug then
-				Log.print(sourceCharacter.firstname ..
-					" " .. sourceCharacter.lastname .. " ^1Can't carry more weapons^7")
+		if weaponname then
+			-- does weapon given matches the list of weapons that do not count as weapons
+			if SharedUtils.IsValueInArray(string.upper(weaponname), Config.notweapons) then
+				notListed = true
 			end
-			return
+		end
+		if not notListed then
+			local sourceTotalWeaponCount = InventoryAPI.getUserTotalCountWeapons(sourceIdentifier, sourceCharId) + 1
+
+			if sourceTotalWeaponCount > DefaultAmount then
+				TriggerClientEvent("vorp:TipRight", _source, T.cantweapons, 2000)
+				if Config.Debug then
+					Log.print(sourceCharacter.firstname ..
+						" " .. sourceCharacter.lastname .. " ^1Can't carry more weapons^7")
+				end
+				return
+			end
 		end
 	end
 
@@ -1041,7 +1061,6 @@ InventoryAPI.giveWeapon = function(player, weaponId, target)
 		userWeapons[weaponId]:setCharId(sourceCharId)
 
 		local weaponPropietary = userWeapons[weaponId]:getPropietary()
-		local weaponName = userWeapons[weaponId]:getName()
 		local weaponAmmo = userWeapons[weaponId]:getAllAmmo()
 
 		MySQL.update("UPDATE loadout SET identifier = @identifier, charidentifier = @charid WHERE id = @id",
