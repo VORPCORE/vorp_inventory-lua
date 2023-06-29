@@ -417,13 +417,13 @@ InventoryService.subWeapon = function(target, weaponId)
 	local sourceCharacter = User.getUsedCharacter
 	local charId = sourceCharacter.charIdentifier
 	local userWeapons = UsersWeapons["default"]
-
-	if weaponid and userWeapons[weaponId] then
+	if weaponId and userWeapons[weaponId] then
 		userWeapons[weaponId]:setPropietary('')
 
-		MySQL.update("UPDATE loadout SET identifier = '', charidentifier = @charId WHERE id = @id", {
+		MySQL.update("UPDATE loadout SET identifier = '', dropped = @dropped, charidentifier = @charId WHERE id = @id", {
 			['charId'] = charId,
-			['id'] = weaponId
+			['id'] = weaponId,
+			['dropped'] = 1
 		}, function()
 		end)
 	end
