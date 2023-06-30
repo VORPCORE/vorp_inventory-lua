@@ -1173,7 +1173,7 @@ InventoryService.TakeFromCustom = function(obj)
 			else
 				TriggerClientEvent("vorp:TipRight", _source, T.fullInventory, 2000)
 			end
-		end, weapon:getName())
+		end, item.name)
 	else
 		InventoryAPI.canCarryItem(_source, item.name, amount, function(res)
 			if res then
