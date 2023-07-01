@@ -172,8 +172,10 @@ Config = {
 			"AMMO_ARROW_SMALL_GAME",
 			"AMMO_ARROW_POISON"
 		},
-		["1548507267"] = { "AMMO_THROWING_KNIVES",
-			"AMMO_TOMAHAWK", "AMMO_POISONBOTTLE",
+		["1548507267"] = { 
+			"AMMO_THROWING_KNIVES",
+			"AMMO_TOMAHAWK", 
+			"AMMO_POISONBOTTLE",
 			"AMMO_BOLAS",
 			"AMMO_BOLAS_HAWKMOTH",
 			"AMMO_BOLAS_INTERTWINED",
@@ -184,11 +186,15 @@ Config = {
 			"AMMO_MOLOTOV_VOLATILE"
 		},
 		["-1188697038"] = {
-			"AMMO_HATCHET_CLEAVER"
-
+			"AMMO_HATCHET_CLEAVER",
+		
 		},
 		["446901936"] = {
-			"AMMO_HATCHET_HUNTER"
+			"AMMO_HATCHET_HUNTER", 
+			"AMMO_HATCHET_DOUBLE_BIT",
+			"AMMO_HATCHET_HEWING",
+			"AMMO_HATCHET_VIKING",
+			"AMMO_HATCHET",
 		}
 	},
 	maxammo                  = {
@@ -239,6 +245,10 @@ Config = {
 		AMMO_MOLOTOV_VOLATILE = 5,
 		AMMO_HATCHET_CLEAVER = 10,
 		AMMO_HATCHET_HUNTER = 10,
+		AMMO_HATCHET_DOUBLE_BIT = 10,
+		AMMO_HATCHET_HEWING = 10,
+		AMMO_HATCHET_VIKING = 10,
+		AMMO_HATCHET = 10,
 	},
 	Ammolabels               = {
 		-- you can change this to your language
@@ -288,6 +298,10 @@ Config = {
 		AMMO_MOLOTOV_VOLATILE = "Volatile Molotov",
 		AMMO_HATCHET_CLEAVER = "Cleaver Hatchet",
 		AMMO_HATCHET_HUNTER = "Hunter Hatchet",
+		AMMO_HATCHET_DOUBLE_BIT = "Hachet Double Bit",
+		AMMO_HATCHET_HEWING = "Hachet Hewing",
+		AMMO_HATCHET_VIKING = "Hachet Viking",
+		AMMO_HATCHET = "Hatchet ammo",
 	},
 	--DON'T TOUCH BESIDES NAME OF WEAPON
 	Weapons                  = {
