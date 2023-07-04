@@ -497,7 +497,7 @@ InventoryService.onPickup = function(obj)
             local sourceInventoryWeaponCount = 0
             local DefaultAmount = Config.MaxItemsInInventory.Weapons
             local weaponId = ItemPickUps[obj].weaponid
-            local weapon =  UserWeaponsCacheService:getWeapon("default", weaponId)
+            local weapon = UserWeaponsCacheService:getWeapon("default", weaponId)
             local wepname = weapon:getName()
             if Config.JobsAllowed[job] then
                 DefaultAmount = Config.JobsAllowed[job]
@@ -1187,7 +1187,7 @@ InventoryService.TakeFromCustom = function(obj)
             else
                 TriggerClientEvent("vorp:TipRight", _source, T.fullInventory, 2000)
             end
-        end, weapon:getName())
+        end, item.name)
     else
         InventoryAPI.canCarryItem(_source, item.name, amount, function(res)
             if res then
