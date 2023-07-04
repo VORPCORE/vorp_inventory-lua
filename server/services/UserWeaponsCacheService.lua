@@ -17,7 +17,6 @@ UserWeaponsCacheService = {
 ---@param invId invId
 ---@param weapon Weapon
 function UserWeaponsCacheService:add(invId, weapon)
-
     local weaponId = weapon:getId()
     local charId = weapon:getCharId()
 
@@ -96,14 +95,12 @@ end
 ---@param identifier identifier|nil
 ---@return Weapon[]
 function UserWeaponsCacheService:getByCharId(invId, charId, identifier)
-
     local weaponsIdsOfChar = (self._userWeaponsByCharId[invId] or {})[charId] or {}
 
     ---@type Weapon[]
     local charWeapons = {}
 
     for weaponId, _ in pairs(weaponsIdsOfChar) do
-
         local weapon = self:getWeapon(invId, weaponId)
 
         if weapon then
@@ -134,7 +131,8 @@ end
 ---@param weaponId weaponId
 ---@return boolean
 function UserWeaponsCacheService:existsInChar(invId, charId, weaponId)
-    return self._userWeaponsByCharId[invId] ~= nil and self._userWeaponsByCharId[invId][charId] ~= nil and self._userWeaponsByCharId[invId][charId][weaponId] == true
+    return self._userWeaponsByCharId[invId] ~= nil and self._userWeaponsByCharId[invId][charId] ~= nil and
+    self._userWeaponsByCharId[invId][charId][weaponId] == true
 end
 
 ---@param weaponId weaponId
@@ -143,13 +141,11 @@ end
 ---@param targetCharId charId
 ---@param targetIdentifier identifier|nil
 function UserWeaponsCacheService:transfer(weaponId, sourceInvId, targetInvId, targetCharId, targetIdentifier)
-
     local weapon = self:getWeapon(sourceInvId, weaponId)
 
     self:remove(sourceInvId, weapon)
 
     if weapon then
-
         weapon:setCurrInv(targetInvId)
         weapon:setCharId(targetCharId)
 
@@ -163,7 +159,6 @@ end
 
 ---@param invId invId
 function UserWeaponsCacheService:registerInv(invId)
-
     if not self._userWeapons[invId] then
         self._userWeapons[invId] = {}
     end
@@ -175,7 +170,6 @@ end
 
 ---@param invId invId
 function UserWeaponsCacheService:removeInv(invId)
-
     if invId == 'default' then
         error('Cannot remove default inventory!')
         return
