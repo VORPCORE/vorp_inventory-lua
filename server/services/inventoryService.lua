@@ -1154,8 +1154,7 @@ InventoryService.TakeFromCustom = function(obj)
     end
 
     if item.type == "item_weapon" then
-        
-        local weapon = UserWeaponsCacheService:getWeapon("default", item.id)
+        local weapon = UserWeaponsCacheService:getWeapon(invId, item.id)
 
         if not weapon then
             return
