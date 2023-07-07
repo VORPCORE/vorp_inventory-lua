@@ -178,7 +178,14 @@ function Weapon:equipwep(issame)
 			if isWeaponAGun and isWeaponOneHanded then
 				addWeapon(self.name, 0, self.id)
 			else
-				GiveDelayedWeaponToPed(PlayerPedId(), joaat(self.name), 0, true, 0)
+				local ammoCount = 0
+			for k,v in pairs(Config.nonAmmoThrowables) do
+				if tostring(v) == self.name then
+					ammoCount = 1
+				end
+			end
+			GiveDelayedWeaponToPed(PlayerPedId(), joaat(self.name), ammoCount, true, 0)
+				
 			end
 		end
 	end
