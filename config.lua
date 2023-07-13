@@ -122,6 +122,10 @@ Config = {
 		"WEAPON_MELEE_HAMMER",
 		"WEAPON_MELEE_KNIFE",
 	},
+	nonAmmoThrowables = {
+    		"WEAPON_MELEE_CLEAVER",
+    		"WEAPON_MELEE_HATCHET_HUNTER"
+ 	 },
 	Ammotypes                = {
 		["416676503"] = {
 			"AMMO_PISTOL",
