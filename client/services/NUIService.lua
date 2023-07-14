@@ -408,6 +408,7 @@ NUIService.NUIGiveItem = function(obj)
 						--local metadata = data2.metadata
 						local target = tonumber(data.player)
 
+
 						if data2.type == "item_money" then
 							if isProcessingPay then return end
 							isProcessingPay = true
@@ -497,6 +498,7 @@ NUIService.NUIDropItem = function(obj)
 						weapon:setUsed(false)
 						weapon:UnequipWeapon()
 					end
+
 					UserWeapons[aux.id] = nil
 				end
 			end
