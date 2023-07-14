@@ -30,13 +30,11 @@ function UserWeaponsCacheService:add(invId, weapon)
         self._userWeaponsByCharId[invId] = {}
     end
 
-    if charId then
-        if not self._userWeaponsByCharId[invId][charId] then
-            self._userWeaponsByCharId[invId][charId] = {}
-        end
-
-        self._userWeaponsByCharId[invId][charId][weaponId] = true
+    if not self._userWeaponsByCharId[invId][charId] then
+        self._userWeaponsByCharId[invId][charId] = {}
     end
+
+    self._userWeaponsByCharId[invId][charId][weaponId] = true
 end
 
 ---@param invId invId
@@ -61,10 +59,8 @@ function UserWeaponsCacheService:remove(invId, weapon_or_id, keepWithoutOwnerUnt
         self._userWeapons[invId][weaponId] = nil
     end
 
-    if charId then
-        if self:existsInChar(invId, charId, weaponId) then
-            self._userWeaponsByCharId[invId][charId][weaponId] = nil
-        end
+    if self:existsInChar(invId, charId, weaponId) then
+        self._userWeaponsByCharId[invId][charId][weaponId] = nil
     end
 end
 
@@ -164,7 +160,7 @@ end
 ---@return boolean
 function UserWeaponsCacheService:existsInChar(invId, charId, weaponId)
     return self._userWeaponsByCharId[invId] ~= nil and self._userWeaponsByCharId[invId][charId] ~= nil and
-    self._userWeaponsByCharId[invId][charId][weaponId] == true
+            self._userWeaponsByCharId[invId][charId][weaponId] == true
 end
 
 ---@param weaponId weaponId
