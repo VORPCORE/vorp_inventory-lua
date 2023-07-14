@@ -88,9 +88,9 @@ InventoryService.DropMoney = function(amount)
             if contains(newchar, charid) then
                 -- new line
                 TriggerClientEvent("vorp:TipRight", _source, "Cant Drop Money as a new player", 5000) -- new line
-                SvUtils.Trem(_source)                                                                 -- new line
-                return                                                                                -- new line
-            end                                                                                       -- new line
+                SvUtils.Trem(_source)                                                     -- new line
+                return                                                                    -- new line
+            end                                                                           -- new line
         end
 
         if amount <= 0 then
@@ -120,9 +120,9 @@ InventoryService.DropAllMoney = function()
             if contains(newchar, charid) then
                 -- new line
                 TriggerClientEvent("vorp:TipRight", _source, "Cant Drop Money as a new player", 5000) -- new line
-                SvUtils.Trem(_source)                                                                 -- new line
-                return                                                                                -- new line
-            end                                                                                       -- new line
+                SvUtils.Trem(_source)                                                     -- new line
+                return                                                                    -- new line
+            end                                                                           -- new line
         end
 
         if userMoney > 0 then
@@ -145,9 +145,9 @@ InventoryService.DropPartMoney = function()
         if contains(newchar, charid) then
             -- new line
             TriggerClientEvent("vorp:TipRight", _source, "Cant Drop Money as a new player", 5000) -- new line
-            SvUtils.Trem(_source)                                                                 -- new line
-            return                                                                                -- new line
-        end                                                                                       -- new line
+            SvUtils.Trem(_source)                                                        -- new line
+            return                                                                       -- new line
+        end                                                                              -- new line
     end
 
     if userMoney > 0 then
@@ -176,10 +176,10 @@ InventoryService.giveMoneyToPlayer = function(target, amount)
             if contains(newchar, charid) then
                 -- new line
                 TriggerClientEvent("vorp:TipRight", _source, "Cant Give Money as a new player", 5000) -- new line
-                SvUtils.Trem(_source)                                                                 -- new line
+                SvUtils.Trem(_source)                                                     -- new line
                 TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
-                return                                                                                -- new line
-            end                                                                                       -- new line
+                return                                                                    -- new line
+            end                                                                           -- new line
         end
 
         if amount <= 0 then
@@ -282,6 +282,7 @@ InventoryService.giveGoldToPlayer = function(target, amount)
 end
 
 InventoryService.setWeaponBullets = function(weaponId, type, amount)
+
     local weapon = UserWeaponsCacheService:getWeapon('default', weaponId)
 
     if weapon then
@@ -426,14 +427,17 @@ InventoryService.subWeapon = function(target, weaponId)
     local weapon = UserWeaponsCacheService:getWeapon("default", weaponId)
 
     if weapon then
+
         UserWeaponsCacheService:removeAfterServerRestart("default", weapon)
 
         MySQL.update("UPDATE loadout SET identifier = '', charidentifier = null WHERE id = @id",
-            {
-                ['id'] = weaponId
-            }, function()
-            end)
+                {
+                    ['id'] = weaponId
+                }, function()
+                end)
     end
+
+
 end
 
 InventoryService.onPickup = function(obj)
@@ -465,17 +469,17 @@ InventoryService.onPickup = function(obj)
                             if item ~= nil then
                                 local title = T.itempickup
                                 local description = "**Amount** `" ..
-                                    amount ..
-                                    "`\n **Item** `" .. name .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+                                        amount ..
+                                        "`\n **Item** `" .. name .. "`" .. "\n **Playername** `" .. charname .. "`\n"
                                 Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo,
-                                    avatar)
+                                        avatar)
 
                                 TriggerClientEvent("vorpInventory:sharePickupClient", -1, name, ItemPickUps[obj].obj,
-                                    amount, metadata,
-                                    ItemPickUps[obj].coords, 2)
+                                        amount, metadata,
+                                        ItemPickUps[obj].coords, 2)
                                 TriggerClientEvent("vorpInventory:removePickupClient", -1, ItemPickUps[obj].obj)
                                 TriggerClientEvent("vorpInventory:receiveItem", _source, name, item:getId(), amount,
-                                    metadata)
+                                        metadata)
                                 TriggerClientEvent("vorpInventory:playerAnim", _source, obj)
 
                                 ItemPickUps[obj] = nil
@@ -515,11 +519,11 @@ InventoryService.onPickup = function(obj)
                     weapon:setDropped(0)
                     local title = T.weppickup
                     local description = "**Weapon** `" ..
-                        weapon:getName() .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+                            weapon:getName() .. "`" .. "\n **Playername** `" .. charname .. "`\n"
                     Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
                     TriggerClientEvent("vorpInventory:sharePickupClient", -1, name, weaponObj, 1, metadata,
-                        ItemPickUps[obj].coords, 2,
-                        weaponId)
+                            ItemPickUps[obj].coords, 2,
+                            weaponId)
                     TriggerClientEvent("vorpInventory:removePickupClient", -1, weaponObj)
 
                     TriggerClientEvent("vorpInventory:playerAnim", _source, obj)
@@ -626,10 +630,10 @@ InventoryService.DropWeapon = function(weaponId)
 
         local title = T.drop
         local description = "**Weapon** `" ..
-            weapon:getName() .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+                weapon:getName() .. "`" .. "\n **Playername** `" .. charname .. "`\n"
         Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
         TriggerClientEvent("vorpInventory:createPickup", _source, weapon:getName(), 1, {},
-            weaponId)
+                weaponId)
         SvUtils.Trem(_source)
     end
 end
@@ -643,7 +647,7 @@ InventoryService.DropItem = function(itemName, itemId, amount, metadata)
         InventoryService.subItem(_source, "default", itemId, amount)
         local title = T.drop
         local description = "**Amount** `" ..
-            amount .. "`\n **Item** `" .. itemName .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+                amount .. "`\n **Item** `" .. itemName .. "`" .. "\n **Playername** `" .. charname .. "`\n"
 
         Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
         TriggerClientEvent("vorpInventory:createPickup", _source, itemName, amount, metadata, 1)
@@ -666,7 +670,7 @@ InventoryService.GiveWeapon = function(weaponId, target)
         end
         local title = T.drop
         local description = "**Amount** `" ..
-            1 .. "`\n **Weapon id** `" .. weaponId .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+                1 .. "`\n **Weapon id** `" .. weaponId .. "`" .. "\n **Playername** `" .. charname .. "`\n"
 
         Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
         TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
@@ -698,9 +702,9 @@ InventoryService.GiveItem = function(itemId, amount, target)
             -- new line
             TriggerClientEvent("vorp:TipRight", _source, "Cant Give Item as a new player", 5000) -- new line
             TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
-            SvUtils.Trem(_source)                                                                -- new line
-            return                                                                               -- new line
-        end                                                                                      -- new line
+            SvUtils.Trem(_source)                                                       -- new line
+            return                                                                      -- new line
+        end                                                                             -- new line
     end
 
     local sourceIdentifier = sourceCharacter.identifier
@@ -723,8 +727,8 @@ InventoryService.GiveItem = function(itemId, amount, target)
 
         if Config.Debug then
             Log.error("ServerGiveItem: User " ..
-                sourceCharacter.firstname ..
-                ' ' .. sourceCharacter.lastname .. '#' .. _source .. ' ' .. 'inventory item ' .. itemName .. ' not found')
+                    sourceCharacter.firstname ..
+                    ' ' .. sourceCharacter.lastname .. '#' .. _source .. ' ' .. 'inventory item ' .. itemName .. ' not found')
         end
         TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
         SvUtils.Trem(_source)
@@ -763,8 +767,8 @@ InventoryService.GiveItem = function(itemId, amount, target)
         --TriggerEvent("vorpinventory:itemlog", _source, _target, itemName, amount)
         local title = T.gaveMoney
         local description = "**Amount** `" ..
-            amount .. "`\n **Item** `" .. itemName .. "`" .. "\n **Playername** `" .. charname .. "`\n **to** `" ..
-            charname1 .. "`"
+                amount .. "`\n **Item** `" .. itemName .. "`" .. "\n **Playername** `" .. charname .. "`\n **to** `" ..
+                charname1 .. "`"
         Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
     end
 
@@ -905,8 +909,8 @@ InventoryService.canStoreWeapon = function(identifier, charIdentifier, invId, na
 
     if invData.limitedWeapons[string.lower(name)] then
         -- if it does exists in the table the weapns name
-        local weapons = SvUtils.FindAllWeaponsByName(invId, name) -- find name
-        local weaponCount = #weapons + amount                     -- do the math
+        local weapons = SvUtils.FindAllWeaponsByName(invId, name)  -- find name
+        local weaponCount = #weapons + amount                      -- do the math
         if weaponCount > invData.limitedWeapons[string.lower(name)] then
             -- if ammount is greater then cancel
             return false
@@ -1036,18 +1040,18 @@ InventoryService.DiscordLogs = function(inventory, itemName, amount, playerName,
     if type == "Move" then
         local webhook = Config.WebHook.CustomInventoryMoveTo
         local description = "**Player:**`" ..
-            playerName ..
-            "`\n **Moved to:** `" .. inventory .. "` \n**Weapon** `" ..
-            itemName .. "`\n **Count:** `" .. amount .. "`"
+                playerName ..
+                "`\n **Moved to:** `" .. inventory .. "` \n**Weapon** `" ..
+                itemName .. "`\n **Count:** `" .. amount .. "`"
         Core.AddWebhook(title, webhook, description, color, names, logo, footerlogo, avatar)
     end
 
     if type == "Take" then
         local webhook = Config.WebHook.CustomInventoryTakeFrom
         local description = "**Player:**`" ..
-            playerName ..
-            "`\n **Took from:** `" .. inventory .. "`\n **item** `" ..
-            itemName .. "`\n **amount:** `" .. amount .. "`"
+                playerName ..
+                "`\n **Took from:** `" .. inventory .. "`\n **item** `" ..
+                itemName .. "`\n **amount:** `" .. amount .. "`"
         Core.AddWebhook(title, webhook, description, color, names, logo, footerlogo, avatar)
     end
 end
@@ -1083,12 +1087,12 @@ InventoryService.MoveToCustom = function(obj)
             -- if accept weapons
             if InventoryService.canStoreWeapon(sourceIdentifier, sourceCharIdentifier, invId, item.name, amount) then
                 MySQL.update(
-                    "UPDATE loadout SET identifier = '',curr_inv = @invId WHERE charidentifier = @charid AND id = @weaponId;"
-                    , {
-                        ['invId'] = invId,
-                        ['charid'] = sourceCharIdentifier,
-                        ['weaponId'] = item.id,
-                    })
+                        "UPDATE loadout SET identifier = '',curr_inv = @invId WHERE charidentifier = @charid AND id = @weaponId;"
+                , {
+                            ['invId'] = invId,
+                            ['charid'] = sourceCharIdentifier,
+                            ['weaponId'] = item.id,
+                        })
 
                 UserWeaponsCacheService:transfer(item.id, "default", invId, sourceCharIdentifier)
 
@@ -1113,7 +1117,7 @@ InventoryService.MoveToCustom = function(obj)
         end
 
         if item.count >= amount and
-            InventoryService.canStoreItem(sourceIdentifier, sourceCharIdentifier, invId, item.name, amount) then
+                InventoryService.canStoreItem(sourceIdentifier, sourceCharIdentifier, invId, item.name, amount) then
             InventoryService.subItem(_source, "default", item.id, amount)
             TriggerClientEvent("vorpInventory:removeItem", _source, item.name, item.id, amount)
 
@@ -1122,8 +1126,8 @@ InventoryService.MoveToCustom = function(obj)
                     return
                 end
                 TriggerClientEvent("vorp:TipRight", _source,
-                    "you have Moved " .. amount .. " " .. item.label .. " to storage",
-                    2000)
+                        "you have Moved " .. amount .. " " .. item.label .. " to storage",
+                        2000)
                 InventoryAPI.reloadInventory(_source, invId)
                 InventoryService.DiscordLogs(invId, item.name, amount, sourceName, "Move")
             end)
@@ -1154,25 +1158,23 @@ InventoryService.TakeFromCustom = function(obj)
     end
 
     if item.type == "item_weapon" then
-        local weapon = UserWeaponsCacheService:getWeapon(invId, item.id)
 
-        if not weapon then
-            return
-        end
+        local weapon = UserWeaponsCacheService:getWeapon(invId, item.id)
 
         InventoryAPI.canCarryAmountWeapons(_source, 1, function(res)
             if res then
                 MySQL.update(
-                    "UPDATE loadout SET curr_inv = 'default', charidentifier = @charid, identifier = @identifier WHERE id = @weaponId;"
-                    , {
-                        ['charid'] = sourceCharIdentifier,
-                        ['weaponId'] = item.id,
-                        ['identifier'] = sourceIdentifier
-                    })
+                        "UPDATE loadout SET curr_inv = 'default', charidentifier = @charid, identifier = @identifier WHERE id = @weaponId;"
+                , {
+                            ['charid'] = sourceCharIdentifier,
+                            ['weaponId'] = item.id,
+                            ['identifier'] = sourceIdentifier
+                        })
 
                 UserWeaponsCacheService:transfer(item.id, invId, "default", sourceCharIdentifier, sourceIdentifier)
+
                 TriggerClientEvent("vorpInventory:receiveWeapon", _source, item.id, sourceIdentifier, weapon:getName(),
-                    weapon:getAllAmmo())
+                        weapon:getAllAmmo())
                 InventoryAPI.reloadInventory(_source, invId)
                 InventoryService.DiscordLogs(invId, item.name, amount, sourceName, "Take")
                 local text = " you have Taken From storage "
@@ -1198,12 +1200,12 @@ InventoryService.TakeFromCustom = function(obj)
                         return
                     end
                     TriggerClientEvent("vorpInventory:receiveItem", _source, item.name, itemAdded:getId(), amount,
-                        itemAdded:getMetadata())
+                            itemAdded:getMetadata())
                     InventoryAPI.reloadInventory(_source, invId)
                     InventoryService.DiscordLogs(invId, item.name, amount, sourceName, "Take")
                     TriggerClientEvent("vorp:TipRight", _source,
-                        "you have Taken " .. amount .. " " .. item.label .. " from storage ",
-                        2000)
+                            "you have Taken " .. amount .. " " .. item.label .. " from storage ",
+                            2000)
                 end)
             else
                 TriggerClientEvent("vorp:TipRight", _source, T.fullInventory, 2000)
