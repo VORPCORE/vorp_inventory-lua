@@ -854,7 +854,7 @@ InventoryService.getInventory = function()
             TriggerClientEvent("vorpInventory:giveInventory", _source, json.encode(inventory))
         end)
 
-        local charWeapons = UserWeaponsCacheService:getByCharId('default', sourceCharId, sourceIdentifier)
+        local charWeapons = UserWeaponsCacheService:getByCharId('default', sourceCharId)
         local userWeapons = {}
         for _, weapon in pairs(charWeapons) do
             if weapon.currInv == "default" and weapon.dropped == 0 then

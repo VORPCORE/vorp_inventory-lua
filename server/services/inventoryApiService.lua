@@ -181,7 +181,6 @@ end
 InventoryAPI.getUserWeapons = function(player, cb)
 
     local charId = UserWeaponsCacheService:getCharId(player)
-    local identifier UserWeaponsCacheService:getIdentifier(player)
 
     if not charId then
         local NO_WEAPONS_FOUND = {}
@@ -189,7 +188,7 @@ InventoryAPI.getUserWeapons = function(player, cb)
         return
     end
 
-    local charWeapons = UserWeaponsCacheService:getByCharId('default', charId, identifier)
+    local charWeapons = UserWeaponsCacheService:getByCharId('default', charId)
 
     ---@type WrappedCharWeapons[]
     local wrappedCharWeapons = {}
@@ -1121,7 +1120,7 @@ end
 
 InventoryAPI.getUserTotalCountWeapons = function(identifier, charId)
     local userTotalWeaponCount = 0
-    local charWeapons = UserWeaponsCacheService:getByCharId('default', charId, identifier)
+    local charWeapons = UserWeaponsCacheService:getByCharId('default', charId)
     for _, charWeapon in pairs(charWeapons) do
         if not contains(Config.notweapons, string.upper(charWeapon:getName())) then
             userTotalWeaponCount = userTotalWeaponCount + 1
