@@ -100,7 +100,7 @@ end
 function Weapon:quitComponent(component)
 	local componentExists = FindIndexOf(self.components, component)
 	if componentExists then
-		table.remove(self.components, componentExists)
+		table.remove(self.componentExists, componentExists)
 		return true
 	end
 	return false

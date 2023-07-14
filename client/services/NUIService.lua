@@ -1,4 +1,3 @@
----@diagnostic disable: undefined-global
 NUIService = {}
 local isProcessingPay = false
 InInventory = false
@@ -397,16 +396,17 @@ NUIService.NUIGiveItem = function(obj)
 
 		local data = Utils.expandoProcessing(obj)
 		local data2 = Utils.expandoProcessing(data.data)
-		local isvalid = Validator.IsValidNuiCallback(data.hsn)
 
+		local isvalid = Validator.IsValidNuiCallback(data.hsn)
 		if isvalid then
 			for _, player in pairs(nearestPlayers) do
 				if player ~= PlayerId() then
 					if GetPlayerServerId(player) == tonumber(data.player) then
-						--local itemName = data2.item
+						local itemName = data2.item
 						local itemId = data2.id
-						--local metadata = data2.metadata
+						local metadata = data2.metadata
 						local target = tonumber(data.player)
+
 
 						if data2.type == "item_money" then
 							if isProcessingPay then return end
@@ -454,8 +454,8 @@ end
 NUIService.NUIDropItem = function(obj)
 	if candrop then
 		local aux = Utils.expandoProcessing(obj)
-		local isvalid = Validator.IsValidNuiCallback(aux.hsn)
 
+		local isvalid = Validator.IsValidNuiCallback(aux.hsn)
 		if isvalid then
 			local itemName = aux.item
 			local itemId = aux.id
@@ -495,8 +495,9 @@ NUIService.NUIDropItem = function(obj)
 
 					if weapon:getUsed() then
 						weapon:setUsed(false)
-						weapon:UnequipWeapon()
+						RemoveWeaponFromPed(PlayerPedId(), GetHashKey(weapon:getName()), true, 0)
 					end
+
 					UserWeapons[aux.id] = nil
 				end
 			end
@@ -516,9 +517,9 @@ local function getGuidFromItemId(inventoryId, itemData, category, slotId)
 		itemData = 0
 	end
 
-	local success = Citizen.InvokeNative(0x886DFD3E185C8A89, inventoryId, itemData, category, slotId, outItem:Buffer()) --InventoryGetGuidFromItemid
+	local success = Citizen.InvokeNative("0x886DFD3E185C8A89", inventoryId, itemData, category, slotId, outItem:Buffer()) --InventoryGetGuidFromItemid
 	if success then
-		return outItem:Buffer()                                                                                      --Seems to not return anythign diff. May need to pull from native above
+		return outItem:Buffer()                                                                                        --Seems to not return anythign diff. May need to pull from native above
 	else
 		return nil
 	end
@@ -530,7 +531,7 @@ local function addWardrobeInventoryItem(itemName, slotHash)
 	local inventoryId = 1
 
 	-- _ITEMDATABASE_IS_KEY_VALID
-	local isValid = Citizen.InvokeNative(0x6D5D51B188333FD1, itemHash, 0) --ItemdatabaseIsKeyValid
+	local isValid = Citizen.InvokeNative("0x6D5D51B188333FD1", itemHash, 0) --ItemdatabaseIsKeyValid
 	if not isValid then
 		return false
 	end
@@ -548,51 +549,51 @@ local function addWardrobeInventoryItem(itemName, slotHash)
 	local itemData = DataView.ArrayBuffer(8 * 13)
 
 	-- _INVENTORY_ADD_ITEM_WITH_GUID
-	local isAdded = Citizen.InvokeNative(0xCB5D11F9508A928D, inventoryId, itemData:Buffer(), wardrobeItem, itemHash,
+	local isAdded = Citizen.InvokeNative("0xCB5D11F9508A928D", inventoryId, itemData:Buffer(), wardrobeItem, itemHash,
 		slotHash, 1, addReason)
 	if not isAdded then
 		return false
 	end
 
 	-- _INVENTORY_EQUIP_ITEM_WITH_GUID
-	local equipped = Citizen.InvokeNative(0x734311E2852760D0, inventoryId, itemData:Buffer(), true)
+	local equipped = Citizen.InvokeNative("0x734311E2852760D0", inventoryId, itemData:Buffer(), true)
 	return equipped;
 end
 
 NUIService.NUIUseItem = function(data)
-	if data.type == "item_standard" then
+	--print("Timer before trigger - " .. timerUse)
+	if data["type"] == "item_standard" then
 		if timerUse <= 0 then
-			TriggerServerEvent("vorp_inventory:useItem", data.item, data.id)
+			TriggerServerEvent("vorp_inventory:useItem", data["item"], data["id"])
 			timerUse = 4000
 		else
 			TriggerEvent('vorp:TipRight', T.slow, 5000)
 		end
-
-	elseif data.type == "item_weapon" then
-		local ped = PlayerPedId()
-		local _, weaponHash = GetCurrentPedWeapon(ped, false, 0, false)
-		local weaponId = tonumber(data.id)
-		local weapName = joaat(UserWeapons[weaponId]:getName())
-		local isWeaponAGun = Citizen.InvokeNative(0x705BE297EEBDB95D, weapName)
-		local isWeaponOneHanded = Citizen.InvokeNative(0xD955FEE4B87AFA07, weapName)
-		local isArmed = Citizen.InvokeNative(0xCB690F680A3EA971,ped, 4)
+	elseif data["type"] == "item_weapon" then
+		local _, weaponHash = GetCurrentPedWeapon(PlayerPedId(), false, 0, false)
+		local weaponId = tonumber(data["id"])
+		local isWeaponARevolver = Citizen.InvokeNative(0xC212F1D05A8232BB, GetHashKey(UserWeapons[weaponId]:getName()))
+		local isWeaponAPistol = Citizen.InvokeNative(0xDDC64F5E31EEDAB6, GetHashKey(UserWeapons[weaponId]:getName()))
+		local isArmed = Citizen.InvokeNative(0xCB690F680A3EA971, PlayerPedId(), 4)
 		local notdual = false
 
-		if (isWeaponAGun and isWeaponOneHanded) and isArmed then
-			addWardrobeInventoryItem("CLOTHING_ITEM_M_OFFHAND_000_TINT_004", 0xF20B6B4A)
-			addWardrobeInventoryItem("UPGRADE_OFFHAND_HOLSTER", 0x39E57B01)
-			UserWeapons[weaponId]:setUsed2(true)
-			if weaponHash == weapName then
-				UserWeapons[weaponId]:equipwep(true)
-			else
-				UserWeapons[weaponId]:equipwep()
-			end
+		if (isWeaponARevolver or isWeaponAPistol) and isArmed then
+			local isWeaponUsedARevolver = Citizen.InvokeNative(0xC212F1D05A8232BB, weaponHash)
+			local isWeaponUsedAPistol = Citizen.InvokeNative(0xDDC64F5E31EEDAB6, weaponHash)
 
-			UserWeapons[weaponId]:loadComponents()
-			UserWeapons[weaponId]:setUsed(true)
-			TriggerServerEvent("syn_weapons:weaponused", data)
+			if isWeaponUsedAPistol or isWeaponUsedARevolver then
+				addWardrobeInventoryItem("CLOTHING_ITEM_M_OFFHAND_000_TINT_004", 0xF20B6B4A)
+				addWardrobeInventoryItem("UPGRADE_OFFHAND_HOLSTER", 0x39E57B01)
+				UserWeapons[weaponId]:setUsed2(true)
+				UserWeapons[weaponId]:equipwep()
+				UserWeapons[weaponId]:loadComponents()
+				UserWeapons[weaponId]:setUsed(true)
+				TriggerServerEvent("syn_weapons:weaponused", data)
+			else
+				notdual = true
+			end
 		elseif not UserWeapons[weaponId]:getUsed() and
-			not Citizen.InvokeNative(0x8DECB02F88F428BC, ped, weapName, 0, true) then
+			not Citizen.InvokeNative(0x8DECB02F88F428BC, PlayerPedId(), GetHashKey(UserWeapons[weaponId]:getName()), 0, true) then
 			notdual = true
 		end
 
@@ -772,7 +773,7 @@ Citizen.CreateThread(function()
 				NUIService.CloseInv()
 			end
 		end
-		Wait(0)
+		Wait(1)
 	end
 end)
 
