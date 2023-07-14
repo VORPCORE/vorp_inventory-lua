@@ -55,7 +55,7 @@ function WrapDbWeaponAndCache(db_weapon)
             components = comp,
             used = used,
             used2 = used2,
-            charId = db_weapon.charidentifier or '',
+            charId = db_weapon.charidentifier or nil,
             currInv = db_weapon.curr_inv,
             dropped = db_weapon.dropped
         })
