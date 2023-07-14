@@ -3,6 +3,7 @@
 ---@alias weaponId string
 ---@alias invId string
 
+
 ---@type table<invId, table<sourceId, table<itemId, Item>>|table<itemId, Item>>
 UsersInventories = {
 	default = {}

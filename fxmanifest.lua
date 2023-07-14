@@ -5,6 +5,7 @@ author 'VORP Core'
 description 'VORP Inventory'
 rdr3_warning 'I acknowledge that this is a prerelease build of RedM, and I am aware my resources *will* become incompatible once RedM ships.'
 ui_page 'html/ui.html'
+lua54 'yes'
 
 client_scripts {
   'client/models/*.lua',
@@ -13,6 +14,7 @@ client_scripts {
   'client/controllers/*.lua',
   'client/*.lua',
 }
+
 server_scripts {
   'server/models/*.lua',
   'server/handler/*.lua',

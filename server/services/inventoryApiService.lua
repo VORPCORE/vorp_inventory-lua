@@ -496,12 +496,9 @@ InventoryAPI.addItem = function(player, name, amount, metadata, cb)
 	local itemCanRemove = svItem:getCanRemove()
 	local itemDefaultMetadata = svItem:getMetadata()
 	local ItemDesc = svItem:getDesc()
-
-
 	InventoryAPI.canCarryItem(_source, name, amount, function(result)
 		if result then
 			local item = SvUtils.FindItemByNameAndMetadata("default", identifier, name, metadata)
-
 			if item ~= nil then -- Item already exist in inventory
 				item:addCount(amount)
 				DbService.SetItemAmount(charIdentifier, item:getId(), item:getCount())
@@ -744,7 +741,6 @@ InventoryAPI.canCarryAmountWeapons = function(player, amount, cb, weaponName)
 	if Config.JobsAllowed[job] then
 		DefaultAmount = Config.JobsAllowed[job]
 	end
-
 	local sourceInventoryWeaponCount = InventoryAPI.getUserTotalCountWeapons(identifier, charId) + amount
 
 	if Config.MaxItemsInInventory.Weapons ~= -1 then
@@ -864,7 +860,6 @@ InventoryAPI.registerWeapon = function(_target, wepname, ammos, components, comp
 
 		if not notListed then
 			local targetTotalWeaponCount = InventoryAPI.getUserTotalCountWeapons(targetIdentifier, targetCharId) + 1
-
 			if targetTotalWeaponCount > DefaultAmount then
 				TriggerClientEvent("vorp:TipRight", _target, T.cantweapons2, 2000)
 				if Config.Debug then
@@ -875,118 +870,126 @@ InventoryAPI.registerWeapon = function(_target, wepname, ammos, components, comp
 			end
 		end
 	end
-
 	if ammos then
 		for key, value in pairs(ammos) do
 			ammo[key] = value
 		end
 	end
-
 	if components then
 		for key, _ in pairs(components) do
 			component[#component + 1] = key
 		end
 	end
 
-	if canGive then
-		if not comps then
-			MySQL.query(
-				"INSERT INTO loadout (identifier, charidentifier, name, ammo, components) VALUES (@identifier, @charid, @name, @ammo, @components)",
-				{
-					['identifier'] = targetIdentifier,
-					['charid'] = targetCharId,
-					['name'] = name,
-					['ammo'] = json.encode(ammo),
-					['components'] = json.encode(component)
 
-				}, function(result)
-					local weaponId = result.insertId
-					local newWeapon = Weapon:New({
-						id = weaponId,
-						propietary = targetIdentifier,
-						name = name,
-						ammo = ammo,
-						used = false,
-						used2 = false,
-						charId = targetCharId,
-						currInv = "default",
-						dropped = 0,
-					})
-					UsersWeapons["default"][weaponId] = newWeapon
-					TriggerEvent("syn_weapons:registerWeapon", weaponId)
-					TriggerClientEvent("vorpInventory:receiveWeapon", _target, weaponId, targetIdentifier, name, ammo)
-					return cb(true)
-				end)
-		else
-			MySQL.query(
-				"INSERT INTO loadout (identifier, charidentifier, name, ammo, components, comps) VALUES (@identifier, @charid, @name, @ammo, @components, @comps)",
-				{
-					['identifier'] = targetIdentifier,
-					['charid'] = targetCharId,
-					['name'] = name,
-					['ammo'] = json.encode(ammo),
-					['components'] = json.encode(component),
-					['comps'] = json.encode(comps),
-				},
-				function(result)
-					local weaponId = result.insertId
-					local newWeapon = Weapon:New({
-						id = weaponId,
-						propietary = targetIdentifier,
-						name = name,
-						ammo = ammo,
-						used = false,
-						used2 = false,
-						charId = targetCharId,
-						currInv = "default",
-						dropped = 0,
-					})
-
-					UsersWeapons["default"][weaponId] = newWeapon
-					TriggerEvent("syn_weapons:registerWeapon", weaponId)
-					TriggerClientEvent("vorpInventory:receiveWeapon", _target, weaponId, targetIdentifier, name, ammo)
-					return cb(true)
-				end)
-		end
-	else
-		Log.Warning("Weapon: [^2" .. name .. "^7] ^1 do not exist on the config or its a WRONG HASH")
-		return cb(nil)
-	end
+    if canGive then
+        if not comps then
+            MySQL.query(
+                    "INSERT INTO loadout (identifier, charidentifier, name, ammo, components) VALUES (@identifier, @charid, @name, @ammo, @components)",
+                    {
+                        ['identifier'] = targetIdentifier,
+                        ['charid'] = targetCharId,
+                        ['name'] = name,
+                        ['ammo'] = json.encode(ammo),
+                        ['components'] = json.encode(component)
+                    }, function(result)
+                        local weaponId = result.insertId
+                        local newWeapon = Weapon:New({
+                            id = weaponId,
+                            propietary = targetIdentifier,
+                            name = name,
+                            ammo = ammo,
+                            used = false,
+                            used2 = false,
+                            charId = targetCharId,
+                            currInv = "default",
+                            dropped = 0,
+                        })
+                        UserWeaponsCacheService:add('default', newWeapon)
+                        TriggerEvent("syn_weapons:registerWeapon", weaponId)
+                        TriggerClientEvent("vorpInventory:receiveWeapon", _target, weaponId, targetIdentifier, name, ammo)
+                        return cb(true)
+                    end)
+        else
+            MySQL.query(
+                    "INSERT INTO loadout (identifier, charidentifier, name, ammo, components, comps) VALUES (@identifier, @charid, @name, @ammo, @components, @comps)",
+                    {
+                        ['identifier'] = targetIdentifier,
+                        ['charid'] = targetCharId,
+                        ['name'] = name,
+                        ['ammo'] = json.encode(ammo),
+                        ['components'] = json.encode(component),
+                        ['comps'] = json.encode(comps),
+                    },
+                    function(result)
+                        local weaponId = result.insertId
+                        local newWeapon = Weapon:New({
+                            id = weaponId,
+                            propietary = targetIdentifier,
+                            name = name,
+                            ammo = ammo,
+                            used = false,
+                            used2 = false,
+                            charId = targetCharId,
+                            currInv = "default",
+                            dropped = 0,
+                        })
+                        UserWeaponsCacheService:add('default', newWeapon)
+                        TriggerEvent("syn_weapons:registerWeapon", weaponId)
+                        TriggerClientEvent("vorpInventory:receiveWeapon", _target, weaponId, targetIdentifier, name, ammo)
+                        return cb(true)
+                    end)
+        end
+    else
+        Log.Warning("Weapon: [^2" .. name .. "^7] ^1 do not exist on the config or its a WRONG HASH")
+        return cb(nil)
+    end
 end
 
-
 InventoryAPI.giveWeapon2 = function(player, weaponId, target)
-	local _source = player
-	local sourceCharacter = Core.getUser(_source).getUsedCharacter
-	local sourceIdentifier = sourceCharacter.identifier
-	local sourceCharId = sourceCharacter.charIdentifier
-	local job = sourceCharacter.job
-	local _target = tonumber(target)
-	local userWeapons = UsersWeapons["default"]
-	userWeapons[weaponId]:setPropietary('')
-	local DefaultAmount = Config.MaxItemsInInventory.Weapons
+    local _source = player
+    local sourceCharacter = Core.getUser(_source).getUsedCharacter
+    local sourceIdentifier = sourceCharacter.identifier
+    local sourceCharId = sourceCharacter.charIdentifier
+    local job = sourceCharacter.job
+    local _target = tonumber(target)
+    local userWeapons = UsersWeapons["default"]
+    userWeapons[weaponId]:setPropietary('')
+    local DefaultAmount = Config.MaxItemsInInventory.Weapons
+    local weaponName = weapon:getName()
+    local notListed = false
 
-	if Config.JobsAllowed[job] then
-		DefaultAmount = Config.JobsAllowed[job]
-	end
+    if Config.JobsAllowed[job] then
+        DefaultAmount = Config.JobsAllowed[job]
+    end
 
-	if DefaultAmount ~= 0 then
-		local sourceTotalWeaponCount = InventoryAPI.getUserTotalCountWeapons(sourceIdentifier, sourceCharId) + 1
+    if DefaultAmount ~= 0 then
+        if weaponName then
+            -- does weapon given matches the list of weapons that do not count as weapons
+            if SharedUtils.IsValueInArray(string.upper(weaponName), Config.notweapons) then
+                notListed = true
+            end
+        end
 
-		if sourceTotalWeaponCount > DefaultAmount then
-			TriggerClientEvent("vorp:TipRight", _source, T.cantweapons, 2000)
-			if Config.Debug then
-				Log.print(sourceCharacter.firstname ..
-					" " .. sourceCharacter.lastname .. " ^1Can't carry more weapons^7")
-			end
-			return
-		end
-	end
-	local weaponcomps = {}
-	local result = MySQL.single.await('SELECT comps FROM loadout WHERE id = @id ', { ['id'] = weaponId })
-	if result then
-		weaponcomps = json.decode(result.comps)
-	end
+        if not notListed then
+            local sourceTotalWeaponCount = InventoryAPI.getUserTotalCountWeapons(sourceIdentifier, sourceCharId) + 1
+
+            if sourceTotalWeaponCount > DefaultAmount then
+                TriggerClientEvent("vorp:TipRight", _source, T.cantweapons, 2000)
+                if Config.Debug then
+                    Log.print(sourceCharacter.firstname ..
+                            " " .. sourceCharacter.lastname .. " ^1Can't carry more weapons^7")
+                end
+                return
+            end
+        end
+    end
+
+    local weaponcomps = {}
+    local result = MySQL.single.await('SELECT comps FROM loadout WHERE id = @id ', { ['id'] = weaponId })
+    if result then
+        weaponcomps = json.decode(result.comps)
+    end
 
 	local weaponname = userWeapons[weaponId]:getName()
 	local ammo = { ["nothing"] = 0 }
@@ -1002,15 +1005,17 @@ InventoryAPI.giveWeapon2 = function(player, weaponId, target)
 end
 
 InventoryAPI.giveWeapon = function(player, weaponId, target)
-	local _source = player
-	local sourceCharacter = Core.getUser(_source).getUsedCharacter
-	local sourceIdentifier = sourceCharacter.identifier
-	local sourceCharId = sourceCharacter.charIdentifier
-	local job = sourceCharacter.job
-	local _target = tonumber(target)
-	local targetisPlayer = false
-	local userWeapons = UsersWeapons["default"]
-	local DefaultAmount = Config.MaxItemsInInventory.Weapons
+    local _source = player
+    local sourceCharacter = Core.getUser(_source).getUsedCharacter
+    local sourceIdentifier = sourceCharacter.identifier
+    local sourceCharId = sourceCharacter.charIdentifier
+    local job = sourceCharacter.job
+    local _target = tonumber(target)
+    local targetisPlayer = false
+    local userWeapons = UsersWeapons["default"]
+    local DefaultAmount = Config.MaxItemsInInventory.Weapons
+    local weaponName = weapon:getName()
+    local notListed = false
 
 	for _, pl in pairs(GetPlayers()) do
 		if tonumber(pl) == _target then
@@ -1023,27 +1028,33 @@ InventoryAPI.giveWeapon = function(player, weaponId, target)
 		DefaultAmount = Config.JobsAllowed[job]
 	end
 
-	if DefaultAmount ~= 0 then
-		local sourceTotalWeaponCount = InventoryAPI.getUserTotalCountWeapons(sourceIdentifier, sourceCharId) + 1
+    if DefaultAmount ~= 0 then
+        if weaponName then
+            -- does weapon given matches the list of weapons that do not count as weapons
+            if SharedUtils.IsValueInArray(string.upper(weaponName), Config.notweapons) then
+                notListed = true
+            end
+        end
+        if not notListed then
+            local sourceTotalWeaponCount = InventoryAPI.getUserTotalCountWeapons(sourceIdentifier, sourceCharId) + 1
 
-		if sourceTotalWeaponCount > DefaultAmount then
-			TriggerClientEvent("vorp:TipRight", _source, T.cantweapons, 2000)
-			if Config.Debug then
-				Log.print(sourceCharacter.firstname ..
-					" " .. sourceCharacter.lastname .. " ^1Can't carry more weapons^7")
-			end
-			return
-		end
-	end
+            if sourceTotalWeaponCount > DefaultAmount then
+                TriggerClientEvent("vorp:TipRight", _source, T.cantweapons, 2000)
+                if Config.Debug then
+                    Log.print(sourceCharacter.firstname ..
+                            " " .. sourceCharacter.lastname .. " ^1Can't carry more weapons^7")
+                end
+                return
+            end
+        end
+    end
 
 	if userWeapons[weaponId] then
 		userWeapons[weaponId]:setPropietary(sourceIdentifier)
 		userWeapons[weaponId]:setCharId(sourceCharId)
-
 		local weaponPropietary = userWeapons[weaponId]:getPropietary()
 		local weaponName = userWeapons[weaponId]:getName()
 		local weaponAmmo = userWeapons[weaponId]:getAllAmmo()
-
 		MySQL.update("UPDATE loadout SET identifier = @identifier, charidentifier = @charid WHERE id = @id",
 			{
 				['identifier'] = sourceIdentifier,
@@ -1051,7 +1062,6 @@ InventoryAPI.giveWeapon = function(player, weaponId, target)
 				['id'] = weaponId
 			}, function()
 			end)
-
 		if targetisPlayer then
 			TriggerClientEvent('vorp:ShowAdvancedRightNotification', _target, T.youGaveWeapon, "inventory_items",
 				weaponName,
