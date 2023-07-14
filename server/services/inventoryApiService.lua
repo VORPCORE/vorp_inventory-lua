@@ -819,7 +819,7 @@ InventoryAPI.deletegun = function(player, weaponId, cb)
     local invId = "default"
     local weapon = UserWeaponsCacheService:getWeapon(invId, weaponId)
 
-    UserWeaponsCacheService:remove(invId, weapon)
+    UserWeaponsCacheService:remove("default", weapon)
 
     MySQL.query("DELETE FROM loadout WHERE id=@id", { ['id'] = weaponId })
     if cb then
