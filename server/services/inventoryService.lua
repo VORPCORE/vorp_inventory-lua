@@ -418,12 +418,14 @@ InventoryService.subWeapon = function(target, weaponId)
 	local charId = sourceCharacter.charIdentifier
 	local userWeapons = UsersWeapons["default"]
 
-	if weaponid and userWeapons[weaponId] then
+	if weaponId and userWeapons[weaponId] then
 		userWeapons[weaponId]:setPropietary('')
 
-		MySQL.update("UPDATE loadout SET identifier = '', charidentifier = @charId WHERE id = @id", {
+
+		MySQL.update("UPDATE loadout SET identifier = '', dropped = @dropped, charidentifier = @charId WHERE id = @id", {
 			['charId'] = charId,
-			['id'] = weaponId
+			['id'] = weaponId,
+			['dropped'] = 1
 		}, function()
 		end)
 	end
@@ -478,47 +480,48 @@ InventoryService.onPickup = function(obj)
 				end)
 			end
 		else
-            		-- weapons
-	    		local notListed = false
-            		local sourceInventoryWeaponCount = 0
+			-- weapons
+			local notListed = false
+			local sourceInventoryWeaponCount = 0
 			local DefaultAmount = Config.MaxItemsInInventory.Weapons
-           		local weaponId = ItemPickUps[obj].weaponid
+			local weaponId = ItemPickUps[obj].weaponid
+			local weapon = userWeapons[weaponId]
 			local wepname = weapon:getName()
 
 			if Config.JobsAllowed[job] then
 				DefaultAmount = Config.JobsAllowed[job]
 			end
 
-            if DefaultAmount ~= 0 then
-                if wepname then
-                    if SharedUtils.IsValueInArray(string.upper(wepname), Config.notweapons) then
-                        notListed = true
-                    end
-                end
-                if not notListed then
-                    sourceInventoryWeaponCount = InventoryAPI.getUserTotalCountWeapons(identifier, charId) + 1
-                end
-                if sourceInventoryWeaponCount <= DefaultAmount then
-                    local weaponObj = ItemPickUps[obj].obj
-                    weapon:setDropped(0)
-                    local title = T.weppickup
-                    local description = "**Weapon** `" ..
-                        wepname .. "`" .. "\n **Playername** `" .. charname .. "`\n"
-                    Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
-                    TriggerClientEvent("vorpInventory:sharePickupClient", -1, name, weaponObj, 1, metadata,
-                        ItemPickUps[obj].coords, 2,
-                        weaponId)
-                    TriggerClientEvent("vorpInventory:removePickupClient", -1, weaponObj)
-                    TriggerClientEvent("vorpInventory:playerAnim", _source, obj)
-                    InventoryService.addWeapon(_source, weaponId)
-                    ItemPickUps[obj] = nil
-                end
-            else
-                TriggerClientEvent("vorp:TipRight", _source, T.fullInventoryWeapon, 2000)
-            end
-        end
-    end
-    SvUtils.Trem(_source, false)
+			if DefaultAmount ~= 0 then
+				if wepname then
+					if SharedUtils.IsValueInArray(string.upper(wepname), Config.notweapons) then
+						notListed = true
+					end
+				end
+				if not notListed then
+					sourceInventoryWeaponCount = InventoryAPI.getUserTotalCountWeapons(identifier, charId) + 1
+				end
+				if sourceInventoryWeaponCount <= DefaultAmount then
+					local weaponObj = ItemPickUps[obj].obj
+					weapon:setDropped(0)
+					local title = T.weppickup
+					local description = "**Weapon** `" ..
+						wepname .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+					Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
+					TriggerClientEvent("vorpInventory:sharePickupClient", -1, name, weaponObj, 1, metadata,
+						ItemPickUps[obj].coords, 2,
+						weaponId)
+					TriggerClientEvent("vorpInventory:removePickupClient", -1, weaponObj)
+					TriggerClientEvent("vorpInventory:playerAnim", _source, obj)
+					InventoryService.addWeapon(_source, weaponId)
+					ItemPickUps[obj] = nil
+				end
+			else
+				TriggerClientEvent("vorp:TipRight", _source, T.fullInventoryWeapon, 2000)
+			end
+		end
+	end
+	SvUtils.Trem(_source, false)
 end
 
 InventoryService.onPickupMoney = function(obj)
@@ -1134,7 +1137,7 @@ InventoryService.TakeFromCustom = function(obj)
 						['weaponId'] = item.id,
 						['identifier'] = sourceIdentifier
 					}
-)
+				)
 				UsersWeapons[invId][item.id]:setCurrInv("default")
 				UsersWeapons["default"][item.id] = UsersWeapons[invId][item.id]
 				UsersWeapons["default"][item.id].propietary = sourceIdentifier
@@ -1155,7 +1158,7 @@ InventoryService.TakeFromCustom = function(obj)
 			else
 				TriggerClientEvent("vorp:TipRight", _source, T.fullInventory, 2000)
 			end
-		end,item.name)
+		end, item.name)
 	else
 		InventoryAPI.canCarryItem(_source, item.name, amount, function(res)
 			if res then
