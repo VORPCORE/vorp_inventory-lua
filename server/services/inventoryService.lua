@@ -1158,9 +1158,6 @@ InventoryService.TakeFromCustom = function(obj)
     end
 
     if item.type == "item_weapon" then
-
-        local weapon = UserWeaponsCacheService:getWeapon("default", item.id)
-
         InventoryAPI.canCarryAmountWeapons(_source, 1, function(res)
             if res then
                 MySQL.update(
@@ -1172,6 +1169,8 @@ InventoryService.TakeFromCustom = function(obj)
                         })
 
                 UserWeaponsCacheService:transfer(item.id, invId, "default", sourceCharIdentifier, sourceIdentifier)
+
+                local weapon = UserWeaponsCacheService:getWeapon("default", item.id)
 
                 TriggerClientEvent("vorpInventory:receiveWeapon", _source, item.id, sourceIdentifier, weapon:getName(),
                         weapon:getAllAmmo())
