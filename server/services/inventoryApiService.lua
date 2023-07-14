@@ -974,8 +974,6 @@ InventoryAPI.giveWeapon2 = function(player, weaponId, target)
         weaponcomps = json.decode(result.comps)
     end
 
-    -- TODO Instead of deleting the weapon just transfer it to the other player...
-    -- TODO Why ammo and components will be reset?
     local weaponname = weapon:getName()
     local ammo = { ["nothing"] = 0 }
     local components = { ["nothing"] = 0 }
@@ -1058,8 +1056,18 @@ end
 InventoryAPI.subWeapon = function(player, weaponId)
 
     local _source = player
+    local weapon = _getWeaponFromCache("default", weaponId)
 
-    InventoryService.subWeapon(_source, weaponId)
+    if weapon then
+
+        _removeWeaponFromCacheAfterServerRestart("default", weapon)
+
+        MySQL.update("UPDATE loadout SET identifier = '', charidentifier = '' WHERE id = @id",
+                {
+                    ['id'] = weaponId
+                }, function()
+                end)
+    end
 
     TriggerClientEvent("vorpCoreClient:subWeapon", _source, weaponId)
 end
