@@ -11,15 +11,15 @@ CustomInventoryInfos = {
         name = "Satchel",
         limit = Config.MaxItemsInInventory.Items,
         shared = false,
-        ---@type table<string, number>
+        ---@type table<string, integer>
         limitedItems = {},
         ---@type boolean
         ignoreItemStackLimit = false,
         ---@type boolean
         whitelistItems = false,
-        ---@type table<string, number>
+        ---@type table<string, integer>
         PermissionTakeFrom = {},
-        ---@type table<string, number>
+        ---@type table<string, integer>
         PermissionMoveTo = {},
         ---@type boolean
         UsePermissions = false,
@@ -29,7 +29,7 @@ CustomInventoryInfos = {
         BlackListItems = {},
         ---@type boolean
         whitelistWeapons = false,
-        ---@type table<string, number>
+        ---@type table<string, integer>
         limitedWeapons = {}
     }
 }
@@ -156,7 +156,7 @@ InventoryAPI.getUserWeapon = function(player, cb, weaponId)
 
     local wrappedWeapon = {}
 
-    local foundWeapon = UserWeaponsCacheService:getWeapon("default", weaponId)
+    local foundWeapon = _getWeaponFromCache("default", weaponId)
 
     if foundWeapon then
         wrappedWeapon.name = foundWeapon:getName()
@@ -182,7 +182,7 @@ end
 ---@param cb fun(weapon: WrappedCharWeapons[]):void
 InventoryAPI.getUserWeapons = function(player, cb)
 
-    local charId = UserWeaponsCacheService:getCharId(player)
+    local charId = _getCharId(player)
 
     if not charId then
         local NO_WEAPONS_FOUND = {}
@@ -190,7 +190,7 @@ InventoryAPI.getUserWeapons = function(player, cb)
         return
     end
 
-    local charWeapons = UserWeaponsCacheService:getByCharId('default', charId)
+    local charWeapons = _getWeaponsFromCacheByCharId('default', charId)
 
     ---@type WrappedCharWeapons[]
     local wrappedCharWeapons = {}
@@ -213,8 +213,8 @@ end
 InventoryAPI.getWeaponBullets = function(player, cb, weaponId)
 
     local allAmmo = {}
-    local charId = UserWeaponsCacheService:getCharId(player)
-    local weapon = UserWeaponsCacheService:getWeapon("default", weaponId)
+    local charId = _getCharId(player)
+    local weapon = _getWeaponFromCache("default", weaponId)
 
     if weapon and weapon:getCharId() == charId then
         allAmmo = weapon:getAllAmmo()
@@ -347,8 +347,8 @@ end
 
 InventoryAPI.subBullets = function(weaponId, bulletType, amount)
     local _source = source
-    local charId = UserWeaponsCacheService:getCharId(_source)
-    local weapon = UserWeaponsCacheService:getWeapon("default", weaponId)
+    local charId = _getCharId(_source)
+    local weapon = _getWeaponFromCache("default", weaponId)
 
     if weapon and weapon:getCharId() == charId then
         weapon:subAmmo(bulletType, amount)
@@ -677,10 +677,10 @@ InventoryAPI.subItem = function(player, name, amount, metadata, cb)
 end
 
 ---comment
----@param player number
----@param itemId number
+---@param player integer
+---@param itemId integer
 ---@param metadata table
----@param amount number an ammount if you require to remove this many or set this many
+---@param amount integer an ammount if you require to remove this many or set this many
 ---@param cb any
 ---@return any
 InventoryAPI.setItemMetadata = function(player, itemId, metadata, amount, cb)
@@ -805,9 +805,9 @@ end
 ---@param cb function
 InventoryAPI.deletegun = function(player, weaponId, cb)
     local invId = "default"
-    local weapon = UserWeaponsCacheService:getWeapon(invId, weaponId)
+    local weapon = _getWeaponFromCache(invId, weaponId)
 
-    UserWeaponsCacheService:remove("default", weapon)
+    _removeWeaponFromCache("default", weapon)
 
     MySQL.query("DELETE FROM loadout WHERE id=@id", { ['id'] = weaponId })
     if cb then
@@ -898,7 +898,7 @@ InventoryAPI.registerWeapon = function(target, name, ammos, components, comps, c
                             currInv = "default",
                             dropped = 0,
                         })
-                        UserWeaponsCacheService:add('default', newWeapon)
+                        _addWeaponToCache('default', newWeapon)
                         TriggerEvent("syn_weapons:registerWeapon", weaponId)
                         TriggerClientEvent("vorpInventory:receiveWeapon", _target, weaponId, targetIdentifier, name, ammo)
                         return cb(true)
@@ -928,7 +928,7 @@ InventoryAPI.registerWeapon = function(target, name, ammos, components, comps, c
                             dropped = 0,
                         })
 
-                        UserWeaponsCacheService:add('default', newWeapon)
+                        _addWeaponToCache('default', newWeapon)
                         TriggerEvent("syn_weapons:registerWeapon", weaponId)
                         TriggerClientEvent("vorpInventory:receiveWeapon", _target, weaponId, targetIdentifier, name, ammo)
 
@@ -948,7 +948,7 @@ InventoryAPI.giveWeapon2 = function(player, weaponId, target)
     local sourceCharId = sourceCharacter.charIdentifier
     local job = sourceCharacter.job
     local _target = tonumber(target)
-    local weapon = UserWeaponsCacheService:getWeapon("default", weaponId)
+    local weapon = _getWeaponFromCache("default", weaponId)
     weapon:setPropietary('')
     local DefaultAmount = Config.MaxItemsInInventory.Weapons
 
@@ -997,7 +997,7 @@ InventoryAPI.giveWeapon = function(player, weaponId, target)
     local job = sourceCharacter.job
     local _target = tonumber(target)
     local targetisPlayer = false
-    local weapon = UserWeaponsCacheService:getWeapon("default", weaponId)
+    local weapon = _getWeaponFromCache("default", weaponId)
     local DefaultAmount = Config.MaxItemsInInventory.Weapons
 
     for _, pl in pairs(GetPlayers()) do
@@ -1026,7 +1026,7 @@ InventoryAPI.giveWeapon = function(player, weaponId, target)
 
     if weapon then
 
-        UserWeaponsCacheService:transfer(weaponId, 'default', 'default', sourceCharId)
+        _transferCachedWeapon(weaponId, 'default', 'default', sourceCharId)
         weapon:setPropietary(sourceIdentifier)
 
         local weaponPropietary = weapon:getPropietary()
@@ -1081,7 +1081,7 @@ end
 
 InventoryAPI.getUserTotalCountWeapons = function(identifier, charId)
     local userTotalWeaponCount = 0
-    local charWeapons = UserWeaponsCacheService:getByCharId('default', charId)
+    local charWeapons = _getWeaponsFromCacheByCharId('default', charId)
     for _, charWeapon in pairs(charWeapons) do
         if not contains(Config.notweapons, string.upper(charWeapon:getName())) then
             userTotalWeaponCount = userTotalWeaponCount + 1
@@ -1169,8 +1169,13 @@ InventoryAPI.registerInventory = function(id, name, limit, acceptWeapons, shared
         limitedWeapons = {},
     }
     UsersInventories[id] = {}
+    if UsersWeapons[id] == nil then
+        UsersWeapons[id] = {}
+    end
 
-    UserWeaponsCacheService:registerInv(id)
+    if UserWeaponsByCharId[id] == nil then
+        UserWeaponsByCharId[id] = {}
+    end
 
     if Config.Debug then
         Wait(9000) -- so it doesn't print everywhere in the console
@@ -1228,7 +1233,8 @@ InventoryAPI.removeInventory = function(id, name)
 
     CustomInventoryInfos[id] = nil
     UsersInventories[id] = nil
-    UserWeaponsCacheService:removeInv(id)
+    UsersWeapons[id] = nil
+    UserWeaponsByCharId[id] = nil
 
     if Config.Debug then
         Wait(9000) -- so it doesn't print everywhere in the console
@@ -1285,9 +1291,7 @@ InventoryAPI.reloadInventory = function(player, id)
     end
 
     -- Add weapons as Item to inventory
-    local userWeapons = UserWeaponsCacheService:getInv(id) or {}
-    for weaponId, weapon in pairs(userWeapons) do
-        -- TODO What means invData.shared ?
+    for weaponId, weapon in pairs(UsersWeapons[id]) do
         if invData.shared or weapon.charId == sourceCharIdentifier then
             itemList[#itemList + 1] = Item:New({
                 id = weaponId,
