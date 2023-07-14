@@ -39,14 +39,16 @@ function UserWeaponsCacheService:add(invId, weapon)
 end
 
 ---@param invId invId
----@param weapon_or_id Weapon|weaponId
+---@param weapon Weapon|string
 ---@param keepWithoutOwnerUntilServerRestart boolean|nil Set to true if e.g. weapon was dropped.
-function UserWeaponsCacheService:remove(invId, weapon_or_id, keepWithoutOwnerUntilServerRestart)
+function UserWeaponsCacheService:remove(invId, weapon, keepWithoutOwnerUntilServerRestart)
 
-    local weapon = self:getWeapon(invId, weapon_or_id)
+    if type(weapon) == 'number' then
+        weapon = self:getWeapon(invId, weapon)
+    end
 
     if not weapon then
-        print('^3UserWeaponsCacheService:remove: Unknown weapon^7', 'invId', invId, 'weapon_or_id', weapon_or_id)
+        print('^3UserWeaponsCacheService:remove: Unknown weapon^7')
         return
     end
 
@@ -66,22 +68,15 @@ function UserWeaponsCacheService:remove(invId, weapon_or_id, keepWithoutOwnerUnt
 end
 
 ---@param invId invId
----@param weapon Weapon|weaponId
+---@param weapon Weapon
 function UserWeaponsCacheService:removeAfterServerRestart(invId, weapon)
     self:remove(invId, weapon, true)
 end
 
 ---@param invId invId
----@param weaponId weaponId|Weapon
+---@param weaponId weaponId
 ---@return Weapon|nil
 function UserWeaponsCacheService:getWeapon(invId, weaponId)
-
-    local is_weapon_instance = weaponId and type(weaponId) == 'table' and weaponId.getAllAmmo
-
-    if is_weapon_instance then
-        return weaponId
-    end
-
     return (self._userWeapons[invId] or {})[weaponId] or nil
 end
 
