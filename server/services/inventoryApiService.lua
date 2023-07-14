@@ -172,44 +172,29 @@ InventoryAPI.getUserWeapon = function(player, cb, weaponId)
 	cb(weapon)
 end
 
----@class WrappedCharWeapons
----@field name string
----@field id number
----@field propietary string
----@field used boolean
----@field ammo table
----@field desc string
-
----@param player number
----@param cb fun(weapon: WrappedCharWeapons[]):void
 InventoryAPI.getUserWeapons = function(player, cb)
 	local _source = player
-    local charId = ((Core.getUser(player) or {}).getUsedCharacter or {}).charIdentifier
+	local sourceCharacter = Core.getUser(_source).getUsedCharacter
+	local identifier = sourceCharacter.identifier
+	local charidentifier = sourceCharacter.charIdentifier
+	local usersWeapons = UsersWeapons["default"]
 
-    if not charId then
-        local NO_WEAPONS_FOUND = {}
-        cb(NO_WEAPONS_FOUND)
-        return
-    end
+	local userWeapons2 = {}
 
-    local charWeapons = _getWeaponsFromCacheByCharId('default', charId)
-
-    ---@type WrappedCharWeapons[]
-    local wrappedCharWeapons = {}
-
-    for _, charWeapon in pairs(charWeapons) do
-        local wrapped_weapon = {
-            name = charWeapon:getName(),
-            id = charWeapon:getId(),
-            propietary = charWeapon:getPropietary(),
-            used = charWeapon:getUsed(),
-            ammo = charWeapon:getAllAmmo(),
-            desc = charWeapon:getDesc()
+	for _, currentWeapon in pairs(usersWeapons) do
+		if currentWeapon:getPropietary() == identifier and currentWeapon:getCharId() == charidentifier then
+			local weapon = {
+				name = currentWeapon:getName(),
+				id = currentWeapon:getId(),
+				propietary = currentWeapon:getPropietary(),
+				used = currentWeapon:getUsed(),
+				ammo = currentWeapon:getAllAmmo(),
+				desc = currentWeapon:getDesc()
 			}
-        table.insert(wrappedCharWeapons, wrapped_weapon)
+			table.insert(userWeapons2, weapon)
 		end
-
-    cb(wrappedCharWeapons)
+	end
+	cb(userWeapons2)
 end
 
 InventoryAPI.getWeaponBullets = function(player, cb, weaponId)
@@ -809,17 +794,13 @@ InventoryAPI.getcomps = function(player, weaponid, cb)
 	end)
 end
 
----@param player number
----@param weaponId number
----@param cb function
-InventoryAPI.deletegun = function(player, weaponId, cb)
+
+
+InventoryAPI.deletegun = function(player, weaponid, cb)
 	local _source = player
-    local invId = "default"
-    local weapon = (UsersWeapons[invId] or {})[weaponId] or {}
-
-    _removeWeaponFromCache("default", weapon)
-
-    MySQL.query("DELETE FROM loadout WHERE id=@id", { ['id'] = weaponId })
+	local userWeapons = UsersWeapons["default"]
+	userWeapons[weaponid]:setPropietary('')
+	MySQL.query("DELETE FROM loadout WHERE id=@id", { ['id'] = weaponid })
 	if cb then
 		return cb(true)
 	end
@@ -908,7 +889,7 @@ InventoryAPI.registerWeapon = function(target, name, ammos, components, comps, c
 						currInv = "default",
 						dropped = 0,
 					})
-                        _addWeaponToCache('default', newWeapon)
+					UsersWeapons["default"][weaponId] = newWeapon
 					TriggerEvent("syn_weapons:registerWeapon", weaponId)
 					TriggerClientEvent("vorpInventory:receiveWeapon", _target, weaponId, targetIdentifier, name, ammo)
 					return cb(true)
@@ -938,7 +919,7 @@ InventoryAPI.registerWeapon = function(target, name, ammos, components, comps, c
 						dropped = 0,
 					})
 
-                        _addWeaponToCache('default', newWeapon)
+					UsersWeapons["default"][weaponId] = newWeapon
 					TriggerEvent("syn_weapons:registerWeapon", weaponId)
 					TriggerClientEvent("vorpInventory:receiveWeapon", _target, weaponId, targetIdentifier, name, ammo)
 
@@ -1034,9 +1015,8 @@ InventoryAPI.giveWeapon = function(player, weaponId, target)
 	end
 
 	if userWeapons[weaponId] then
-
-        _transferCachedWeapon(weaponId, 'default', 'default', sourceCharId)
 		userWeapons[weaponId]:setPropietary(sourceIdentifier)
+		userWeapons[weaponId]:setCharId(sourceCharId)
 
 		local weaponPropietary = userWeapons[weaponId]:getPropietary()
 		local weaponName = userWeapons[weaponId]:getName()
@@ -1081,11 +1061,9 @@ InventoryAPI.subWeapon = function(player, weaponId)
 
 	local charId = User.getUsedCharacter.charIdentifier
 	local userWeapons = UsersWeapons["default"]
-    local weapon = userWeapons[weaponId]
 
-    if weapon then
-        -- TODO Means sub weapon that the weapon is removed from game or destroyed? Why the charid is kept in the database?
-        _removeWeaponFromCache("default", weapon)
+	if (userWeapons[weaponId]) then
+		userWeapons[weaponId]:setPropietary('')
 
 		MySQL.update("UPDATE loadout SET identifier = @identifier, charidentifier = @charid WHERE id = @id",
 			{
@@ -1116,12 +1094,13 @@ end
 
 InventoryAPI.getUserTotalCountWeapons = function(identifier, charId)
 	local userTotalWeaponCount = 0
-    local charWeapons = _getWeaponsFromCacheByCharId('default', charId)
-    for _, charWeapon in pairs(charWeapons) do
-        if not contains(Config.notweapons, string.upper(charWeapon:getName())) then
+	for _, weapon in pairs(UsersWeapons["default"]) do
+		if weapon:getPropietary() == identifier and weapon:getCharId() == charId then
+			if not contains(Config.notweapons, string.upper(weapon:getName())) then
 				userTotalWeaponCount = userTotalWeaponCount + 1
 			end
 		end
+	end
 	return userTotalWeaponCount
 end
 
@@ -1208,10 +1187,6 @@ InventoryAPI.registerInventory = function(id, name, limit, acceptWeapons, shared
 		UsersWeapons[id] = {}
 	end
 
-    if UserWeaponsByCharId[id] == nil then
-        UserWeaponsByCharId[id] = {}
-    end
-
 	if Config.Debug then
 		Wait(9000) -- so it doesn't print everywhere in the console
 		Log.print("Custom inventory[^3" .. id .. "^7] ^2Registered!^7")
@@ -1273,7 +1248,6 @@ InventoryAPI.removeInventory = function(id, name)
 	CustomInventoryInfos[id] = nil
 	UsersInventories[id] = nil
 	UsersWeapons[id] = nil
-    UserWeaponsByCharId[id] = nil
 
 	if Config.Debug then
 		Wait(9000) -- so it doesn't print everywhere in the console

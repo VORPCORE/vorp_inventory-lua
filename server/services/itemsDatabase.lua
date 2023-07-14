@@ -2,8 +2,6 @@
 ---@alias itemId string
 ---@alias weaponId string
 ---@alias invId string
----@alias identifier string
----@alias charId number
 
 ---@type table<invId, table<sourceId, table<itemId, Item>>|table<itemId, Item>>
 UsersInventories = {
@@ -14,120 +12,6 @@ UsersInventories = {
 UsersWeapons = {
 	default = {}
 }
-
--- The array UserWeaponsByCharId is optimized to allow fast access instead of looping through all the weapons to filter
--- them by the identifier and char id. If the server knows thousands of weapons (cached in UsersWeapons) each time if
--- e.g. InventoryAPI.getUserWeapons() is called, it would have to loop through all the weapons to filter them and this
--- would take a lot of time.
---
--- Important: UserWeaponsByCharId store the weaponId instead of the whole weapon object. This is because the weapon
--- object is already stored in UsersWeapons and it would be redundant to store it again.
-
----@type table<invId, table<charId, table<weaponId,boolean>>>
-UserWeaponsByCharId = {
-    default = {}
-}
-
----@param invId invId
----@param weapon Weapon
-function _addWeaponToCache(invId, weapon)
-
-    local weaponId = weapon:getId()
-    local charId = weapon:getCharId()
-
-    if not UsersWeapons[invId] then
-        UsersWeapons[invId] = {}
-    end
-
-    UsersWeapons[invId][weaponId] = weapon
-
-    if not UserWeaponsByCharId[invId] then
-        UserWeaponsByCharId[invId] = {}
-    end
-
-    if not UserWeaponsByCharId[invId][charId] then
-        UserWeaponsByCharId[invId][charId] = {}
-    end
-
-    UserWeaponsByCharId[invId][charId][weaponId] = true
-end
-
----@param invId invId
----@param weapon Weapon
-function _removeWeaponFromCache(invId, weapon)
-
-    if not weapon then
-        return
-    end
-
-    weapon:setPropietary('') -- Reset identifier (old way to delete weapons)
-
-    local weaponId = weapon:getId()
-    local charId = weapon:getCharId()
-
-    if _existsWeaponInCache(invId, weaponId) then
-        UsersWeapons[invId][weaponId] = nil
-    end
-
-    if _existsWeaponInCache(invId, charId, weaponId) then
-        UserWeaponsByCharId[invId][charId][weaponId] = nil
-    end
-end
-
----@param invId invId
----@param charId number
----@return Weapon[]
-function _getWeaponsFromCacheByCharId(invId, charId)
-
-    local weaponsIdsOfChar = (UserWeaponsByCharId[invId] or {})[charId] or {}
-
-    ---@type Weapon[]
-    local charWeapons = {}
-
-    for weaponId, _ in pairs(weaponsIdsOfChar) do
-        if UsersWeapons[invId] and UsersWeapons[invId][weaponId] then
-            table.insert(charWeapons, UsersWeapons[invId][weaponId])
-        end
-    end
-
-    return charWeapons
-end
-
----@param invId invId
----@param weaponId weaponId
----@return boolean
-function _existsWeaponInCache(invId, weaponId)
-    return UsersWeapons[invId] ~= nil and UsersWeapons[invId][weaponId] ~= nil
-end
-
----@param invId invId
----@param charId charId
----@param weaponId weaponId
----@return boolean
-function _existsCharWeaponInCache(invId, charId, weaponId)
-    return UserWeaponsByCharId[invId] ~= nil and UserWeaponsByCharId[invId][charId] ~= nil and UserWeaponsByCharId[invId][charId][weaponId] == true
-end
-
----@param weaponId weaponId
----@param sourceInvId invId
----@param targetInvId invId
----@param targetCharId charId
----@param targetIdentifier identifier|nil
-function _transferCachedWeapon(weaponId, sourceInvId, targetInvId, targetCharId, targetIdentifier)
-
-    local weapon = UsersWeapons[sourceInvId][weaponId]
-    _removeWeaponFromCache(sourceInvId, weaponId)
-
-    weapon:setCurrInv(targetInvId)
-    weapon:setCharId(targetCharId)
-
-    if targetIdentifier then
-        weapon:setPropietary(targetIdentifier)
-    end
-
-    _addWeaponToCache(targetInvId, weapon)
-end
-
 ---@type table<string, Item>
 svItems = {}
 
@@ -164,7 +48,11 @@ function LoadDatabase(charid)
 						dropped = db_weapon.dropped
 					})
 
-                    _addWeaponToCache(db_weapon.curr_inv, weapon)
+					if not UsersWeapons[db_weapon.curr_inv] then
+						UsersWeapons[db_weapon.curr_inv] = {}
+					end
+
+					UsersWeapons[db_weapon.curr_inv][weapon:getId()] = weapon
 				else
 					-- delete any droped weapons
 					MySQL.query('DELETE FROM loadout WHERE id = ?', { db_weapon.id })
