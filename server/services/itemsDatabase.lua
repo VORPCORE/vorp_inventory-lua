@@ -7,12 +7,12 @@
 
 ---@type table<invId, table<sourceId, table<itemId, Item>>|table<itemId, Item>>
 UsersInventories = {
-    default = {}
+	default = {}
 }
 
 ---@type table<invId, table<weaponId, Weapon>>
 UsersWeapons = {
-    default = {}
+	default = {}
 }
 
 -- The array UserWeaponsByCharId is optimized to allow fast access instead of looping through all the weapons to filter
@@ -54,37 +54,24 @@ end
 
 ---@param invId invId
 ---@param weapon Weapon
----@param keepWithoutOwnerUntilServerRestart boolean|nil
-function _removeWeaponFromCache(invId, weapon, keepWithoutOwnerUntilServerRestart)
+function _removeWeaponFromCache(invId, weapon)
 
     if not weapon then
         return
     end
 
+    weapon:setPropietary('') -- Reset identifier (old way to delete weapons)
+
     local weaponId = weapon:getId()
     local charId = weapon:getCharId()
 
-    weapon:setPropietary('') -- Reset identifier (old way to delete weapons)
-
     if _existsWeaponInCache(invId, weaponId) then
-
-        if keepWithoutOwnerUntilServerRestart then
-            weapon:setCharId(0)
-        else
-            UsersWeapons[invId][weaponId] = nil
-        end
+        UsersWeapons[invId][weaponId] = nil
     end
 
     if _existsWeaponInCache(invId, charId, weaponId) then
         UserWeaponsByCharId[invId][charId][weaponId] = nil
     end
-end
-
----@param invId invId
----@param weaponId weaponId
----@return Weapon|nil
-function _getWeaponFromCache(invId, weaponId)
-    return (UsersWeapons[invId] or {})[weaponId] or nil
 end
 
 ---@param invId invId
@@ -98,11 +85,8 @@ function _getWeaponsFromCacheByCharId(invId, charId)
     local charWeapons = {}
 
     for weaponId, _ in pairs(weaponsIdsOfChar) do
-
-        local weapon = _getWeaponFromCache(invId, weaponId)
-
-        if weapon then
-            table.insert(charWeapons, weapon)
+        if UsersWeapons[invId] and UsersWeapons[invId][weaponId] then
+            table.insert(charWeapons, UsersWeapons[invId][weaponId])
         end
     end
 
@@ -131,107 +115,98 @@ end
 ---@param targetIdentifier identifier|nil
 function _transferCachedWeapon(weaponId, sourceInvId, targetInvId, targetCharId, targetIdentifier)
 
-    local weapon = _getWeaponFromCache(sourceInvId, weaponId)
-
+    local weapon = UsersWeapons[sourceInvId][weaponId]
     _removeWeaponFromCache(sourceInvId, weaponId)
 
-    if weapon then
+    weapon:setCurrInv(targetInvId)
+    weapon:setCharId(targetCharId)
 
-        weapon:setCurrInv(targetInvId)
-        weapon:setCharId(targetCharId)
-
-        if targetIdentifier then
-            weapon:setPropietary(targetIdentifier)
-        end
-
-        _addWeaponToCache(targetInvId, weapon)
+    if targetIdentifier then
+        weapon:setPropietary(targetIdentifier)
     end
-end
 
----@param player number
----@return charId|nil
-function _getCharId(player)
-    return ((Core.getUser(player) or {}).getUsedCharacter or {}).charIdentifier
+    _addWeaponToCache(targetInvId, weapon)
 end
 
 ---@type table<string, Item>
 svItems = {}
 
+
 function LoadDatabase(charid)
-    local result = MySQL.query.await('SELECT * FROM loadout WHERE charidentifier = ? ', { charid })
-    if next(result) then
-        for _, db_weapon in pairs(result) do
-            if db_weapon.charidentifier then
-                local ammo = json.decode(db_weapon.ammo)
-                local comp = json.decode(db_weapon.components)
-                local used = false
-                local used2 = false
+	local result = MySQL.query.await('SELECT * FROM loadout WHERE charidentifier = ? ', { charid })
+	if next(result) then
+		for _, db_weapon in pairs(result) do
+			if db_weapon.charidentifier then
+				local ammo = json.decode(db_weapon.ammo)
+				local comp = json.decode(db_weapon.components)
+				local used = false
+				local used2 = false
 
-                if db_weapon.used == 1 then
-                    used = true
-                end
+				if db_weapon.used == 1 then
+					used = true
+				end
 
-                if db_weapon.used2 == 1 then
-                    used2 = true
-                end
+				if db_weapon.used2 == 1 then
+					used2 = true
+				end
 
-                if db_weapon.dropped == 0 then
-                    local weapon = Weapon:New({
-                        id = db_weapon.id,
-                        propietary = db_weapon.identifier,
-                        name = db_weapon.name,
-                        ammo = ammo,
-                        components = comp,
-                        used = used,
-                        used2 = used2,
-                        charId = db_weapon.charidentifier,
-                        currInv = db_weapon.curr_inv,
-                        dropped = db_weapon.dropped
-                    })
+				if db_weapon.dropped == 0 then
+					local weapon = Weapon:New({
+						id = db_weapon.id,
+						propietary = db_weapon.identifier,
+						name = db_weapon.name,
+						ammo = ammo,
+						components = comp,
+						used = used,
+						used2 = used2,
+						charId = db_weapon.charidentifier,
+						currInv = db_weapon.curr_inv,
+						dropped = db_weapon.dropped
+					})
 
                     _addWeaponToCache(db_weapon.curr_inv, weapon)
-                else
-                    -- delete any droped weapons
-                    MySQL.query('DELETE FROM loadout WHERE id = ?', { db_weapon.id })
-                end
-            end
-        end
-    end
+				else
+					-- delete any droped weapons
+					MySQL.query('DELETE FROM loadout WHERE id = ?', { db_weapon.id })
+				end
+			end
+		end
+	end
 end
 
 -- load weapons only for the character that its joining
 RegisterNetEvent("vorp:SelectedCharacter", function(source, character)
-    local charid = character.charIdentifier
-    LoadDatabase(charid)
+	local charid = character.charIdentifier
+	LoadDatabase(charid)
 end)
 
 if Config.DevMode then
-    RegisterNetEvent("DEV:loadweapons", function()
-        local _source = source
-        local character = Core.getUser(_source).getUsedCharacter
-        local charid = character.charIdentifier
-        LoadDatabase(charid)
-    end)
+	RegisterNetEvent("DEV:loadweapons", function()
+		local _source = source
+		local character = Core.getUser(_source).getUsedCharacter
+		local charid = character.charIdentifier
+		LoadDatabase(charid)
+	end)
 end
 
 -- load all items from database
 Citizen.CreateThread(function()
-    MySQL.query('SELECT * FROM items', {}, function(result)
-        if next(result[1]) then
-            for _, db_item in pairs(result) do
-                local item = Item:New({
-                    id = db_item.id,
-                    item = db_item.item,
-                    metadata = db_item.metadata or {},
-                    label = db_item.label,
-                    limit = db_item.limit,
-                    type = db_item.type,
-                    canUse = db_item.usable,
-                    canRemove = db_item.can_remove,
-                    desc = db_item.desc
-                })
-                svItems[item.item] = item
-            end
-        end
-    end)
+	MySQL.query('SELECT * FROM items', {}, function(result)
+		if next(result[1]) then
+			for _, db_item in pairs(result) do
+				local item = Item:New({
+					id = db_item.id,
+					item = db_item.item,
+					metadata = db_item.metadata or {},
+					label = db_item.label,
+					limit = db_item.limit,
+					type = db_item.type,
+					canUse = db_item.usable,
+					canRemove = db_item.can_remove,
+					desc = db_item.desc
+				})
+				svItems[item.item] = item
+			end
+		end
+	end)
 end)
