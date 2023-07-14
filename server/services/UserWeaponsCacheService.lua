@@ -73,6 +73,13 @@ end
 ---@param invId invId
 ---@param weaponId weaponId|Weapon
 ---@return Weapon|nil
+function UserWeaponsCacheService:_getWeapon(invId, weaponId)
+    return (self._userWeapons[invId] or {})[weaponId] or nil
+end
+
+---@param invId invId
+---@param weaponId weaponId|Weapon
+---@return Weapon|nil
 function UserWeaponsCacheService:getWeapon(invId, weaponId)
 
     local is_weapon_instance = weaponId and type(weaponId) == 'table' and weaponId.getAllAmmo
@@ -81,7 +88,28 @@ function UserWeaponsCacheService:getWeapon(invId, weaponId)
         return weaponId
     end
 
-    return (self._userWeapons[invId] or {})[weaponId] or nil
+    local cached_weapon = self:_getWeapon(invId, weaponId)
+
+    -- Note: If the weapon is not in the cache it could be because it has no related char (charIdentifier = null).
+    -- Weapons without charIdentifier are not cached initially. So we can try to find the weapon in the database.
+    if not cached_weapon then
+        cached_weapon = self:_tryGetAndCacheWeaponFromDb(invId, weaponId)
+    end
+
+    return cached_weapon
+end
+
+---@private
+---@param invId invId
+---@param weaponId weaponId|Weapon
+---@return Weapon|nil
+function UserWeaponsCacheService:_tryGetAndCacheWeaponFromDb(invId, weaponId)
+
+    LoadWeapon(invId, weaponId)
+
+    local weapon = self:_getWeapon(invId, weaponId)
+
+    return weapon
 end
 
 ---@param invId invId
