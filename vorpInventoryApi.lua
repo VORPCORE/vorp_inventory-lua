@@ -1,4 +1,3 @@
----@diagnostic disable: undefined-global
 exports('vorp_inventoryApi', function()
     local self = {}
 
@@ -69,9 +68,9 @@ exports('vorp_inventoryApi', function()
 
         return Citizen.Await(result_promise)
     end
-    -- new param let it know if the weapon to be given is notin the list of weapons | weaponName
-    self.canCarryWeapons = function(source, amount, cb, weaponName)
-        TriggerEvent("vorpCore:canCarryWeapons", source, amount, cb, weaponName)
+
+    self.canCarryWeapons = function(source, amount, cb)
+        TriggerEvent("vorpCore:canCarryWeapons", source, amount, cb)
     end
 
     self.getcomps = function(source, weaponid)

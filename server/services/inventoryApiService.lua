@@ -736,33 +736,31 @@ InventoryAPI.setItemMetadata = function(player, itemId, metadata, amount, cb)
     end
 end
 
-InventoryAPI.canCarryAmountWeapons = function(player, amount, cb, weaponName)
-	local _source = player
-	local sourceCharacter = Core.getUser(_source).getUsedCharacter
-	local identifier = sourceCharacter.identifier
-	local charId = sourceCharacter.charIdentifier
-	local job = sourceCharacter.job
-	local DefaultAmount = Config.MaxItemsInInventory.Weapons
-
-	if weaponName then
-		if SharedUtils.IsValueInArray(string.upper(weaponName), Config.notweapons) then
-			return cb(true)
-		end
-	end
-	if Config.JobsAllowed[job] then
-		DefaultAmount = Config.JobsAllowed[job]
-	end
+InventoryAPI.canCarryAmountWeapons = function(player, amount, cb)
+    local _source = player
+    local sourceCharacter = Core.getUser(_source).getUsedCharacter
+    local identifier = sourceCharacter.identifier
+    local charId = sourceCharacter.charIdentifier
+    local job = sourceCharacter.job
 
     local sourceInventoryWeaponCount = InventoryAPI.getUserTotalCountWeapons(identifier, charId) + amount
 
 	if Config.MaxItemsInInventory.Weapons ~= -1 then
-		if sourceInventoryWeaponCount > DefaultAmount then
-			return cb(false)
+		if Config.JobsAllowed[job] then
+			if sourceInventoryWeaponCount > Config.JobsAllowed[job] then
+				cb(false)
+			else
+				cb(true)
+			end
 		else
-			return cb(true)
+			if sourceInventoryWeaponCount <= Config.MaxItemsInInventory.Weapons then
+				cb(true)
+			else
+				cb(false)
+			end
 		end
 	else
-		return cb(true)
+		cb(true)
 	end
 end
 
@@ -826,87 +824,76 @@ InventoryAPI.deletegun = function(player, weaponId, cb)
     end
 end
 
-InventoryAPI.registerWeapon = function(_target, wepname, ammos, components, comps, cb)
-	local targetUser = Core.getUser(_target)
-	local name = string.upper(wepname)
-	local ammo = {}
-	local component = {}
-	local DefaultAmount = Config.MaxItemsInInventory.Weapons
-	local canGive = false
-	local notListed = false
+InventoryAPI.registerWeapon = function(target, name, ammos, components, comps, cb)
+    local _target = target
+    local targetUser = Core.getUser(_target)
+    local targetCharacter
+    local targetIdentifier
+    local targetCharId
+    local ammo = {}
+    local component = {}
+    local job
+    local DefaultAmount = Config.MaxItemsInInventory.Weapons
+    local canGive = false
 
     if cb == nil then
         cb = function(r)
         end
     end
 
-	-- does weapon exist
-	for _, weapons in pairs(Config.Weapons) do
-		if weapons.HashName == name then
-			canGive = true
-			break
-		end
-	end
-	-- does user exist
-	if not targetUser then
-		Log.error("InventoryAPI.registerWeapon: User dont exist ")
-		return cb(false)
-	end
+    for _, weapons in pairs(Config.Weapons) do
+        if weapons.HashName == name then
+            canGive = true
+            break
+        end
+    end
 
-	local targetCharacter = targetUser.getUsedCharacter
-	local targetIdentifier = targetCharacter.identifier
-	local targetCharId = targetCharacter.charIdentifier
-	local job = targetCharacter.job
+    if targetUser then
+        targetCharacter = targetUser.getUsedCharacter
+        targetIdentifier = targetCharacter.identifier
+        targetCharId = targetCharacter.charIdentifier
+        job = targetCharacter.job
+    end
 
-	-- whitelist jobs for custom amount
-	if Config.JobsAllowed[job] then
-		DefaultAmount = Config.JobsAllowed[job]
-	end
+    if Config.JobsAllowed[job] then
+        DefaultAmount = Config.JobsAllowed[job]
+    end
 
-	if DefaultAmount ~= 0 then
-		if name then
-			-- does weapon given matches the list of weapons that do not count as weapons
-			if SharedUtils.IsValueInArray(name, Config.notweapons) then
-				notListed = true
-			end
-		end
+    if DefaultAmount ~= 0 then
+        local targetTotalWeaponCount = InventoryAPI.getUserTotalCountWeapons(targetIdentifier, targetCharId) + 1
 
-		if not notListed then
-			local targetTotalWeaponCount = InventoryAPI.getUserTotalCountWeapons(targetIdentifier, targetCharId) + 1
+        if targetTotalWeaponCount > DefaultAmount then
+            TriggerClientEvent("vorp:TipRight", _target, T.cantweapons2, 2000)
+            if Config.Debug then
+                Log.Warning(targetCharacter.firstname ..
+                        " " .. targetCharacter.lastname .. " ^1Can't carry more weapons^7")
+            end
+            return cb(nil)
+        end
+    end
 
-			if targetTotalWeaponCount > DefaultAmount then
-				TriggerClientEvent("vorp:TipRight", _target, T.cantweapons2, 2000)
-				if Config.Debug then
-					Log.Warning(targetCharacter.firstname ..
-						" " .. targetCharacter.lastname .. " ^1Can't carry more weapons^7")
-				end
-				return cb(nil)
-			end
-		end
-	end
+    if ammos then
+        for _, value in pairs(ammos) do
+            ammo[_] = value
+        end
+    end
 
-	if ammos then
-		for key, value in pairs(ammos) do
-			ammo[key] = value
-		end
-	end
+    if components then
+        for key, value in pairs(components) do
+            component[#component + 1] = key
+        end
+    end
+    if canGive then
+        if not comps then
+            MySQL.query(
+                    "INSERT INTO loadout (identifier, charidentifier, name, ammo, components) VALUES (@identifier, @charid, @name, @ammo, @components)",
+                    {
+                        ['identifier'] = targetIdentifier,
+                        ['charid'] = targetCharId,
+                        ['name'] = name,
+                        ['ammo'] = json.encode(ammo),
+                        ['components'] = json.encode(component)
 
-	if components then
-		for key, _ in pairs(components) do
-			component[#component + 1] = key
-		end
-	end
-
-	if canGive then
-		if not comps then
-			MySQL.query(
-				"INSERT INTO loadout (identifier, charidentifier, name, ammo, components) VALUES (@identifier, @charid, @name, @ammo, @components)",
-				{
-					['identifier'] = targetIdentifier,
-					['charid'] = targetCharId,
-					['name'] = name,
-					['ammo'] = json.encode(ammo),
-					['components'] = json.encode(component)
                     }, function(result)
                         local weaponId = result.insertId
                         local newWeapon = Weapon:New({
@@ -950,16 +937,17 @@ InventoryAPI.registerWeapon = function(_target, wepname, ammos, components, comp
                             dropped = 0,
                         })
 
-                    UserWeaponsCacheService:add('default', newWeapon)
-					TriggerEvent("syn_weapons:registerWeapon", weaponId)
-					TriggerClientEvent("vorpInventory:receiveWeapon", _target, weaponId, targetIdentifier, name, ammo)
-					return cb(true)
-				end)
-		end
-	else
-		Log.Warning("Weapon: [^2" .. name .. "^7] ^1 do not exist on the config or its a WRONG HASH")
-		return cb(nil)
-	end
+                        UserWeaponsCacheService:add('default', newWeapon)
+                        TriggerEvent("syn_weapons:registerWeapon", weaponId)
+                        TriggerClientEvent("vorpInventory:receiveWeapon", _target, weaponId, targetIdentifier, name, ammo)
+
+                        return cb(true)
+                    end)
+        end
+    else
+        Log.Warning("Weapon: [^2" .. name .. "^7] ^1 do not exist on the config or its a WRONG HASH")
+        return cb(nil)
+    end
 end
 
 InventoryAPI.giveWeapon2 = function(player, weaponId, target)
