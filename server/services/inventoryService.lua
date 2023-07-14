@@ -1159,7 +1159,7 @@ InventoryService.TakeFromCustom = function(obj)
 
     if item.type == "item_weapon" then
 
-        local weapon = UserWeaponsCacheService:getWeapon(invId, item.id)
+        local weapon = UserWeaponsCacheService:getWeapon("default", item.id)
 
         InventoryAPI.canCarryAmountWeapons(_source, 1, function(res)
             if res then
