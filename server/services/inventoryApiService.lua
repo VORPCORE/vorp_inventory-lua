@@ -1060,7 +1060,7 @@ InventoryAPI.subWeapon = function(player, weaponId)
 
     if weapon then
 
-        _removeWeaponFromCacheAfterServerRestart("default", weapon)
+        _removeWeaponFromCache("default", weapon, true)
 
         MySQL.update("UPDATE loadout SET identifier = '', charidentifier = '' WHERE id = @id",
                 {
