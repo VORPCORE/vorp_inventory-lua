@@ -24,8 +24,6 @@ end)
 
 AddEventHandler('vorp_NewCharacter', function(source) -- new
 	local _source = source
-	-- wait till character is made
-	Wait(3000)
 	local Character = Core.getUser(_source).getUsedCharacter
 	local charid = Character.charIdentifier
 	table.insert(newchar, charid)
