@@ -643,7 +643,16 @@ end
 InventoryService.GiveWeapon = function(weaponId, target)
 	local _source = source
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
+	local charid = sourceCharacter.charIdentifier
 	local charname = sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname
+	if Config.NewPlayers then
+		if contains(newchar, charid) then                                               -- new line
+			TriggerClientEvent("vorp:TipRight", _source, "Cant Give Item as a new player", 5000) -- new line
+			TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
+			SvUtils.Trem(_source)                                                       -- new line
+			return                                                                      -- new line
+		end                                                                             -- new line
+	end
 	if not SvUtils.InProcessing(_source) then
 		TriggerClientEvent("vorp_inventory:transactionStarted", _source)
 		SvUtils.ProcessUser(_source)
