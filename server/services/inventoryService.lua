@@ -6,7 +6,7 @@ GoldPickUps = {}
 Core = {}
 
 local newchar = {} -- new
-local timer = 120  -- new
+local timer = 120  -- in minutes
 
 
 Citizen.CreateThread(function()
@@ -24,13 +24,15 @@ end)
 
 AddEventHandler('vorp_NewCharacter', function(source) -- new
 	local _source = source
+	-- wait till character is made
+	Wait(3000)
 	local Character = Core.getUser(_source).getUsedCharacter
 	local charid = Character.charIdentifier
 	table.insert(newchar, charid)
-	Wait(timer * 60000)
+	Wait(timer * 60000) -- waiting time is in minutes so 120 minutes = 2 hours until player can give or drop
 	for k, v in pairs(newchar) do
 		if v == charid then
-			newchar[k] = nil
+			table.remove(newchar, k)
 		end
 	end
 end)
