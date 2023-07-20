@@ -951,8 +951,7 @@ InventoryAPI.giveWeapon2 = function(player, weaponId, target)
 	local userWeapons = UsersWeapons["default"]
 	userWeapons[weaponId]:setPropietary('')
 	local DefaultAmount = Config.MaxItemsInInventory.Weapons
-	local weapon = userWeapons[weaponId]
-	local weaponName = weapon:getName()
+	local weaponName = userWeapons[weaponId]:getName()
 	local notListed = false
 
 	if Config.JobsAllowed[job] then
