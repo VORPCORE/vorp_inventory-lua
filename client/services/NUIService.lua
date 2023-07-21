@@ -1,7 +1,6 @@
 ---@diagnostic disable: undefined-global
-NUIService = {}
+
 local isProcessingPay = false
-InInventory = false
 local timerUse = 0
 local candrop = true
 local cangive = true
@@ -9,6 +8,12 @@ local storemenu = false
 local geninfo = {}
 local CanOpen = true
 
+-- * GLOBALS * --
+-- if needed we have the last weapon id and the last dual weapon id
+LastWeapId = nil
+LastDualWeapId = nil
+InInventory = false
+NUIService = {}
 
 --======================= EVENTS =======================--
 RegisterNetEvent('inv:dropstatus')
@@ -588,12 +593,24 @@ NUIService.NUIUseItem = function(data)
 			else
 				UserWeapons[weaponId]:equipwep()
 			end
-
 			UserWeapons[weaponId]:loadComponents()
 			UserWeapons[weaponId]:setUsed(true)
 			TriggerServerEvent("syn_weapons:weaponused", data)
-		elseif not UserWeapons[weaponId]:getUsed() and
-			not Citizen.InvokeNative(0x8DECB02F88F428BC, ped, weapName, 0, true) then
+			LastDualWeapId = weaponId -- cache dual weapon id
+		elseif not UserWeapons[weaponId]:getUsed() and not Citizen.InvokeNative(0x8DECB02F88F428BC, ped, weapName, 0, true) then
+			if LastDualWeapId then
+				-- if dual is in use then unequip dual
+				UserWeapons[LastDualWeapId]:setUsed(false)
+				UserWeapons[LastDualWeapId]:UnequipWeapon()
+				local isWeaponOneHanded1 = Citizen.InvokeNative(0xD955FEE4B87AFA07,
+					joaat(UserWeapons[LastWeapId]:getName()))
+				if isWeaponOneHanded1 then
+					UserWeapons[LastWeapId]:setUsed(false)
+					UserWeapons[LastWeapId]:UnequipWeapon()
+				end
+				LastDualWeapId = nil
+			end
+			LastWeapId = weaponId -- cache weapon id
 			notdual = true
 		end
 
