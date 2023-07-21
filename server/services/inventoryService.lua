@@ -96,7 +96,9 @@ InventoryService.DropMoney = function(amount)
 			TriggerClientEvent("vorp:TipRight", _source, T.NotEnoughMoney, 3000)
 		else
 			userCharacter.removeCurrency(0, amount)
-			TriggerClientEvent("vorpInventory:createMoneyPickup", _source, amount)
+			if not Config.DeleteOnlyDontDrop then
+				TriggerClientEvent("vorpInventory:createMoneyPickup", _source, amount)
+			end
 			local title = T.drop
 			local description = "**Money** `" .. amount .. "`" .. "\n **Playername** `" .. charname .. "`\n"
 			Core.AddWebhook(title, Config.webhook, description, color, "ID:" .. _source, logo, footerlogo, avatar)
@@ -215,8 +217,9 @@ InventoryService.DropGold = function(amount)
 		TriggerClientEvent("vorp:TipRight", _source, T.NotEnoughGold, 3000)
 	else
 		userCharacter.removeCurrency(1, amount)
-
-		TriggerClientEvent("vorpInventory:createGoldPickup", _source, amount)
+		if not Config.DeleteOnlyDontDrop then
+			TriggerClientEvent("vorpInventory:createGoldPickup", _source, amount)
+		end
 	end
 	SvUtils.Trem(_source)
 end
@@ -617,8 +620,10 @@ InventoryService.DropWeapon = function(weaponId)
 		local description = "**Weapon** `" ..
 			UsersWeapons["default"][weaponId]:getName() .. "`" .. "\n **Playername** `" .. charname .. "`\n"
 		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
-		TriggerClientEvent("vorpInventory:createPickup", _source, UsersWeapons["default"][weaponId]:getName(), 1, {},
-			weaponId)
+		if not Config.DeleteOnlyDontDrop then
+			TriggerClientEvent("vorpInventory:createPickup", _source, UsersWeapons["default"][weaponId]:getName(), 1, {},
+				weaponId)
+		end
 		SvUtils.Trem(_source)
 	end
 end
@@ -635,7 +640,9 @@ InventoryService.DropItem = function(itemName, itemId, amount, metadata)
 			amount .. "`\n **Item** `" .. itemName .. "`" .. "\n **Playername** `" .. charname .. "`\n"
 
 		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
-		TriggerClientEvent("vorpInventory:createPickup", _source, itemName, amount, metadata, 1)
+		if not Config.DeleteOnlyDontDrop then
+			TriggerClientEvent("vorpInventory:createPickup", _source, itemName, amount, metadata, 1)
+		end
 		SvUtils.Trem(_source)
 	end
 end
