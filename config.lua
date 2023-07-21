@@ -126,6 +126,7 @@ Config = {
 	},
 	nonAmmoThrowables   = {
 		"WEAPON_MELEE_CLEAVER",
+		"WEAPON_MELEE_HATCHET",
 		"WEAPON_MELEE_HATCHET_HUNTER"
 	},
 	Ammotypes           = {
