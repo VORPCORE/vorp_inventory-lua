@@ -602,12 +602,12 @@ NUIService.NUIUseItem = function(data)
 				-- if dual is in use then unequip dual
 				UserWeapons[LastDualWeapId]:setUsed(false)
 				UserWeapons[LastDualWeapId]:UnequipWeapon()
-				local isWeaponOneHanded1 = Citizen.InvokeNative(0xD955FEE4B87AFA07,
-					joaat(UserWeapons[LastWeapId]:getName()))
-				if isWeaponOneHanded1 then
+				--[[ 	local isWeaponOneHanded1 = Citizen.InvokeNative(0xD955FEE4B87AFA07,
+					joaat(UserWeapons[LastWeapId]:getName())) ]]
+				--[[ 	if isWeaponOneHanded1 then
 					UserWeapons[LastWeapId]:setUsed(false)
 					UserWeapons[LastWeapId]:UnequipWeapon()
-				end
+				end ]]
 				LastDualWeapId = nil
 			end
 			LastWeapId = weaponId -- cache weapon id
