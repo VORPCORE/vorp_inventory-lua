@@ -65,7 +65,7 @@ local function addWeapon(weapon, slot, id)
 
 	if slot == 1 and id then
 		if #equippedWeapons > 0 then
-			local newItemData = DataView.ArrayBuffer(8 * 13)
+			--local newItemData = DataView.ArrayBuffer(8 * 13)
 			local newGUID = moveInventoryItem(inventoryId, equippedWeapons[1].guid, weaponItem:Buffer())
 			if not newGUID then
 				print("can't move item")
@@ -111,13 +111,10 @@ local function addWeapon(weapon, slot, id)
 end
 
 function Weapon:UnequipWeapon()
-	--local hash = joaat(self.name)
 	self:setUsed(false)
 	self:setUsed2(false)
-
 	TriggerServerEvent("vorpinventory:setUsedWeapon", self.id, self:getUsed(), self:getUsed2())
 	self:RemoveWeaponFromPed()
-
 	Utils.cleanAmmo(self.id)
 end
 
