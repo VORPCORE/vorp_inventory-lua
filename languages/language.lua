@@ -411,6 +411,8 @@ TranslationInv.Langs = {
         slow                      = "La smetti di provare a spammare items?!",
         cansell                   = "Puoi venderlo per: $",
         gave                      = "Ha dato denaro",
+        transfered                = " ha trasferito ",
+        withid                    = " con ID arma: ",
     },
     Nederlandse = {
         fullInventory             = "Je draagt te veel gewicht, je kan niks meer dragen.",
