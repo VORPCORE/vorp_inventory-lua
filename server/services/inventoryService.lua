@@ -57,7 +57,7 @@ InventoryService.UseItem = function(itemName, itemId, args)
 	end
 
 	local svItem = svItems[itemName]
-	
+
 	if not svItem then
 		print("[^2UseItem^7] ^1Error^7: Item [^3" .. tostring(itemName) .. "^7] does not exist in DB.")
 		return
@@ -75,14 +75,7 @@ InventoryService.UseItem = function(itemName, itemId, args)
 				args = args
 			}
 
-			local callbackFunc = UsableItemsFunctions[tostring(itemName)]
-
-			if type(callbackFunc) == "function" then
-				callbackFunc(arguments)
-			else
-				print("[^2UseItem^7] ^1Error^7: Callback function for item [^3" ..
-					tostring(itemName) .. "^7] is not a valid function.")
-			end
+			UsableItemsFunctions[tostring(itemName)](arguments)
 		end
 	end
 	return false
