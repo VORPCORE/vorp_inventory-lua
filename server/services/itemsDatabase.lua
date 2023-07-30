@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-global
 ---@alias sourceId string
 ---@alias itemId string
 ---@alias weaponId string
@@ -16,7 +17,7 @@ UsersWeapons = {
 svItems = {}
 
 
-function LoadDatabase(charid)
+local function LoadDatabase(charid)
 	local result = MySQL.query.await('SELECT * FROM loadout WHERE charidentifier = ? ', { charid })
 	if next(result) then
 		for _, db_weapon in pairs(result) do
@@ -62,26 +63,30 @@ function LoadDatabase(charid)
 	end
 end
 
--- load weapons only for the character that its joining
+-- * ON PLAYER SPAWN LOAD ALL THEIR WEAPONS * --
 RegisterNetEvent("vorp:SelectedCharacter", function(source, character)
-	local charid = character.charIdentifier
-	LoadDatabase(charid)
-end)
+	local _source = source
 
-if Config.DevMode then
-	RegisterNetEvent("DEV:loadweapons", function()
-		local _source = source
-		local character = Core.getUser(_source).getUsedCharacter
-		local charid = character.charIdentifier
+	if Config.DevMode then
+		return print(
+			"^1[DEV] ^3Inventory ^7| ^1WARNING: ^7You are in dev mode, dont use this in production live servers")
+	end
+
+	local charid = character.charIdentifier
+	CreateThread(function()
 		LoadDatabase(charid)
 	end)
-end
+end)
 
--- load all items from database
+-- * LOAD ALL ITEMS FROM DATABSE * --
 Citizen.CreateThread(function()
 	MySQL.query('SELECT * FROM items', {}, function(result)
-		if next(result[1]) then
-			for _, db_item in pairs(result) do
+		if not result[1] then
+			return print("there is no items in the databse")
+		end
+
+		for _, db_item in pairs(result) do
+			if db_item.id then
 				local item = Item:New({
 					id = db_item.id,
 					item = db_item.item,
@@ -96,5 +101,16 @@ Citizen.CreateThread(function()
 				svItems[item.item] = item
 			end
 		end
+		print("Inventory Loaded all items from database")
 	end)
 end)
+
+
+if Config.DevMode then
+	RegisterNetEvent("DEV:loadweapons", function()
+		local _source = source
+		local character = Core.getUser(_source).getUsedCharacter
+		local charid = character.charIdentifier
+		LoadDatabase(charid)
+	end)
+end
