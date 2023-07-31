@@ -3,6 +3,7 @@ InventoryAPI = {}
 UsableItemsFunctions = {}
 local allplayersammo = {}
 
+
 -- by default assign this
 CustomInventoryInfos = {
 	default = {
@@ -1179,6 +1180,7 @@ InventoryAPI.onNewCharacter = function(playerId)
 	end
 end
 
+
 InventoryAPI.registerInventory = function(id, name, limit, acceptWeapons, shared, ignoreItemStackLimit, whitelistItems,
 										  UsePermissions, UseBlackList, whitelistWeapons)
 	limit = limit and limit or -1
@@ -1193,6 +1195,7 @@ InventoryAPI.registerInventory = function(id, name, limit, acceptWeapons, shared
 	if CustomInventoryInfos[id] then
 		return
 	end
+
 
 	CustomInventoryInfos[id] = {
 		name = name,
@@ -1216,12 +1219,21 @@ InventoryAPI.registerInventory = function(id, name, limit, acceptWeapons, shared
 	end
 
 	if Config.Debug then
-		Wait(9000) -- so it doesn't print everywhere in the console
 		Log.print("Custom inventory[^3" .. id .. "^7] ^2Registered!^7")
 	end
 end
 
+InventoryAPI.updateCustomInventorySlots = function(id, slots)
+	if not CustomInventoryInfos[id] or not slots then
+		return
+	end
 
+	CustomInventoryInfos[id].limit = slots
+
+	if Config.Debug then
+		Log.print("Custom inventory[^3" .. id .. "^7] set slots to ^2" .. slots .. "^7")
+	end
+end
 
 InventoryAPI.AddPermissionMoveToCustom = function(id, jobName, grade)
 	if not CustomInventoryInfos[id] then
@@ -1278,7 +1290,6 @@ InventoryAPI.removeInventory = function(id, name)
 	UsersWeapons[id] = nil
 
 	if Config.Debug then
-		Wait(9000) -- so it doesn't print everywhere in the console
 		Log.print("Custom inventory[^3" .. id .. "^7] ^2Removed!^7")
 	end
 end
@@ -1291,7 +1302,6 @@ InventoryAPI.setCustomInventoryItemLimit = function(id, itemName, limit)
 	CustomInventoryInfos[id].limitedItems[string.lower(itemName)] = limit -- create table with item name and count
 
 	if Config.Debug then
-		Wait(9000) -- so it doesn't print everywhere in the console
 		Log.print("Custom inventory[^3" .. id .. "^7] set item[^3" .. itemName .. "^7] limit to ^2" .. limit .. "^7")
 	end
 end
@@ -1304,7 +1314,6 @@ InventoryAPI.setCustomInventoryWeaponLimit = function(id, wepName, limit)
 	CustomInventoryInfos[id].limitedWeapons[string.lower(wepName)] = limit -- create table with item name and count
 
 	if Config.Debug then
-		Wait(9000) -- so it doesn't print everywhere in the console
 		Log.print("Custom inventory[^3" .. id .. "^7] set item[^3" .. wepName .. "^7] limit to ^2" .. limit .. "^7")
 	end
 end
