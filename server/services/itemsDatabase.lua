@@ -80,31 +80,32 @@ end)
 
 -- * LOAD ALL ITEMS FROM DATABSE * --
 Citizen.CreateThread(function()
-	MySQL.query('SELECT * FROM items', {}, function(result)
-		if not result[1] then
-			return print("there is no items in the databse")
-		end
-
-		for _, db_item in pairs(result) do
-			if db_item.id then
-				local item = Item:New({
-					id = db_item.id,
-					item = db_item.item,
-					metadata = db_item.metadata or {},
-					label = db_item.label,
-					limit = db_item.limit,
-					type = db_item.type,
-					canUse = db_item.usable,
-					canRemove = db_item.can_remove,
-					desc = db_item.desc
-				})
-				svItems[item.item] = item
+	MySQL.ready(function()
+		MySQL.query('SELECT * FROM items', {}, function(result)
+			if not result[1] then
+				return print("there is no items in the databse")
 			end
-		end
-		print("Inventory Loaded all items from database")
+
+			for _, db_item in pairs(result) do
+				if db_item.id then
+					local item = Item:New({
+						id = db_item.id,
+						item = db_item.item,
+						metadata = db_item.metadata or {},
+						label = db_item.label,
+						limit = db_item.limit,
+						type = db_item.type,
+						canUse = db_item.usable,
+						canRemove = db_item.can_remove,
+						desc = db_item.desc
+					})
+					svItems[item.item] = item
+				end
+			end
+			print("Inventory Loaded all items from database")
+		end)
 	end)
 end)
-
 
 if Config.DevMode then
 	RegisterNetEvent("DEV:loadweapons", function()
