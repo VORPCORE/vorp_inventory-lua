@@ -17,8 +17,8 @@ UsersWeapons = {
 svItems = {}
 
 
-local function LoadDatabase(charid)
-	local result = MySQL.query.await('SELECT * FROM loadout WHERE charidentifier = ? ', { charid })
+local function LoadDatabase()
+	local result = MySQL.query.await('SELECT * FROM loadout')
 	if next(result) then
 		for _, db_weapon in pairs(result) do
 			if db_weapon.charidentifier then
@@ -63,18 +63,19 @@ local function LoadDatabase(charid)
 	end
 end
 
--- * ON PLAYER SPAWN LOAD ALL THEIR WEAPONS * --
-RegisterNetEvent("vorp:SelectedCharacter", function(source, character)
-	local _source = source
+-- * ON START LOAD ALL WEAPONS * --
+AddEventHandler("onResourceStart", function(resourceName)
+	if (GetCurrentResourceName() ~= resourceName) then
+		return
+	end
 
 	if Config.DevMode then
 		return print(
 			"^1[DEV] ^3Inventory ^7| ^1WARNING: ^7You are in dev mode, dont use this in production live servers")
 	end
 
-	local charid = character.charIdentifier
 	CreateThread(function()
-		LoadDatabase(charid)
+		LoadDatabase()
 	end)
 end)
 
@@ -109,9 +110,6 @@ end)
 
 if Config.DevMode then
 	RegisterNetEvent("DEV:loadweapons", function()
-		local _source = source
-		local character = Core.getUser(_source).getUsedCharacter
-		local charid = character.charIdentifier
-		LoadDatabase(charid)
+		LoadDatabase()
 	end)
 end

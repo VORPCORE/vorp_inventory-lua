@@ -100,7 +100,7 @@ if Config.DevMode then
             local characterId = Core.getUser(source).getUsedCharacter
 
             TriggerClientEvent("vorp:SelectedCharacter", source, characterId)
-            LoadDatabase(charid)
+            LoadDatabase()
             -- If it's not a player, then it must be RCON, a resource, or the server console directly.
         else
             print("This command was executed by the server console, RCON client, or a resource.")
