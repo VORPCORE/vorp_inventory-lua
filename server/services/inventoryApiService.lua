@@ -3,7 +3,6 @@ InventoryAPI = {}
 UsableItemsFunctions = {}
 local allplayersammo = {}
 
-
 -- by default assign this
 CustomInventoryInfos = {
 	default = {
@@ -491,6 +490,7 @@ InventoryAPI.addItem = function(player, name, amount, metadata, cb)
 	local itemCanRemove = svItem:getCanRemove()
 	local itemDefaultMetadata = svItem:getMetadata()
 	local ItemDesc = svItem:getDesc()
+
 	InventoryAPI.canCarryItem(_source, name, amount, function(result)
 		if result then
 			local item = SvUtils.FindItemByNameAndMetadata("default", identifier, name, metadata)
@@ -662,13 +662,6 @@ InventoryAPI.subItem = function(player, name, amount, metadata, cb)
 	end
 end
 
----comment
----@param player integer
----@param itemId integer
----@param metadata table
----@param amount integer an ammount if you require to remove this many or set this many
----@param cb any
----@return any
 InventoryAPI.setItemMetadata = function(player, itemId, metadata, amount, cb)
 	local _source = player
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
@@ -784,8 +777,6 @@ InventoryAPI.getItem = function(player, itemName, cb, metadata)
 	end
 end
 
-
-
 InventoryAPI.getcomps = function(player, weaponid, cb)
 	local _source = player
 	MySQL.query('SELECT comps FROM loadout WHERE id = @id ', { ['id'] = weaponid }, function(result)
@@ -796,8 +787,6 @@ InventoryAPI.getcomps = function(player, weaponid, cb)
 		end
 	end)
 end
-
-
 
 InventoryAPI.deletegun = function(player, weaponid, cb)
 	local _source = player
@@ -1180,7 +1169,6 @@ InventoryAPI.onNewCharacter = function(playerId)
 	end
 end
 
-
 InventoryAPI.registerInventory = function(id, name, limit, acceptWeapons, shared, ignoreItemStackLimit, whitelistItems,
 										  UsePermissions, UseBlackList, whitelistWeapons)
 	limit = limit and limit or -1
@@ -1195,7 +1183,6 @@ InventoryAPI.registerInventory = function(id, name, limit, acceptWeapons, shared
 	if CustomInventoryInfos[id] then
 		return
 	end
-
 
 	CustomInventoryInfos[id] = {
 		name = name,
@@ -1214,7 +1201,7 @@ InventoryAPI.registerInventory = function(id, name, limit, acceptWeapons, shared
 		limitedWeapons = {},
 	}
 	UsersInventories[id] = {}
-	if UsersWeapons[id] == nil then
+	if not UsersWeapons[id] then
 		UsersWeapons[id] = {}
 	end
 
@@ -1223,25 +1210,15 @@ InventoryAPI.registerInventory = function(id, name, limit, acceptWeapons, shared
 	end
 end
 
-InventoryAPI.updateCustomInventorySlots = function(id, slots)
-	if not CustomInventoryInfos[id] or not slots then
-		return
-	end
 
-	CustomInventoryInfos[id].limit = slots
-
-	if Config.Debug then
-		Log.print("Custom inventory[^3" .. id .. "^7] set slots to ^2" .. slots .. "^7")
-	end
-end
 
 InventoryAPI.AddPermissionMoveToCustom = function(id, jobName, grade)
 	if not CustomInventoryInfos[id] then
-		return -- dont add
+		return
 	end
 
 	if not jobName and not grade then
-		return -- dont add
+		return
 	end
 	if Config.Debug then
 		Log.print("AdPermsMoveTo  for [^3" .. jobName .. "^7] and grade [^3" .. grade .. "^7]")
@@ -1280,7 +1257,7 @@ end
 
 
 
-InventoryAPI.removeInventory = function(id, name)
+InventoryAPI.removeInventory = function(id)
 	if CustomInventoryInfos[id] == nil then
 		return
 	end
@@ -1291,6 +1268,19 @@ InventoryAPI.removeInventory = function(id, name)
 
 	if Config.Debug then
 		Log.print("Custom inventory[^3" .. id .. "^7] ^2Removed!^7")
+	end
+end
+
+
+InventoryAPI.updateCustomInventorySlots = function(id, slots)
+	if not CustomInventoryInfos[id] or not slots then
+		return
+	end
+
+	CustomInventoryInfos[id].limit = slots
+
+	if Config.Debug then
+		Log.print("Custom inventory[^3" .. id .. "^7] set slots to ^2" .. slots .. "^7")
 	end
 end
 
@@ -1344,13 +1334,14 @@ InventoryAPI.reloadInventory = function(player, id)
 	for weaponId, weapon in pairs(UsersWeapons[id]) do
 		if invData.shared or weapon.charId == sourceCharIdentifier then
 			itemList[#itemList + 1] = Item:New({
-				id = weaponId,
+				id    = weaponId,
 				count = 1,
-				name = weapon.name,
+				name  = weapon.name,
 				label = weapon.name,
 				limit = 1,
-				type = "item_weapon",
-				desc = weapon.desc
+				type  = "item_weapon",
+				desc  = weapon.desc,
+				group = 5,
 			})
 		end
 	end
@@ -1397,7 +1388,8 @@ InventoryAPI.openCustomInventory = function(player, id)
 							canRemove = dbItem.can_remove,
 							createdAt = item.created_at,
 							owner = item.character_id,
-							desc = dbItem.desc
+							desc = dbItem.desc,
+							group = dbItem.group or 1,
 						})
 					end
 				end
@@ -1417,6 +1409,7 @@ InventoryAPI.openCustomInventory = function(player, id)
 				for _, item in pairs(inventory) do
 					if svItems[item.item] ~= nil then
 						local dbItem = svItems[item.item]
+
 						characterInventory[item.id] = Item:New({
 							count = tonumber(item.amount),
 							id = item.id,
@@ -1429,7 +1422,8 @@ InventoryAPI.openCustomInventory = function(player, id)
 							canRemove = dbItem.can_remove,
 							createdAt = item.created_at,
 							owner = charIdentifier,
-							desc = dbItem.desc
+							desc = dbItem.desc,
+							group = dbItem.group or 1,
 						})
 					end
 				end
@@ -1442,8 +1436,9 @@ InventoryAPI.openCustomInventory = function(player, id)
 	end
 end
 
-InventoryAPI.closeCustomInventory = function(player, id)
-	local _source = player
+
+InventoryAPI.closeCustomInventory = function(source, id)
+	local _source = source
 	if CustomInventoryInfos[id] == nil then
 		return
 	end

@@ -11,12 +11,9 @@ Item.metadata = {}
 Item.createdAt = nil
 Item.owner = nil
 Item.desc = nil
-
 Item.count = nil
 Item.limit = nil
-
 Item.weight = nil
-
 Item.canUse = false
 Item.canRemove = false
 Item.desc = nil
