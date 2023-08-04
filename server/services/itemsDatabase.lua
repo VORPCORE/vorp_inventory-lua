@@ -1,19 +1,10 @@
 ---@diagnostic disable: undefined-global
----@alias sourceId string
----@alias itemId string
----@alias weaponId string
----@alias invId string
-
-
----@type table<invId, table<sourceId, table<itemId, Item>>|table<itemId, Item>>
 UsersInventories = {
 	default = {}
 }
----@type table<invId, table<weaponId, Weapon>>
 UsersWeapons = {
 	default = {}
 }
----@type table<string, Item>
 svItems = {}
 
 
@@ -21,7 +12,7 @@ local function LoadDatabase(charid)
 	local result = MySQL.query.await('SELECT * FROM loadout WHERE charidentifier = ? ', { charid })
 	if next(result) then
 		for _, db_weapon in pairs(result) do
-			if db_weapon.charidentifier then
+			if db_weapon.charidentifier and db_weapon.curr_inv == "default" then -- only load default inventory
 				local ammo = json.decode(db_weapon.ammo)
 				local comp = json.decode(db_weapon.components)
 				local used = false
@@ -46,7 +37,8 @@ local function LoadDatabase(charid)
 						used2 = used2,
 						charId = db_weapon.charidentifier,
 						currInv = db_weapon.curr_inv,
-						dropped = db_weapon.dropped
+						dropped = db_weapon.dropped,
+						group = 5
 					})
 
 					if not UsersWeapons[db_weapon.curr_inv] then
@@ -63,7 +55,7 @@ local function LoadDatabase(charid)
 	end
 end
 
--- * ON PLAYER SPAWN LOAD ALL THEIR WEAPONS * --
+-- * Load all player weapons * --
 RegisterNetEvent("vorp:SelectedCharacter", function(source, character)
 	local _source = source
 
@@ -78,7 +70,8 @@ RegisterNetEvent("vorp:SelectedCharacter", function(source, character)
 	end)
 end)
 
--- * LOAD ALL ITEMS FROM DATABSE * --
+-------------------------------------
+-- * Load all items from databse * --
 Citizen.CreateThread(function()
 	MySQL.ready(function()
 		MySQL.query('SELECT * FROM items', {}, function(result)
@@ -97,7 +90,8 @@ Citizen.CreateThread(function()
 						type = db_item.type,
 						canUse = db_item.usable,
 						canRemove = db_item.can_remove,
-						desc = db_item.desc
+						desc = db_item.desc,
+						group = db_item.groupId or 1
 					})
 					svItems[item.item] = item
 				end
@@ -106,6 +100,59 @@ Citizen.CreateThread(function()
 		end)
 	end)
 end)
+
+-------------------------------------------------------
+-- * Load all weapons from custom inventories only * --
+CreateThread(function()
+	MySQL.ready(function()
+		local result1 = MySQL.query.await('SELECT * FROM loadout', {})
+		if result1[1] then
+			for _, db_weapon in pairs(result1) do
+				if db_weapon.curr_inv ~= "default" then
+					local ammo = json.decode(db_weapon.ammo)
+					local comp = json.decode(db_weapon.components)
+					local used = false
+					local used2 = false
+
+					if db_weapon.used == 1 then
+						used = true
+					end
+
+					if db_weapon.used2 == 1 then
+						used2 = true
+					end
+
+					if db_weapon.dropped == 0 then
+						local weapon = Weapon:New({
+							id = db_weapon.id,
+							propietary = db_weapon.identifier,
+							name = db_weapon.name,
+							ammo = ammo,
+							components = comp,
+							used = used,
+							used2 = used2,
+							charId = db_weapon.charidentifier,
+							currInv = db_weapon.curr_inv,
+							dropped = db_weapon.dropped,
+							group = 5
+						})
+
+						if not UsersWeapons[db_weapon.curr_inv] then
+							UsersWeapons[db_weapon.curr_inv] = {}
+						end
+
+						UsersWeapons[db_weapon.curr_inv][weapon:getId()] = weapon
+					else
+						-- delete any droped weapons
+						MySQL.query('DELETE FROM loadout WHERE id = ?', { db_weapon.id })
+					end
+				end
+				print("Inventory Loaded all custom inventory weapons from database")
+			end
+		end
+	end)
+end)
+
 
 if Config.DevMode then
 	RegisterNetEvent("DEV:loadweapons", function()
