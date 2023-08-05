@@ -8,6 +8,58 @@ UsersWeapons = {
 svItems = {}
 
 
+-------------------------------------------------------
+-- * Load all weapons from custom inventories only * --
+CreateThread(function()
+	MySQL.ready(function()
+		local result1 = MySQL.query.await('SELECT * FROM loadout', {})
+		if result1[1] then
+			for _, db_weapon in pairs(result1) do
+				if db_weapon.curr_inv ~= "default" then
+					local ammo = json.decode(db_weapon.ammo)
+					local comp = json.decode(db_weapon.components)
+					local used = false
+					local used2 = false
+
+					if db_weapon.used == 1 then
+						used = true
+					end
+
+					if db_weapon.used2 == 1 then
+						used2 = true
+					end
+
+					if db_weapon.dropped == 0 then
+						local weapon = Weapon:New({
+							id = db_weapon.id,
+							propietary = db_weapon.identifier,
+							name = db_weapon.name,
+							ammo = ammo,
+							components = comp,
+							used = used,
+							used2 = used2,
+							charId = db_weapon.charidentifier,
+							currInv = db_weapon.curr_inv,
+							dropped = db_weapon.dropped,
+							group = 5
+						})
+
+						if not UsersWeapons[db_weapon.curr_inv] then
+							UsersWeapons[db_weapon.curr_inv] = {}
+						end
+
+						UsersWeapons[db_weapon.curr_inv][weapon:getId()] = weapon
+					else
+						-- delete any droped weapons
+						MySQL.query('DELETE FROM loadout WHERE id = ?', { db_weapon.id })
+					end
+				end
+			end
+			print("Inventory Loaded all custom inventory weapons from database")
+		end
+	end)
+end)
+
 local function LoadDatabase(charid)
 	local result = MySQL.query.await('SELECT * FROM loadout WHERE charidentifier = ? ', { charid })
 	if next(result) then
@@ -101,57 +153,6 @@ Citizen.CreateThread(function()
 	end)
 end)
 
--------------------------------------------------------
--- * Load all weapons from custom inventories only * --
-CreateThread(function()
-	MySQL.ready(function()
-		local result1 = MySQL.query.await('SELECT * FROM loadout', {})
-		if result1[1] then
-			for _, db_weapon in pairs(result1) do
-				if db_weapon.curr_inv ~= "default" then
-					local ammo = json.decode(db_weapon.ammo)
-					local comp = json.decode(db_weapon.components)
-					local used = false
-					local used2 = false
-
-					if db_weapon.used == 1 then
-						used = true
-					end
-
-					if db_weapon.used2 == 1 then
-						used2 = true
-					end
-
-					if db_weapon.dropped == 0 then
-						local weapon = Weapon:New({
-							id = db_weapon.id,
-							propietary = db_weapon.identifier,
-							name = db_weapon.name,
-							ammo = ammo,
-							components = comp,
-							used = used,
-							used2 = used2,
-							charId = db_weapon.charidentifier,
-							currInv = db_weapon.curr_inv,
-							dropped = db_weapon.dropped,
-							group = 5
-						})
-
-						if not UsersWeapons[db_weapon.curr_inv] then
-							UsersWeapons[db_weapon.curr_inv] = {}
-						end
-
-						UsersWeapons[db_weapon.curr_inv][weapon:getId()] = weapon
-					else
-						-- delete any droped weapons
-						MySQL.query('DELETE FROM loadout WHERE id = ?', { db_weapon.id })
-					end
-				end
-			end
-			print("Inventory Loaded all custom inventory weapons from database")
-		end
-	end)
-end)
 
 
 if Config.DevMode then
