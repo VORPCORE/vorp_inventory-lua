@@ -795,30 +795,30 @@ span.emoji {
     }
 
     #inventoryElement {
-        top: -120px;
+        top: -100px;
         width: 600px;
         height: 498px;
         margin-right: 290px;
     }
 
     #information {
-        top: 800px;
-        left: 10px;
+        top: 36vh;
+        left: 9.3vw;
     }
 
     #description {
-        top: 840px;
-        left: 10px;
+        top: 38vh;
+        left: 10.7vw;
     }
 
     #description2 {
-        top: 840px;
-        left: 10px;
+        top: 37vh;
+        left: 10.7vw;
     }
 
     .controls {
-        top: 170px;
-        left: 390px;
+        top: 200px;
+        left: 490px;
     }
 
     #secondInventoryHud {
@@ -830,15 +830,15 @@ span.emoji {
     }
 
     #secondInventoryElement {
-        top: -120px;
+        top: -100px;
         width: 600px;
-        height: 498px;
+        height: 500px;
         margin-right: 290px;
     }
 
     #information2 {
-        top: 71%;
-        left: 30px;
+        top: 35vh;
+        left: 10.6vw;
 
     }
 
@@ -874,7 +874,11 @@ span.emoji {
         width: 35px;
         height: 35px;
     }
-
+    
+    .mainButtonContainer {
+       margin-left: 38vh;
+       margin-top: -2vh;
+     }
 }
 
 
