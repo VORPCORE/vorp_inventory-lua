@@ -147,8 +147,8 @@ CreateThread(function()
 						MySQL.query('DELETE FROM loadout WHERE id = ?', { db_weapon.id })
 					end
 				end
-				print("Inventory Loaded all custom inventory weapons from database")
 			end
+			print("Inventory Loaded all custom inventory weapons from database")
 		end
 	end)
 end)
