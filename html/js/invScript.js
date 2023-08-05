@@ -109,7 +109,7 @@ function inventorySetup(items) {
       /* weapons */
       const group = 5;
       $("#inventoryElement").append(`
-          <div data-label='${item.label}' data-group='${group}' style='background-image: url("img/items/  ${item.name.toLowerCase()}.png"), url(); background-size: 90px 90px, 90px 90px; background-repeat: no-repeat; background-position: center;' id='item-${index}' class='item'></div>
+          <div data-label='${item.label}' data-group='${group}' style='background-image: url("img/items/${item.name.toLowerCase()}.png"), url(); background-size: 90px 90px, 90px 90px; background-repeat: no-repeat; background-position: center;' id='item-${index}' class='item'></div>
           `);
 
     }
