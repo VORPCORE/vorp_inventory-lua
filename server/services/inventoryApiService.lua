@@ -120,7 +120,7 @@ InventoryAPI.getInventory = function(player, cb)
 	local _source = player
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local identifier = sourceCharacter.identifier
-	local userInventory = UsersInventories["default"][identifier]
+	local userInventory = UsersInventories.default[identifier]
 
 	if userInventory then
 		local playerItems = {}
@@ -134,7 +134,8 @@ InventoryAPI.getInventory = function(player, cb)
 				type = item:getType(),
 				count = item:getCount(),
 				limit = item:getLimit(),
-				canUse = item:getCanUse()
+				canUse = item:getCanUse(),
+				group = item:getGroup(),
 			}
 			table.insert(playerItems, newItem)
 		end
@@ -183,7 +184,8 @@ InventoryAPI.getUserWeapons = function(player, cb)
 				propietary = currentWeapon:getPropietary(),
 				used = currentWeapon:getUsed(),
 				ammo = currentWeapon:getAllAmmo(),
-				desc = currentWeapon:getDesc()
+				desc = currentWeapon:getDesc(),
+				group = 5
 			}
 			table.insert(userWeapons2, weapon)
 		end
@@ -458,6 +460,7 @@ InventoryAPI.addItem = function(player, name, amount, metadata, cb)
 
 	if cb == nil then
 		cb = function(result)
+
 		end
 	end
 
@@ -473,24 +476,17 @@ InventoryAPI.addItem = function(player, name, amount, metadata, cb)
 	local sourceCharacter = sourceUser.getUsedCharacter
 	local identifier = sourceCharacter.identifier
 	local charIdentifier = sourceCharacter.charIdentifier
-	local userInventory = UsersInventories["default"][identifier]
+	local userInventory = UsersInventories.default[identifier]
 
 	if userInventory == nil then
-		UsersInventories["default"][identifier] = {}
-		userInventory = UsersInventories["default"][identifier] -- create reference to actual table
+		UsersInventories.default[identifier] = {}
+		userInventory = UsersInventories.default[identifier] -- create reference to actual table
 	end
 
 	if not userInventory or amount <= 0 then
 		return cb(false)
 	end
-
-	local sourceItemLimit = svItem:getLimit()
-	local itemLabel = svItem:getLabel()
-	local itemType = svItem:getType()
-	local itemCanRemove = svItem:getCanRemove()
-	local itemDefaultMetadata = svItem:getMetadata()
-	local ItemDesc = svItem:getDesc()
-
+	-- TODO add check for whole inventory check as well
 	InventoryAPI.canCarryItem(_source, name, amount, function(result)
 		if result then
 			local item = SvUtils.FindItemByNameAndMetadata("default", identifier, name, metadata)
@@ -504,15 +500,16 @@ InventoryAPI.addItem = function(player, name, amount, metadata, cb)
 					item = Item:New({
 						id = craftedItem.id,
 						count = amount,
-						limit = sourceItemLimit,
-						label = itemLabel,
-						metadata = SharedUtils.MergeTables(itemDefaultMetadata, metadata),
+						limit = svItem:getLimit(),
+						label = svItem:getLabel(),
+						metadata = SharedUtils.MergeTables(svItem:getMetadata(), metadata),
 						name = name,
-						type = itemType,
+						type = svItem:getType(),
 						canUse = true,
-						canRemove = itemCanRemove,
+						canRemove = svItem:getCanRemove(),
 						owner = charIdentifier,
-						desc = ItemDesc
+						desc = svItem:getDesc(),
+						group = svItem:getGroup() or 1
 					})
 					userInventory[craftedItem.id] = item
 					TriggerClientEvent("vorpCoreClient:addItem", _source, item)
@@ -545,7 +542,8 @@ InventoryAPI.getItemByMainId = function(player, mainid, cb)
 					type = item:getType(),
 					count = item:getCount(),
 					limit = item:getLimit(),
-					canUse = item:getCanUse()
+					canUse = item:getCanUse(),
+					group = item:getGroup(),
 				}
 				return cb(itemRequested) -- send table of the item requested
 			end
@@ -704,7 +702,8 @@ InventoryAPI.setItemMetadata = function(player, itemId, metadata, amount, cb)
 					canUse = true,
 					canRemove = item:getCanRemove(),
 					owner = charId,
-					desc = item:getDesc()
+					desc = item:getDesc(),
+					group = item:getGroup(),
 				})
 			userInventory[craftedItem.id] = item
 			TriggerClientEvent("vorpCoreClient:addItem", _source, item)
@@ -830,6 +829,7 @@ InventoryAPI.registerWeapon = function(_target, wepname, ammos, components, comp
 	local targetCharId = targetCharacter.charIdentifier
 	local job = targetCharacter.job
 
+	-- TODO make this a function to avoid repeated code
 	-- whitelist jobs for custom amount
 	if Config.JobsAllowed[job] then
 		DefaultAmount = Config.JobsAllowed[job]
@@ -918,6 +918,7 @@ InventoryAPI.registerWeapon = function(_target, wepname, ammos, components, comp
 						charId = targetCharId,
 						currInv = "default",
 						dropped = 0,
+						group = 5,
 					})
 					UsersWeapons["default"][weaponId] = newWeapon
 					TriggerEvent("syn_weapons:registerWeapon", weaponId)
@@ -1136,7 +1137,7 @@ InventoryAPI.onNewCharacter = function(playerId)
 	for key, value in pairs(Config.startItems) do
 		TriggerEvent("vorpCore:addItem", playerId, tostring(key), tonumber(value), {})
 	end
-
+    -- TODO remove object from weapons as ammo works with items
 	for key, value in pairs(Config.startWeapons) do
 		local auxBullets = {}
 		local receivedBullets = {}
