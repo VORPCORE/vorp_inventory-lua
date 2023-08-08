@@ -100,6 +100,10 @@ function inventorySetup(items) {
 
     if (item.type != "item_weapon") {
       /* items */
+      if(!item.group){
+        item.group = 1;
+      }
+      
       $("#inventoryElement").append(`
             <div data-label='${item.label}' data-group='${item.group}' style='background-image: url("img/items/${item.name.toLowerCase()}.png"), url(); background-size: 90px 90px, 90px 90px; background-repeat: no-repeat; background-position: center;' id='item-${index}' class='item'>
                 <div class='count'<span style ='color:Black'>${count}</span></div>
