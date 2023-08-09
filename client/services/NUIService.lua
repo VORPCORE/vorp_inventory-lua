@@ -581,6 +581,11 @@ NUIService.NUIUseItem = function(data)
 		local isArmed = Citizen.InvokeNative(0xCB690F680A3EA971, ped, 4)
 		local notdual = false
 
+		if UserWeapons[weaponId]:getUsed() or UserWeapons[weaponId]:getUsed2() then
+			TriggerClientEvent("vorp:TipRight", _target, T.errorSameWeapon, 2000)
+			return;
+		end
+		
 		if (isWeaponAGun and isWeaponOneHanded) and isArmed then
 			addWardrobeInventoryItem("CLOTHING_ITEM_M_OFFHAND_000_TINT_004", 0xF20B6B4A)
 			addWardrobeInventoryItem("UPGRADE_OFFHAND_HOLSTER", 0x39E57B01)

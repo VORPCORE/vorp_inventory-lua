@@ -63,6 +63,7 @@ TranslationInv.Langs = {
         noplayersnearby           = "No Players Near By",
         gaveMoney                 = "Gave money",
         withid                    = " with the weapon ID: ",
+        errorSameWeapon           = "You cannot equip the same weapon.",
     },
     Portugues_PT = {
         fullInventory             = "Muito peso nao podes dar mais coisas",
@@ -121,7 +122,7 @@ TranslationInv.Langs = {
         cantweapons2              = "A pessoa já tem muitas armas",
         slow                      = "Aguara unsa segundos!",
         gave                      = "Deu Dinheiro",
-
+        errorSameWeapon           = "Você não pode equipar a mesma arma.",
     },
     Portugues_BR = {
         fullInventory             = "Você está carregando peso demais, não pode receber mais nada",
@@ -184,7 +185,8 @@ TranslationInv.Langs = {
         cantgivehere              = "não pode dar agora",
         noplayersnearby           = "Nenhum jogador por perto",
         gaveMoney                 = "Deu dinheiro",
-        withid                    = " com o ID da arma: "
+        withid                    = " com o ID da arma: ",
+        errorSameWeapon           = "Você não pode equipar a mesma arma.",
     },
     Francais = {
         fullInventory             = "Vous portez trop de poids, vous ne pouvez rien recevoir d'autre",
@@ -243,7 +245,8 @@ TranslationInv.Langs = {
         cantweapons2              = "La personne a déjà trop d'armes",
         slow                      = "Arrêtez d'essayer de spammer des items!",
         gave                      = "Gave money",
-        withid                    = " avec l'ID de l'arme: "
+        withid                    = " avec l'ID de l'arme: ",
+        errorSameWeapon           = "Vous ne pouvez pas équiper la même arme.",
     },
     German = {
         fullInventory             = "Du kannst nicht noch mehr tragen",
@@ -302,7 +305,8 @@ TranslationInv.Langs = {
         cantweapons2              = "Die Person hat schon zu viele Waffen",
         slow                      = "Hör auf zu spammen!",
         gave                      = "Gave money",
-        withid                    = " mit der Waffen ID: "
+        withid                    = " mit der Waffen ID: ",
+        errorSameWeapon           = "Vous ne pouvez pas équiper la même arSie können nicht die gleiche Waffe ausrüsten.",
     },
     Espanol = {
         fullInventory             = "Llevas demasiado peso encima no te pueden dar más cosas",
@@ -361,7 +365,8 @@ TranslationInv.Langs = {
         slow                      = "¡Deja de spamear objetos!",
         cansell                   = "Se puede vender por: $",
         gave                      = "Gave money",
-        withid                    = " con el ID de arma: "
+        withid                    = " con el ID de arma: ",
+        errorSameWeapon           = "No puedes equipar la misma arma.",
     },
     Italian = {
         fullInventory             = "Stai trasportando molte cose, non puoi prenderne altre!",
@@ -421,6 +426,7 @@ TranslationInv.Langs = {
         gave                      = "Ha dato denaro",
         transfered                = " ha trasferito ",
         withid                    = " con ID arma: ",
+        errorSameWeapon           = "Non puoi equipaggiare la stessa arma.",
     },
     Nederlandse = {
         fullInventory             = "Je draagt te veel gewicht, je kan niks meer dragen.",
@@ -483,6 +489,7 @@ TranslationInv.Langs = {
         noplayersnearby           = "Geen spelers in de buurt",
         gave                      = "Gave money",
         withid                    = " met wapen ID: ",
+        errorSameWeapon           = "Je kunt niet hetzelfde wapen uitrusten.",
     },
     Nynorsk = {
         fullInventory             = "Du bærer for mye, du kan ikke motta noe mer",
@@ -542,6 +549,7 @@ TranslationInv.Langs = {
         slow                      = "Stop trying to spam items!",
         gave                      = "Gave money",
         withid                    = " med våpen ID: ",
+        errorSameWeapon           = "Du kan ikkje utruste same våpenet.",
     },
     Turkish = {
         fullInventory             = "Çok ağırlık taşıyorsun, başka bir şey alamazsın",
@@ -603,5 +611,6 @@ TranslationInv.Langs = {
         noplayersnearby           = "Yakında oyuncu yok",
         gave                      = "Gave money",
         withid                    = " with weapon ID: ",
+        errorSameWeapon           = "Aynı silahı donatamazsın.",
     }
 }
