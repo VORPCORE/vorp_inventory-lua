@@ -100,10 +100,10 @@ function inventorySetup(items) {
 
     if (item.type != "item_weapon") {
       /* items */
-      if(!item.group){
+      if (!item.group) {
         item.group = 1;
       }
-      
+
       $("#inventoryElement").append(`
             <div data-label='${item.label}' data-group='${item.group}' style='background-image: url("img/items/${item.name.toLowerCase()}.png"), url(); background-size: 90px 90px, 90px 90px; background-repeat: no-repeat; background-position: center;' id='item-${index}' class='item'>
                 <div class='count'<span style ='color:Black'>${count}</span></div>
@@ -139,34 +139,9 @@ function inventorySetup(items) {
       });
     }
 
-
-    $("#item-" + index).dblclick(function () {
-      if (item.used || item.used2) {
-        $.post(
-          `https://${GetParentResourceName()}/UnequipWeapon`,
-          JSON.stringify({
-            item: item.name,
-            id: item.id,
-          })
-        );
-      } else {
-        $.post(
-          `https://${GetParentResourceName()}/UseItem`,
-          JSON.stringify({
-            item: item.name,
-            type: item.type,
-            hash: item.hash,
-            amount: item.count,
-            id: item.id,
-          })
-        );
-      }
-    });
-
-    if (item.used2) {
-      data.push({
-        text: LANGUAGE.unequip,
-        action: function () {
+    if (Config.DoubleClickToUse) {
+      $("#item-" + index).dblclick(function () {
+        if (item.used || item.used2) {
           $.post(
             `https://${GetParentResourceName()}/UnequipWeapon`,
             JSON.stringify({
@@ -174,13 +149,7 @@ function inventorySetup(items) {
               id: item.id,
             })
           );
-        },
-      });
-    }
-    if (item.canUse) {
-      data.push({
-        text: LANGUAGE.use,
-        action: function () {
+        } else {
           $.post(
             `https://${GetParentResourceName()}/UseItem`,
             JSON.stringify({
@@ -191,11 +160,42 @@ function inventorySetup(items) {
               id: item.id,
             })
           );
-        },
+        }
       });
+    } else {
+      if (item.used2) {
+        data.push({
+          text: LANGUAGE.unequip,
+          action: function () {
+            $.post(
+              `https://${GetParentResourceName()}/UnequipWeapon`,
+              JSON.stringify({
+                item: item.name,
+                id: item.id,
+              })
+            );
+          },
+        });
+      }
+
+      if (item.canUse) {
+        data.push({
+          text: LANGUAGE.use,
+          action: function () {
+            $.post(
+              `https://${GetParentResourceName()}/UseItem`,
+              JSON.stringify({
+                item: item.name,
+                type: item.type,
+                hash: item.hash,
+                amount: item.count,
+                id: item.id,
+              })
+            );
+          },
+        });
+      }
     }
-
-
     if (item.canRemove) {
       data.push({
         text: LANGUAGE.give,
@@ -252,6 +252,7 @@ function inventorySetup(items) {
         OverSetDesc(" ");
       }
     );
+
   });
 
 
