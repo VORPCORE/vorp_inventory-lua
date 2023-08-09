@@ -117,10 +117,6 @@ window.addEventListener('message', function (event) {
             $("#inventoryHud").append(
                 `<div class='controls'><div class='controls-center'><input type='text' id='search' placeholder='${LANGUAGE.inventorysearch}'/input><button id='check'>${checkxy} / ${infoxy}</button></div><button id='close'>${LANGUAGE.inventoryclose}</button></div></div>`
             );
-        } else {
-            $("#inventoryHud").append(
-                `<div class='controls'><div class='controls-center'><input type="text" class = "secondarysearch "id="search" placeholder='${LANGUAGE.inventorysearch}'></input><button id='check'>${checkxy} / ${infoxy}</button></div><button id='close'>${LANGUAGE.inventoryclose}</button></div></div>`
-            );
         }
 
         $("#search").bind('input', function () {
