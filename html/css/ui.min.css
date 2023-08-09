@@ -753,6 +753,15 @@ span.emoji {
     .mainButtonContainer {
         margin-top: -40px;
     }
+
+    .imageButtonContainer1 {
+        margin-top: -690px;
+        width: 400px;
+        margin-left: 400px;
+   }
+    .capacity {
+    margin-top:680px;
+   }
 }
 
 @media (min-width:3840px) {
@@ -868,8 +877,6 @@ span.emoji {
     }
 
     .imageButtonContainer1 {
-        display: flex;
-        justify-content: center;
         margin-top: -880px;
         width: 400px;
         margin-left: 400px;
