@@ -256,6 +256,8 @@ window.addEventListener('message', function (event) {
                 total += Number(itemlist[p].count)
             }
             secondarySetCurrentCapacity(total)
+        } else {
+            secondarySetCurrentCapacity(0)
         }
     } else if (event.data.action == "nearPlayers") {
         if (event.data.what == "give") {
