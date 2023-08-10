@@ -112,12 +112,12 @@ window.addEventListener('message', function (event) {
         $("#inventoryHud").fadeIn();
         $(".controls").remove();
 
-      
-        if (event.data.search) {
-            $("#inventoryHud").append(
-                `<div class='controls'><div class='controls-center'><input type='text' id='search' placeholder='${LANGUAGE.inventorysearch}'/input><button id='check'>${checkxy} / ${infoxy}</button></div><button id='close'>${LANGUAGE.inventoryclose}</button></div></div>`
-            );
-        }
+
+        // if (event.data.search) {
+        $("#inventoryHud").append(
+            `<div class='controls'><div class='controls-center'><input type='text' id='search' placeholder='${LANGUAGE.inventorysearch}'/input><button id='check'>${checkxy} / ${infoxy}</button></div><button id='close'>${LANGUAGE.inventoryclose}</button></div></div>`
+        );
+        // }
 
         $("#search").bind('input', function () {
             searchFor = $("#search").val().toLowerCase();
