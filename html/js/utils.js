@@ -50,13 +50,16 @@ function initiateSecondaryInventory(id, title, capacity) {
   );
 
   $("#secondarysearch").bind("input", function () {
-    searchFor = $("#secondarysearch").val().toLowerCase();
+    var searchFor = $("#secondarysearch").val().toLowerCase();
     $("#secondInventoryElement .item").each(function () {
-      label = $(this).data("label").toLowerCase();
-      if (label.indexOf(searchFor) < 0) {
-        $(this).hide();
-      } else {
-        $(this).show();
+      var label = $(this).data("label");
+      if (label) {
+        label = label.toLowerCase();
+        if (label.indexOf(searchFor) < 0) {
+          $(this).hide();
+        } else {
+          $(this).show();
+        }
       }
     });
   });
