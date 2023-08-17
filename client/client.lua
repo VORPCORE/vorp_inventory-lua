@@ -82,8 +82,9 @@ AddEventHandler("vorpinventory:loaded", function()
         Wait(100)
     end
     local playerammo = playerammoinfo["ammo"]
-    for k,v in pairs(playerammo) do 
-        SetPedAmmoByType(PlayerPedId(), GetHashKey(k), v)
+    local playerPedId = PlayerPedId();
+    for k, v in pairs(playerammo) do
+        SetPedAmmoByType(playerPedId, GetHashKey(k), v)
     end
     SendNUIMessage({
         action = "updateammo",
@@ -103,10 +104,11 @@ end)
 
 RegisterNetEvent("vorpinventory:setammotoped")
 AddEventHandler("vorpinventory:setammotoped", function(ammo)
-    Citizen.InvokeNative(0xF25DF915FA38C5F3, PlayerPedId(), 1, 1)
-    Citizen.InvokeNative(0x1B83C0DEEBCBB214, PlayerPedId())
+    local playerPedId = PlayerPedId();
+    Citizen.InvokeNative(0xF25DF915FA38C5F3, playerPedId, 1, 1)
+    Citizen.InvokeNative(0x1B83C0DEEBCBB214, playerPedId)
     for k, v in pairs(ammo) do
-        SetPedAmmoByType(PlayerPedId(), GetHashKey(k), v)
+        SetPedAmmoByType(playerPedId, GetHashKey(k), v)
     end
 end)
 
@@ -134,8 +136,9 @@ Citizen.CreateThread(function()
     while true do
         Wait(500)
         if loaded then
-            local isArmed = Citizen.InvokeNative(0xCB690F680A3EA971, PlayerPedId(), 4)
-            local wephash = Citizen.InvokeNative(0x8425C5F057012DAB, PlayerPedId())
+            local playerPedId = PlayerPedId()
+            local isArmed = Citizen.InvokeNative(0xCB690F680A3EA971, playerPedId, 4)
+            local wephash = Citizen.InvokeNative(0x8425C5F057012DAB, playerPedId)
             local ismelee = Citizen.InvokeNative(0x959383DCD42040DA, wephash)
             if (isArmed or GetWeapontypeGroup(wephash) == 1548507267) and not ismelee then
                 getammoinfo = true
@@ -149,7 +152,7 @@ Citizen.CreateThread(function()
                 if ammotypes ~= nil and playerammo ~= nil then
                     for k, v in pairs(ammotypes) do
                         if contains(playerammo, v) then
-                            local qt = Citizen.InvokeNative(0x39D22031557946C1, PlayerPedId(), GetHashKey(v))
+                            local qt = Citizen.InvokeNative(0x39D22031557946C1, playerPedId, GetHashKey(v))
                             if not qt or ((GetWeapontypeGroup(wephash) == 1548507267 or GetWeapontypeGroup(wephash) == -1241684019) and qt == 1) then -- an issue occurs where when the player fires their last throwable this loop stops since the player auto switches to melee and it never registers that they used the last of their ammo, creating a problem where the player will always have 1 throwable left even after they have used it. to combat this the player is considered out of ammo if they only have 1 ammo left
                                 qt = 0
                             end

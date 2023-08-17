@@ -1,37 +1,39 @@
 Utils = {}
 
-Utils.FindItemByNameAndMetadata = function (identifier, name, metadata)
-    if UserInventory == nil then
-        return nil
-    end
-    
-    for _, item in pairs(UserInventory) do
-        if name == item:getName() and SharedUtils.Table_equals(metadata, item:getMetadata()) then
-            return item
-        end
-    end
-    return nil
+Utils.FindItemByNameAndMetadata = function(identifier, name, metadata)
+	if UserInventory == nil then
+		return nil
+	end
+
+	for _, item in pairs(UserInventory) do
+		if name == item:getName() and SharedUtils.Table_equals(metadata, item:getMetadata()) then
+			return item
+		end
+	end
+	return nil
 end
 
 Utils.cleanAmmo = function(id)
+	local playerPedId = PlayerPedId()
 	if next(UserWeapons[id]) ~= nil then
-		SetPedAmmo(PlayerPedId(), GetHashKey(UserWeapons[id]:getName()), 0)
+		SetPedAmmo(playerPedId, GetHashKey(UserWeapons[id]:getName()), 0)
 
 		for _, ammo in pairs(UserWeapons[id]:getAllAmmo()) do
-			SetPedAmmoByType(PlayerPedId(), GetHashKey(_), 0)
+			SetPedAmmoByType(playerPedId, GetHashKey(_), 0)
 		end
 	end
 end
 
 Utils.useWeapon = function(id)
+	local playerPedId = PlayerPedId()
 	if UserWeapons[id]:getUsed2() then
 		local weaponHash = GetHashKey(UserWeapons[id]:getName())
-		GiveWeaponToPed_2(PlayerPedId(), weaponHash, 0, true, true, 3, false, 0.5, 1.0, 752097756, false, 0, false)
-		SetCurrentPedWeapon(PlayerPedId(), weaponHash, 0, 0, 0, 0)
-		SetPedAmmo(PlayerPedId(), weaponHash, 0)
+		GiveWeaponToPed_2(playerPedId, weaponHash, 0, true, true, 3, false, 0.5, 1.0, 752097756, false, 0, false)
+		SetCurrentPedWeapon(playerPedId, weaponHash, 0, 0, 0, 0)
+		SetPedAmmo(playerPedId, weaponHash, 0)
 
 		for _, ammo in pairs(UserWeapons[id]:getAllAmmo()) do
-			SetPedAmmoByType(PlayerPedId, GetHashKey(_), ammo)
+			SetPedAmmoByType(playerPedId, GetHashKey(_), ammo)
 			if Config.Debug then
 				print(GetHashKey(_) .. ": " .. _ .. " " .. ammo)
 			end
@@ -42,13 +44,14 @@ Utils.useWeapon = function(id)
 end
 
 Utils.oldUseWeapon = function(id)
+	local playerPedId = PlayerPedId()
 	local weaponHash = GetHashKey(UserWeapons[id]:getName())
 
-	GiveWeaponToPed_2(PlayerPedId(), weaponHash, 0, true, true, 2, false, 0.5, 1.0, 752097756, false, 0, false)
-	SetCurrentPedWeapon(PlayerPedId(), weaponHash, 0, 1, 0, 0)
-	SetPedAmmo(PlayerPedId(), weaponHash, 0)
+	GiveWeaponToPed_2(playerPedId, weaponHash, 0, true, true, 2, false, 0.5, 1.0, 752097756, false, 0, false)
+	SetCurrentPedWeapon(playerPedId, weaponHash, 0, 1, 0, 0)
+	SetPedAmmo(playerPedId, weaponHash, 0)
 	for type, amount in pairs(UserWeapons[id]:getAllAmmo()) do
-		SetPedAmmoByType(PlayerPedId(), GetHashKey(type), amount)
+		SetPedAmmoByType(playerPedId, GetHashKey(type), amount)
 		if Config.Debug then
 			print(GetHashKey(type) .. ": " .. type .. " " .. amount)
 		end
