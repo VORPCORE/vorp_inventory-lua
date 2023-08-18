@@ -13,7 +13,6 @@
 ## Extensive API
 * using a single export on top of your server and client files as a function triggering events `that can also be used/listen` with callbacks using Lua promisses
 * single exports for each API function * NEW
-* declare in your script fxmanifest `"@vorp_inventory/server/services/inventoryApi to use all API functions right in your script *NEW wording might be slight different we will make sure to add to the documentation
 
 ## Features
 * Unique weapons equip unequip
