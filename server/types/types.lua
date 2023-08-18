@@ -172,9 +172,9 @@ function exports.vorp_inventory:deleteWeapon(source, weaponId, callback) end
 --- create Weapon
 ---@param source number player id
 ---@param weaponName string weapon name
----@param ammo string amount of ammo
----@param components table weapon components
----@param comps table weapon components
+---@param ammo string? amount of ammo
+---@param components table? weapon components
+---@param comps table? weapon components
 ---@param callback fun(boolean:boolean)? callback function async or sync leave nil
 function exports.vorp_inventory:createWeapon(source, weaponName, ammo, components, comps, callback) end
 
