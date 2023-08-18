@@ -11,6 +11,7 @@ Weapon.used = false
 Weapon.used2 = false
 Weapon.desc = nil
 Weapon.currInv = ''
+Weapon.group = 5
 
 
 local equippedWeapons = {}
@@ -37,14 +38,13 @@ local function addWeapon(weapon, slot, id)
 			slot = 1
 		end
 	end
-
-	local playerPedId = PlayerPedId()
 	local weaponHash = joaat(weapon)
 	local sHash = "SLOTID_WEAPON_" .. tostring(slot)
 	local reason = joaat("ADD_REASON_DEFAULT")
 	local inventoryId = 1
 	local slotHash = joaat(sHash)
 	local move = false
+	local playerPedId = PlayerPedId()
 
 	--Now add it to the characters inventory
 	local isValid = Citizen.InvokeNative(0x6D5D51B188333FD1, weaponHash, 0) --ItemdatabaseIsKeyValid
@@ -124,7 +124,6 @@ function Weapon:RemoveWeaponFromPed()
 	local isWeaponAGun = Citizen.InvokeNative(0x705BE297EEBDB95D, joaat(self.name))
 	local isWeaponOneHanded = Citizen.InvokeNative(0xD955FEE4B87AFA07, joaat(self.name))
 	local move = false
-
 	local playerPedId = PlayerPedId()
 
 	if isWeaponAGun and isWeaponOneHanded then
@@ -160,7 +159,6 @@ function Weapon:equipwep()
 	local isWeaponThrowable = Citizen.InvokeNative(0x30E7C16B12DA8211, joaat(self.name))
 	local isWeaponAGun = Citizen.InvokeNative(0x705BE297EEBDB95D, joaat(self.name))
 	local isWeaponOneHanded = Citizen.InvokeNative(0xD955FEE4B87AFA07, joaat(self.name))
-
 	local playerPedId = PlayerPedId()
 
 	if isWeaponMelee or isWeaponThrowable then
@@ -195,7 +193,6 @@ function Weapon:equipwep()
 end
 
 function Weapon:loadComponents()
-	local playerPedId = PlayerPedId()
 	for _, value in pairs(self.components) do
 		Citizen.InvokeNative(0x74C9090FDD1BB48E, playerPedId, joaat(value), joaat(self.name), true)
 	end
@@ -337,4 +334,8 @@ end
 
 function Weapon:getCurrInv()
 	return self.currInv
+end
+
+function Weapon:getGroup()
+	self.group = self.group
 end
