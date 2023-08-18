@@ -42,8 +42,9 @@ function exports.vorp_inventory:registerUsableItem(item, callback) end
 --- get user inventory weapon
 ---@param source number player id
 ---@param callback fun(weapon:table)? callback function async or sync leave nil
+---@param weaponId number weapon id
 ---@return table weapon data
-function exports.vorp_inventory:getUserWeapon(source, callback) end
+function exports.vorp_inventory:getUserWeapon(source, callback, weaponId) end
 
 --- get user inventory weapons
 ---@param source number player id
@@ -150,10 +151,10 @@ function exports.vorp_inventory:setItemMetadata(source, itemId, metadata, amount
 --- get item data
 ---@param source number player id
 ---@param item string item name
----@param metadata table |nil item metadata
 ---@param callback fun(item:table)? callback function async or sync leave nil
+---@param metadata table |nil item metadata
 ---@return table item data
-function exports.vorp_inventory:getItem(source, item, metadata, callback) end
+function exports.vorp_inventory:getItem(source, item, callback, metadata) end
 
 --- get wweapon components
 ---@param source number player id

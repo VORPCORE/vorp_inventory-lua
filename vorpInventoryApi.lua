@@ -135,9 +135,9 @@ exports('vorp_inventoryApi', function()
 
     INV.getUserWeapon = function(source, weaponId)
         local weapon_promise = promise.new()
-        TriggerEvent("vorpCore:getUserWeapon", source, weaponId, function(weapon)
+        TriggerEvent("vorpCore:getUserWeapon", source, function(weapon)
             weapon_promise:resolve(weapon)
-        end)
+        end,weaponId)
         return Citizen.Await(weapon_promise)
     end
 
@@ -148,9 +148,9 @@ exports('vorp_inventoryApi', function()
     -- * ITEMS * --
     INV.getItem = function(source, itemName, metadata)
         local item_promise = promise.new()
-        TriggerEvent("vorpCore:getItem", source, itemName, metadata, function(responseItem)
+        TriggerEvent("vorpCore:getItem", source, itemName, function(responseItem)
             item_promise:resolve(responseItem)
-        end)
+        end,metadata)
         return Citizen.Await(item_promise)
     end
 

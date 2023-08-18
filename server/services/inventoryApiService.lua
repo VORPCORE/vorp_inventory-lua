@@ -174,10 +174,10 @@ exports("registerUsableItem", InventoryAPI.registerUsableItem)
 
 --- get user weapon
 ---@param player number player source
----@param weaponId number weapon id
 ---@param cb fun(items: table)? async or sync callback
+---@param weaponId number weapon id
 ---@return table
-function InventoryAPI.getUserWeapon(player, weaponId, cb)
+function InventoryAPI.getUserWeapon(player,cb, weaponId)
 	local _source = player
 	local weapon = {}
 	local foundWeapon = UsersWeapons.default[weaponId]
@@ -735,10 +735,10 @@ exports("canCarryWeapons", InventoryAPI.canCarryAmountWeapons)
 ---get item data
 ---@param player number source
 ---@param itemName string item name
----@param metadata table | nil? metadata
 ---@param cb fun(success: boolean)| nil  async or sync callback
+---@param metadata table | nil? metadata
 ---@return  table | nil
-function InventoryAPI.getItem(player, itemName, metadata, cb)
+function InventoryAPI.getItem(player, itemName, cb, metadata)
 	local _source = player
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local identifier = sourceCharacter.identifier
