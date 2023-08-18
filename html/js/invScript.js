@@ -150,7 +150,6 @@ function inventorySetup(items) {
       });
     } else {
       if (item.used || item.used2) {
-        console.log(item.used2, item.used2, item.canUse);
         data.push({
           text: LANGUAGE.unequip,
           action: function () {
