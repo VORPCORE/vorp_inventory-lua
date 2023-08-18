@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-global
 -- InventoryApiController server to server events
 AddEventHandler("vorpCore:subWeapon", InventoryAPI.subWeapon)
 AddEventHandler("vorpCore:giveWeapon", InventoryAPI.giveWeapon)
@@ -10,10 +11,11 @@ AddEventHandler("vorpCore:getItem", InventoryAPI.getItem)
 AddEventHandler("vorpCore:getItemByMainId", InventoryAPI.getItemByMainId)
 AddEventHandler("vorpCore:getItemByName", InventoryAPI.getItemByName)
 AddEventHandler("vorpCore:getcomps", InventoryAPI.getcomps)
-AddEventHandler("vorpCore:deletegun", InventoryAPI.deletegun)
+AddEventHandler("vorpCore:deletegun", InventoryAPI.deleteWeapon)
+AddEventHandler("vorpinventory:removeammo", InventoryAPI.removeAllUserAmmo)
 AddEventHandler("vorpCore:getItemContainingMetadata", InventoryAPI.getItemContainingMetadata)
 AddEventHandler("vorpCore:getItemMatchingMetadata", InventoryAPI.getItemMatchingMetadata)
-AddEventHandler("vorpCore:getItemCount", InventoryAPI.getItems)
+AddEventHandler("vorpCore:getItemCount", InventoryAPI.getItemCount)
 AddEventHandler("vorpCore:getUserInventory", InventoryAPI.getInventory)
 AddEventHandler("vorpCore:canCarryItems", InventoryAPI.canCarryAmountItem)
 AddEventHandler("vorpCore:canCarryItem", InventoryAPI.canCarryItem)
@@ -24,7 +26,6 @@ AddEventHandler("vorpCore:getWeaponBullets", InventoryAPI.getWeaponBullets)
 AddEventHandler("vorpCore:getUserWeapons", InventoryAPI.getUserWeapons)
 AddEventHandler("vorpCore:getUserWeapon", InventoryAPI.getUserWeapon)
 AddEventHandler("vorpCore:registerUsableItem", InventoryAPI.registerUsableItem)
-AddEventHandler("vorp_NewCharacter", InventoryAPI.onNewCharacter)
 AddEventHandler("vorpCore:registerInventory", InventoryAPI.registerInventory)
 AddEventHandler("vorpCore:removeInventory", InventoryAPI.removeInventory)
 AddEventHandler("vorpCore:openCustomInventory", InventoryAPI.openCustomInventory)
@@ -36,7 +37,3 @@ AddEventHandler("vorp_inventory:Server:BlackListCustom", InventoryAPI.BlackListC
 AddEventHandler("vorpCore:setInventoryWeaponLimit", InventoryAPI.setCustomInventoryWeaponLimit)
 AddEventHandler("vorp_inventory:Server:updateCustomInventorySlots", InventoryAPI.updateCustomInventorySlots)
 
--- shared for dev mode --
-RegisterServerEvent("vorpCore:LoadAllAmmo")
-AddEventHandler("vorpCore:LoadAllAmmo", InventoryAPI.LoadAllAmmo)
--------------------------
