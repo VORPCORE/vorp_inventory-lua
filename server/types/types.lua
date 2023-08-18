@@ -36,7 +36,7 @@ function exports.vorp_inventory:canCarryWeapons(source, amount, weaponName,callb
 function exports.vorp_inventory:getUserInventoryItems(source, callback) end
 
 ---@param item string item name
----@param callback fun(item:Item)
+---@param callback fun(item:table)
 function exports.vorp_inventory:registerUsableItem(item, callback) end
 
 --- get user inventory weapon
@@ -83,7 +83,7 @@ function exports.vorp_inventory:subBullets(weaponId, bulletType, amount,callback
 --- get item amount
 ---@param source number player id
 ---@param item string item name
----@param metadata table item metadata
+---@param metadata table |nil  item metadata
 ---@param cb fun(amount:number)? callback function async or sync leave nil
 ---@return number
 function exports.vorp_inventory:getItemCount(source, item, metadata,cb) end
@@ -115,7 +115,7 @@ function exports.vorp_inventory:getItemMatchingMetadata(source, slot, metadata, 
 ---@param source number player id
 ---@param item string item name
 ---@param amount number amount of item
----@param metadata table item metadata
+---@param metadata table | nil  item metadata
 ---@param callback fun(boolean:boolean)? callback function async or sync leave nil
 function exports.vorp_inventory:addItem(source, item, amount, metadata, callback) end
 
@@ -135,7 +135,7 @@ function exports.vorp_inventory:subItemById(source, id, callback) end
 ---@param source number player id
 ---@param item string item name
 ---@param amount number amount of item
----@param metadata table item metadata
+---@param metadata table |nil item metadata
 ---@param callback fun(boolean:boolean)? callback function async or sync leave nil
 function exports.vorp_inventory:subItem(source, item, amount, metadata, callback) end
 
@@ -150,7 +150,7 @@ function exports.vorp_inventory:setItemMetadata(source, itemId, metadata, amount
 --- get item data
 ---@param source number player id
 ---@param item string item name
----@param metadata table item metadata
+---@param metadata table |nil item metadata
 ---@param callback fun(item:table)? callback function async or sync leave nil
 ---@return table item data
 function exports.vorp_inventory:getItem(source, item, metadata,callback) end
