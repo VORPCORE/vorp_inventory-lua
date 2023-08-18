@@ -157,7 +157,7 @@ exports("getUserInventoryItems", InventoryAPI.getInventory)
 ---@param name string item name
 ---@param cb function callback
 function InventoryAPI.registerUsableItem(name, cb)
-	if not UsableItemsFunctions[name] then
+	if UsableItemsFunctions[name] then
 		Log.Warning("duplicated item being registered : item " .. name)
 		return
 	end
@@ -1224,7 +1224,6 @@ function InventoryAPI.setCustomInventoryWeaponLimit(id, wepName, limit)
 		Log.print("Custom inventory[^3" .. id .. "^7] set item[^3" .. wepName .. "^7] limit to ^2" .. limit .. "^7")
 	end
 end
-
 
 exports("setCustomInventoryWeaponLimit", InventoryAPI.setCustomInventoryWeaponLimit)
 
