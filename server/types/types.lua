@@ -27,7 +27,7 @@ function exports.vorp_inventory:canCarryItems(source, item, amount, callback) en
 ---@param weaponName string weapon name
 ---@param callback fun(canCarry: boolean)? callback function async or sync leave nil
 ---@return boolean
-function exports.vorp_inventory:canCarryWeapons(source, amount, weaponName,callback) end
+function exports.vorp_inventory:canCarryWeapons(source, amount, callback, weaponName) end
 
 --- gets user inventory items
 ---@param source number player id
@@ -56,13 +56,13 @@ function exports.vorp_inventory:getUserInventoryWeapons(source, callback) end
 ---@param weaponID number weapon id
 ---@param callback fun(ammo:number)? callback function async or sync leave nil
 ---@return number
-function exports.vorp_inventory:getWeaponBullets(source, weaponID,callback) end
+function exports.vorp_inventory:getWeaponBullets(source, weaponID, callback) end
 
 --- remove all user ammo
 ---@param source number player id
 ---@param callback fun(success: boolean)? async or sync callback
 ---@return boolean
-function exports.vorp_inventory:removeAllUserAmmo(source,callback) end
+function exports.vorp_inventory:removeAllUserAmmo(source, callback) end
 
 --- add bullets
 ---@param source number player id
@@ -70,7 +70,7 @@ function exports.vorp_inventory:removeAllUserAmmo(source,callback) end
 ---@param amount number amount of bullets
 ---@param callback fun(success: boolean)? async or sync callback
 ---@return boolean
-function exports.vorp_inventory:addBullets(source, bulletType, amount,callback) end
+function exports.vorp_inventory:addBullets(source, bulletType, amount, callback) end
 
 --- remove bullets from weapon
 ---@param weaponId number weapon id
@@ -78,7 +78,7 @@ function exports.vorp_inventory:addBullets(source, bulletType, amount,callback) 
 ---@param amount number amount of bullets
 ---@param callback fun(success: boolean)? async or sync callback
 ---@return boolean
-function exports.vorp_inventory:subBullets(weaponId, bulletType, amount,callback) end
+function exports.vorp_inventory:subBullets(weaponId, bulletType, amount, callback) end
 
 --- get item amount
 ---@param source number player id
@@ -86,7 +86,7 @@ function exports.vorp_inventory:subBullets(weaponId, bulletType, amount,callback
 ---@param metadata table |nil  item metadata
 ---@param cb fun(amount:number)? callback function async or sync leave nil
 ---@return number
-function exports.vorp_inventory:getItemCount(source, item, metadata,cb) end
+function exports.vorp_inventory:getItemCount(source, item, metadata, cb) end
 
 --- get item amount by name
 ---@param source number player id
@@ -153,7 +153,7 @@ function exports.vorp_inventory:setItemMetadata(source, itemId, metadata, amount
 ---@param metadata table |nil item metadata
 ---@param callback fun(item:table)? callback function async or sync leave nil
 ---@return table item data
-function exports.vorp_inventory:getItem(source, item, metadata,callback) end
+function exports.vorp_inventory:getItem(source, item, metadata, callback) end
 
 --- get wweapon components
 ---@param source number player id
@@ -183,14 +183,14 @@ function exports.vorp_inventory:createWeapon(source, weaponName, ammo, component
 ---@param target number target id
 ---@param callback fun(boolean:boolean)? callback function async or sync leave nil
 ---@return boolean
-function exports.vorp_inventory:giveWeapon(source, weaponId, target,callback) end
+function exports.vorp_inventory:giveWeapon(source, weaponId, target, callback) end
 
 --- sub weapon
 ---@param source number player id
 ---@param weaponId number weapon id
 ---@param callback fun(boolean:boolean)? callback function async or sync leave nil
 ---@return boolean
-function exports.vorp_inventory:subWeapon(source, weaponId,callback) end
+function exports.vorp_inventory:subWeapon(source, weaponId, callback) end
 
 --- register custom inventory
 ---@param invId string inventory id

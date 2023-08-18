@@ -85,8 +85,8 @@ exports('vorp_inventoryApi', function()
         return Citizen.Await(result_promise)
     end
 
-    INV.canCarryWeapons = function(source, amount, cb, weaponName)
-        TriggerEvent("vorpCore:canCarryWeapons", source, amount, weaponName, cb)
+    INV.canCarryWeapons = function(source, amount, cb, weaponName) 
+        TriggerEvent("vorpCore:canCarryWeapons", source, amount,cb, weaponName)
     end
 
     INV.getcomps = function(source, weaponid)
