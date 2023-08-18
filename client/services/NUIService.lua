@@ -23,9 +23,6 @@ AddEventHandler('inv:givestatus', function(x)
 	cangive = x
 end)
 
-RegisterNetEvent("vorp_inventory:Client:CanOpenCustom", function(result)
-	CanOpen = result
-end)
 
 --===================== FUNCTIONS ====================--
 
@@ -50,20 +47,21 @@ end
 
 
 NUIService.OpenCustomInventory = function(name, id, capacity)
-	TriggerServerEvent("vorp_inventory:Server:LockCustomInv", id)
-	Wait(200) -- wait for information to come back
-	if CanOpen then
-		CanOpen = false
-		SetNuiFocus(true, true)
-		SendNUIMessage({
-			action = "display",
-			type = "custom",
-			title = tostring(name),
-			id = tostring(id),
-			capacity = capacity
-		})
-		InInventory = true
-	end
+	Core.RpcCall("vorp_inventory:Server:CanOpenCustom", function(result)
+		CanOpen = result
+		if CanOpen then
+			CanOpen = false
+			SetNuiFocus(true, true)
+			SendNUIMessage({
+				action = "display",
+				type = "custom",
+				title = tostring(name),
+				id = tostring(id),
+				capacity = capacity
+			})
+			InInventory = true
+		end
+	end, id)
 end
 
 NUIService.NUIMoveToCustom = function(obj)
@@ -425,7 +423,7 @@ NUIService.NUIGiveItem = function(obj)
 							isProcessingPay = true
 							local amount = tonumber(data2.count)
 							local ammotype = data2.item
-							local maxcount = Config.maxammo[ammotype]
+							local maxcount = SharedData.MaxAmmo[ammotype]
 							if amount > 0 and maxcount >= amount then
 								TriggerServerEvent("vorpinventory:servergiveammo", ammotype, amount, target, maxcount)
 							end
@@ -616,7 +614,8 @@ NUIService.NUIFocusOff = function(obj)
 end
 
 NUIService.OnKey = function()
-	if IsControlJustReleased(1, Config.openKey) and IsInputDisabled(0) then
+	--EnableControlAction(0,Config.OpenKey ,true )
+	if IsControlJustReleased(1, Config.OpenKey) and IsInputDisabled(0) then
 		if InInventory then
 			NUIService.CloseInv()
 			Wait(1000)
@@ -681,6 +680,7 @@ NUIService.LoadInv = function()
 		weapon.id = currentWeapon:getId()
 		weapon.used = currentWeapon:getUsed()
 		weapon.desc = currentWeapon:getDesc()
+		weapon.group = 5
 
 		table.insert(items, weapon)
 	end
@@ -760,13 +760,7 @@ Citizen.CreateThread(function()
 	NUIService.initiateData()
 
 	while true do
-		if IsControlJustReleased(0, Config.OpenKey) and IsInputDisabled(0) then
-			if InInventory then
-				NUIService.CloseInv()
-			else
-				NUIService.OpenInv()
-			end
-		end
+		NUIService.OnKey()
 
 		if Config.DisableDeathInventory then
 			if InInventory and IsPedDeadOrDying(PlayerPedId()) then
