@@ -112,6 +112,12 @@ function exports.vorp_inventory:getItemContainingMetadata(source, item, metadata
 ---@return table item data
 function exports.vorp_inventory:getItemMatchingMetadata(source, slot, metadata, callback) end
 
+--- get DB item
+---@param item string item name
+---@param callback fun(item:table)? callback function async or sync leave nil
+---@return table| nil item data
+function exports.vorp_inventory:getItemDB(item, callback) end
+
 --- add item to user
 ---@param source number player id
 ---@param item string item name

@@ -364,6 +364,20 @@ end
 
 exports("getItemCount", InventoryAPI.getItemCount)
 
+--- get item data from DB
+---@param itemName string item name
+---@param cb fun(item: table | nil)? async or sync callback
+---@return table | nil
+function InventoryAPI.getItemDB(itemName, cb)
+	local svItem = ServerItems[itemName]
+	if not svItem then
+		return respond(cb, nil)
+	end
+	return respond(cb, svItem)
+end
+
+exports("getItemDB", InventoryAPI.getItemDB)
+
 
 ---get item data by item name
 ---@param player number source
@@ -1234,6 +1248,7 @@ exports("setCustomInventoryWeaponLimit", InventoryAPI.setCustomInventoryWeaponLi
 ---@param player number player
 ---@param id string? inventory id
 function InventoryAPI.openInventory(player, id)
+
 	if not id then
 		return TriggerClientEvent("vorp_inventory:OpenInv", source)
 	end
