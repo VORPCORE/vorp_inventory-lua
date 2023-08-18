@@ -177,7 +177,7 @@ exports("registerUsableItem", InventoryAPI.registerUsableItem)
 ---@param cb fun(items: table)? async or sync callback
 ---@param weaponId number weapon id
 ---@return table
-function InventoryAPI.getUserWeapon(player,cb, weaponId)
+function InventoryAPI.getUserWeapon(player, cb, weaponId)
 	local _source = player
 	local weapon = {}
 	local foundWeapon = UsersWeapons.default[weaponId]
@@ -1230,10 +1230,14 @@ end
 
 exports("setCustomInventoryWeaponLimit", InventoryAPI.setCustomInventoryWeaponLimit)
 
---- open custom inventory
+--- open inventory
 ---@param player number player
----@param id string inventory id
-function InventoryAPI.openCustomInventory(player, id)
+---@param id string? inventory id
+function InventoryAPI.openInventory(player, id)
+	if not id then
+		return TriggerClientEvent("vorp_inventory:OpenInv", source)
+	end
+
 	local _source = player
 	if not CustomInventoryInfos[id] or not UsersInventories[id] then
 		return
@@ -1294,17 +1298,18 @@ function InventoryAPI.openCustomInventory(player, id)
 	end
 end
 
-exports("openCustomInventory", InventoryAPI.openCustomInventory)
+exports("openInventory", InventoryAPI.openInventory)
 
----close custom invetory
+---close  inventory
 ---@param source number
 ---@param id string
-function InventoryAPI.closeCustomInventory(source, id)
+function InventoryAPI.closeInventory(source, id)
 	local _source = source
-	if CustomInventoryInfos[id] == nil then
-		return
+	if id and CustomInventoryInfos[id] then
+		return TriggerClientEvent("vorp_inventory:CloseCustomInv", _source)
 	end
-	TriggerClientEvent("vorp_inventory:CloseCustomInv", _source)
+
+	TriggerClientEvent("vorp_inventory:CloseInv", source)
 end
 
-exports("closeCustomInventory", InventoryAPI.closeCustomInventory)
+exports("closeInventory", InventoryAPI.closeInventory)

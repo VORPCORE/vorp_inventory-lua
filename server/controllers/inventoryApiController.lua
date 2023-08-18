@@ -28,8 +28,8 @@ AddEventHandler("vorpCore:getUserWeapon", InventoryAPI.getUserWeapon)
 AddEventHandler("vorpCore:registerUsableItem", InventoryAPI.registerUsableItem)
 AddEventHandler("vorpCore:registerInventory", InventoryAPI.registerInventory)
 AddEventHandler("vorpCore:removeInventory", InventoryAPI.removeInventory)
-AddEventHandler("vorpCore:openCustomInventory", InventoryAPI.openCustomInventory)
-AddEventHandler("vorpCore:closeCustomInventory", InventoryAPI.closeCustomInventory)
+AddEventHandler("vorpCore:openCustomInventory", InventoryAPI.openInventory)   -- main or secondary
+AddEventHandler("vorpCore:closeCustomInventory", InventoryAPI.closeInventory) -- main or secondary
 AddEventHandler("vorpCore:setInventoryItemLimit", InventoryAPI.setCustomInventoryItemLimit)
 AddEventHandler("vorp_inventory:Server:AddPermissionMoveToCustom", InventoryAPI.AddPermissionMoveToCustom)
 AddEventHandler("vorp_inventory:Server:AddPermissionTakeFromCustom", InventoryAPI.AddPermissionTakeFromCustom)
