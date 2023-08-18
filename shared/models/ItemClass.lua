@@ -1,4 +1,18 @@
 ---@class Item : table Item class
+---@field count number @Item amount
+---@field id number  @Item id
+---@field name string @Item name
+---@field createdAt string @Item creation date
+---@field owner string @Item owner charid
+---@field group number @Item group type
+---@field limit number @Item limit
+---@field label string @Item label
+---@field metadata table @Item metadata
+---@field item string @Item name
+---@field type string @Item type
+---@field canUse boolean  @Item can use 
+---@field canRemove boolean @Item can remove
+---@field desc string @Item description
 Item = {}
 
 Item.id = nil
