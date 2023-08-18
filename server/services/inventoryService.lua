@@ -878,7 +878,7 @@ function InventoryService.getInventory()
 end
 
 function InventoryService.getAmmoInfo()
-	local _source = player
+	local _source = source
 	if allplayersammo[_source] then
 		TriggerClientEvent("vorpinventory:recammo", _source, allplayersammo[_source])
 	end
