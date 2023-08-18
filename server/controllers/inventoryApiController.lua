@@ -36,4 +36,3 @@ AddEventHandler("vorp_inventory:Server:AddPermissionTakeFromCustom", InventoryAP
 AddEventHandler("vorp_inventory:Server:BlackListCustom", InventoryAPI.BlackListCustom)
 AddEventHandler("vorpCore:setInventoryWeaponLimit", InventoryAPI.setCustomInventoryWeaponLimit)
 AddEventHandler("vorp_inventory:Server:updateCustomInventorySlots", InventoryAPI.updateCustomInventorySlots)
-

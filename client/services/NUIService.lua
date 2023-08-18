@@ -740,6 +740,7 @@ NUIService.initiateData = function()
 			givegold = T.givegold,
 			dropgold = T.dropgold,
 			unequip = T.unequip,
+			equip = T.equip,
 			use = T.use,
 			give = T.give,
 			drop = T.drop
