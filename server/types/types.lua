@@ -84,9 +84,9 @@ function exports.vorp_inventory:subBullets(weaponId, bulletType, amount, callbac
 ---@param source number player id
 ---@param item string item name
 ---@param metadata table |nil  item metadata
----@param cb fun(amount:number)? callback function async or sync leave nil
+---@param callback fun(amount:number)? callback function async or sync leave nil
 ---@return number
-function exports.vorp_inventory:getItemCount(source, item, metadata, cb) end
+function exports.vorp_inventory:getItemCount(source, callback, item, metadata) end
 
 --- get item amount by name
 ---@param source number player id

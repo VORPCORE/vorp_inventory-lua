@@ -328,11 +328,11 @@ exports("subBullets", InventoryAPI.subBullets)
 
 --- Get item count from player inventory
 ---@param player number source
----@param cb function callback
+---@param cb fun(count: number | nil)? async or sync callback
 ---@param itemName string item name
 ---@param metadata table? metadata
 ---@return number | nil
-function InventoryAPI.getItemCount(player, itemName, metadata, cb)
+function InventoryAPI.getItemCount(player, cb, itemName, metadata)
 	local _source = player
 	local svItem = ServerItems[itemName]
 

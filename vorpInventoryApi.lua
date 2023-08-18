@@ -85,8 +85,8 @@ exports('vorp_inventoryApi', function()
         return Citizen.Await(result_promise)
     end
 
-    INV.canCarryWeapons = function(source, amount, cb, weaponName) 
-        TriggerEvent("vorpCore:canCarryWeapons", source, amount,cb, weaponName)
+    INV.canCarryWeapons = function(source, amount, cb, weaponName)
+        TriggerEvent("vorpCore:canCarryWeapons", source, amount, cb, weaponName)
     end
 
     INV.getcomps = function(source, weaponid)
@@ -221,9 +221,9 @@ exports('vorp_inventoryApi', function()
 
     INV.getItemCount = function(source, item, metadata)
         local count_promise = promise.new()
-        TriggerEvent("vorpCore:getItemCount", source, item, metadata, function(itemcount)
+        TriggerEvent("vorpCore:getItemCount", source, function(itemcount)
             count_promise:resolve(itemcount)
-        end)
+        end, item, metadata)
         return Citizen.Await(count_promise)
     end
 
