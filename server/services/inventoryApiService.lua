@@ -345,7 +345,7 @@ function InventoryAPI.getItemCount(player, itemName, metadata, cb)
 		return respond(cb, nil)
 	end
 
-	local identifier = Core.getUser(_surce).getUsedCharacter.identifier
+	local identifier = Core.getUser(_source).getUsedCharacter.identifier
 	metadata = SharedUtils.MergeTables(svItem.metadata, metadata or {})
 
 	local userInventory = UsersInventories.default[identifier]
@@ -789,7 +789,7 @@ function InventoryAPI.deleteWeapon(player, weaponid, cb)
 	local _source = player
 	local userWeapons = UsersWeapons.default
 	userWeapons[weaponid]:setPropietary('')
-	local query = 'DELETE FROM loadout WHERE id = @id '
+	local query = 'DELETE FROM loadout WHERE id = @id'
 	local params = { id = weaponid }
 	DBService.deleteAsync(query, params, function(r) end)
 	return respond(cb, true)
