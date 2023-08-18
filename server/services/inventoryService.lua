@@ -939,29 +939,26 @@ function InventoryService.updateAmmo(ammoinfo)
 	DBService.updateAsync(query, params, function(r) end)
 end
 
---- load player ammo for dev mode purposes
-if Config.DevMode then
-	function InventoryService.LoadAllAmmo()
-		local _source = source
-		local sourceCharacter = Core.getUser(_source).getUsedCharacter
-		local charidentifier = sourceCharacter.charIdentifier
-		local query = "SELECT ammo FROM characters WHERE charidentifier=@charidentifier"
-		local params = { charidentifier = charidentifier }
-		DBService.queryAsync(query, params, function(result)
-			if result[1] then
-				local ammo = json.decode(result[1].ammo)
-				allplayersammo[_source] = { charidentifier = charidentifier, ammo = ammo }
-				if next(ammo) then
-					for k, v in pairs(ammo) do
-						local ammocount = tonumber(v)
-						if ammocount and ammocount > 0 then
-							TriggerClientEvent("vorpCoreClient:addBullets", _source, k, ammocount)
-						end
+function InventoryService.LoadAllAmmo()
+	local _source = source
+	local sourceCharacter = Core.getUser(_source).getUsedCharacter
+	local charidentifier = sourceCharacter.charIdentifier
+	local query = "SELECT ammo FROM characters WHERE charidentifier=@charidentifier"
+	local params = { charidentifier = charidentifier }
+	DBService.queryAsync(query, params, function(result)
+		if result[1] then
+			local ammo = json.decode(result[1].ammo)
+			allplayersammo[_source] = { charidentifier = charidentifier, ammo = ammo }
+			if next(ammo) then
+				for k, v in pairs(ammo) do
+					local ammocount = tonumber(v)
+					if ammocount and ammocount > 0 then
+						TriggerClientEvent("vorpCoreClient:addBullets", _source, k, ammocount)
 					end
 				end
 			end
-		end)
-	end
+		end
+	end)
 end
 
 function InventoryService.onNewCharacter(source)
