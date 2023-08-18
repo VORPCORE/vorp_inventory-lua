@@ -49,11 +49,12 @@ function initiateSecondaryInventory(id, title, capacity) {
     `<div class='controls'><div class='controls-center'><input type='text' id='secondarysearch' placeholder='${LANGUAGE.inventorysearch}'/></div></div>`
   );
 
+
   $("#secondarysearch").bind("input", function () {
     var searchFor = $("#secondarysearch").val().toLowerCase();
     $("#secondInventoryElement .item").each(function () {
       var label = $(this).data("label");
-      if (label) {
+      if (label) { // Check that label is defined
         label = label.toLowerCase();
         if (label.indexOf(searchFor) < 0) {
           $(this).hide();

@@ -1,5 +1,6 @@
 TranslationInv = {}
 
+
 TranslationInv.Langs = {
     English = {
         fullInventory             = "You are carrying to much weight, you can`t receive anything else",

@@ -17,6 +17,7 @@
 ---@field UserWeapons table<string,Weapon>
 ---@field UserInventory table<number,Item>
 svItems = {}
+
 InventoryService = {}
 UserWeapons = {}
 UserInventory = {}
