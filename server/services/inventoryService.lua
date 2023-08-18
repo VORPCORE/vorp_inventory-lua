@@ -41,7 +41,6 @@ function InventoryService.UseItem(itemName, itemId, args)
 				item = itemArgs,
 				args = args
 			}
-
 			UsableItemsFunctions[tostring(itemName)](arguments)
 		end
 	end

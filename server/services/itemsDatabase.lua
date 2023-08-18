@@ -31,7 +31,7 @@ local function loadAllWeapons(db_weapon)
 
 		UsersWeapons[db_weapon.curr_inv][weapon:getId()] = weapon
 	else
-		DBService.deleteAsync('DELETE FROM loadout WHERE id = ?', { id = db_weapon.id }, function() end)
+		DBService.deleteAsync('DELETE FROM loadout WHERE id = @id', { id = db_weapon.id }, function() end)
 	end
 end
 
