@@ -1,23 +1,30 @@
-game 'rdr3'
+---@diagnostic disable: undefined-global
 fx_version 'cerulean'
 
-author 'VORP'
-description 'VORP Inventory'
 rdr3_warning 'I acknowledge that this is a prerelease build of RedM, and I am aware my resources *will* become incompatible once RedM ships.'
-ui_page 'html/ui.html'
+
+game 'rdr3'
+author 'VORP'
+repository 'https://github.com/VORPCORE/vorp_inventory-lua'
+description 'Inventory System for RedM VORPCore framework'
+
 lua54 'yes'
+
+ui_page 'html/ui.html'
 
 shared_scripts {
   "config.lua",
   "languages/*.lua",
   "shared/models/*.lua",
+  'shared/handler/*.lua',
   "shared/services/*.lua",
-  "shared/services/Regex.js"
+  "shared/services/Regex.js",
+  'shared/weapons.lua',
+  'shared/ammo.lua'
 }
 
 client_scripts {
   'client/models/*.lua',
-  'client/handler/*.lua',
   'client/services/*.lua',
   'client/controllers/*.lua',
   'client/*.lua',
@@ -25,22 +32,20 @@ client_scripts {
 
 
 server_scripts {
+  '@oxmysql/lib/MySQL.lua',
   'server/models/*.lua',
-  'server/handler/*.lua',
   'server/services/*.lua',
   'server/controllers/*.lua',
   'vorpInventoryApi.lua',
   'server/*.lua',
-  '@oxmysql/lib/MySQL.lua'
 }
 
 
-
-files { 'html/**/*' } 
+files { 'html/**/*' }
 
 server_exports { 'vorp_inventoryApi' }
 
-
+-- version
 version '2.8'
 vorp_checker 'yes'
 vorp_name '^4Resource version Check^3'
