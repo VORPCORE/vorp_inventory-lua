@@ -14,9 +14,10 @@ function InventoryService.CheckNewPlayer(_source, charid)
 		if SharedUtils.IsValueInArray(charid, newchar) then
 			Core.NotifyRightTip(_source, "in cool down", 5000)
 			SvUtils.Trem(_source)
-			return
+			return false
 		end
 	end
+	return true
 end
 
 function InventoryService.UseItem(itemName, itemId, args)
