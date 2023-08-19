@@ -13,7 +13,7 @@ lua54 'yes'
 ui_page 'html/ui.html'
 
 shared_scripts {
-  "config.lua",
+  "config/*.lua",
   "languages/*.lua",
   "shared/models/*.lua",
   'shared/handler/*.lua',
