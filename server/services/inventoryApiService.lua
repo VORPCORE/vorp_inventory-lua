@@ -930,6 +930,9 @@ exports("createWeapon", InventoryAPI.registerWeapon)
 ---@return  boolean
 function InventoryAPI.giveWeapon(player, weaponId, target, cb)
 	local _source = player
+	if not Core.getUser(_source) then
+		return respond(cb, false)
+	end
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local sourceIdentifier = sourceCharacter.identifier
 	local sourceCharId = sourceCharacter.charIdentifier
