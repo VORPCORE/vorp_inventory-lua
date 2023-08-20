@@ -20,8 +20,6 @@ shared_scripts {
   'shared/handler/*.lua',
   "shared/services/*.lua",
   "shared/services/Regex.js",
-  'shared/weapons.lua',
-  'shared/ammo.lua'
 }
 
 client_scripts {
