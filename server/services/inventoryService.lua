@@ -1316,7 +1316,7 @@ function InventoryService.TakeFromCustom(obj)
 	end
 
 	if item.type == "item_weapon" then
-		InventoryAPI.canCarryAmountWeapons(_source, 1, item.name, function(res)
+		InventoryAPI.canCarryAmountWeapons(_source, 1, function(res)
 			if res then
 				local query =
 				"UPDATE loadout SET curr_inv = 'default', charidentifier = @charid, identifier = @identifier WHERE id = @weaponId"
@@ -1346,7 +1346,7 @@ function InventoryService.TakeFromCustom(obj)
 			else
 				Core.NotifyRightTip(_source, T.fullInventory, 2000)
 			end
-		end)
+		end, item.name)
 	else
 		InventoryAPI.canCarryItem(_source, item.name, amount, function(res)
 			if res then
