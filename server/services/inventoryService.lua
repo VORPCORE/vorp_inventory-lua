@@ -716,7 +716,7 @@ function InventoryService.GiveItem(itemId, amount, target)
 	local charname = sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname
 	local charname1 = targetCharacter.firstname .. ' ' .. targetCharacter.lastname
 
-	if InventoryService.CheckNewPlayer(_source, charid) then
+	if not InventoryService.CheckNewPlayer(_source, charid) then
 		TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
 		return
 	end
