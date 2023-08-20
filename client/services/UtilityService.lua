@@ -1,6 +1,6 @@
 Utils = {}
 
-Utils.FindItemByNameAndMetadata = function(identifier, name, metadata)
+function Utils.FindItemByNameAndMetadata(identifier, name, metadata)
 	if UserInventory == nil then
 		return nil
 	end
@@ -13,7 +13,7 @@ Utils.FindItemByNameAndMetadata = function(identifier, name, metadata)
 	return nil
 end
 
-Utils.cleanAmmo = function(id)
+function Utils.cleanAmmo(id)
 	local PlayerPedId = PlayerPedId()
 	if next(UserWeapons[id]) ~= nil then
 		SetPedAmmo(PlayerPedId, joaat(UserWeapons[id]:getName()), 0)
@@ -24,7 +24,7 @@ Utils.cleanAmmo = function(id)
 	end
 end
 
-Utils.useWeapon = function(id)
+function Utils.useWeapon(id)
 	local PlayerPedId = PlayerPedId()
 	if UserWeapons[id]:getUsed2() then
 		local weaponHash = joaat(UserWeapons[id]:getName())
@@ -43,7 +43,7 @@ Utils.useWeapon = function(id)
 	end
 end
 
-Utils.oldUseWeapon = function(id)
+function Utils.oldUseWeapon(id)
 	local PlayerPedId = PlayerPedId()
 	local weaponHash = joaat(UserWeapons[id]:getName())
 
@@ -61,7 +61,7 @@ Utils.oldUseWeapon = function(id)
 	TriggerServerEvent("vorpinventory:setUsedWeapon", id, UserWeapons[id]:getUsed(), UserWeapons[id]:getUsed2())
 end
 
-Utils.addItems = function(name, id, amount)
+function Utils.addItems(name, id, amount)
 	if next(UserInventory[id]) ~= nil then
 		UserInventory[id]:addCount(amount)
 	else
@@ -79,8 +79,7 @@ Utils.addItems = function(name, id, amount)
 	end
 end
 
-
-Utils.expandoProcessing = function(object)
+function Utils.expandoProcessing(object)
 	local _obj = {}
 	for _, row in pairs(object) do
 		_obj[_] = row
@@ -88,7 +87,7 @@ Utils.expandoProcessing = function(object)
 	return _obj
 end
 
-Utils.getNearestPlayers = function()
+function Utils.getNearestPlayers()
 	local closestDistance = 5.0
 	local playerPed = PlayerPedId()
 	local coords = GetEntityCoords(playerPed, true, true)
@@ -109,7 +108,7 @@ Utils.getNearestPlayers = function()
 	return closestPlayers
 end
 
-Utils.GetWeaponLabel = function(hash)
+function Utils.GetWeaponLabel(hash)
 	for _, wp in pairs(SharedData.Weapons) do
 		if wp.HashName == hash then
 			return wp.Name
@@ -118,7 +117,7 @@ Utils.GetWeaponLabel = function(hash)
 	return hash
 end
 
-Utils.GetWeaponDesc = function(hash)
+function Utils.GetWeaponDesc(hash)
 	for k, v in pairs(SharedData.Weapons) do
 		if v.HashName == hash then
 			return v.Desc
@@ -143,4 +142,3 @@ function Utils.GetHashreadableLabel(hash, weaponId)
 		return Utils.GetWeaponLabel(hash)
 	end
 end
-

@@ -24,9 +24,9 @@ AddEventHandler('inv:givestatus', function(x)
 end)
 
 
---===================== FUNCTIONS ====================--
+--====================S ====================--
 
-NUIService.ReloadInventory = function(inventory)
+function NUIService.ReloadInventory(inventory)
 	local payload = json.decode(inventory)
 	if payload.itemList == '[]' then
 		payload.itemList = {}
@@ -45,8 +45,7 @@ NUIService.ReloadInventory = function(inventory)
 	NUIService.LoadInv()
 end
 
-
-NUIService.OpenCustomInventory = function(name, id, capacity)
+function NUIService.OpenCustomInventory(name, id, capacity)
 	Core.RpcCall("vorp_inventory:Server:CanOpenCustom", function(result)
 		CanOpen = result
 		if CanOpen then
@@ -64,15 +63,15 @@ NUIService.OpenCustomInventory = function(name, id, capacity)
 	end, id)
 end
 
-NUIService.NUIMoveToCustom = function(obj)
+function NUIService.NUIMoveToCustom(obj)
 	TriggerServerEvent("vorp_inventory:MoveToCustom", json.encode(obj))
 end
 
-NUIService.NUITakeFromCustom = function(obj)
+function NUIService.NUITakeFromCustom(obj)
 	TriggerServerEvent("vorp_inventory:TakeFromCustom", json.encode(obj))
 end
 
-NUIService.OpenClanInventory = function(clanName, clanId, capacity)
+function NUIService.OpenClanInventory(clanName, clanId, capacity)
 	SetNuiFocus(true, true)
 	SendNUIMessage({
 		action = "display",
@@ -85,15 +84,15 @@ NUIService.OpenClanInventory = function(clanName, clanId, capacity)
 	InInventory = true
 end
 
-NUIService.NUIMoveToClan = function(obj)
+function NUIService.NUIMoveToClan(obj)
 	TriggerServerEvent("syn_clan:MoveToClan", json.encode(obj))
 end
 
-NUIService.NUITakeFromClan = function(obj)
+function NUIService.NUITakeFromClan(obj)
 	TriggerServerEvent("syn_clan:TakeFromClan", json.encode(obj))
 end
 
-NUIService.OpenContainerInventory = function(ContainerName, Containerid, capacity)
+function NUIService.OpenContainerInventory(ContainerName, Containerid, capacity)
 	SetNuiFocus(true, true)
 	SendNUIMessage({
 		action = "display",
@@ -106,15 +105,15 @@ NUIService.OpenContainerInventory = function(ContainerName, Containerid, capacit
 	InInventory = true
 end
 
-NUIService.NUIMoveToContainer = function(obj)
+function NUIService.NUIMoveToContainer(obj)
 	TriggerServerEvent("syn_Container:MoveToContainer", json.encode(obj))
 end
 
-NUIService.NUITakeFromContainer = function(obj)
+function NUIService.NUITakeFromContainer(obj)
 	TriggerServerEvent("syn_Container:TakeFromContainer", json.encode(obj))
 end
 
-NUIService.CloseInventory = function()
+function NUIService.CloseInventory()
 	if storemenu then
 		storemenu = false
 		geninfo = {}
@@ -139,7 +138,8 @@ NUIService.CloseInventory = function()
 	TriggerEvent("vorp_stables:setClosedInv", false)
 	TriggerEvent("syn:closeinv")
 end
-NUIService.CloseInv = function()
+
+function NUIService.CloseInv()
 	if storemenu then
 		storemenu = false
 		geninfo = {}
@@ -166,7 +166,7 @@ NUIService.CloseInv = function()
 	TriggerEvent("syn:closeinv")
 end
 
-NUIService.OpenHorseInventory = function(horseTitle, horseId, capacity)
+function NUIService.OpenHorseInventory(horseTitle, horseId, capacity)
 	SetNuiFocus(true, true)
 	SendNUIMessage({
 		action = "display",
@@ -180,24 +180,23 @@ NUIService.OpenHorseInventory = function(horseTitle, horseId, capacity)
 	TriggerEvent("vorp_stables:setClosedInv", true)
 end
 
-NUIService.NUIMoveToHorse = function(obj)
+function NUIService.NUIMoveToHorse(obj)
 	TriggerServerEvent("vorp_stables:MoveToHorse", json.encode(obj))
 end
 
-NUIService.NUITakeFromHorse = function(obj)
+function NUIService.NUITakeFromHorse(obj)
 	TriggerServerEvent("vorp_stables:TakeFromHorse", json.encode(obj))
 end
 
-NUIService.NUIMoveToStore = function(obj)
+function NUIService.NUIMoveToStore(obj)
 	TriggerServerEvent("syn_store:MoveToStore", json.encode(obj))
 end
 
-NUIService.NUITakeFromStore = function(obj)
+function NUIService.NUITakeFromStore(obj)
 	TriggerServerEvent("syn_store:TakeFromStore", json.encode(obj))
 end
 
-
-NUIService.OpenStoreInventory = function(StoreName, StoreId, capacity, geninfox)
+function NUIService.OpenStoreInventory(StoreName, StoreId, capacity, geninfox)
 	storemenu = true
 	geninfo = geninfox
 	SetNuiFocus(true, true)
@@ -214,8 +213,7 @@ NUIService.OpenStoreInventory = function(StoreName, StoreId, capacity, geninfox)
 	TriggerEvent("syn_store:setClosedInv", true)
 end
 
-
-NUIService.OpenstealInventory = function(stealName, stealId, capacity)
+function NUIService.OpenstealInventory(stealName, stealId, capacity)
 	SetNuiFocus(true, true)
 	SendNUIMessage({
 		action = "display",
@@ -229,15 +227,15 @@ NUIService.OpenstealInventory = function(stealName, stealId, capacity)
 	TriggerEvent("vorp_stables:setClosedInv", true)
 end
 
-NUIService.NUIMoveTosteal = function(obj)
+function NUIService.NUIMoveTosteal(obj)
 	TriggerServerEvent("syn_search:MoveTosteal", json.encode(obj))
 end
 
-NUIService.NUITakeFromsteal = function(obj)
+function NUIService.NUITakeFromsteal(obj)
 	TriggerServerEvent("syn_search:TakeFromsteal", json.encode(obj))
 end
 
-NUIService.OpenCartInventory = function(cartName, wagonId, capacity)
+function NUIService.OpenCartInventory(cartName, wagonId, capacity)
 	SetNuiFocus(true, true)
 	SendNUIMessage({
 		action = "display",
@@ -252,16 +250,15 @@ NUIService.OpenCartInventory = function(cartName, wagonId, capacity)
 	TriggerEvent("vorp_stables:setClosedInv", true)
 end
 
-NUIService.NUIMoveToCart = function(obj)
+function NUIService.NUIMoveToCart(obj)
 	TriggerServerEvent("vorp_stables:MoveToCart", json.encode(obj))
 end
 
-NUIService.NUITakeFromCart = function(obj)
+function NUIService.NUITakeFromCart(obj)
 	TriggerServerEvent("vorp_stables:TakeFromCart", json.encode(obj))
 end
 
-
-NUIService.OpenHouseInventory = function(houseName, houseId, capacity)
+function NUIService.OpenHouseInventory(houseName, houseId, capacity)
 	SetNuiFocus(true, true)
 	SendNUIMessage({
 		action = "display",
@@ -274,15 +271,15 @@ NUIService.OpenHouseInventory = function(houseName, houseId, capacity)
 	InInventory = true
 end
 
-NUIService.NUIMoveToHouse = function(obj)
+function NUIService.NUIMoveToHouse(obj)
 	TriggerServerEvent("vorp_housing:MoveToHouse", json.encode(obj))
 end
 
-NUIService.NUITakeFromHouse = function(obj)
+function NUIService.NUITakeFromHouse(obj)
 	TriggerServerEvent("vorp_housing:TakeFromHouse", json.encode(obj))
 end
 
-NUIService.OpenBankInventory = function(bankName, bankId, capacity)
+function NUIService.OpenBankInventory(bankName, bankId, capacity)
 	SetNuiFocus(true, true)
 	SendNUIMessage({
 		action = "display",
@@ -295,15 +292,15 @@ NUIService.OpenBankInventory = function(bankName, bankId, capacity)
 	InInventory = true
 end
 
-NUIService.NUIMoveToBank = function(obj)
+function NUIService.NUIMoveToBank(obj)
 	TriggerServerEvent("vorp_bank:MoveToBank", json.encode(obj))
 end
 
-NUIService.NUITakeFromBank = function(obj)
+function NUIService.NUITakeFromBank(obj)
 	TriggerServerEvent("vorp_bank:TakeFromBank", json.encode(obj))
 end
 
-NUIService.OpenHideoutInventory = function(hideoutName, hideoutId, capacity)
+function NUIService.OpenHideoutInventory(hideoutName, hideoutId, capacity)
 	SetNuiFocus(true, true)
 	SendNUIMessage({
 		action = "display",
@@ -316,19 +313,19 @@ NUIService.OpenHideoutInventory = function(hideoutName, hideoutId, capacity)
 	InInventory = true
 end
 
-NUIService.NUIMoveToHideout = function(obj)
+function NUIService.NUIMoveToHideout(obj)
 	TriggerServerEvent("syn_underground:MoveToHideout", json.encode(obj))
 end
 
-NUIService.NUITakeFromHideout = function(obj)
+function NUIService.NUITakeFromHideout(obj)
 	TriggerServerEvent("syn_underground:TakeFromHideout", json.encode(obj))
 end
 
-NUIService.setProcessingPayFalse = function()
+function NUIService.setProcessingPayFalse()
 	isProcessingPay = false
 end
 
-NUIService.NUIUnequipWeapon = function(obj)
+function NUIService.NUIUnequipWeapon(obj)
 	local data = obj
 
 	if UserWeapons[tonumber(data.id)] then
@@ -338,7 +335,7 @@ NUIService.NUIUnequipWeapon = function(obj)
 	NUIService.LoadInv()
 end
 
-NUIService.NUIGetNearPlayers = function(obj)
+function NUIService.NUIGetNearPlayers(obj)
 	local nearestPlayers = Utils.getNearestPlayers()
 
 	local playerIds = {}
@@ -348,7 +345,7 @@ NUIService.NUIGetNearPlayers = function(obj)
 	TriggerServerEvent('vorp_inventory:getNearbyCharacters', obj, playerIds)
 end
 
-NUIService.NUISetNearPlayers = function(obj, nearestPlayers)
+function NUIService.NUISetNearPlayers(obj, nearestPlayers)
 	local nuiReturn = {}
 	local isAnyPlayerFound = #nearestPlayers > 0
 
@@ -391,7 +388,7 @@ NUIService.NUISetNearPlayers = function(obj, nearestPlayers)
 	SendNUIMessage(nuiReturn)
 end
 
-NUIService.NUIGiveItem = function(obj)
+function NUIService.NUIGiveItem(obj)
 	if cangive then
 		local nearestPlayers = Utils.getNearestPlayers()
 
@@ -403,11 +400,8 @@ NUIService.NUIGiveItem = function(obj)
 			for _, player in pairs(nearestPlayers) do
 				if player ~= PlayerId() then
 					if GetPlayerServerId(player) == tonumber(data.player) then
-						--local itemName = data2.item
 						local itemId = data2.id
-						--local metadata = data2.metadata
 						local target = tonumber(data.player)
-
 
 						if data2.type == "item_money" then
 							if isProcessingPay then return end
@@ -433,15 +427,14 @@ NUIService.NUIGiveItem = function(obj)
 
 							if amount > 0 and item ~= nil and item:getCount() >= amount then
 								TriggerServerEvent("vorpinventory:serverGiveItem", itemId, amount, target)
-							else
-								-- TODO error message: Invalid amount of item
 							end
 						else
 							TriggerServerEvent("vorpinventory:serverGiveWeapon", tonumber(itemId), target)
 							TriggerServerEvent("vorpinventory:weaponlog", target, data2)
 						end
-
-						print('[^NUIGiveItem^7] ^2Info^7: Reloading inv after sending info of giving item ?');
+						if Config.Debug then
+							print('[^NUIGiveItem^7] ^2Info^7: Reloading inv after sending info of giving item ?');
+						end
 						NUIService.LoadInv()
 					end
 				end
@@ -452,7 +445,7 @@ NUIService.NUIGiveItem = function(obj)
 	end
 end
 
-NUIService.NUIDropItem = function(obj)
+function NUIService.NUIDropItem(obj)
 	if candrop then
 		local aux = Utils.expandoProcessing(obj)
 		local isvalid = Validator.IsValidNuiCallback(aux.hsn)
@@ -510,7 +503,6 @@ NUIService.NUIDropItem = function(obj)
 	end
 end
 
-
 local function getGuidFromItemId(inventoryId, itemData, category, slotId)
 	local outItem = DataView.ArrayBuffer(8 * 13)
 
@@ -561,7 +553,7 @@ local function addWardrobeInventoryItem(itemName, slotHash)
 	return equipped;
 end
 
-NUIService.NUIUseItem = function(data)
+function NUIService.NUIUseItem(data)
 	if data.type == "item_standard" then
 		if timerUse <= 0 then
 			TriggerServerEvent("vorp_inventory:useItem", data.item, data.id)
@@ -605,16 +597,15 @@ NUIService.NUIUseItem = function(data)
 	end
 end
 
-NUIService.NUISound = function(obj)
+function NUIService.NUISound()
 	PlaySoundFrontend("BACK", "RDRO_Character_Creator_Sounds", true, 0)
 end
 
-NUIService.NUIFocusOff = function(obj)
+function NUIService.NUIFocusOff()
 	NUIService.CloseInv()
 end
 
-NUIService.OnKey = function()
-	--EnableControlAction(0,Config.OpenKey ,true )
+function NUIService.OnKey()
 	if IsControlJustReleased(1, Config.OpenKey) and IsInputDisabled(0) then
 		if InInventory then
 			NUIService.CloseInv()
@@ -626,7 +617,7 @@ NUIService.OnKey = function()
 	end
 end
 
-NUIService.LoadInv = function()
+function NUIService.LoadInv()
 	local payload = {}
 	local items = {}
 
@@ -691,7 +682,7 @@ NUIService.LoadInv = function()
 	SendNUIMessage(payload)
 end
 
-NUIService.OpenInv = function()
+function NUIService.OpenInv()
 	SetNuiFocus(true, true)
 	SendNUIMessage({
 		action = "display",
@@ -703,20 +694,18 @@ NUIService.OpenInv = function()
 	NUIService.LoadInv()
 end
 
-
-
-NUIService.TransactionStarted = function()
+function NUIService.TransactionStarted()
 	SetNuiFocus(true, false)
 	SendNUIMessage({ action = "transaction", type = "started", text = T.TransactionLoading })
 end
 
-NUIService.TransactionComplete = function(keepInventoryOpen)
+function NUIService.TransactionComplete(keepInventoryOpen)
 	keepInventoryOpen = keepInventoryOpen == nil and true or keepInventoryOpen
 	SetNuiFocus(keepInventoryOpen, keepInventoryOpen)
 	SendNUIMessage({ action = "transaction", type = "completed" })
 end
 
-NUIService.initiateData = function()
+function NUIService.initiateData()
 	-- Add Locales
 	SendNUIMessage({
 		action = "initiate",
@@ -782,7 +771,7 @@ Citizen.CreateThread(function()
 	end
 end)
 
-NUIService.ChangeClothing = function(item)
+function NUIService.ChangeClothing(item)
 	if item then
 		ExecuteCommand(tostring(item))
 	end
