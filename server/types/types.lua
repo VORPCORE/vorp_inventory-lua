@@ -1,10 +1,6 @@
 ---@diagnostic disable: undefined-global
 ---@meta
 
---- close a secondary inventory using the id
----@param source number player id
----@param invid string inventory id
-function exports.vorp_inventory:closeCustomInventory(source, invid) end
 
 --- checks item limit
 ---@param source number player id
