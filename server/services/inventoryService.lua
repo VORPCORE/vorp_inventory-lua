@@ -610,7 +610,7 @@ function InventoryService.GiveWeapon(weaponId, target)
 	local charid = sourceCharacter.charIdentifier
 	local charname = sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname
 
-	if InventoryService.CheckNewPlayer(_source, charid) then
+	if not InventoryService.CheckNewPlayer(_source, charid) then
 		TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
 		return
 	end
