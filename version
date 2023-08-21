@@ -1,3 +1,5 @@
+<3.0>
+- small fixes were done and a critical issue with items make sure to update again
 <2.9>
 - refactor server side.
 - added new exports for each api function (is compatible with vorp core vsc extension).

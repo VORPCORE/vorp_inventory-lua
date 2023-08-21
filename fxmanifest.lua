@@ -29,7 +29,6 @@ client_scripts {
   'client/*.lua',
 }
 
-
 server_scripts {
   '@oxmysql/lib/MySQL.lua',
   'server/models/*.lua',
@@ -45,7 +44,7 @@ files { 'html/**/*' }
 server_exports { 'vorp_inventoryApi' }
 
 -- version
-version '2.9'
+version '3.0'
 vorp_checker 'yes'
 vorp_name '^4Resource version Check^3'
 vorp_github 'https://github.com/VORPCORE/vorp_inventory-lua'

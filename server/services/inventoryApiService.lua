@@ -163,8 +163,9 @@ function InventoryAPI.registerUsableItem(name, cb)
 	end
 
 	if Config.Debug then
-		Wait(9000) -- so it doesn't print everywhere in the console
-		Log.print("Callback for item[^3" .. name .. "^7] ^2Registered!^7")
+		SetTimeout(9000, function()
+			Log.print("Callback for item[^3" .. name .. "^7] ^2Registered!^7")
+		end)
 	end
 
 	UsableItemsFunctions[name] = cb
@@ -952,7 +953,7 @@ function InventoryAPI.giveWeapon(player, weaponId, target, cb)
 	if DefaultAmount ~= 0 then
 		if weaponName then
 			-- does weapon given matches the list of weapons that do not count as weapons
-			if SharedUtils.IsValueInArray(string.upper(weaponName), Config.notweapons) then
+			if SharedUtils.IsValueInArray(weaponName:upper(), Config.notweapons) then
 				notListed = true
 			end
 		end

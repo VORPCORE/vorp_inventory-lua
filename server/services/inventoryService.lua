@@ -28,7 +28,7 @@ function InventoryService.UseItem(itemName, itemId, args)
 	local svItem = ServerItems[itemName]
 
 	if not SvUtils.DoesItemExist(itemName, "UseItem") then
-		return
+		return false
 	end
 
 	if UsableItemsFunctions[itemName] and userInventory[itemId] then
@@ -42,7 +42,10 @@ function InventoryService.UseItem(itemName, itemId, args)
 				item = itemArgs,
 				args = args
 			}
-			UsableItemsFunctions[tostring(itemName)](arguments)
+			local success, result = pcall(UsableItemsFunctions[itemName], arguments)
+			if not success then
+				print("Function call failed with error:", result)
+			end
 		end
 	end
 	return false
@@ -837,7 +840,7 @@ function InventoryService.getInventory()
 	if sourceCharId ~= nil then
 		DBService.GetInventory(sourceCharId, "default", function(inventory)
 			for _, item in pairs(inventory) do
-				if ServerItems[item.item] ~= nil then
+				if ServerItems[item.item] then
 					local dbItem = ServerItems[item.item]
 					characterInventory[item.id] = Item:New({
 						count = tonumber(item.amount),

@@ -58,7 +58,7 @@ MySQL.ready(function()
 	-- load all items from databse
 	DBService.queryAsync("SELECT * FROM items", {}, function(result)
 		for _, db_item in pairs(result) do
-			if db_item.id then
+			if db_item.id  then
 				local item = Item:New({
 					id = db_item.id,
 					item = db_item.item,
