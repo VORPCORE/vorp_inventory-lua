@@ -570,21 +570,20 @@ function InventoryAPI.subItemID(player, id, cb)
 	local charIdentifier = sourceCharacter.charIdentifier
 	local userInventory = UsersInventories.default[identifier]
 	local item = userInventory[id]
-	local sourceItemCount = item:getCount()
 	local itemid = item:getId()
 
-	if not userInventory or not item or not sourceItemCount then
+	if not userInventory or not item or not item:getCount() then
 		return respond(cb, false)
 	end
-
 	item:quitCount(1)
-	TriggerClientEvent("vorpCoreClient:subItem", _source, itemid, sourceItemCount)
 
-	if sourceItemCount == 1 then
+	TriggerClientEvent("vorpCoreClient:subItem", _source, itemid, item:getCount())
+
+	if item:getCount() == 1 then
 		userInventory[itemid] = nil
 		DBService.DeleteItem(charIdentifier, itemid)
 	else
-		DBService.SetItemAmount(charIdentifier, itemid, sourceItemCount)
+		DBService.SetItemAmount(charIdentifier, itemid, item:getCount())
 	end
 	return respond(cb, true)
 end
