@@ -42,7 +42,6 @@ function InventoryService.receiveItem(name, id, amount, metadata)
 			group = svItems[name].group or 1,
 		})
 	end
-
 	NUIService.LoadInv()
 end
 

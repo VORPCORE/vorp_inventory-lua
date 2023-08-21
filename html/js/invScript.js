@@ -14,7 +14,7 @@ function toggleDropdown(mainButton) {
 }
 /* 0 is empty divs 1  is fixed divs like money and ammo */
 const Actions = {
-  all: { types: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] },
+  all: { types: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] },
   medical: { types: [0, 2] },
   foods: { types: [0, 3] },
   weapons: { types: [0, 5] },
