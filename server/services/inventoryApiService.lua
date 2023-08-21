@@ -157,11 +157,6 @@ exports("getUserInventoryItems", InventoryAPI.getInventory)
 ---@param name string item name
 ---@param cb function callback
 function InventoryAPI.registerUsableItem(name, cb)
-	if UsableItemsFunctions[name] then
-		Log.Warning("duplicated item being registered : item " .. name)
-		return
-	end
-
 	if Config.Debug then
 		SetTimeout(9000, function()
 			Log.print("Callback for item[^3" .. name .. "^7] ^2Registered!^7")
