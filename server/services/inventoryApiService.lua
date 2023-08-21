@@ -571,6 +571,7 @@ function InventoryAPI.subItemID(player, id, cb)
 	local userInventory = UsersInventories.default[identifier]
 	local item = userInventory[id]
 	local itemid = item:getId()
+	local itemCount = item:getCount()
 
 	if not userInventory or not item or not item:getCount() then
 		return respond(cb, false)
@@ -579,7 +580,7 @@ function InventoryAPI.subItemID(player, id, cb)
 
 	TriggerClientEvent("vorpCoreClient:subItem", _source, itemid, item:getCount())
 
-	if item:getCount() == 1 then
+	if itemCount == 1 then
 		userInventory[itemid] = nil
 		DBService.DeleteItem(charIdentifier, itemid)
 	else
@@ -984,11 +985,11 @@ function InventoryAPI.giveWeapon(player, weaponId, target, cb)
 		}
 
 		DBService.updateAsync(query, params, function(r)
-		      if not _target then
-			TriggerClientEvent('vorp:ShowAdvancedRightNotification', _target, T.youGaveWeapon, "inventory_items",
-				weaponName, "COLOR_PURE_WHITE", 4000)
-			TriggerClientEvent("vorpCoreClient:subWeapon", _target, weaponId)
-		      end
+			if not _target then
+				TriggerClientEvent('vorp:ShowAdvancedRightNotification', _target, T.youGaveWeapon, "inventory_items",
+					weaponName, "COLOR_PURE_WHITE", 4000)
+				TriggerClientEvent("vorpCoreClient:subWeapon", _target, weaponId)
+			end
 			TriggerClientEvent('vorp:ShowAdvancedRightNotification', _source, T.youReceivedWeapon, "inventory_items",
 				weaponName, "COLOR_PURE_WHITE", 4000)
 
@@ -1251,7 +1252,6 @@ exports("setCustomInventoryWeaponLimit", InventoryAPI.setCustomInventoryWeaponLi
 ---@param player number player
 ---@param id string? inventory id
 function InventoryAPI.openInventory(player, id)
-
 	if not id then
 		return TriggerClientEvent("vorp_inventory:OpenInv", source)
 	end
