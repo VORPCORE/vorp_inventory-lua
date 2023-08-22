@@ -970,7 +970,6 @@ function InventoryAPI.giveWeapon(player, weaponId, target, cb)
 	if weapon then
 		weapon:setPropietary(sourceIdentifier)
 		weapon:setCharId(sourceCharId)
-		weapon:setSource(_target)
 		local weaponPropietary = weapon:getPropietary()
 		local weaponAmmo = weapon:getAllAmmo()
 		local query = "UPDATE loadout SET identifier = @identifier, charidentifier = @charid WHERE id = @id"
@@ -982,6 +981,7 @@ function InventoryAPI.giveWeapon(player, weaponId, target, cb)
 
 		DBService.updateAsync(query, params, function(r)
 			if not _target then
+				weapon:setSource(_target)
 				TriggerClientEvent('vorp:ShowAdvancedRightNotification', _target, T.youGaveWeapon, "inventory_items",
 					weaponName, "COLOR_PURE_WHITE", 4000)
 				TriggerClientEvent("vorpCoreClient:subWeapon", _target, weaponId)
