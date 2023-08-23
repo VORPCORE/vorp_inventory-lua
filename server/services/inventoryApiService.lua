@@ -74,7 +74,7 @@ function InventoryAPI.canCarryAmountItem(player, amount, cb)
 	return respond(cb, canCarry)
 end
 
-exports("canCarryItem", InventoryAPI.canCarryAmountItem)
+exports("canCarryItems", InventoryAPI.canCarryAmountItem)
 
 
 ---check limit of item
@@ -119,7 +119,7 @@ function InventoryAPI.canCarryItem(player, itemName, amount, cb)
 	return respond(cb, canCarry)
 end
 
-exports("canCarryItems", InventoryAPI.canCarryItem)
+exports("canCarryItem", InventoryAPI.canCarryItem)
 
 ---get player inventory
 ---@param player number source
