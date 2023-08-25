@@ -334,11 +334,11 @@ function InventoryAPI.getItemCount(player, cb, itemName, metadata)
 
 	if not _source then
 		Log.error("InventoryAPI.getItemCount: specify a source")
-		return respond(cb, nil)
+		return respond(cb, 0)
 	end
 
 	if not SvUtils.DoesItemExist(itemName, "getItemCount") then
-		return respond(cb, nil)
+		return respond(cb, 0)
 	end
 
 	local identifier = Core.getUser(_source).getUsedCharacter.identifier
@@ -347,7 +347,7 @@ function InventoryAPI.getItemCount(player, cb, itemName, metadata)
 	local userInventory = UsersInventories.default[identifier]
 	if not userInventory then
 		Log.error("InventoryAPI.getItemCount: User doesn't have inventory")
-		return respond(cb, nil)
+		return respond(cb, 0)
 	end
 
 	local item = SvUtils.FindItemByNameAndMetadata("default", identifier, itemName, metadata)
