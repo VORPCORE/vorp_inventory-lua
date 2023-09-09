@@ -1077,7 +1077,7 @@ function InventoryAPI.registerInventory(data)
 	newInventory:Register()
 
 	if Config.Debug then
-		Log.print("Custom inventory[^3" .. id .. "^7] ^2Registered!^7")
+		Log.print("Custom inventory[^3" .. data.id .. "^7] ^2Registered!^7")
 	end
 end
 
