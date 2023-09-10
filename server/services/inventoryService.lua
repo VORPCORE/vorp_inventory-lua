@@ -929,8 +929,8 @@ function InventoryService.serverGiveAmmo(ammotype, amount, target, maxcount)
 	TriggerClientEvent("vorpinventory:setammotoped", _source, allplayersammo[_source].ammo)
 	TriggerClientEvent("vorpinventory:setammotoped", target, allplayersammo[target].ammo)
 	-- notify
-	Core.NotifyRightTip(_source, T.transferedammo .. SharedData.Ammolabels[ammotype] .. " : " .. amount, 2000)
-	Core.NotifyRightTip(target, T.recammo .. SharedData.Ammolabels[ammotype] .. " : " .. amount, 2000)
+	Core.NotifyRightTip(_source, T.transferedammo .. SharedData.AmmoLabels[ammotype] .. " : " .. amount, 2000)
+	Core.NotifyRightTip(target, T.recammo .. SharedData.AmmoLabels[ammotype] .. " : " .. amount, 2000)
 	TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
 end
 

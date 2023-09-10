@@ -174,7 +174,7 @@ end
 
 --- Transaction Ended
 ---@param id number user id
----@param keepInventoryOpen boolean keep inventory open
+---@param keepInventoryOpen? boolean keep inventory open
 function SvUtils.Trem(id, keepInventoryOpen)
     keepInventoryOpen = keepInventoryOpen == nil and true or keepInventoryOpen
     for k, v in pairs(processingUser) do
