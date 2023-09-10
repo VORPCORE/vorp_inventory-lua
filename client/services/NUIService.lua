@@ -583,7 +583,7 @@ function NUIService.NUIUseItem(data)
 			UserWeapons[weaponId]:loadComponents()
 			UserWeapons[weaponId]:setUsed(true)
 			TriggerServerEvent("syn_weapons:weaponused", data)
-		elseif not UserWeapons[weaponId]:getUsed() and not Citizen.InvokeNative(0x8DECB02F88F428BC, ped, weapName, 0, true) then
+		elseif not UserWeapons[weaponId]:getUsed() and not Citizen.InvokeNative(0x8DECB02F88F428BC, ped, weapName, 0, true) or Citizen.InvokeNative(0x30E7C16B12DA8211, joaat(weapName)) then
 			notdual = true
 		end
 
@@ -753,7 +753,7 @@ Citizen.CreateThread(function()
 		NUIService.OnKey()
 
 		if Config.DisableDeathInventory then
-			if InInventory and IsPedDeadOrDying(PlayerPedId()) then
+			if InInventory and IsPedDeadOrDying(PlayerPedId(), false) then
 				NUIService.CloseInv()
 			end
 		end

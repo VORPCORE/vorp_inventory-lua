@@ -1,7 +1,6 @@
 ---@diagnostic disable: undefined-global
 ---@meta
 
-
 --- checks item limit
 ---@param source number player id
 ---@param amount number amount of item

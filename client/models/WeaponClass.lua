@@ -160,9 +160,16 @@ function Weapon:equipwep()
 	local isWeaponAGun = Citizen.InvokeNative(0x705BE297EEBDB95D, joaat(self.name))
 	local isWeaponOneHanded = Citizen.InvokeNative(0xD955FEE4B87AFA07, joaat(self.name))
 	local playerPedId = PlayerPedId()
+	local ammoCount = 0
+	-- is weapon assigned as no ammo needed then set to 1 so it can be used
+	for k, v in pairs(Config.nonAmmoThrowables) do
+		if tostring(v) == self.name then
+			ammoCount = 1
+		end
+	end
 
 	if isWeaponMelee or isWeaponThrowable then
-		GiveDelayedWeaponToPed(playerPedId, joaat(self.name), 0, true, 0)
+		GiveDelayedWeaponToPed(playerPedId, joaat(self.name), ammoCount, true, 0)
 	else
 		if self.used2 then
 			if isWeaponAGun and isWeaponOneHanded then
@@ -180,12 +187,6 @@ function Weapon:equipwep()
 			if isWeaponAGun and isWeaponOneHanded then
 				addWeapon(self.name, 0, self.id)
 			else
-				local ammoCount = 0
-				for k, v in pairs(Config.nonAmmoThrowables) do
-					if tostring(v) == self.name then
-						ammoCount = 1
-					end
-				end
 				GiveDelayedWeaponToPed(playerPedId, joaat(self.name), ammoCount, true, 0)
 			end
 		end
