@@ -1347,21 +1347,21 @@ exports("isCustomInventoryRegistered", InventoryAPI.isCustomInventoryRegistered)
 ---@param id string inventory id
 ---@param callback fun(data:table|boolean)? async or sync callback
 ---@return {id:string, name:string, limit:number, acceptWeapons:boolean, shared:boolean, ignoreItemStackLimit:boolean, limitedItems:table<string, integer>, whitelistItems:boolean, PermissionTakeFrom:table<string, integer>, PermissionMoveTo:table<string, integer>, UsePermissions:boolean, UseBlackList:boolean, BlackListItems:table<string, string>, whitelistWeapons:boolean, limitedWeapons:table<string, integer>}
-function InventoryApi.getCustomInventoryData(id, callback)
+function InventoryAPI.getCustomInventoryData(id, callback)
 	if CustomInventoryInfos[id] then
 		return respond(callback, CustomInventoryInfos[id]:getCustomInvData())
 	end
 	return respond(callback, false)
 end
 
-exports("getCustomInventoryData", InventoryApi.getCustomInventoryData)
+exports("getCustomInventoryData", InventoryAPI.getCustomInventoryData)
 
 --- update registered custom inventory data
 ---@param id string inventory id
 ---@param data {name?:string, limit?:number, acceptWeapons?:boolean, shared?:boolean, ignoreItemStackLimit?:boolean, limitedItems?:table<string, integer>, whitelistItems?:boolean, PermissionTakeFrom?:table<string, integer>, PermissionMoveTo?:table<string, integer>, UsePermissions?:boolean, UseBlackList?:boolean, BlackListItems?:table<string, string>, whitelistWeapons?:boolean, limitedWeapons?:table<string, integer>}
 ---@param callback fun(success: boolean)? async or sync callback
 ---@return boolean
-function InventoryApi.updateCustomInventoryData(id, data, callback)
+function InventoryAPI.updateCustomInventoryData(id, data, callback)
 	if CustomInventoryInfos[id] then
 		CustomInventoryInfos[id]:updateCustomInvData(data)
 		return respond(callback, true)
@@ -1369,4 +1369,4 @@ function InventoryApi.updateCustomInventoryData(id, data, callback)
 	return respond(callback, false)
 end
 
-exports("updateCustomInventoryData", InventoryApi.updateCustomInventoryData)
+exports("updateCustomInventoryData", InventoryAPI.updateCustomInventoryData)
