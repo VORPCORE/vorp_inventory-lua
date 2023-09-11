@@ -256,3 +256,18 @@ function exports.vorp_inventory:openInventory(source, invId) end
 ---@param source number player id
 ---@param invId string? inventory id
 function exports.vorp_inventory:closeInventory(source, invId) end
+
+---check if inventory is registered
+---@param id string inventory id
+---@param callback fun()? callback function async or sync leave nil
+function exports.vorp_inventory:isCustomInventoryRegistered(id, callback) end
+
+--- get all custom inventory data
+---@param id string inventory id
+---@param callback fun(data:table)? callback function async or sync leave nil
+function exports.vorp_inventory:getCustomInventoryData(id, callback) end
+
+--- update custom inventory data 
+---@param data table data to update
+---@param callback fun(success:boolean)? callback function async or sync leave nil
+function exports.vorp_inventory:updateCustomInvData(data, callback) end

@@ -236,3 +236,28 @@ end
 function CustomInventoryAPI:doesAcceptWeapons()
     return self.acceptWeapons
 end
+
+--- get all custom inventory data
+---@return  table
+function CustomInventoryAPI:getAllCustomInvData()
+    return self
+end
+
+--- update any custom inventory data
+---@param data table @table with all custom inventory data
+function CustomInventoryAPI:updateCustomInvData(data)
+    self.name = data?.name or self.name
+    self.limit = data?.limit or self.limit
+    self.acceptWeapons = data?.acceptWeapons or self.acceptWeapons
+    self.shared = data?.shared or self.shared
+    self.ignoreItemStackLimit = data?.ignoreItemStackLimit or self.ignoreItemStackLimit
+    self.limitedItems = data?.limitedItems or self.limitedItems
+    self.whitelistItems = data?.whitelistItems or self.whitelistItems
+    self.PermissionTakeFrom = data?.PermissionTakeFrom or self.PermissionTakeFrom
+    self.PermissionMoveTo = data?.PermissionMoveTo or self.PermissionMoveTo
+    self.UsePermissions = data?.UsePermissions or self.UsePermissions
+    self.UseBlackList = data?.UseBlackList or self.UseBlackList
+    self.BlackListItems = data?.BlackListItems or self.BlackListItems
+    self.whitelistWeapons = data?.whitelistWeapons or self.whitelistWeapons
+    self.limitedWeapons = data?.limitedWeapons or self.limitedWeapons
+end

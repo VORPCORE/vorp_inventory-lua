@@ -1327,3 +1327,46 @@ function InventoryAPI.closeInventory(source, id)
 end
 
 exports("closeInventory", InventoryAPI.closeInventory)
+
+
+--- check if custom inventory is already registered
+---@param id string inventory id
+---@param callback fun(success: boolean)? async or sync callback
+---@return boolean
+function InventoryAPI.isCustomInventoryRegistered(id, callback)
+	if CustomInventoryInfos[id] then
+		return respond(callback, true)
+	end
+
+	return respond(callback, false)
+end
+
+exports("isCustomInventoryRegistered", InventoryAPI.isCustomInventoryRegistered)
+
+--- get registered custom inventory data
+---@param id string inventory id
+---@param callback fun(data:table|boolean)? async or sync callback
+---@return {id:string, name:string, limit:number, acceptWeapons:boolean, shared:boolean, ignoreItemStackLimit:boolean, limitedItems:table<string, integer>, whitelistItems:boolean, PermissionTakeFrom:table<string, integer>, PermissionMoveTo:table<string, integer>, UsePermissions:boolean, UseBlackList:boolean, BlackListItems:table<string, string>, whitelistWeapons:boolean, limitedWeapons:table<string, integer>}
+function InventoryApi.getCustomInventoryData(id, callback)
+	if CustomInventoryInfos[id] then
+		return respond(callback, CustomInventoryInfos[id]:getCustomInvData())
+	end
+	return respond(callback, false)
+end
+
+exports("getCustomInventoryData", InventoryApi.getCustomInventoryData)
+
+--- update registered custom inventory data
+---@param id string inventory id
+---@param data {name?:string, limit?:number, acceptWeapons?:boolean, shared?:boolean, ignoreItemStackLimit?:boolean, limitedItems?:table<string, integer>, whitelistItems?:boolean, PermissionTakeFrom?:table<string, integer>, PermissionMoveTo?:table<string, integer>, UsePermissions?:boolean, UseBlackList?:boolean, BlackListItems?:table<string, string>, whitelistWeapons?:boolean, limitedWeapons?:table<string, integer>}
+---@param callback fun(success: boolean)? async or sync callback
+---@return boolean
+function InventoryApi.updateCustomInventoryData(id, data, callback)
+	if CustomInventoryInfos[id] then
+		CustomInventoryInfos[id]:updateCustomInvData(data)
+		return respond(callback, true)
+	end
+	return respond(callback, false)
+end
+
+exports("updateCustomInventoryData", InventoryApi.updateCustomInventoryData)
