@@ -195,19 +195,8 @@ function exports.vorp_inventory:giveWeapon(source, weaponId, target, callback) e
 function exports.vorp_inventory:subWeapon(source, weaponId, callback) end
 
 --- register custom inventory
----@param invId string inventory id
----@param name string inventory name
----@param slots number inventory slots
----@param acceptWeapons boolean accept weapons
----@param shared boolean shared
----@param ignoreStack boolean ignore stack
----@param whitelistItems boolean whitelist items
----@param usePermisions boolean use permissions
----@param useBlacklist boolean use blacklist
----@param whitelistWeapons boolean whitelist weapons
-function exports.vorp_inventory:registerInventory(invId, name, slots, acceptWeapons, shared, ignoreStack, whitelistItems,
-                                                  usePermisions, useBlacklist, whitelistWeapons)
-end
+---@param data { id:string, name:string, limit:number, acceptWeapons:boolean, shared:boolean, ignoreItemStackLimit:boolean, whitelistItems:table, UsePermissions:boolean, UseBlackList:boolean, whitelistWeapons:table }
+function exports.vorp_inventory:registerInventory(data) end
 
 --- add permissions to move item to inventory
 ---@param invId string inventory id
@@ -267,7 +256,7 @@ function exports.vorp_inventory:isCustomInventoryRegistered(id, callback) end
 ---@param callback fun(data:table)? callback function async or sync leave nil
 function exports.vorp_inventory:getCustomInventoryData(id, callback) end
 
---- update custom inventory data 
+--- update custom inventory data
 ---@param data table data to update
 ---@param callback fun(success:boolean)? callback function async or sync leave nil
 function exports.vorp_inventory:updateCustomInvData(data, callback) end
