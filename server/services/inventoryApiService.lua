@@ -1259,6 +1259,7 @@ function InventoryAPI.openInventory(player, id)
 
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local identifier = sourceCharacter.identifier
+	local charid = sourceCharacter.charIdentifier
 	local capacity = CustomInventoryInfos[id]:getLimit() > 0 and tostring(CustomInventoryInfos[id]:getLimit()) or 'oo'
 
 	local function createCharacterInventoryFromDB(inventory, owner)
@@ -1304,7 +1305,7 @@ function InventoryAPI.openInventory(player, id)
 		if UsersInventories[id][identifier] then
 			triggerAndReloadInventory()
 		else
-			DBService.GetInventory(identifier, id, function(inventory)
+			DBService.GetInventory(charid, id, function(inventory)
 				UsersInventories[id][identifier] = createCharacterInventoryFromDB(inventory, identifier)
 				triggerAndReloadInventory()
 			end)
