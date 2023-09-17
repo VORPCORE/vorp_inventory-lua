@@ -166,8 +166,7 @@ function InventoryAPI.registerUsableItem(name, cb)
 	UsableItemsFunctions[name] = cb
 end
 
-
-exports("RegisterUsableItem", InventoryAPI.registerUsableItem)
+exports("registerUsableItem", InventoryAPI.registerUsableItem)
 
 --- get user weapon
 ---@param player number player source
