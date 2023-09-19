@@ -131,7 +131,7 @@ function exports.vorp_inventory:getItemByMainId(source, mainid, callback) end
 ---@param source number player id
 ---@param id number item id
 ---@param callback fun(boolean:boolean)? callback function async or sync leave nil
-function exports.vorp_inventory:subItemById(source, id, callback) end
+function exports.vorp_inventory:subItemID(source, id, callback) end
 
 --- sub item
 ---@param source number player id
