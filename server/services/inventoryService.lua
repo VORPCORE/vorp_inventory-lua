@@ -3,6 +3,7 @@ InventoryService = {}
 ItemPickUps = {}
 MoneyPickUps = {}
 GoldPickUps = {}
+
 local newchar = {} -- new
 local timer = 120  -- in minutes
 
@@ -70,9 +71,10 @@ function InventoryService.DropMoney(amount)
 		elseif userMoney < amount then
 			Core.NotifyRightTip(_source, T.NotEnoughMoney, 3000)
 		else
-			userCharacter.removeCurrency(0, amount)
 			if not Config.DeleteOnlyDontDrop then
 				TriggerClientEvent("vorpInventory:createMoneyPickup", _source, amount)
+			else
+				userCharacter.removeCurrency(0, amount)
 			end
 			local title = T.drop
 			local description = "**Money** `" .. amount .. "`" .. "\n **Playername** `" .. charname .. "`\n"
@@ -95,7 +97,6 @@ function InventoryService.DropAllMoney()
 		end
 
 		if userMoney > 0 then
-			userCharacter.removeCurrency(0, userMoney)
 			TriggerClientEvent("vorpInventory:createMoneyPickup", _source, userMoney)
 		end
 		SvUtils.Trem(_source)
@@ -115,8 +116,6 @@ function InventoryService.DropPartMoney()
 	end
 
 	if userMoney > 0 then
-		userCharacter.removeCurrency(0, userMoneyDef)
-
 		TriggerClientEvent("vorpInventory:createMoneyPickup", _source, userMoneyDef)
 	end
 end
@@ -180,9 +179,10 @@ function InventoryService.DropGold(amount)
 	elseif userGold < amount then
 		Core.NotifyRightTip(_source, T.NotEnoughGold, 3000)
 	else
-		userCharacter.removeCurrency(1, amount)
 		if not Config.DeleteOnlyDontDrop then
 			TriggerClientEvent("vorpInventory:createGoldPickup", _source, amount)
+		else
+			userCharacter.removeCurrency(1, amount)
 		end
 	end
 	SvUtils.Trem(_source)
@@ -199,8 +199,6 @@ function InventoryService.DropAllGold()
 	local userGold = userCharacter.gold
 
 	if userGold > 0 then
-		userCharacter.removeCurrency(1, userGold)
-
 		TriggerClientEvent("vorpInventory:createGoldPickup", _source, userGold)
 	end
 	SvUtils.Trem(_source, false)
@@ -427,8 +425,7 @@ function InventoryService.onPickup(obj)
 								Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo,
 									avatar)
 								TriggerClientEvent("vorpInventory:sharePickupClient", -1, name, ItemPickUps[obj].obj,
-									amount, metadata,
-									ItemPickUps[obj].coords, 2)
+									amount, metadata, ItemPickUps[obj].coords, 2)
 								TriggerClientEvent("vorpInventory:removePickupClient", -1, ItemPickUps[obj].obj)
 								TriggerClientEvent("vorpInventory:receiveItem", _source, name, item:getId(), amount,
 									metadata)
@@ -544,6 +541,15 @@ function InventoryService.sharePickupServer(name, obj, amount, metadata, positio
 end
 
 function InventoryService.shareMoneyPickupServer(obj, amount, position)
+	local _source = source
+	local Character = Core.getUser(_source).getUsedCharacter
+	local money = Character.money
+
+	if money < amount then
+		return
+	end
+
+	Character.removeCurrency(0, amount)
 	TriggerClientEvent("vorpInventory:shareMoneyPickupClient", -1, obj, amount, position, 1)
 
 	MoneyPickUps[obj] = {
@@ -556,6 +562,15 @@ function InventoryService.shareMoneyPickupServer(obj, amount, position)
 end
 
 function InventoryService.shareGoldPickupServer(obj, amount, position)
+	local _source = source
+	local Character = Core.getUser(_source).getUsedCharacter
+	local gold = Character.gold
+
+	if gold < amount then
+		return
+	end
+
+	Character.removeCurrency(1, amount)
 	TriggerClientEvent("vorpInventory:shareGoldPickupClient", -1, obj, amount, position, 1)
 
 	GoldPickUps[obj] = {
@@ -571,6 +586,7 @@ function InventoryService.DropWeapon(weaponId)
 	local _source = source
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local charname = sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname
+	
 	if not SvUtils.InProcessing(_source) then
 		SvUtils.ProcessUser(_source)
 		InventoryService.subWeapon(_source, weaponId)

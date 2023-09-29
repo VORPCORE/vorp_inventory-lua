@@ -74,6 +74,7 @@ PickupsService.createGoldPickup = function(amount)
 	if not Config.UseGoldItem then
 		return
 	end
+
 	local playerPed = PlayerPedId()
 	local coords = GetEntityCoords(playerPed, true, true)
 	local forward = GetEntityForwardVector(playerPed)
@@ -108,7 +109,6 @@ PickupsService.sharePickupClient = function(name, entityHandle, amount, metadata
 				prompt = Prompt:New(0xF84FA74F, T.TakeFromFloor, PromptType.StandardHold, promptGroup)
 			})
 
-
 			pickup.prompt:SetVisible(false)
 			WorldPickups[entityHandle] = pickup
 			if Config.Debug then
@@ -135,7 +135,6 @@ PickupsService.shareMoneyPickupClient = function(entityHandle, amount, position,
 				coords = position,
 				prompt = Prompt:New(0xF84FA74F, T.TakeFromFloor, PromptType.StandardHold, promptGroup)
 			})
-
 
 			pickup.prompt:SetVisible(false)
 			WorldPickups[entityHandle] = pickup
