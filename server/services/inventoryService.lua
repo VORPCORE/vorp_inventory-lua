@@ -608,10 +608,12 @@ function InventoryService.DropWeapon(weaponId)
 		InventoryService.subWeapon(_source, weaponId)
 		UsersWeapons.default[weaponId]:setDropped(1)
 		local title = T.drop
-		local description = "**Weapon** `" .. UsersWeapons.default[weaponId]:getName() .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+		local description = "**Weapon** `" ..
+		UsersWeapons.default[weaponId]:getName() .. "`" .. "\n **Playername** `" .. charname .. "`\n"
 		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
 		if not Config.DeleteOnlyDontDrop then
-			TriggerClientEvent("vorpInventory:createPickup", _source, UsersWeapons.default[weaponId]:getName(), 1, {}, weaponId)
+			TriggerClientEvent("vorpInventory:createPickup", _source, UsersWeapons.default[weaponId]:getName(), 1, {},
+				weaponId)
 		end
 		SvUtils.Trem(_source)
 	end
@@ -625,7 +627,8 @@ function InventoryService.DropItem(itemName, itemId, amount, metadata)
 		SvUtils.ProcessUser(_source)
 		InventoryService.subItem(_source, "default", data.id, data.amount)
 		local title = T.drop
-		local description = "**Amount** `" .. amount .. "`\n **Item** `" .. itemName .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+		local description = "**Amount** `" ..
+		amount .. "`\n **Item** `" .. itemName .. "`" .. "\n **Playername** `" .. charname .. "`\n"
 		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
 		if not Config.DeleteOnlyDontDrop then
 			TriggerClientEvent("vorpInventory:createPickup", _source, itemName, amount, metadata, 1, itemId)
@@ -654,7 +657,8 @@ function InventoryService.GiveWeapon(weaponId, target)
 		end
 
 		local title = T.drop
-		local description = "**Amount** `" .. 1 .. "`\n **Weapon id** `" .. weaponId .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+		local description = "**Amount** `" ..
+		1 .. "`\n **Weapon id** `" .. weaponId .. "`" .. "\n **Playername** `" .. charname .. "`\n"
 
 		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
 		TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
@@ -692,7 +696,8 @@ function InventoryService.giveWeapon2(player, weaponId, target)
 			if sourceTotalWeaponCount > DefaultAmount then
 				Core.NotifyRightTip(_source, T.cantweapons, 2000)
 				if Config.Debug then
-					Log.print(sourceCharacter.firstname .." " .. sourceCharacter.lastname .. " ^1Can't carry more weapons^7")
+					Log.print(sourceCharacter.firstname ..
+					" " .. sourceCharacter.lastname .. " ^1Can't carry more weapons^7")
 				end
 				return
 			end
