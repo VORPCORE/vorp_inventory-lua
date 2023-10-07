@@ -52,7 +52,6 @@ Config = {
 		}
 	},
 	-- =================== CLEAR ITEMS WEAPONS MONEY GOLD =====================--
-
 	UseClearAll              = false, -- if you want to use the clear item function if false will use DropOnDeath function
 	OnPlayerRespawn          = {
 		Money = {

@@ -29,7 +29,7 @@ PickupsService.CreateObject = function(model, position)
 	return entityHandle
 end
 
-PickupsService.createPickup = function(name, amount, metadata, weaponId)
+PickupsService.createPickup = function(name, amount, metadata, weaponId, id)
 	local playerPed = PlayerPedId()
 	local coords = GetEntityCoords(playerPed, true, true)
 	local forward = GetEntityForwardVector(playerPed)
@@ -45,10 +45,19 @@ PickupsService.createPickup = function(name, amount, metadata, weaponId)
 	end
 
 	local entityHandle = PickupsService.CreateObject(pickupModel, position)
-
-	TriggerServerEvent("vorpinventory:sharePickupServer", name, entityHandle, amount, metadata, position, weaponId)
+	local data = {
+		name = name,
+		obj = entityHandle,
+		amount = amount,
+		metadata = metadata,
+		position = position,
+		weaponId = weaponId,
+		id = id
+	}
+	TriggerServerEvent("vorpinventory:sharePickupServer", data)
 	PlaySoundFrontend("show_info", "Study_Sounds", true, 0)
 end
+
 
 PickupsService.createMoneyPickup = function(amount)
 	local playerPed = PlayerPedId()
@@ -94,31 +103,51 @@ PickupsService.createGoldPickup = function(amount)
 	PlaySoundFrontend("show_info", "Study_Sounds", true, 0)
 end
 
-PickupsService.sharePickupClient = function(name, entityHandle, amount, metadata, position, value, weaponId)
+PickupsService.sharePickupClient = function(data, value)
+	if data.weaponId == 1 then
+		local item = UserInventory[data.id]
+		-- item dont exist in inventory
+		if not item then
+			return
+		end
+		-- if what user holds is less than the amount required then return
+		if item:getCount() < data.amount then
+			return
+		end
+
+		if item:getCount() >= data.amount then
+			item:quitCount(data.amount)
+			if item:getCount() == 0 then
+				UserInventory[data.id] = nil
+			end
+		end
+		NUIService.LoadInv()
+	end
+
 	if value == 1 then
-		if WorldPickups[entityHandle] == nil then
-			local label = Utils.GetHashreadableLabel(name, weaponId)
+		if WorldPickups[data.obj] == nil then
+			local label = Utils.GetHashreadableLabel(data.name, data.weaponId)
 
 			local pickup = Pickup:New({
-				name = (amount > 1) and label .. " x " .. tostring(amount) or label,
-				entityId = entityHandle,
-				amount = amount,
-				metadata = metadata,
-				weaponId = weaponId,
-				coords = position,
+				name = (data.amount > 1) and label .. " x " .. tostring(data.amount) or label,
+				entityId = data.obj,
+				amount = data.amount,
+				metadata = data.metadata,
+				weaponId = data.weaponId,
+				coords = data.position,
 				prompt = Prompt:New(0xF84FA74F, T.TakeFromFloor, PromptType.StandardHold, promptGroup)
 			})
 
 			pickup.prompt:SetVisible(false)
-			WorldPickups[entityHandle] = pickup
+			WorldPickups[data.obj] = pickup
 			if Config.Debug then
 				print('Item pickup added: ' .. tostring(pickup.name))
 			end
 		end
 	else
-		if WorldPickups[entityHandle] ~= nil then
-			WorldPickups[entityHandle].prompt:Delete()
-			Utils.TableRemoveByKey(WorldPickups, entityHandle)
+		if WorldPickups[data.obj] ~= nil then
+			WorldPickups[data.obj].prompt:Delete()
+			Utils.TableRemoveByKey(WorldPickups, data.obj)
 		end
 	end
 end
@@ -254,12 +283,6 @@ PickupsService.dropAllPlease = function()
 			local itemMetadata = item:getMetadata()
 
 			TriggerServerEvent("vorpinventory:serverDropItem", itemName, item.id, itemCount, itemMetadata)
-			item:quitCount(itemCount)
-
-			if item:getCount() == 0 then
-				UserInventory[item.id] = nil
-			end
-
 			Wait(200)
 		end
 	end

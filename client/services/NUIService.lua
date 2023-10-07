@@ -459,24 +459,21 @@ function NUIService.NUIDropItem(obj)
 
 			if type == "item_money" then
 				TriggerServerEvent("vorpinventory:serverDropMoney", qty)
+				NUIService.LoadInv()
 			end
 
 			if Config.UseGoldItem then
 				if type == "item_gold" then
 					TriggerServerEvent("vorpinventory:serverDropGold", qty)
 				end
+				NUIService.LoadInv()
 			end
 
 			if type == "item_standard" then
 				if aux.number ~= nil and aux.number ~= '' then
 					local item = UserInventory[itemId]
-
 					if qty > 0 and item ~= nil and item:getCount() >= qty then
 						TriggerServerEvent("vorpinventory:serverDropItem", itemName, itemId, qty, metadata)
-						item:quitCount(qty)
-						if item:getCount() == 0 then
-							UserInventory[itemId] = nil
-						end
 					end
 				end
 			end
@@ -494,9 +491,8 @@ function NUIService.NUIDropItem(obj)
 
 					UserWeapons[aux.id] = nil
 				end
+				NUIService.LoadInv()
 			end
-
-			NUIService.LoadInv()
 		end
 	else
 		TriggerEvent('vorp:TipRight', T.cantdrophere, 5000)

@@ -424,8 +424,15 @@ function InventoryService.onPickup(obj)
 									"`\n **Item** `" .. name .. "`" .. "\n **Playername** `" .. charname .. "`\n"
 								Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo,
 									avatar)
-								TriggerClientEvent("vorpInventory:sharePickupClient", -1, name, ItemPickUps[obj].obj,
-									amount, metadata, ItemPickUps[obj].coords, 2)
+								local data = {
+									name = name,
+									obj = ItemPickUps[obj].obj,
+									amount = amount,
+									metadata = metadata,
+									position = ItemPickUps[obj].coords,
+									id = ItemPickUps[obj].id
+								}
+								TriggerClientEvent("vorpInventory:sharePickupClient", -1, data, 2)
 								TriggerClientEvent("vorpInventory:removePickupClient", -1, ItemPickUps[obj].obj)
 								TriggerClientEvent("vorpInventory:receiveItem", _source, name, item:getId(), amount,
 									metadata)
@@ -468,9 +475,17 @@ function InventoryService.onPickup(obj)
 					local description = "**Weapon** `" ..
 						wepname .. "`" .. "\n **Playername** `" .. charname .. "`\n"
 					Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
-					TriggerClientEvent("vorpInventory:sharePickupClient", -1, name, weaponObj, 1, metadata,
-						ItemPickUps[obj].coords, 2,
-						weaponId)
+					local data = {
+						name = wepname,
+						obj = weaponObj,
+						amount = amount,
+						metadata = metadata,
+						weaponId = weaponId,
+						position = ItemPickUps[obj].coords,
+						id = nil
+
+					}
+					TriggerClientEvent("vorpInventory:sharePickupClient", -1, data, 2)
 					TriggerClientEvent("vorpInventory:removePickupClient", -1, weaponObj)
 					TriggerClientEvent("vorpInventory:playerAnim", _source, obj)
 					InventoryService.addWeapon(_source, weaponId)
@@ -526,17 +541,18 @@ function InventoryService.onPickupGold(obj)
 	end
 end
 
-function InventoryService.sharePickupServer(name, obj, amount, metadata, position, weaponId)
-	TriggerClientEvent("vorpInventory:sharePickupClient", -1, name, obj, amount, metadata, position, 1, weaponId)
+function InventoryService.sharePickupServer(data)
+	TriggerClientEvent("vorpInventory:sharePickupClient", -1, data, 1)
 
-	ItemPickUps[obj] = {
-		name = name,
-		obj = obj,
-		amount = amount,
-		metadata = metadata,
-		weaponid = weaponId,
+	ItemPickUps[data.obj] = {
+		name = data.name,
+		obj = data.obj,
+		amount = data.amount,
+		metadata = data.metadata,
+		weaponid = data.weaponId,
 		inRange = false,
-		coords = position
+		coords = data.position,
+		id = data.id
 	}
 end
 
@@ -586,19 +602,16 @@ function InventoryService.DropWeapon(weaponId)
 	local _source = source
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local charname = sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname
-	
+
 	if not SvUtils.InProcessing(_source) then
 		SvUtils.ProcessUser(_source)
 		InventoryService.subWeapon(_source, weaponId)
 		UsersWeapons.default[weaponId]:setDropped(1)
-
 		local title = T.drop
-		local description = "**Weapon** `" ..
-			UsersWeapons.default[weaponId]:getName() .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+		local description = "**Weapon** `" .. UsersWeapons.default[weaponId]:getName() .. "`" .. "\n **Playername** `" .. charname .. "`\n"
 		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
 		if not Config.DeleteOnlyDontDrop then
-			TriggerClientEvent("vorpInventory:createPickup", _source, UsersWeapons.default[weaponId]:getName(), 1, {},
-				weaponId)
+			TriggerClientEvent("vorpInventory:createPickup", _source, UsersWeapons.default[weaponId]:getName(), 1, {}, weaponId)
 		end
 		SvUtils.Trem(_source)
 	end
@@ -610,14 +623,12 @@ function InventoryService.DropItem(itemName, itemId, amount, metadata)
 	local charname = sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname
 	if not SvUtils.InProcessing(_source) then
 		SvUtils.ProcessUser(_source)
-		InventoryService.subItem(_source, "default", itemId, amount)
+		InventoryService.subItem(_source, "default", data.id, data.amount)
 		local title = T.drop
-		local description = "**Amount** `" ..
-			amount .. "`\n **Item** `" .. itemName .. "`" .. "\n **Playername** `" .. charname .. "`\n"
-
+		local description = "**Amount** `" .. amount .. "`\n **Item** `" .. itemName .. "`" .. "\n **Playername** `" .. charname .. "`\n"
 		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
 		if not Config.DeleteOnlyDontDrop then
-			TriggerClientEvent("vorpInventory:createPickup", _source, itemName, amount, metadata, 1)
+			TriggerClientEvent("vorpInventory:createPickup", _source, itemName, amount, metadata, 1, itemId)
 		end
 		SvUtils.Trem(_source)
 	end
@@ -641,9 +652,9 @@ function InventoryService.GiveWeapon(weaponId, target)
 		if UsersWeapons.default[weaponId] ~= nil then
 			InventoryService.giveWeapon2(target, weaponId, _source)
 		end
+
 		local title = T.drop
-		local description = "**Amount** `" ..
-			1 .. "`\n **Weapon id** `" .. weaponId .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+		local description = "**Amount** `" .. 1 .. "`\n **Weapon id** `" .. weaponId .. "`" .. "\n **Playername** `" .. charname .. "`\n"
 
 		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
 		TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
@@ -681,8 +692,7 @@ function InventoryService.giveWeapon2(player, weaponId, target)
 			if sourceTotalWeaponCount > DefaultAmount then
 				Core.NotifyRightTip(_source, T.cantweapons, 2000)
 				if Config.Debug then
-					Log.print(sourceCharacter.firstname ..
-						" " .. sourceCharacter.lastname .. " ^1Can't carry more weapons^7")
+					Log.print(sourceCharacter.firstname .." " .. sourceCharacter.lastname .. " ^1Can't carry more weapons^7")
 				end
 				return
 			end
