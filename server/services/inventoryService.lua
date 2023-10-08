@@ -427,7 +427,8 @@ function InventoryService.onPickup(data)
 						InventoryService.addItem(_source, "default", name, amount, metadata, function(item)
 							if item ~= nil then
 								local title = T.itempickup
-								local description = "**Amount** `" .. amount .. "`\n **Item** `" .. name .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+								local description = "**Amount** `" ..
+								amount .. "`\n **Item** `" .. name .. "`" .. "\n **Playername** `" .. charname .. "`\n"
 								Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo,
 									avatar)
 								local dataItem = {
@@ -440,7 +441,8 @@ function InventoryService.onPickup(data)
 								}
 								TriggerClientEvent("vorpInventory:sharePickupClient", -1, dataItem, 2)
 								TriggerClientEvent("vorpInventory:removePickupClient", -1, ItemPickUps[obj].obj)
-								TriggerClientEvent("vorpInventory:receiveItem", _source, name, item:getId(), amount, metadata)
+								TriggerClientEvent("vorpInventory:receiveItem", _source, name, item:getId(), amount,
+									metadata)
 								TriggerClientEvent("vorpInventory:playerAnim", _source, obj)
 								ItemPickUps[obj] = nil
 								ItemUids[uid] = nil
@@ -638,6 +640,7 @@ function InventoryService.DropItem(itemName, itemId, amount, metadata)
 	local charname = sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname
 	if not SvUtils.InProcessing(_source) then
 		SvUtils.ProcessUser(_source)
+		InventoryService.subItem(_source, "default", itemId, amount)
 		local title = T.drop
 		local description = "**Amount** `" ..
 			amount .. "`\n **Item** `" .. itemName .. "`" .. "\n **Playername** `" .. charname .. "`\n"
