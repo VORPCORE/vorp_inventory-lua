@@ -12,7 +12,6 @@ local CanOpen = true
 InInventory = false
 NUIService = {}
 
---======================= EVENTS =======================--
 RegisterNetEvent('inv:dropstatus')
 AddEventHandler('inv:dropstatus', function(x)
 	candrop = x
@@ -23,8 +22,6 @@ AddEventHandler('inv:givestatus', function(x)
 	cangive = x
 end)
 
-
---====================S ====================--
 
 function NUIService.ReloadInventory(inventory)
 	local payload = json.decode(inventory)
@@ -129,7 +126,7 @@ function NUIService.CloseInventory()
 			end
 		end
 	end
-	if not CanOpen then -- only trigger if somone is inside custom inv
+	if not CanOpen then -- only trigger if someone is inside custom inv
 		TriggerServerEvent("vorp_inventory:Server:UnlockCustomInv")
 	end
 	SetNuiFocus(false, false)
@@ -345,7 +342,7 @@ function NUIService.NUIGetNearPlayers(obj)
 	TriggerServerEvent('vorp_inventory:getNearbyCharacters', obj, playerIds)
 end
 
-function NUIService.NUISetNearPlayers(obj, nearestPlayers)
+--[[ function NUIService.NUISetNearPlayers(obj, nearestPlayers)
 	local nuiReturn = {}
 	local isAnyPlayerFound = #nearestPlayers > 0
 
@@ -384,6 +381,35 @@ function NUIService.NUISetNearPlayers(obj, nearestPlayers)
 	nuiReturn.type = item.type
 	nuiReturn.what = item.what
 
+
+	SendNUIMessage(nuiReturn)
+end ]]
+
+function NUIService.NUISetNearPlayers(obj, nearestPlayers)
+	local nuiReturn = {}
+	local isAnyPlayerFound = next(nearestPlayers) ~= nil
+	local itemId = obj.id or 0
+	local itemCount = obj.count or 1
+	local itemHash = obj.hash or 1
+
+	if not isAnyPlayerFound then
+		TriggerEvent('vorp:TipRight', T.noplayersnearby, 5000)
+		return
+	end
+
+	if Config.Debug then
+		print('[^NUISetNearPlayers^7] ^2Info^7: players found = ' .. json.encode(nearestPlayers))
+	end
+
+	nuiReturn.action = "nearPlayers"
+	nuiReturn.foundAny = isAnyPlayerFound
+	nuiReturn.players = nearestPlayers
+	nuiReturn.item = nuiReturn.item or obj.item
+	nuiReturn.hash = itemHash
+	nuiReturn.count = itemCount
+	nuiReturn.id = itemId
+	nuiReturn.type = obj.type
+	nuiReturn.what = nuiReturn.what or obj.what
 
 	SendNUIMessage(nuiReturn)
 end
@@ -747,7 +773,6 @@ Citizen.CreateThread(function()
 
 	while true do
 		NUIService.OnKey()
-
 		if Config.DisableDeathInventory then
 			if InInventory and IsPedDeadOrDying(PlayerPedId(), false) then
 				NUIService.CloseInv()

@@ -276,9 +276,7 @@ PickupsService.dropAllPlease = function()
 	end
 
 	if Config.DropOnRespawn.Items then
-		local items = UserInventory
-
-		for _, item in pairs(items) do
+		for _, item in pairs(UserInventory) do
 			local itemName = item:getName()
 			local itemCount = item:getCount()
 			local itemMetadata = item:getMetadata()
@@ -289,9 +287,7 @@ PickupsService.dropAllPlease = function()
 	end
 
 	if Config.DropOnRespawn.Weapons then
-		local weapons = UserWeapons
-
-		for index, weapon in pairs(weapons) do
+		for index, weapon in pairs(UserWeapons) do
 			TriggerServerEvent("vorpinventory:serverDropWeapon", index)
 
 			if next(UserWeapons[index]) ~= nil then
@@ -349,7 +345,7 @@ Citizen.CreateThread(function()
 						if pickup.isMoney then
 							TriggerServerEvent("vorpinventory:onPickupMoney", pickup.entityId)
 						elseif Config.UseGoldItem and pickup.isGold then
-							TriggerServerEvent("vorpinventory:onPickupGold", data)
+							TriggerServerEvent("vorpinventory:onPickupGold", pickup.entityId)
 						else
 							TriggerServerEvent("vorpinventory:onPickup", data)
 						end

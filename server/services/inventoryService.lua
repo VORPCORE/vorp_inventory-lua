@@ -428,7 +428,8 @@ function InventoryService.onPickup(data)
 							if item ~= nil then
 								local title = T.itempickup
 								local description = "**Amount** `" ..
-								amount .. "`\n **Item** `" .. name .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+									amount ..
+									"`\n **Item** `" .. name .. "`" .. "\n **Playername** `" .. charname .. "`\n"
 								Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo,
 									avatar)
 								local dataItem = {
@@ -624,7 +625,7 @@ function InventoryService.DropWeapon(weaponId)
 
 		local title = T.drop
 		local description = "**Weapon** `" ..
-			UsersWeapons.default[weaponId]:getName() .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+		UsersWeapons.default[weaponId]:getName() .. "`" .. "\n **Playername** `" .. charname .. "`\n"
 		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
 		if not Config.DeleteOnlyDontDrop then
 			TriggerClientEvent("vorpInventory:createPickup", _source, UsersWeapons.default[weaponId]:getName(), 1, {},
@@ -644,7 +645,6 @@ function InventoryService.DropItem(itemName, itemId, amount, metadata)
 		local title = T.drop
 		local description = "**Amount** `" ..
 			amount .. "`\n **Item** `" .. itemName .. "`" .. "\n **Playername** `" .. charname .. "`\n"
-		InventoryService.subItem(_source, "default", itemId, amount)
 
 		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
 
