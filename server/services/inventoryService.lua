@@ -428,8 +428,7 @@ function InventoryService.onPickup(data)
 							if item ~= nil then
 								local title = T.itempickup
 								local description = "**Amount** `" ..
-									amount ..
-									"`\n **Item** `" .. name .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+									amount .. "`\n **Item** `" .. name .. "`" .. "\n **Playername** `" .. charname .. "`\n"
 								Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo,
 									avatar)
 								local dataItem = {
@@ -440,10 +439,10 @@ function InventoryService.onPickup(data)
 									position = ItemPickUps[obj].coords,
 									id = ItemPickUps[obj].id
 								}
+
 								TriggerClientEvent("vorpInventory:sharePickupClient", -1, dataItem, 2)
 								TriggerClientEvent("vorpInventory:removePickupClient", -1, ItemPickUps[obj].obj)
-								TriggerClientEvent("vorpInventory:receiveItem", _source, name, item:getId(), amount,
-									metadata)
+								TriggerClientEvent("vorpInventory:receiveItem", _source, name, item:getId(), amount, metadata)
 								TriggerClientEvent("vorpInventory:playerAnim", _source, obj)
 								ItemPickUps[obj] = nil
 								ItemUids[uid] = nil
@@ -624,8 +623,7 @@ function InventoryService.DropWeapon(weaponId)
 		UsersWeapons.default[weaponId]:setDropped(1)
 
 		local title = T.drop
-		local description = "**Weapon** `" ..
-		UsersWeapons.default[weaponId]:getName() .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+		local description = "**Weapon** `" .. UsersWeapons.default[weaponId]:getName() .. "`" .. "\n **Playername** `" .. charname .. "`\n"
 		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
 		if not Config.DeleteOnlyDontDrop then
 			TriggerClientEvent("vorpInventory:createPickup", _source, UsersWeapons.default[weaponId]:getName(), 1, {},
@@ -645,7 +643,6 @@ function InventoryService.DropItem(itemName, itemId, amount, metadata)
 		local title = T.drop
 		local description = "**Amount** `" ..
 			amount .. "`\n **Item** `" .. itemName .. "`" .. "\n **Playername** `" .. charname .. "`\n"
-
 		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
 
 		if not Config.DeleteOnlyDontDrop then
@@ -980,14 +977,20 @@ function InventoryService.serverGiveAmmo(ammotype, amount, target, maxcount)
 	Core.NotifyRightTip(_source, T.transferedammo .. SharedData.AmmoLabels[ammotype] .. " : " .. amount, 2000)
 	Core.NotifyRightTip(target, T.recammo .. SharedData.AmmoLabels[ammotype] .. " : " .. amount, 2000)
 	TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
+	-- update players client side
+	TriggerClientEvent("vorpinventory:recammo", _source, allplayersammo[_source])
+	TriggerClientEvent("vorpinventory:recammo", target, allplayersammo[target])
 end
 
 function InventoryService.updateAmmo(ammoinfo)
 	local _source = source
-	allplayersammo[_source] = ammoinfo
 	local query = "UPDATE characters Set ammo=@ammo WHERE charidentifier=@charidentifier"
 	local params = { charidentifier = ammoinfo.charidentifier, ammo = json.encode(ammoinfo.ammo) }
-	DBService.updateAsync(query, params, function(r) end)
+	DBService.updateAsync(query, params, function(result)
+		if result then
+			allplayersammo[_source] = ammoinfo
+		end
+	end)
 end
 
 function InventoryService.LoadAllAmmo()
@@ -1007,6 +1010,8 @@ function InventoryService.LoadAllAmmo()
 						TriggerClientEvent("vorpCoreClient:addBullets", _source, k, ammocount)
 					end
 				end
+				-- update players client side
+				TriggerClientEvent("vorpinventory:recammo", _source, allplayersammo[_source])
 			end
 		end
 	end)
@@ -1200,7 +1205,6 @@ function InventoryService.getNearbyCharacters(obj, sources)
 end
 
 --* CUSTOM INVENTORY *--
----comment
 ---@return boolean
 function InventoryService.DoesHavePermission(invId, job, grade, Table)
 	if not CustomInventoryInfos[invId]:isPermEnabled() then
@@ -1413,9 +1417,7 @@ function InventoryService.TakeFromCustom(obj)
 						itemAdded:getMetadata())
 					InventoryService.reloadInventory(_source, invId)
 					InventoryService.DiscordLogs(invId, item.name, amount, sourceName, "Take")
-					Core.NotifyRightTip(_source,
-						"you have Taken " .. amount .. " " .. item.label .. " from storage ",
-						2000)
+					Core.NotifyRightTip(_source, "you have Taken " .. amount .. " " .. item.label .. " from storage ", 2000)
 				end)
 			else
 				Core.NotifyRightTip(_source, T.fullInventory, 2000)

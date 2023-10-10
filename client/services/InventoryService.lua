@@ -25,6 +25,7 @@ function InventoryService.PullAllInventory()
 end
 
 function InventoryService.receiveItem(name, id, amount, metadata)
+	
 	if UserInventory[id] ~= nil then
 		UserInventory[id]:addCount(amount)
 	else

@@ -313,48 +313,51 @@ end
 Citizen.CreateThread(function()
 	while true do
 		local sleep = 1000
-		if next(WorldPickups) then
-			local playerPed = PlayerPedId()
-			local pickupsInRange = {}
+		if not InInventory then
+			if next(WorldPickups) then
+				local playerPed = PlayerPedId()
+				local pickupsInRange = {}
 
-			for key, value in pairs(WorldPickups) do
-				if value:IsInRange() then
-					table.insert(pickupsInRange, value)
-				end
-			end
-
-			table.sort(pickupsInRange, function(left, right)
-				return left:Distance() < right:Distance()
-			end)
-
-			for key, pickup in pairs(pickupsInRange) do
-				if pickup:Distance() <= 1.2 then
-					sleep = 0
-					Citizen.InvokeNative(0x69F4BE8C8CC4796C, playerPed, pickup.entityId, 3000, 2048, 3) -- TaskLookAtEntity
-					local isDead = IsEntityDead(playerPed)
-					pickup.prompt:SetVisible(not isDead)
-
-					local promptSubLabel = CreateVarString(10, "LITERAL_STRING", pickup.name)
-					PromptSetActiveGroupThisFrame(promptGroup, promptSubLabel, 1)
-
-					if pickup.prompt:HasHoldModeCompleted() then
-						local data = {
-							data = pickupsInRange,
-							key = key
-						}
-						if pickup.isMoney then
-							TriggerServerEvent("vorpinventory:onPickupMoney", pickup.entityId)
-						elseif Config.UseGoldItem and pickup.isGold then
-							TriggerServerEvent("vorpinventory:onPickupGold", pickup.entityId)
-						else
-							TriggerServerEvent("vorpinventory:onPickup", data)
-						end
-
-						Wait(1000)
+				for key, value in pairs(WorldPickups) do
+					if value:IsInRange() then
+						table.insert(pickupsInRange, value)
 					end
-				else
-					if pickup.prompt:GetEnabled() then
-						pickup.prompt:SetVisible(false)
+				end
+
+				table.sort(pickupsInRange, function(left, right)
+					return left:Distance() < right:Distance()
+				end)
+
+				for key, pickup in pairs(pickupsInRange) do
+					if pickup:Distance() <= 1.2 then
+						sleep = 0
+						Citizen.InvokeNative(0x69F4BE8C8CC4796C, playerPed, pickup.entityId, 3000, 2048, 3) -- TaskLookAtEntity
+						local isDead = IsEntityDead(playerPed)
+						pickup.prompt:SetVisible(not isDead)
+
+						local promptSubLabel = CreateVarString(10, "LITERAL_STRING", pickup.name)
+						PromptSetActiveGroupThisFrame(promptGroup, promptSubLabel, 1)
+
+						if pickup.prompt:HasHoldModeCompleted() then
+							if pickup.isMoney then
+								TriggerServerEvent("vorpinventory:onPickupMoney", pickup.entityId)
+							elseif Config.UseGoldItem and pickup.isGold then
+								TriggerServerEvent("vorpinventory:onPickupGold", pickup.entityId)
+							else
+								local data = {
+									data = pickupsInRange,
+									key = key
+								}
+								print(pickup.entityId, pickup.name, pickup.amount, pickup.metadata, pickup.weaponId, pickup.position, pickup.id)
+								TriggerServerEvent("vorpinventory:onPickup", data)
+							end
+
+							Wait(1000)
+						end
+					else
+						if pickup.prompt:GetEnabled() then
+							pickup.prompt:SetVisible(false)
+						end
 					end
 				end
 			end

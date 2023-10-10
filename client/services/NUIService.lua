@@ -499,7 +499,8 @@ function NUIService.NUIDropItem(obj)
 				if aux.number ~= nil and aux.number ~= '' then
 					local item = UserInventory[itemId]
 					if qty > 0 and item ~= nil and item:getCount() >= qty then
-						TriggerServerEvent("vorpinventory:serverDropItem", itemName, itemId, qty, metadata)
+						print("dropping item", itemName, itemId, qty, metadata)
+						return TriggerServerEvent("vorpinventory:serverDropItem", itemName, itemId, qty, metadata)
 					end
 				end
 			end
@@ -772,13 +773,26 @@ Citizen.CreateThread(function()
 	NUIService.initiateData()
 
 	while true do
-		NUIService.OnKey()
-		if Config.DisableDeathInventory then
-			if InInventory and IsPedDeadOrDying(PlayerPedId(), false) then
-				NUIService.CloseInv()
+		local sleep = 1000
+		if not InInventory then
+			sleep = 0
+			if IsControlJustReleased(1, Config.OpenKey) and IsInputDisabled(0) then
+				if Config.DisableDeathInventory then
+					if InInventory and IsPedDeadOrDying(PlayerPedId(), false) then
+						NUIService.CloseInv()
+					else
+						NUIService.OpenInv()
+					end
+				else
+					if InInventory then
+						NUIService.CloseInv()
+					else
+						NUIService.OpenInv()
+					end
+				end
 			end
 		end
-		Wait(0)
+		Wait(sleep)
 	end
 end)
 
