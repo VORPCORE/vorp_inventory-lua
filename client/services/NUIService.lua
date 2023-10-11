@@ -485,22 +485,30 @@ function NUIService.NUIDropItem(obj)
 
 			if type == "item_money" then
 				TriggerServerEvent("vorpinventory:serverDropMoney", qty)
-				NUIService.LoadInv()
 			end
 
 			if Config.UseGoldItem then
 				if type == "item_gold" then
 					TriggerServerEvent("vorpinventory:serverDropGold", qty)
 				end
-				NUIService.LoadInv()
 			end
 
 			if type == "item_standard" then
 				if aux.number ~= nil and aux.number ~= '' then
 					local item = UserInventory[itemId]
-					if qty > 0 and item ~= nil and item:getCount() >= qty then
-						print("dropping item", itemName, itemId, qty, metadata)
-						return TriggerServerEvent("vorpinventory:serverDropItem", itemName, itemId, qty, metadata)
+					if not item then
+						return
+					end
+
+					if qty <= 0 and item and item:getCount() <= 0 then
+						return
+					end
+
+					TriggerServerEvent("vorpinventory:serverDropItem", itemName, itemId, qty, metadata)
+
+					item:quitCount(qty)
+					if item:getCount() == 0 then
+						UserInventory[itemId] = nil
 					end
 				end
 			end
@@ -518,8 +526,8 @@ function NUIService.NUIDropItem(obj)
 
 					UserWeapons[aux.id] = nil
 				end
-				NUIService.LoadInv()
 			end
+			NUIService.LoadInv()
 		end
 	else
 		TriggerEvent('vorp:TipRight', T.cantdrophere, 5000)
@@ -628,18 +636,6 @@ function NUIService.NUIFocusOff()
 	NUIService.CloseInv()
 end
 
-function NUIService.OnKey()
-	if IsControlJustReleased(1, Config.OpenKey) and IsInputDisabled(0) then
-		if InInventory then
-			NUIService.CloseInv()
-			Wait(1000)
-		else
-			NUIService.OpenInv()
-			Wait(1000)
-		end
-	end
-end
-
 function NUIService.LoadInv()
 	local payload = {}
 	local items = {}
@@ -664,8 +660,7 @@ function NUIService.LoadInv()
 					if item.name == v.name then
 						if item.metadata.description ~= nil then
 							item.metadata.orgdescription = item.metadata.description
-							item.metadata.description = item.metadata.description ..
-								"<br><span style=color:Green;>" .. T.cansell .. v.price .. "</span>"
+							item.metadata.description = item.metadata.description .. "<br><span style=color:Green;>" .. T.cansell .. v.price .. "</span>"
 						else
 							item.metadata.orgdescription = ""
 							item.metadata.description = "<span style=color:Green;>" .. T.cansell .. v.price .. "</span>"

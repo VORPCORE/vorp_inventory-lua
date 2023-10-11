@@ -537,7 +537,6 @@ function InventoryService.onPickupGold(obj)
 			local goldObj = GoldPickUps[obj].obj
 			local goldAmount = GoldPickUps[obj].amount
 			local goldCoords = GoldPickUps[obj].coords
-
 			TriggerClientEvent("vorpInventory:shareGoldPickupClient", -1, goldObj, goldAmount, goldCoords, 2)
 			TriggerClientEvent("vorpInventory:removePickupClient", -1, goldObj)
 			TriggerClientEvent("vorpInventory:playerAnim", _source, goldObj)
@@ -555,10 +554,18 @@ local function generateUniqueID()
 end
 
 function InventoryService.sharePickupServer(data)
+	local _source = source
+	local Character = Core.getUser(_source).getUsedCharacter
+	local sourceInventory = UsersInventories.default[Character.identifier]
+	local item = sourceInventory[data.id]
+
+	if not item then
+		return
+	end
+
 	local uid = generateUniqueID()
 	ItemUids[uid] = uid
-	data.uid = uid
-	TriggerClientEvent("vorpInventory:sharePickupClient", -1, data, 1)
+
 	ItemPickUps[uid] = {
 		name = data.name,
 		obj = data.obj,
@@ -569,6 +576,8 @@ function InventoryService.sharePickupServer(data)
 		coords = data.position,
 		id = data.id,
 	}
+	data.uid = uid
+	TriggerClientEvent("vorpInventory:sharePickupClient", -1, data, 1)
 end
 
 function InventoryService.shareMoneyPickupServer(obj, amount, position)
@@ -641,8 +650,7 @@ function InventoryService.DropItem(itemName, itemId, amount, metadata)
 		SvUtils.ProcessUser(_source)
 		InventoryService.subItem(_source, "default", itemId, amount)
 		local title = T.drop
-		local description = "**Amount** `" ..
-			amount .. "`\n **Item** `" .. itemName .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+		local description = "**Amount** `" .. amount .. "`\n **Item** `" .. itemName .. "`" .. "\n **Playername** `" .. charname .. "`\n"
 		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
 
 		if not Config.DeleteOnlyDontDrop then
@@ -671,8 +679,7 @@ function InventoryService.GiveWeapon(weaponId, target)
 			InventoryService.giveWeapon2(target, weaponId, _source)
 		end
 		local title = T.drop
-		local description = "**Amount** `" ..
-			1 .. "`\n **Weapon id** `" .. weaponId .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+		local description = "**Amount** `" .. 1 .. "`\n **Weapon id** `" .. weaponId .. "`" .. "\n **Playername** `" .. charname .. "`\n"
 
 		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
 		TriggerClientEvent("vorp_inventory:transactionCompleted", _source)

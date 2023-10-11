@@ -11,21 +11,31 @@
 ---@field dropped number @Weapon dropped
 ---@field group number @Weapon group type
 ---@field source number @Weapon player source
-Weapon            = {}
-Weapon.name       = nil
-Weapon.id         = nil
-Weapon.propietary = nil
-Weapon.charId     = nil
-Weapon.used       = false
-Weapon.used2      = false
-Weapon.ammo       = {}
-Weapon.components = {}
-Weapon.desc       = nil
-Weapon.currInv    = ''
-Weapon.dropped    = 0
-Weapon.group      = 5
-Weapon.source     = nil
+Weapon              = {}
+Weapon.name         = nil
+Weapon.id           = nil
+Weapon.propietary   = nil
+Weapon.charId       = nil
+Weapon.used         = false
+Weapon.used2        = false
+Weapon.ammo         = {}
+Weapon.components   = {}
+Weapon.desc         = nil
+Weapon.currInv      = ''
+Weapon.dropped      = 0
+Weapon.group        = 5
+Weapon.source       = nil
+Weapon.label        = nil
+Weapon.serialNumber = nil
 
+
+function Weapon:getLabel()
+	return self.label
+end
+
+function Weapon:getSerialNumber()
+	return self.serialNumber
+end
 
 function Weapon:setUsed(isUsed)
 	self.used = isUsed

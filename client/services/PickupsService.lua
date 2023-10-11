@@ -53,6 +53,7 @@ PickupsService.createPickup = function(name, amount, metadata, weaponId, id)
 		position = position,
 		id = id,
 	}
+
 	TriggerServerEvent("vorpinventory:sharePickupServer", data)
 	PlaySoundFrontend("show_info", "Study_Sounds", true, 0)
 end
@@ -102,28 +103,6 @@ PickupsService.createGoldPickup = function(amount)
 end
 
 PickupsService.sharePickupClient = function(data, value)
-	if data.weaponId == 1 then
-		local item = UserInventory[data.id]
-
-		if not item then
-			return
-		end
-
-		if item:getCount() < data.amount then
-			return
-		end
-
-		if item:getCount() >= data.amount then
-			item:quitCount(data.amount)
-			if item:getCount() == 0 then
-				UserInventory[data.id] = nil
-			end
-		end
-
-		NUIService.LoadInv()
-	end
-
-
 	if value == 1 then
 		if WorldPickups[data.obj] == nil then
 			local label = Utils.GetHashreadableLabel(data.name, data.weaponId)
@@ -139,7 +118,6 @@ PickupsService.sharePickupClient = function(data, value)
 				uid      = data.uid
 
 			})
-
 			pickup.prompt:SetVisible(false)
 			WorldPickups[data.obj] = pickup
 			if Config.Debug then
@@ -348,7 +326,6 @@ Citizen.CreateThread(function()
 									data = pickupsInRange,
 									key = key
 								}
-								print(pickup.entityId, pickup.name, pickup.amount, pickup.metadata, pickup.weaponId, pickup.position, pickup.id)
 								TriggerServerEvent("vorpinventory:onPickup", data)
 							end
 
