@@ -500,7 +500,7 @@ function NUIService.NUIDropItem(obj)
 						return
 					end
 
-					if qty <= 0 and item:getCount() < qty then
+					if qty <= 0 or qty > item:getCount() then
 						return
 					end
 
