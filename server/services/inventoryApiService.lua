@@ -1197,7 +1197,7 @@ exports("updateCustomInventorySlots", InventoryAPI.updateCustomInventorySlots)
 ---@param itemName string item name
 ---@param limit number item limit
 function InventoryAPI.setCustomInventoryItemLimit(id, itemName, limit)
-	if CustomInventoryInfos[id] then
+	if not CustomInventoryInfos[id] then
 		return
 	end
 
