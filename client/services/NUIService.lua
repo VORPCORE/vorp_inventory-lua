@@ -500,7 +500,7 @@ function NUIService.NUIDropItem(obj)
 						return
 					end
 
-					if qty <= 0 and item and item:getCount() <= 0 then
+					if qty <= 0 and item:getCount() < qty then
 						return
 					end
 
@@ -660,7 +660,8 @@ function NUIService.LoadInv()
 					if item.name == v.name then
 						if item.metadata.description ~= nil then
 							item.metadata.orgdescription = item.metadata.description
-							item.metadata.description = item.metadata.description .. "<br><span style=color:Green;>" .. T.cansell .. v.price .. "</span>"
+							item.metadata.description = item.metadata.description ..
+								"<br><span style=color:Green;>" .. T.cansell .. v.price .. "</span>"
 						else
 							item.metadata.orgdescription = ""
 							item.metadata.description = "<span style=color:Green;>" .. T.cansell .. v.price .. "</span>"
