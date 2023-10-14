@@ -33,14 +33,8 @@ function NUIService.ReloadInventory(inventory)
         if item.type == "item_weapon" then
             item.label = item.custom_label or Utils.GetWeaponLabel(item.name)
             local serial_number = ""
-            local custom_label = ""
             if item.serial_number then
                 serial_number = item.serial_number
-                item.serial_number = serial_number
-            end
-            if item.custom_label then
-                custom_label = item.custom_label
-                item.custom_label = custom_label
             end
             if item.desc == nil then
                 item.desc = Utils.GetWeaponDesc(item.name) .. "<br>" .. T.serialnumber .. serial_number
