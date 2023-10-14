@@ -24,22 +24,26 @@ end)
 
 
 function NUIService.ReloadInventory(inventory)
-	local payload = json.decode(inventory)
-	if payload.itemList == '[]' then
-		payload.itemList = {}
-	end
+    local payload = json.decode(inventory)
+    if payload.itemList == '[]' then
+        payload.itemList = {}
+    end
 
-	for _, item in pairs(payload.itemList) do
-		if item.type == "item_weapon" then
-			item.label = item.custom_label or Utils.GetWeaponLabel(item.name)
-			if item.desc == nil then
-				item.desc = Utils.GetWeaponDesc(item.name) .. "<br><br>" .. T.serialnumber .. item.serial_number
-			end
-		end
-	end
-	SendNUIMessage(payload)
-	Wait(500)
-	NUIService.LoadInv()
+    for _, item in pairs(payload.itemList) do
+        if item.type == "item_weapon" then
+            item.label = item.custom_label or Utils.GetWeaponLabel(item.name)
+            local serial_number = ""
+            if item.serial_number then
+                serial_number = item.serial_number
+            end
+            if item.desc == nil then
+                item.desc = Utils.GetWeaponDesc(item.name) .. "<br>" .. T.serialnumber .. serial_number
+            end
+        end
+    end
+    SendNUIMessage(payload)
+    Wait(500)
+    NUIService.LoadInv()
 end
 
 function NUIService.OpenCustomInventory(name, id, capacity)
