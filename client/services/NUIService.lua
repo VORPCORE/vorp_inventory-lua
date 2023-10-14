@@ -31,9 +31,9 @@ function NUIService.ReloadInventory(inventory)
 
 	for _, item in pairs(payload.itemList) do
 		if item.type == "item_weapon" then
-			item.label = Utils.GetWeaponLabel(item.name)
+			item.label = item.custom_label or Utils.GetWeaponLabel(item.name)
 			if item.desc == nil then
-				item.desc = Utils.GetWeaponDesc(item.name)
+				item.desc = Utils.GetWeaponDesc(item.name) .. "<br><br>" .. T.serialnumber .. item.serial_number
 			end
 		end
 	end
@@ -342,49 +342,6 @@ function NUIService.NUIGetNearPlayers(obj)
 	TriggerServerEvent('vorp_inventory:getNearbyCharacters', obj, playerIds)
 end
 
---[[ function NUIService.NUISetNearPlayers(obj, nearestPlayers)
-	local nuiReturn = {}
-	local isAnyPlayerFound = #nearestPlayers > 0
-
-	if next(nearestPlayers) == nil then
-		TriggerEvent('vorp:TipRight', T.noplayersnearby, 5000)
-		return
-	end
-	if Config.Debug then
-		print('[^NUISetNearPlayers^7] ^2Info^7: players found = ' .. json.encode(nearestPlayers));
-	end
-	local item = {}
-
-	for k, v in pairs(obj) do
-		item[k] = v
-	end
-
-	if item.id == nil then
-		item.id = 0
-	end
-
-	if item.count == nil then
-		item.count = 1
-	end
-
-	if item.hash == nil then
-		item.hash = 1
-	end
-
-	nuiReturn.action = "nearPlayers"
-	nuiReturn.foundAny = isAnyPlayerFound
-	nuiReturn.players = nearestPlayers
-	nuiReturn.item = item.item
-	nuiReturn.hash = item.hash
-	nuiReturn.count = item.count
-	nuiReturn.id = item.id
-	nuiReturn.type = item.type
-	nuiReturn.what = item.what
-
-
-	SendNUIMessage(nuiReturn)
-end ]]
-
 function NUIService.NUISetNearPlayers(obj, nearestPlayers)
 	local nuiReturn = {}
 	local isAnyPlayerFound = next(nearestPlayers) ~= nil
@@ -540,10 +497,10 @@ local function getGuidFromItemId(inventoryId, itemData, category, slotId)
 	if not itemData then
 		itemData = 0
 	end
-
-	local success = Citizen.InvokeNative(0x886DFD3E185C8A89, inventoryId, itemData, category, slotId, outItem:Buffer()) --InventoryGetGuidFromItemid
+	--InventoryGetGuidFromItemid
+	local success = Citizen.InvokeNative(0x886DFD3E185C8A89, inventoryId, itemData, category, slotId, outItem:Buffer())
 	if success then
-		return outItem:Buffer()                                                                                      --Seems to not return anythign diff. May need to pull from native above
+		return outItem:Buffer() --Seems to not return anythign diff. May need to pull from native above
 	else
 		return nil
 	end
@@ -660,8 +617,7 @@ function NUIService.LoadInv()
 					if item.name == v.name then
 						if item.metadata.description ~= nil then
 							item.metadata.orgdescription = item.metadata.description
-							item.metadata.description = item.metadata.description ..
-								"<br><span style=color:Green;>" .. T.cansell .. v.price .. "</span>"
+							item.metadata.description = item.metadata.description .. "<br><span style=color:Green;>" .. T.cansell .. v.price .. "</span>"
 						else
 							item.metadata.orgdescription = ""
 							item.metadata.description = "<span style=color:Green;>" .. T.cansell .. v.price .. "</span>"
@@ -677,10 +633,11 @@ function NUIService.LoadInv()
 		end
 	end
 	for _, currentWeapon in pairs(UserWeapons) do
+		local label = currentWeapon:getCustomLabel() or currentWeapon:getLabel()
 		local weapon = {}
 		weapon.count = currentWeapon:getTotalAmmoCount()
 		weapon.limit = -1
-		weapon.label = currentWeapon:getLabel()
+		weapon.label = label
 		weapon.name = currentWeapon:getName()
 		weapon.metadata = {}
 		weapon.hash = GetHashKey(currentWeapon:getName())
@@ -691,6 +648,8 @@ function NUIService.LoadInv()
 		weapon.used = currentWeapon:getUsed()
 		weapon.desc = currentWeapon:getDesc()
 		weapon.group = 5
+		weapon.serial_number = currentWeapon:getSerialNumber()
+		weapon.custom_label = currentWeapon:getCustomLabel()
 
 		table.insert(items, weapon)
 	end

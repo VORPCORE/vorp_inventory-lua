@@ -12,7 +12,9 @@ Weapon.used2 = false
 Weapon.desc = nil
 Weapon.currInv = ''
 Weapon.group = 5
-
+Weapon.custom_label = nil
+Weapon.serial_number = nil
+Weapon.source = nil
 
 local equippedWeapons = {}
 
@@ -339,4 +341,16 @@ end
 
 function Weapon:getGroup()
 	self.group = self.group
+end
+
+function Weapon:getCustomLabel()
+	return self.custom_label
+end
+
+function Weapon:setCustomLabel(custom_label)
+	self.custom_label = custom_label
+end
+
+function Weapon:getSerialNumber()
+	return self.serial_number
 end

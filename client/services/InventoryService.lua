@@ -25,7 +25,6 @@ function InventoryService.PullAllInventory()
 end
 
 function InventoryService.receiveItem(name, id, amount, metadata)
-	
 	if UserInventory[id] ~= nil then
 		UserInventory[id]:addCount(amount)
 	else
@@ -67,25 +66,28 @@ function InventoryService.removeItem(name, id, count)
 	end
 end
 
-function InventoryService.receiveWeapon(id, propietary, name, ammos)
+function InventoryService.receiveWeapon(id, propietary, name, ammos, label, serial_number, custom_label, source)
 	local weaponAmmo = {}
 
 	for type, amount in pairs(ammos) do
 		weaponAmmo[type] = tonumber(amount)
 	end
 
-
 	if UserWeapons[id] == nil then
 		local newWeapon = Weapon:New({
 			id = id,
 			propietary = propietary,
 			name = name,
-			label = Utils.GetWeaponLabel(name),
+			label = custom_label or label,
 			ammo = weaponAmmo,
 			used = false,
 			used2 = false,
-			desc = Utils.GetWeaponDesc(name),
-			group = 5
+			desc = Utils.GetWeaponDesc(name) .. "<br><br>" .. T.serialnumber .. serial_number,
+			group = 5,
+			source = source,
+			serial_number = serial_number,
+			custom_label = custom_label,
+
 		})
 
 		UserWeapons[newWeapon:getId()] = newWeapon
@@ -114,6 +116,7 @@ function InventoryService.processItems(items)
 	end
 end
 
+-- Load inventory weapons on client start
 function InventoryService.getLoadout(loadout)
 	for _, weapon in pairs(loadout) do
 		local weaponAmmo = weapon.ammo
@@ -129,19 +132,26 @@ function InventoryService.getLoadout(loadout)
 		if weapon.used2 == 1 then weaponUsed2 = true end
 
 		if weapon.currInv == "default" and (weapon.dropped == nil or weapon.dropped == 0) then
+			local serialNumber = ""
+			if Utils.filterWeaponsSerialNumber(weapon.name:upper()) and weapon.serial_number then
+				serialNumber = "<br><br>" .. T.serialnumber .. weapon.serial_number
+			end
+			local label = weapon.custom_label or Utils.GetWeaponLabel(weapon.name)
 			local newWeapon = Weapon:New({
 				id = tonumber(weapon.id),
 				identifier = weapon.identifier,
-				label = Utils.GetWeaponLabel(weapon.name),
+				label = label,
 				name = weapon.name,
 				ammo = weaponAmmo,
 				components = weapon.components,
 				used = weaponUsed,
 				used2 = weaponUsed2,
-				desc = Utils.GetWeaponDesc(weapon.name),
+				desc = Utils.GetWeaponDesc(weapon.name) .. serialNumber,
 				currInv = weapon.curr_inv,
 				dropped = 0,
-				group = 5
+				group = 5,
+				custom_label = weapon.custom_label,
+				serial_number = weapon.serial_number,
 			})
 
 			UserWeapons[newWeapon:getId()] = newWeapon

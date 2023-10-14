@@ -7,7 +7,7 @@ Lang = "English"
 Config = {
 	--======================= DEVELOPMENT ==============================--
 	Debug                    = false, -- if your server is live set this to false.  to true only if you are testing things
-	DevMode                  = false, -- if your server is live set this to false.  to true only if you are testing things (auto load inventory when script restart and before character selection. Alos add /getInv command)
+	DevMode                  = true, -- if your server is live set this to false.  to true only if you are testing things (auto load inventory when script restart and before character selection. Alos add /getInv command)
 	dbupdater                = true,
 	--======================= CONFIGURATION =============================--
 	ShowCharacterNameOnGive  = false, -- when giving an item, show the character name of nearby players instead of their player ID. if set to false, show the player ID
@@ -125,11 +125,29 @@ Config = {
 		"WEAPON_MELEE_HAMMER",
 		"WEAPON_MELEE_KNIFE",
 	},
-
+	-- weapons that are considered non throwables
 	nonAmmoThrowables   = {
 		"WEAPON_MELEE_CLEAVER",
 		"WEAPON_MELEE_HATCHET",
 		"WEAPON_MELEE_HATCHET_HUNTER"
 	},
+	-- weapons that dont need serial numbers
+	noSerialNumber      = {
+		"WEAPON_MELEE_CLEAVER",
+		"WEAPON_MELEE_HATCHET",
+		"WEAPON_MELEE_HATCHET_HUNTER",
+		"WEAPON_MELEE_KNIFE",
+		"WEAPON_KIT_BINOCULARS_IMPROVED",
+		"WEAPON_KIT_BINOCULARS",
+		"WEAPON_FISHINGROD",
+		"WEAPON_KIT_CAMERA",
+		"WEAPON_kIT_CAMERA_ADVANCED",
+		"WEAPON_MELEE_LANTERN",
+		"WEAPON_MELEE_DAVY_LANTERN",
+		"WEAPON_MELEE_LANTERN_HALLOWEEN",
+		"WEAPON_KIT_METAL_DETECTOR",
+		"WEAPON_MELEE_HAMMER",
+
+	}
 
 }

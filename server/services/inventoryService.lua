@@ -353,11 +353,7 @@ function InventoryService.addWeapon(target, weaponId)
 	local userWeapons = UsersWeapons.default
 	local weaponcomps = {}
 	local query = 'SELECT comps FROM loadout WHERE id = @id'
-	local params = {
-		id = weaponId
-	}
-
-	local result = DBService.queryAwait(query, params)
+	local result = DBService.queryAwait(query, { id = weaponId })
 
 	if result[1] then
 		weaponcomps = json.decode(result[1].comps)
@@ -366,8 +362,10 @@ function InventoryService.addWeapon(target, weaponId)
 	local weaponname = userWeapons[weaponId]:getName()
 	local ammo = { ["nothing"] = 0 }
 	local components = { ["nothing"] = 0 }
-	InventoryAPI.registerWeapon(_source, weaponname, ammo, components, weaponcomps, function() end)
-	InventoryAPI.deleteWeapon(_source, weaponId, function() end)
+	InventoryAPI.registerWeapon(_source, weaponname, ammo, components, weaponcomps, function()
+	end, weaponId)
+	InventoryAPI.deleteWeapon(_source, weaponId, function()
+	end)
 end
 
 function InventoryService.subWeapon(target, weaponId)
@@ -464,6 +462,8 @@ function InventoryService.onPickup(data)
 			local weaponId = ItemPickUps[obj].weaponid
 			local weapon = userWeapons[weaponId]
 			local wepname = weapon:getName()
+			local weaponCustomLabel = weapon:getCustomLabel()
+			local serialNumber = weapon:getSerialNumber()
 
 			if Config.JobsAllowed[job] then
 				DefaultAmount = Config.JobsAllowed[job]
@@ -492,6 +492,8 @@ function InventoryService.onPickup(data)
 						metadata = metadata,
 						weaponId = weaponId,
 						position = ItemPickUps[obj].coords,
+						custom_label = weaponCustomLabel,
+						serial_number = serialNumber,
 						id = nil
 					}
 					TriggerClientEvent("vorpInventory:sharePickupClient", -1, data, 2)
@@ -637,14 +639,13 @@ function InventoryService.DropWeapon(weaponId)
 		SvUtils.ProcessUser(_source)
 		InventoryService.subWeapon(_source, weaponId)
 		UsersWeapons.default[weaponId]:setDropped(1)
-
+		local wepName = UsersWeapons.default[weaponId]:getName()
 		local title = T.drop
 		local description = "**Weapon** `" ..
 		UsersWeapons.default[weaponId]:getName() .. "`" .. "\n **Playername** `" .. charname .. "`\n"
 		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
 		if not Config.DeleteOnlyDontDrop then
-			TriggerClientEvent("vorpInventory:createPickup", _source, UsersWeapons.default[weaponId]:getName(), 1, {},
-				weaponId)
+			TriggerClientEvent("vorpInventory:createPickup", _source, wepName, 1, {}, weaponId)
 		end
 		SvUtils.Trem(_source)
 	end
@@ -690,8 +691,8 @@ function InventoryService.GiveWeapon(weaponId, target)
 		local title = T.drop
 		local description = "**Amount** `" ..
 		1 .. "`\n **Weapon id** `" .. weaponId .. "`" .. "\n **Playername** `" .. charname .. "`\n"
-
 		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
+
 		TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
 		SvUtils.Trem(_source)
 	end
@@ -707,6 +708,7 @@ function InventoryService.giveWeapon2(player, weaponId, target)
 	local userWeapons = UsersWeapons.default
 	local DefaultAmount = Config.MaxItemsInInventory.Weapons
 	local weaponName = userWeapons[weaponId]:getName()
+	local weaponCustomLabel = userWeapons[weaponId]:getCustomLabel()
 	local notListed = false
 
 	if Config.JobsAllowed[job] then
@@ -728,7 +730,7 @@ function InventoryService.giveWeapon2(player, weaponId, target)
 				Core.NotifyRightTip(_source, T.cantweapons, 2000)
 				if Config.Debug then
 					Log.print(sourceCharacter.firstname ..
-						" " .. sourceCharacter.lastname .. " ^1Can't carry more weapons^7")
+					" " .. sourceCharacter.lastname .. " ^1Can't carry more weapons^7")
 				end
 				return
 			end
@@ -746,8 +748,10 @@ function InventoryService.giveWeapon2(player, weaponId, target)
 	userWeapons[weaponId]:setPropietary('')
 	local ammo = { ["nothing"] = 0 }
 	local components = { ["nothing"] = 0 }
-	InventoryAPI.registerWeapon(_source, weaponName, ammo, components, weaponcomps, function() end)
-	InventoryAPI.deleteWeapon(_source, weaponId, function() end)
+	InventoryAPI.registerWeapon(_source, weaponName, ammo, components, weaponcomps, function()
+	end, weaponId)
+	InventoryAPI.deleteWeapon(_source, weaponId, function()
+	end)
 	TriggerClientEvent("vorpinventory:updateinventorystuff", _target)
 	TriggerClientEvent("vorpinventory:updateinventorystuff", _source)
 	TriggerClientEvent("vorpCoreClient:subWeapon", _target, weaponId)
@@ -893,7 +897,6 @@ function InventoryService.getInventory()
 	if sourceCharacter == nil then
 		return
 	end
-
 	local sourceIdentifier = sourceCharacter.identifier
 	local sourceCharId = sourceCharacter.charIdentifier
 
@@ -1086,14 +1089,16 @@ function InventoryService.reloadInventory(player, id)
 	for weaponId, weapon in pairs(UsersWeapons[id]) do
 		if invData:isShared() or weapon.charId == sourceCharIdentifier then
 			itemList[#itemList + 1] = Item:New({
-				id    = weaponId,
-				count = 1,
-				name  = weapon.name,
-				label = weapon.name,
-				limit = 1,
-				type  = "item_weapon",
-				desc  = weapon.desc,
-				group = 5,
+				id            = weaponId,
+				count         = 1,
+				name          = weapon.name,
+				label         = weapon.custom_label or weapon.name,
+				limit         = 1,
+				type          = "item_weapon",
+				desc          = weapon.desc,
+				group         = 5,
+				serial_number = weapon.serial_number,
+				custom_label  = weapon.custom_label,
 			})
 		end
 	end
@@ -1156,9 +1161,11 @@ end
 function InventoryService.canStoreItem(identifier, charIdentifier, invId, name, amount)
 	local invData = CustomInventoryInfos[invId]
 
+
 	if invData:getLimit() > 0 then
 		local sourceInventoryItemCount = InventoryService.getInventoryTotalCount(identifier, charIdentifier, invId)
 		sourceInventoryItemCount = sourceInventoryItemCount + amount
+
 
 		if sourceInventoryItemCount > invData:getLimit() then
 			return false
@@ -1348,8 +1355,7 @@ function InventoryService.MoveToCustom(obj)
 			return
 		end
 
-		if item.count >= amount and
-			InventoryService.canStoreItem(sourceIdentifier, sourceCharIdentifier, invId, item.name, amount) then
+		if item.count >= amount and InventoryService.canStoreItem(sourceIdentifier, sourceCharIdentifier, invId, item.name, amount) then
 			InventoryService.subItem(_source, "default", item.id, amount)
 			TriggerClientEvent("vorpInventory:removeItem", _source, item.name, item.id, amount)
 
@@ -1404,8 +1410,13 @@ function InventoryService.TakeFromCustom(obj)
 				UsersWeapons.default[item.id].charId = sourceCharIdentifier
 				UsersWeapons[invId][item.id] = nil
 				local weapon = UsersWeapons.default[item.id]
-				TriggerClientEvent("vorpInventory:receiveWeapon", _source, item.id, sourceIdentifier, weapon:getName(),
-					weapon:getAllAmmo())
+				local name = weapon:getName()
+				local ammo = weapon:getAllAmmo()
+				local label = weapon:getLabel()
+				local serial = weapon:getSerialNumber()
+				local custom = weapon:getCustomLabel()
+				TriggerClientEvent("vorpInventory:receiveWeapon", _source, item.id, sourceIdentifier, name, ammo, label,
+					serial, custom, _source)
 				InventoryService.reloadInventory(_source, invId)
 				InventoryService.DiscordLogs(invId, item.name, amount, sourceName, "Take")
 				local text = " you have Taken From storage "
