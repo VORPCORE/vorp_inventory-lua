@@ -663,8 +663,6 @@ function InventoryService.DropWeapon(weaponId)
 
 	if not SvUtils.InProcessing(_source) then
 		SvUtils.ProcessUser(_source)
-		InventoryService.subWeapon(_source, weaponId)
-		UsersWeapons.default[weaponId]:setDropped(1)
 		local wepName = UsersWeapons.default[weaponId]:getName()
 		local title = T.drop
 		local description = "**Weapon** `" ..
@@ -683,7 +681,6 @@ function InventoryService.DropItem(itemName, itemId, amount, metadata)
 	local charname = sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname
 	if not SvUtils.InProcessing(_source) then
 		SvUtils.ProcessUser(_source)
-		InventoryService.subItem(_source, "default", itemId, amount)
 		local title = T.drop
 		local description = "**Amount** `" ..
 			amount .. "`\n **Item** `" .. itemName .. "`" .. "\n **Playername** `" .. charname .. "`\n"
