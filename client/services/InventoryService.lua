@@ -66,11 +66,15 @@ function InventoryService.removeItem(name, id, count)
 	end
 end
 
-function InventoryService.receiveWeapon(id, propietary, name, ammos, label, serial_number, custom_label, source)
+function InventoryService.receiveWeapon(id, propietary, name, ammos, label, serial_number, custom_label, source, custom_desc)
 	local weaponAmmo = {}
 
 	for type, amount in pairs(ammos) do
 		weaponAmmo[type] = tonumber(amount)
+	end
+
+	if custom_desc then
+		custom_desc = custom_desc .. "<br><br>" .. T.serialnumber .. serial_number
 	end
 
 	if UserWeapons[id] == nil then
@@ -82,11 +86,12 @@ function InventoryService.receiveWeapon(id, propietary, name, ammos, label, seri
 			ammo = weaponAmmo,
 			used = false,
 			used2 = false,
-			desc = Utils.GetWeaponDesc(name) .. "<br><br>" .. T.serialnumber .. serial_number,
+			desc = custom_desc or Utils.GetWeaponDesc(name) .. "<br><br>" .. T.serialnumber .. serial_number,
 			group = 5,
 			source = source,
 			serial_number = serial_number,
 			custom_label = custom_label,
+			custom_desc = custom_desc,
 
 		})
 
@@ -136,6 +141,12 @@ function InventoryService.getLoadout(loadout)
 			if Utils.filterWeaponsSerialNumber(weapon.name:upper()) and weapon.serial_number then
 				serialNumber = "<br><br>" .. T.serialnumber .. weapon.serial_number
 			end
+
+			local custom_desc = nil
+			if weapon.custom_desc then
+				custom_desc = weapon.custom_desc .. serialNumber
+			end
+
 			local label = weapon.custom_label or Utils.GetWeaponLabel(weapon.name)
 			local newWeapon = Weapon:New({
 				id = tonumber(weapon.id),
@@ -146,12 +157,13 @@ function InventoryService.getLoadout(loadout)
 				components = weapon.components,
 				used = weaponUsed,
 				used2 = weaponUsed2,
-				desc = Utils.GetWeaponDesc(weapon.name) .. serialNumber,
+				desc = custom_desc or Utils.GetWeaponDesc(weapon.name) .. serialNumber,
 				currInv = weapon.curr_inv,
 				dropped = 0,
 				group = 5,
 				custom_label = weapon.custom_label,
 				serial_number = weapon.serial_number,
+				custom_desc = custom_desc,
 			})
 
 			UserWeapons[newWeapon:getId()] = newWeapon

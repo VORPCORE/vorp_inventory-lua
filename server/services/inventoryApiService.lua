@@ -193,6 +193,7 @@ function InventoryAPI.getUserWeapon(player, cb, weaponId)
 	Weapon.label = foundWeapon:getLabel()
 	Weapon.serial_number = foundWeapon:getSerialNumber()
 	Weapon.custom_label = foundWeapon:getCustomLabel()
+	Weapon.custom_desc = foundWeapon:getCustomDesc()
 
 	return respond(cb, weapon)
 end
@@ -225,6 +226,7 @@ function InventoryAPI.getUserWeapons(player, cb)
 				label = currentWeapon:getLabel(),
 				serial_number = currentWeapon:getSerialNumber(),
 				custom_label = currentWeapon:getCustomLabel(),
+				custom_desc = currentWeapon:getCustomDesc(),
 			}
 			table.insert(userWeapons2, weapon)
 		end
@@ -788,8 +790,9 @@ function InventoryAPI.setWeaponCustomLabel(weaponId, label, cb)
 
 	if userWeapons then
 		userWeapons:setCustomLabel(label)
-		DBService.updateAsync('UPDATE loadout SET custom_label = @custom_label WHERE id = @id', { id = weaponId, custom_label = label }, function(r)
-		end)
+		DBService.updateAsync('UPDATE loadout SET custom_label = @custom_label WHERE id = @id',
+			{ id = weaponId, custom_label = label }, function(r)
+			end)
 		return respond(cb, true)
 	end
 	return respond(cb, false)
@@ -808,14 +811,34 @@ function InventoryAPI.setWeaponSerialNumber(weaponId, serial, cb)
 
 	if userWeapons then
 		userWeapons:setSerialNumber(serial)
-		DBService.updateAsync('UPDATE loadout SET serial_number = @serial_number WHERE id = @id', { id = weaponId, serial_number = serial }, function(r)
-		end)
+		DBService.updateAsync('UPDATE loadout SET serial_number = @serial_number WHERE id = @id',
+			{ id = weaponId, serial_number = serial }, function(r)
+			end)
 		return respond(cb, true)
 	end
 	return respond(cb, false)
 end
 
 exports("setWeaponSerialNumber", InventoryAPI.setWeaponSerialNumber)
+
+--- set custom desc
+---@param weaponId number weapon id
+---@param desc string weapon desc
+---@param cb fun(success: boolean)? async or sync callback
+---@return boolean
+function InventoryAPI.setWeaponCustomDesc(weaponId, desc, cb)
+	local _source = source
+	local userWeapons = UsersWeapons.default[weaponId]
+
+	if userWeapons then
+		userWeapons:setCustomDesc(desc)
+		DBService.updateAsync('UPDATE loadout SET custom_desc = @custom_desc WHERE id = @id',
+			{ id = weaponId, custom_desc = desc }, function(r)
+			end)
+		return respond(cb, true)
+	end
+	return respond(cb, false)
+end
 
 --- get weapon components
 ---@param player number source
@@ -864,7 +887,7 @@ exports("deleteWeapon", InventoryAPI.deleteWeapon)
 ---@param customSerial string | nil? custom serial number
 ---@param customLabel string | nil? custom label
 ---@return nil | boolean
-function InventoryAPI.registerWeapon(_target, wepname, ammos, components, comps, cb, wepId, customSerial, customLabel)
+function InventoryAPI.registerWeapon(_target, wepname, ammos, components, comps, cb, wepId, customSerial, customLabel, customDesc)
 	local targetUser = Core.getUser(_target)
 	local targetCharacter = targetUser.getUsedCharacter
 	local targetIdentifier = targetCharacter.identifier
@@ -950,10 +973,21 @@ function InventoryAPI.registerWeapon(_target, wepname, ammos, components, comps,
 			return nil
 		end
 
-		local serialNumber = customSerial or hasSerialNumber() or SvUtils.GenerateSerialNumber(name) -- custom serial number or existent serial number or generate new one
-		local label = customLabel or hasCustomLabel() or SvUtils.GenerateWeaponLabel(name) --custom label or existent label or generate new one
+		local function hasCustomDesc()
+			if wepId and UsersWeapons.default[wepId] then
+				local userWeps = UsersWeapons.default
+				local wep = userWeps[wepId]
+				if wep:getCustomDesc() then
+					return wep:getCustomDesc()
+				end
+			end
+			return nil
+		end
 
-		local query = 'INSERT INTO loadout (identifier, charidentifier, name, ammo,components,comps,label,serial_number,custom_label) VALUES (@identifier, @charid, @name, @ammo, @components,@comps,@label,@serial_number,@custom_label)'
+		local serialNumber = customSerial or hasSerialNumber() or SvUtils.GenerateSerialNumber(name) -- custom serial number or existent serial number or generate new one
+		local label = customLabel or hasCustomLabel() or SvUtils.GenerateWeaponLabel(name)     --custom label or existent label or generate new one
+		local desc = customDesc or hasCustomDesc()                                             -- custom desc or existent desc or nil
+		local query = 'INSERT INTO loadout (identifier, charidentifier, name, ammo,components,comps,label,serial_number,custom_label,custom_desc) VALUES (@identifier, @charid, @name, @ammo, @components,@comps,@label,@serial_number,@custom_label,@custom_desc)'
 		local params = {
 			identifier = targetIdentifier,
 			charid = targetCharId,
@@ -964,6 +998,7 @@ function InventoryAPI.registerWeapon(_target, wepname, ammos, components, comps,
 			comps = json.encode(comps),
 			custom_label = label,
 			serial_number = serialNumber,
+			custom_desc = desc,
 		}
 		DBService.insertAsync(query, params, function(result)
 			local weaponId = result
@@ -981,11 +1016,12 @@ function InventoryAPI.registerWeapon(_target, wepname, ammos, components, comps,
 				label = label,
 				serial_number = serialNumber,
 				custom_label = label,
+				custom_desc = desc,
 				group = 5,
 			})
 			UsersWeapons.default[weaponId] = newWeapon
 			TriggerEvent("syn_weapons:registerWeapon", weaponId)
-			TriggerClientEvent("vorpInventory:receiveWeapon", _target, weaponId, targetIdentifier, name, ammo, label, serialNumber, label, _target)
+			TriggerClientEvent("vorpInventory:receiveWeapon", _target, weaponId, targetIdentifier, name, ammo, label, serialNumber, label, _target, desc)
 		end)
 		return respond(cb, true)
 	end
@@ -1055,6 +1091,7 @@ function InventoryAPI.giveWeapon(player, weaponId, target, cb)
 		local label = weapon:getLabel()
 		local serialNumber = weapon:getSerialNumber()
 		local customLabel = weapon:getCustomLabel()
+		local customDesc = weapon:getCustomDesc()
 
 		local query = "UPDATE loadout SET identifier = @identifier, charidentifier = @charid WHERE id = @id"
 		local params = {
@@ -1066,14 +1103,12 @@ function InventoryAPI.giveWeapon(player, weaponId, target, cb)
 		DBService.updateAsync(query, params, function(r)
 			if not _target then
 				weapon:setSource(_target)
-				TriggerClientEvent('vorp:ShowAdvancedRightNotification', _target, T.youGaveWeapon, "inventory_items",
-					weaponName, "COLOR_PURE_WHITE", 4000)
+				TriggerClientEvent('vorp:ShowAdvancedRightNotification', _target, T.youGaveWeapon, "inventory_items",weaponName, "COLOR_PURE_WHITE", 4000)
 				TriggerClientEvent("vorpCoreClient:subWeapon", _target, weaponId)
 			end
-			TriggerClientEvent('vorp:ShowAdvancedRightNotification', _source, T.youReceivedWeapon, "inventory_items",
-				weaponName, "COLOR_PURE_WHITE", 4000)
+			TriggerClientEvent('vorp:ShowAdvancedRightNotification', _source, T.youReceivedWeapon, "inventory_items", weaponName, "COLOR_PURE_WHITE", 4000)
 
-			TriggerClientEvent("vorpInventory:receiveWeapon", _source, weaponId, weaponPropietary, weaponName, weaponAmmo, label, serialNumber, customLabel, _source)
+			TriggerClientEvent("vorpInventory:receiveWeapon", _source, weaponId, weaponPropietary, weaponName, weaponAmmo,label, serialNumber, customLabel, _source,customDesc)
 		end)
 	end
 	return respond(cb, true)

@@ -476,6 +476,7 @@ function InventoryService.onPickup(data)
 			local wepname = weapon:getName()
 			local weaponCustomLabel = weapon:getCustomLabel()
 			local serialNumber = weapon:getSerialNumber()
+			local weaponCustomDesc = weapon:getCustomDesc()
 
 			if Config.JobsAllowed[job] then
 				DefaultAmount = Config.JobsAllowed[job]
@@ -503,6 +504,7 @@ function InventoryService.onPickup(data)
 						position = ItemPickUps[obj].coords,
 						custom_label = weaponCustomLabel,
 						serial_number = serialNumber,
+						custom_desc = weaponCustomDesc,
 						id = nil
 					}
 					local steamname = GetPlayerName(_source)
@@ -1175,6 +1177,7 @@ function InventoryService.reloadInventory(player, id)
 				group         = 5,
 				serial_number = weapon.serial_number,
 				custom_label  = weapon.custom_label,
+				custom_desc   = weapon.custom_desc,
 			})
 		end
 	end

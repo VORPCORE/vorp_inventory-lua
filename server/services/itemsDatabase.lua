@@ -47,6 +47,7 @@ local function loadAllWeapons(db_weapon)
 			label = label,
 			serial_number = db_weapon.serial_number,
 			custom_label = db_weapon.custom_label,
+			custom_desc = db_weapon.custom_desc,
 		})
 
 		if not UsersWeapons[db_weapon.curr_inv] then

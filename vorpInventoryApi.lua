@@ -67,11 +67,11 @@ exports('vorp_inventoryApi', function()
         TriggerEvent("vorpCore:subWeapon", source, tonumber(weaponid))
     end
 
-    INV.createWeapon = function(source, weaponName, ammoaux, compaux, comps, custom_serial, custom_label)
+    INV.createWeapon = function(source, weaponName, ammoaux, compaux, comps, custom_serial, custom_label, custom_desc)
         local result_promise = promise.new()
         TriggerEvent("vorpCore:registerWeapon", source, tostring(string.upper(weaponName)), ammoaux, compaux, comps, function(res)
             result_promise:resolve(res)
-        end, nil, custom_serial, custom_label)
+        end, nil, custom_serial, custom_label, custom_desc)
         return Citizen.Await(result_promise)
     end
 

@@ -28,6 +28,7 @@ Weapon.source        = nil
 Weapon.label         = nil
 Weapon.serial_number = nil
 Weapon.custom_label  = nil
+Weapon.custom_desc   = nil
 
 function Weapon:getLabel()
 	return self.label
@@ -47,6 +48,14 @@ end
 
 function Weapon:setSerialNumber(serial_number)
 	self.serial_number = serial_number
+end
+
+function Weapon:getCustomDesc()
+	return self.custom_desc
+end
+
+function Weapon:setCustomDesc(custom_desc)
+	self.custom_desc = custom_desc
 end
 
 function Weapon:setUsed(isUsed)
