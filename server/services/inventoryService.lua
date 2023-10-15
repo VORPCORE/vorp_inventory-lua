@@ -660,13 +660,11 @@ function InventoryService.DropWeapon(weaponId)
 	local _source = source
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local charname = sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname
-
 	if not SvUtils.InProcessing(_source) then
 		SvUtils.ProcessUser(_source)
 		local wepName = UsersWeapons.default[weaponId]:getName()
 		local title = T.drop
-		local description = "**Weapon** `" ..
-			UsersWeapons.default[weaponId]:getName() .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+		local description = "**Weapon** `" ..	UsersWeapons.default[weaponId]:getName() .. "`" .. "\n **Playername** `" .. charname .. "`\n"
 		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
 		if not Config.DeleteOnlyDontDrop then
 			TriggerClientEvent("vorpInventory:createPickup", _source, wepName, 1, {}, weaponId)
@@ -682,8 +680,7 @@ function InventoryService.DropItem(itemName, itemId, amount, metadata)
 	if not SvUtils.InProcessing(_source) then
 		SvUtils.ProcessUser(_source)
 		local title = T.drop
-		local description = "**Amount** `" ..
-			amount .. "`\n **Item** `" .. itemName .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+		local description = "**Amount** `" ..	amount .. "`\n **Item** `" .. itemName .. "`" .. "\n **Playername** `" .. charname .. "`\n"
 		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
 
 		if not Config.DeleteOnlyDontDrop then
