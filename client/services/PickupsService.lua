@@ -53,8 +53,11 @@ PickupsService.createPickup = function(name, amount, metadata, weaponId, id)
 		position = position,
 		id = id,
 	}
-
-	TriggerServerEvent("vorpinventory:sharePickupServer", data)
+	if weaponId == 1 then
+		TriggerServerEvent("vorpinventory:sharePickupServerItem", data)
+	else
+		TriggerServerEvent("vorpinventory:sharePickupServerWeapon", data)
+	end
 	PlaySoundFrontend("show_info", "Study_Sounds", true, 0)
 end
 

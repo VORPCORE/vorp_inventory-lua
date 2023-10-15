@@ -290,9 +290,13 @@ function InventoryService.subItem(target, invId, itemId, amount)
 				else
 					DBService.SetItemAmount(item:getOwner(), itemId, item:getCount())
 				end
+
+				return true
 			end
 		end
 	end
+
+	return false
 end
 
 function InventoryService.addItem(target, invId, name, amount, metadata, cb)
@@ -388,7 +392,9 @@ function InventoryService.subWeapon(target, weaponId)
 			id = weaponId,
 		}
 		DBService.updateAsync(query, params, function(r) end)
+		return true
 	end
+	return false
 end
 
 function InventoryService.onPickup(data)
@@ -557,21 +563,7 @@ local function generateUniqueID()
 	return tostring(time) .. tostring(randomNum)
 end
 
-function InventoryService.sharePickupServer(data)
-	local _source = source
-	local Character = Core.getUser(_source).getUsedCharacter
-	local sourceInventory = UsersInventories.default[Character.identifier]
-	local item = sourceInventory[data.id]
-	local weapon = UsersWeapons.default[data.weaponId]
-
-	if not weapon and data.weaponId > 1 then
-		return
-	end
-
-	if not item and data.weaponId == 1 then
-		return
-	end
-
+local function shareData(data)
 	local uid = generateUniqueID()
 	ItemUids[uid] = uid
 
@@ -587,6 +579,40 @@ function InventoryService.sharePickupServer(data)
 	}
 	data.uid = uid
 	TriggerClientEvent("vorpInventory:sharePickupClient", -1, data, 1)
+end
+
+function InventoryService.sharePickupServerWeapon(data)
+	local _source = source
+	local weapon = UsersWeapons.default[data.weaponId]
+
+	if not weapon and data.weaponId > 1 then
+		return
+	end
+
+	local result = InventoryService.subWeapon(_source, data.weaponId)
+	if not result then
+		return
+	end
+	UsersWeapons.default[data.weaponId]:setDropped(1)
+	shareData(data)
+end
+
+function InventoryService.sharePickupServerItem(data)
+	local _source = source
+	local Character = Core.getUser(_source).getUsedCharacter
+	local sourceInventory = UsersInventories.default[Character.identifier]
+	local item = sourceInventory[data.id]
+
+	if not item and data.weaponId == 1 then
+		return
+	end
+
+	local result = InventoryService.subItem(_source, "default", data.id, data.amount)
+
+	if not result then
+		return
+	end
+	shareData(data)
 end
 
 function InventoryService.shareMoneyPickupServer(obj, amount, position)
@@ -642,7 +668,7 @@ function InventoryService.DropWeapon(weaponId)
 		local wepName = UsersWeapons.default[weaponId]:getName()
 		local title = T.drop
 		local description = "**Weapon** `" ..
-		UsersWeapons.default[weaponId]:getName() .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+			UsersWeapons.default[weaponId]:getName() .. "`" .. "\n **Playername** `" .. charname .. "`\n"
 		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
 		if not Config.DeleteOnlyDontDrop then
 			TriggerClientEvent("vorpInventory:createPickup", _source, wepName, 1, {}, weaponId)
@@ -660,7 +686,7 @@ function InventoryService.DropItem(itemName, itemId, amount, metadata)
 		InventoryService.subItem(_source, "default", itemId, amount)
 		local title = T.drop
 		local description = "**Amount** `" ..
-		amount .. "`\n **Item** `" .. itemName .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+			amount .. "`\n **Item** `" .. itemName .. "`" .. "\n **Playername** `" .. charname .. "`\n"
 		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
 
 		if not Config.DeleteOnlyDontDrop then
@@ -690,7 +716,7 @@ function InventoryService.GiveWeapon(weaponId, target)
 		end
 		local title = T.drop
 		local description = "**Amount** `" ..
-		1 .. "`\n **Weapon id** `" .. weaponId .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+			1 .. "`\n **Weapon id** `" .. weaponId .. "`" .. "\n **Playername** `" .. charname .. "`\n"
 		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
 
 		TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
@@ -730,7 +756,7 @@ function InventoryService.giveWeapon2(player, weaponId, target)
 				Core.NotifyRightTip(_source, T.cantweapons, 2000)
 				if Config.Debug then
 					Log.print(sourceCharacter.firstname ..
-					" " .. sourceCharacter.lastname .. " ^1Can't carry more weapons^7")
+						" " .. sourceCharacter.lastname .. " ^1Can't carry more weapons^7")
 				end
 				return
 			end
