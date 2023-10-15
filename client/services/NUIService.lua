@@ -24,26 +24,26 @@ end)
 
 
 function NUIService.ReloadInventory(inventory)
-    local payload = json.decode(inventory)
-    if payload.itemList == '[]' then
-        payload.itemList = {}
-    end
+	local payload = json.decode(inventory)
+	if payload.itemList == '[]' then
+		payload.itemList = {}
+	end
 
-    for _, item in pairs(payload.itemList) do
-        if item.type == "item_weapon" then
-            item.label = item.custom_label or Utils.GetWeaponLabel(item.name)
-            local serial_number = ""
-            if item.serial_number then
-                serial_number = item.serial_number
-            end
-            if item.desc == nil then
-                item.desc = Utils.GetWeaponDesc(item.name) .. "<br>" .. T.serialnumber .. serial_number
-            end
-        end
-    end
-    SendNUIMessage(payload)
-    Wait(500)
-    NUIService.LoadInv()
+	for _, item in pairs(payload.itemList) do
+		if item.type == "item_weapon" then
+			item.label = item.custom_label or Utils.GetWeaponLabel(item.name)
+			local serial_number = ""
+			if item.serial_number then
+				serial_number = item.serial_number
+			end
+			if item.desc == nil then
+				item.desc = Utils.GetWeaponDesc(item.name) .. "<br>" .. T.serialnumber .. serial_number
+			end
+		end
+	end
+	SendNUIMessage(payload)
+	Wait(500)
+	NUIService.LoadInv()
 end
 
 function NUIService.OpenCustomInventory(name, id, capacity)
@@ -488,7 +488,9 @@ function NUIService.NUIDropItem(obj)
 					UserWeapons[aux.id] = nil
 				end
 			end
-			NUIService.LoadInv()
+			SetTimeout(100, function()
+				NUIService.LoadInv()
+			end)
 		end
 	else
 		TriggerEvent('vorp:TipRight', T.cantdrophere, 5000)
@@ -621,7 +623,8 @@ function NUIService.LoadInv()
 					if item.name == v.name then
 						if item.metadata.description ~= nil then
 							item.metadata.orgdescription = item.metadata.description
-							item.metadata.description = item.metadata.description .. "<br><span style=color:Green;>" .. T.cansell .. v.price .. "</span>"
+							item.metadata.description = item.metadata.description ..
+								"<br><span style=color:Green;>" .. T.cansell .. v.price .. "</span>"
 						else
 							item.metadata.orgdescription = ""
 							item.metadata.description = "<span style=color:Green;>" .. T.cansell .. v.price .. "</span>"
