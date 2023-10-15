@@ -15,6 +15,7 @@ Weapon.group = 5
 Weapon.custom_label = nil
 Weapon.serial_number = nil
 Weapon.source = nil
+Weapon.custom_desc = nil
 
 local equippedWeapons = {}
 
@@ -353,4 +354,16 @@ end
 
 function Weapon:getSerialNumber()
 	return self.serial_number
+end
+
+function Weapon:setSerialNumber()
+	self.serial_number = serial_number
+end
+
+function Weapon:setCustomDesc(custom_desc)
+	self.custom_desc = custom_desc
+end
+
+function Weapon:getCustomDesc()
+	return self.custom_desc
 end

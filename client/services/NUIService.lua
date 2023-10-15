@@ -33,11 +33,21 @@ function NUIService.ReloadInventory(inventory)
 		if item.type == "item_weapon" then
 			item.label = item.custom_label or Utils.GetWeaponLabel(item.name)
 			local serial_number = ""
+			local custom_desc = nil
+
 			if item.serial_number then
 				serial_number = item.serial_number
 			end
+			if item.custom_desc then
+				custom_desc = item.custom_desc .. "<br>" .. T.serialnumber .. serial_number
+			end
+
+			if item.desc and custom_desc then
+				item.desc = custom_desc
+			end
+
 			if item.desc == nil then
-				item.desc = Utils.GetWeaponDesc(item.name) .. "<br>" .. T.serialnumber .. serial_number
+				item.desc = custom_desc or Utils.GetWeaponDesc(item.name) .. "<br>" .. T.serialnumber .. serial_number
 			end
 		end
 	end
@@ -657,6 +667,7 @@ function NUIService.LoadInv()
 		weapon.group = 5
 		weapon.serial_number = currentWeapon:getSerialNumber()
 		weapon.custom_label = currentWeapon:getCustomLabel()
+		weapon.custom_desc = currentWeapon:getCustomDesc()
 
 		table.insert(items, weapon)
 	end
