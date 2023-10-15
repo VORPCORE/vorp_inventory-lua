@@ -861,7 +861,7 @@ exports("deleteWeapon", InventoryAPI.deleteWeapon)
 ---@param comps table weapon components
 ---@param cb fun(success: boolean)? async or sync callback
 ---@param wepId number | nil?  used for drop and give internally leave nil when registering a new weapon
----@param customSerail string | nil? custom serial number
+---@param customSerial string | nil? custom serial number
 ---@param customLabel string | nil? custom label
 ---@return nil | boolean
 function InventoryAPI.registerWeapon(_target, wepname, ammos, components, comps, cb, wepId, customSerial, customLabel)
@@ -950,9 +950,8 @@ function InventoryAPI.registerWeapon(_target, wepname, ammos, components, comps,
 			return nil
 		end
 
-		local serialNumber = customSerial or hasSerialNumber() or SvUtils.GenerateSerialNumber() -- custom serial number or existent serial number or generate new one
-		local label = customLabel or hasCustomLabel() or SvUtils.GenerateWeaponLabel(name) -- custom label or existent label or generate new one
-
+		local serialNumber = customSerial or hasSerialNumber() or SvUtils.GenerateSerialNumber(name) -- custom serial number or existent serial number or generate new one
+		local label = customLabel or hasCustomLabel() or SvUtils.GenerateWeaponLabel(name) --custom label or existent label or generate new one
 
 		local query = 'INSERT INTO loadout (identifier, charidentifier, name, ammo,components,comps,label,serial_number,custom_label) VALUES (@identifier, @charid, @name, @ammo, @components,@comps,@label,@serial_number,@custom_label)'
 		local params = {

@@ -211,9 +211,24 @@ function SvUtils.GenerateWeaponLabel(name)
     return ""
 end
 
+--- filter weapons that should not have a serial number
+---@param name string weapon name
+---@return boolean
+function SvUtils.filterWeaponsSerialNumber(name)
+    for _, weapon in pairs(Config.noSerialNumber) do
+        if weapon == name then
+            return false
+        end
+    end
+    return true
+end
+
 --- generate a unique serial number
 ---@return string
-function SvUtils.GenerateSerialNumber()
+function SvUtils.GenerateSerialNumber(name)
+    if SvUtils.filterWeaponsSerialNumber(name) then
+        return ""
+    end
     local timeStamp = os.time()
     local randomNumber = math.random(1000, 9999)
     return string.format("%s-%s", timeStamp, randomNumber)
