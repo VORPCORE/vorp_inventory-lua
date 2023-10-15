@@ -200,9 +200,13 @@ function dropGetHowMany(item, type, hash, id, metadata, count) {
                         dialog.close();
                         return;
                     }
-                    if (!isInt(value)) {
-                        return;
+
+                    if (type !== "item_money" && type !== "item_gold") {
+                        if (!isInt(value)) {
+                            return;
+                        }
                     }
+
                     secureCallbackToNui("vorp_inventory", "DropItem", {
                         item: item,
                         id: id,
