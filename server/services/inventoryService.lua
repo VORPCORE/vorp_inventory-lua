@@ -77,8 +77,8 @@ function InventoryService.DropMoney(amount)
 			else
 				userCharacter.removeCurrency(0, amount)
 			end
-			local title = T.drop
-			local description = "**Money** `" .. amount .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+			local title = T.dropmoney
+			local description = "**"..T.WebHookLang.money..": `" .. amount .. "`" .. "**"..T.WebHookLang.charname..":** `" .. charname .. "`\n"
 			Core.AddWebhook(title, Config.webhook, description, color, "ID:" .. _source, logo, footerlogo, avatar)
 		end
 		SvUtils.Trem(_source)
@@ -157,8 +157,8 @@ function InventoryService.giveMoneyToPlayer(target, amount)
 			Core.NotifyRightTip(_target, T.YouReceived .. amount .. " ID: " .. _source, 3000)
 			Wait(3000)
 			TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
-			local title = T.gaveMoney
-			local description = "**Money** `" .. amount .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+			local title = T.WebHookLang.gaveMoney
+			local description =""..T.WebHookLang.money.. ": `" .. amount .. "`" .. "**"..T.WebHookLang.charname..":** `" .. charname .. "`"
 			Core.AddWebhook(title, Config.webhook, description, color, "ID:" .. _source, logo, footerlogo, avatar)
 		end
 		SvUtils.Trem(_source)
@@ -431,9 +431,9 @@ function InventoryService.onPickup(data)
 						InventoryService.addItem(_source, "default", name, amount, metadata, function(item)
 							if item ~= nil then
 								local title = T.itempickup
-								local description = "**Amount** `" ..
+								local description = "**"..T.WebHookLang.amount.. "** `" ..
 									amount ..
-									"`\n **Item** `" .. name .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+									"`\n **"..T.WebHookLang.item.."** `" .. name .. "`" .. "**"..T.WebHookLang.charname..":** `" .. charname .. "`\n"
 								Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo,
 									avatar)
 								local dataItem = {
@@ -470,6 +470,7 @@ function InventoryService.onPickup(data)
 			local wepname = weapon:getName()
 			local weaponCustomLabel = weapon:getCustomLabel()
 			local serialNumber = weapon:getSerialNumber()
+			local steamname = GetPlayerName(_source)
 
 			if Config.JobsAllowed[job] then
 				DefaultAmount = Config.JobsAllowed[job]
@@ -487,10 +488,7 @@ function InventoryService.onPickup(data)
 				if sourceInventoryWeaponCount <= DefaultAmount then
 					local weaponObj = ItemPickUps[obj].obj
 					weapon:setDropped(0)
-					local title = T.weppickup
-					local description = "**Weapon** `" ..
-						wepname .. "`" .. "\n **Playername** `" .. charname .. "`\n"
-					Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
+					
 					local data = {
 						name = wepname,
 						obj = weaponObj,
@@ -502,6 +500,11 @@ function InventoryService.onPickup(data)
 						serial_number = serialNumber,
 						id = nil
 					}
+					local title = T.weppickup
+					local description = "**".. T.Weapontype .. ":** `" .. wepname .. "`**" .. T.charname .. ":** `" .. charname .. "`**" .. T.serialnumber .. "** `".. data.serial_number .. "`\n" .. T.Steamname ..  " `" .. steamname .. "`"
+					
+					Core.AddWebhook(title, Config.webhook, description, 65280, _source, logo, footerlogo, avatar)
+
 					TriggerClientEvent("vorpInventory:sharePickupClient", -1, data, 2)
 					TriggerClientEvent("vorpInventory:removePickupClient", -1, weaponObj)
 					TriggerClientEvent("vorpInventory:playerAnim", _source, obj)
@@ -526,8 +529,8 @@ function InventoryService.onPickupMoney(obj)
 			local moneyObj = MoneyPickUps[obj].obj
 			local moneyAmount = MoneyPickUps[obj].amount
 			local moneyCoords = MoneyPickUps[obj].coords
-			local title = T.itempickup
-			local description = "**Money** `" .. moneyAmount .. " $`" .. "\n **Playername** `" .. charname .. "`\n"
+			local title = T.WebHookLang.moneypickup
+			local description = "`"..T.WebHookLang.money.. ":`" .. moneyAmount .. " $`" .. "**"..T.WebHookLang.charname..":** `" .. charname .. "`\n"
 			Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
 			TriggerClientEvent("vorpInventory:shareMoneyPickupClient", -1, moneyObj, moneyAmount, moneyCoords, 2)
 			TriggerClientEvent("vorpInventory:removePickupClient", -1, moneyObj)
@@ -657,22 +660,27 @@ function InventoryService.shareGoldPickupServer(obj, amount, position)
 end
 
 function InventoryService.DropWeapon(weaponId)
-	local _source = source
-	local sourceCharacter = Core.getUser(_source).getUsedCharacter
-	local charname = sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname
-	if not SvUtils.InProcessing(_source) then
-		SvUtils.ProcessUser(_source)
-		local wepName = UsersWeapons.default[weaponId]:getName()
-		local title = T.drop
-		local description = "**Weapon** `" .. wepName .. "`" .. "\n **Playername** `" .. charname .. "`\n"
-		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
-		if not Config.DeleteOnlyDontDrop then
-			TriggerClientEvent("vorpInventory:createPickup", _source, wepName, 1, {}, weaponId)
-		else
-			InventoryService.subWeapon(_source, weaponId)
-		end
-		SvUtils.Trem(_source)
-	end
+    local _source = source
+	local steamname = GetPlayerName(_source)
+    local sourceCharacter = Core.getUser(_source).getUsedCharacter
+    local charname = sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname
+
+    if not SvUtils.InProcessing(_source) then
+        local userWeapons = UsersWeapons.default
+        local weapon = userWeapons[weaponId]
+        local wepname = weapon:getName()
+        local serialNumber = weapon:getSerialNumber()
+        local title = T.WebHookLang.dropedwep
+        local description = "**"..T.WebHookLang.Weapontype..":** `" .. wepname .."`\n**" ..T.WebHookLang.charname..":** `" .. charname .. "`\n**" ..T.WebHookLang.serialnumber.."** `" .. serialNumber .. "` \n" ..T.WebHookLang.Steamname.. "` " ..steamname.."`"
+
+        Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
+
+        if not Config.DeleteOnlyDontDrop then
+            TriggerClientEvent("vorpInventory:createPickup", _source, wepname, 1, {}, weaponId)
+        end
+
+        SvUtils.Trem(_source)
+    end
 end
 
 function InventoryService.DropItem(itemName, itemId, amount, metadata)
@@ -682,14 +690,11 @@ function InventoryService.DropItem(itemName, itemId, amount, metadata)
 	if not SvUtils.InProcessing(_source) then
 		SvUtils.ProcessUser(_source)
 		local title = T.drop
-		local description = "**Amount** `" ..
-			amount .. "`\n **Item** `" .. itemName .. "`" .. "\n **Playername** `" .. charname .. "`\n"
+		local description = "**"..T.WebHookLang.amount.."** `" ..	amount .. "`\n **"..T.WebHookLang.itemDrop.."**: `" .. itemName .. "`" .. "**"..T.WebHookLang.charname..":** `" .. charname .. "`\n"
 		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
 
 		if not Config.DeleteOnlyDontDrop then
 			TriggerClientEvent("vorpInventory:createPickup", _source, itemName, amount, metadata, 1, itemId)
-		else
-			InventoryService.subItem(_source, "default", itemId, amount)
 		end
 		SvUtils.Trem(_source)
 	end
@@ -698,9 +703,17 @@ end
 function InventoryService.GiveWeapon(weaponId, target)
 	local _source = source
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
+	local sourceCharacter2 = Core.getUser(target).getUsedCharacter
+	local steamname = GetPlayerName(_source)
+	local steamname2 = GetPlayerName(target)
 	local charid = sourceCharacter.charIdentifier
 	local charname = sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname
-
+	local charname2 = sourceCharacter2.firstname .. ' ' .. sourceCharacter2.lastname
+	local userWeapons = UsersWeapons.default
+	local weapon = userWeapons[weaponId]
+	local wepname = weapon:getName()
+	local serialNumber = weapon:getSerialNumber()
+	
 	if not InventoryService.CheckNewPlayer(_source, charid) then
 		TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
 		return
@@ -713,10 +726,12 @@ function InventoryService.GiveWeapon(weaponId, target)
 		if UsersWeapons.default[weaponId] ~= nil then
 			InventoryService.giveWeapon2(target, weaponId, _source)
 		end
-		local title = T.drop
-		local description = "**Amount** `" ..
-			1 .. "`\n **Weapon id** `" .. weaponId .. "`" .. "\n **Playername** `" .. charname .. "`\n"
-		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
+		local title = T.gavewep
+		local description = "**" ..T.WebHookLang.charname ..":** `" ..charname .."`\n**"..T.WebHookLang.Steamname .."**` " ..steamname .."` " 
+		..T.WebHookLang.give .." " ..1 .."**" ..T.WebHookLang.Weapontype ..":** `" ..wepname .."`" .."\n `" ..T.WebHookLang.to .."" .. charname2 .. "`\n" 
+		.. T.Steamname .."` " .. steamname2 .. "**" .. T.serialnumber .. "** `" .. serialNumber .. "`"
+		
+		Core.AddWebhook(title, Config.webhook, description, 1912489, _source, logo, footerlogo, avatar)
 
 		TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
 		SvUtils.Trem(_source)
@@ -733,7 +748,6 @@ function InventoryService.giveWeapon2(player, weaponId, target)
 	local userWeapons = UsersWeapons.default
 	local DefaultAmount = Config.MaxItemsInInventory.Weapons
 	local weaponName = userWeapons[weaponId]:getName()
-	local weaponCustomLabel = userWeapons[weaponId]:getCustomLabel()
 	local notListed = false
 
 	if Config.JobsAllowed[job] then
@@ -865,10 +879,8 @@ function InventoryService.GiveItem(itemId, amount, target)
 		Core.NotifyRightTip(_source, T.yougive .. amount .. T.of .. ItemsLabel .. "", 2000)
 		Core.NotifyRightTip(_target, T.youreceive .. amount .. T.of .. ItemsLabel .. "", 2000)
 		--TriggerEvent("vorpinventory:itemlog", _source, _target, itemName, amount)
-		local title = T.gaveMoney
-		local description = "**Amount** `" ..
-			amount .. "`\n **Item** `" .. itemName .. "`" .. "\n **Playername** `" .. charname .. "`\n **to** `" ..
-			charname1 .. "`"
+		local title = T.WebHookLang.gaveMoney
+		local description = "**"..T.WebHookLang.amount.. "**: `" ..amount .. "`\n **".. T.item.."** : `" .. itemName .. "`" .. "**"..T.WebHookLang.charname..":** `" .. charname .. "`\n **"..T.WebHookLang.to.."** `" ..charname1 .. "`"
 		Core.AddWebhook(title, Config.webhook, description, color, _source, logo, footerlogo, avatar)
 	end
 	InventoryAPI.canCarryItem(_target, itemName, amount, function(canGive)
@@ -1301,19 +1313,19 @@ function InventoryService.DiscordLogs(inventory, itemName, amount, playerName, t
 
 	if type == "Move" then
 		local webhook = Config.WebHook.CustomInventoryMoveTo
-		local description = "**Player:**`" ..
+		local description = ""..T.WebHookLang.charname.." `" ..
 			playerName ..
-			"`\n **Moved to:** `" .. inventory .. "` \n**Weapon** `" ..
-			itemName .. "`\n **Count:** `" .. amount .. "`"
+			"`\n " ..T.WebHookLang.move.. " `" .. inventory .. "` \n**"..T.WebHookLang.Weapontype.."** `" ..
+			itemName .. "`\n **"..T.WebHookLang.amount..":** `" .. amount .. "`"
 		Core.AddWebhook(title, webhook, description, color, names, logo, footerlogo, avatar)
 	end
 
 	if type == "Take" then
 		local webhook = Config.WebHook.CustomInventoryTakeFrom
-		local description = "**Player:**`" ..
+		local description =  ""..T.WebHookLang.charname.." `" ..
 			playerName ..
-			"`\n **Took from:** `" .. inventory .. "`\n **item** `" ..
-			itemName .. "`\n **amount:** `" .. amount .. "`"
+			"`\n **"..T.WebHookLang.Took..":** `" .. inventory .. "`\n **"..T.WebHookLang.item.."** `" ..
+			itemName .. "`\n **"..T.WebHookLang.amount..":** `" .. amount .. "`"
 		Core.AddWebhook(title, webhook, description, color, names, logo, footerlogo, avatar)
 	end
 end
