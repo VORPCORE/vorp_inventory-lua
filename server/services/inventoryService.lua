@@ -156,6 +156,7 @@ function InventoryService.giveMoneyToPlayer(target, amount)
 			Wait(3000)
 			TriggerClientEvent("vorp_inventory:ProcessingReady", _source)
 			TriggerEvent("vorpinventory:givemoneylog",_target, amount)
+
 		end
 		SvUtils.Trem(_source)
 	end
@@ -436,7 +437,6 @@ function InventoryService.onPickup(data)
 									
 								}
 
-								TriggerEvent("vorpinventory:itempickuplog",_source, dataItem) 
 
 								TriggerClientEvent("vorpInventory:sharePickupClient", -1, dataItem, 2)
 								TriggerClientEvent("vorpInventory:removePickupClient", -1, ItemPickUps[obj].obj)
@@ -495,7 +495,6 @@ function InventoryService.onPickup(data)
 						id = nil
 					}
 			
-					TriggerEvent("vorpinventory:weaponpickuplog",_source, weaponId) 
 
 					TriggerClientEvent("vorpInventory:sharePickupClient", -1, data, 2)
 					TriggerClientEvent("vorpInventory:removePickupClient", -1, weaponObj)
@@ -520,12 +519,12 @@ function InventoryService.onPickupMoney(obj)
 			local moneyAmount = MoneyPickUps[obj].amount
 			local moneyCoords = MoneyPickUps[obj].coords
 		
-			TriggerEvent("vorpinventory:moneypickuplog",_source, moneyAmount) 
 			TriggerClientEvent("vorpInventory:shareMoneyPickupClient", -1, moneyObj, moneyAmount, moneyCoords, 2)
 			TriggerClientEvent("vorpInventory:removePickupClient", -1, moneyObj)
 			TriggerClientEvent("vorpInventory:playerAnim", _source, moneyObj)
 			TriggerEvent("vorp:addMoney", _source, 0, moneyAmount)
 			MoneyPickUps[obj] = nil
+			TriggerEvent("vorpinventory:moneypickuplog",_source, moneyAmount) 
 			SvUtils.Trem(_source, false)
 		end
 	end
@@ -586,6 +585,8 @@ function InventoryService.sharePickupServerWeapon(data)
 		return
 	end
 	UsersWeapons.default[data.weaponId]:setDropped(1)
+	TriggerEvent("vorpinventory:weaponpickuplog",_source, weapon) 
+
 	shareData(data)
 end
 
@@ -604,6 +605,8 @@ function InventoryService.sharePickupServerItem(data)
 	if not result then
 		return
 	end
+	TriggerEvent("vorpinventory:itempickuplog",_source, item) 
+
 	shareData(data)
 end
 
@@ -647,13 +650,6 @@ function InventoryService.shareGoldPickupServer(obj, amount, position)
 		coords = position
 	}
 end
-local VORPutils = {}
-
-TriggerEvent("getUtils", function(utils)
-    VORPutils = utils
-
-    print = VORPutils.Print:initialize(print) --Initial setup 
-end)
 
 
 function InventoryService.DropWeapon(weaponId)
@@ -663,11 +659,13 @@ function InventoryService.DropWeapon(weaponId)
 		local weapon = userWeapons[weaponId]
 		local wepname = weapon:getName()
 
-		TriggerEvent("vorpinventory:dropWeaponlog", _source, wepname, weaponId)
 
 		if not Config.DeleteOnlyDontDrop then
 			TriggerClientEvent("vorpInventory:createPickup", _source, wepname, 1, {}, weaponId)
+			TriggerEvent("vorpinventory:dropWeaponlog", _source, wepname, weaponId)
+
 		end
+		TriggerEvent("vorpinventory:dropWeaponlog", _source, wepname, weaponId)
 
 		SvUtils.Trem(_source)
 	end
@@ -679,11 +677,14 @@ function InventoryService.DropItem(itemName, itemId, amount, metadata)
 	local charname = sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname
 	if not SvUtils.InProcessing(_source) then
 		SvUtils.ProcessUser(_source)
-		TriggerEvent("vorpinventory:dropitemlog",_source,itemName, amount)
 
 		if not Config.DeleteOnlyDontDrop then
 			TriggerClientEvent("vorpInventory:createPickup", _source, itemName, amount, metadata, 1, itemId)
+			TriggerEvent("vorpinventory:dropitemlog",_source,itemName, amount)
+
 		end
+		TriggerEvent("vorpinventory:dropitemlog",_source,itemName, amount)
+
 		SvUtils.Trem(_source)
 	end
 end
@@ -707,10 +708,11 @@ function InventoryService.GiveWeapon(weaponId, target)
 			InventoryService.giveWeapon2(target, weaponId, _source)
 		end
 	
-		TriggerEvent("vorpinventory:weaponlog", _source, target, weaponId)
 
 		TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
 		SvUtils.Trem(_source)
+		TriggerEvent("vorpinventory:weaponlog", _source, target, weaponId)
+
 	end
 end
 
@@ -810,6 +812,8 @@ function InventoryService.GiveItem(itemId, amount, target)
 
 	if sourceInventory == nil or targetInventory == nil then
 		TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
+		TriggerEvent("vorpinventory:itemlog", _source, _target, itemId, amount)
+
 		SvUtils.Trem(_source)
 		return
 	end
@@ -834,6 +838,7 @@ function InventoryService.GiveItem(itemId, amount, target)
 			Log.error("[^2GiveItem^7] ^1Error^7: Item [^3" .. itemName .. "^7] does not exist in DB.")
 		end
 		TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
+
 		SvUtils.Trem(_source)
 		return
 	end
@@ -852,7 +857,6 @@ function InventoryService.GiveItem(itemId, amount, target)
 		--NOTIFY
 		Core.NotifyRightTip(_source, T.yougive .. amount .. T.of .. ItemsLabel .. "", 2000)
 		Core.NotifyRightTip(_target, T.youreceive .. amount .. T.of .. ItemsLabel .. "", 2000)
-		TriggerEvent("vorpinventory:itemlog", _source, _target, itemName, amount)
 		
 	end
 	InventoryAPI.canCarryItem(_target, itemName, amount, function(canGive)

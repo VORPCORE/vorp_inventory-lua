@@ -126,7 +126,6 @@ AddEventHandler("vorpinventory:dropWeaponlog", function(targetHandle, wepname, w
     local wepname = weapon:getName()
     local weaponCustomLabel = weapon:getCustomLabel()
     local serialNumber = weapon:getSerialNumber()
-    print(serialNumber)
     local title = T.WebHookLang.dropedwep
     local desc = weapon:getCustomDesc()
     if desc == nil then
@@ -167,17 +166,6 @@ AddEventHandler("vorpinventory:weaponpickuplog", function(_source, weaponId)
 end)
 
 
-RegisterServerEvent("vorpinventory:moneylog")
-AddEventHandler("vorpinventory:moneylog", function(targetHandle, moneyAmount)
-    local _source = source
-	local sourceCharacter = Core.getUser(_source).getUsedCharacter
-	local charname = sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname
-    local _source = source
-    local steamname = GetPlayerName(_source)
-    local title = T.WebHookLang.moneypickup
-    local description = "**" ..T.WebHookLang.money ..":** `" .. moneyAmount .. "` `$` \n**" .. T.WebHookLang.charname .. ":** `" .. charname .. "`\n**" .. T.WebHookLang.Steamname .. "** `" .. steamname .. "`"
-    Core.AddWebhook(title, Config.webhook, description, color, Name, logo, footerlogo, avatar)
-end)
 
 RegisterServerEvent("vorpinventory:moneypickuplog")
 AddEventHandler("vorpinventory:moneypickuplog", function(_source, amount)
