@@ -91,7 +91,8 @@ TranslationInv.Langs = {
             gaveMoney                 = "Gave money",
             give                      = "Given",
             Desc                      = "Description",
-            
+            with                      = "with",
+            By                        ="By"
 
 
         }
@@ -177,7 +178,9 @@ TranslationInv.Langs = {
             itemDrop               = "Item Largado",
             gaveMoney              = "Deu dinheiro",
             give                   = "Dado",
-            Desc                   = "Descrição"
+            Desc                   = "Descrição",
+            with                   = "com",
+            By                     = "Por"
 
 
 
@@ -269,8 +272,9 @@ TranslationInv.Langs = {
             itemDrop              = "Item largado",
             gaveMoney             = "Deu dinheiro",
             give                  = "Dado",
-            Desc                  = "Descrição"
-
+            Desc                  = "Descrição",
+            with                  = "com",
+            By                    = "Por"
 
 
         }
@@ -359,7 +363,8 @@ TranslationInv.Langs = {
             gaveMoney              = "A donné de l'argent",
             give                   = "Donné",
             Desc                   = "Description",
-
+            with                   = "avec",
+            By                     = "Par"
 
 
         }
@@ -445,7 +450,8 @@ TranslationInv.Langs = {
             gaveMoney              = "Geld gegeben",
             give                   = "Gegeben",
             Desc                   = "Beschreibung",
-
+            with                   = "mit",
+            By                     = "Durch"
 
 
 
@@ -534,7 +540,8 @@ TranslationInv.Langs = {
             gaveMoney       = "Dio dinero",
             give            = "Dado",
             Desc            = "Descripción",
-
+            with            = "con",
+            By              = "Por"
 
 
 
@@ -620,8 +627,9 @@ TranslationInv.Langs = {
             itemDrop        = "Oggetto lasciato",
             gaveMoney       = "Ha dato denaro",
             give            = "Dato",
-            Desc            = "Descrizione"
-
+            Desc            = "Descrizione",
+            with            = "con",
+            By              = "Di"
 
 
 
@@ -714,7 +722,8 @@ TranslationInv.Langs = {
             gaveMoney       = "Geld gegeven",
             give            = "Gegeven",
             Desc            = "Beschrijving",
-
+            with            = "met",
+            By              = "Door"
 
 
 
@@ -801,8 +810,8 @@ TranslationInv.Langs = {
         gaveMoney       = "Gav pengar",
         give            = "Gitt",
         Desc            = "Beskriving",
-
-        
+        with            = "med",
+        By              = "Av"
         
     }
     },
@@ -889,8 +898,9 @@ TranslationInv.Langs = {
             itemDrop            = "Öğe Düşürüldü",
             gaveMoney           = "Para verildi",
             give                = "Verilen",
-            Desc                = "Açıklama"
-
+            Desc                = "Açıklama",
+            with                = "ile",
+            By                  = "Tarafından",
 
         }
     }
