@@ -519,7 +519,7 @@ function InventoryService.onPickup(data)
 					charname ..
 					"`\n**" ..
 					T.WebHookLang.serialnumber ..
-					"** `" .. data.serial_number .. "`\n" .. T.WebHookLang.Steamname .. " `" .. steamname .. "`"
+					"** `" .. data.serial_number .. "`\n **" ..T.WebHookLang.Desc.. "** `" .. data.custom_desc..  "` \n **" .. T.WebHookLang.Steamname .. "** `" .. steamname .. "`"
 
 					Core.AddWebhook(title, Config.webhook, description, 65280, logo, footerlogo, avatar)
 
@@ -687,8 +687,9 @@ function InventoryService.DropWeapon(weaponId)
 		local userWeapons = UsersWeapons.default
 		local weapon = userWeapons[weaponId]
 		local wepname = weapon:getName()
+		local desc = weapon:getDesc()
 		local serialNumber = weapon:getSerialNumber()
-		local title = T.WebHookLang.dropedwep
+		local title = T.WebHookLang.dropzedwep
 		local description = "**" ..
 		T.WebHookLang.Weapontype ..
 		":** `" ..
@@ -698,8 +699,7 @@ function InventoryService.DropWeapon(weaponId)
 		":** `" ..
 		charname ..
 		"`\n**" ..
-		T.WebHookLang.serialnumber .. "** `" .. serialNumber .. "` \n" .. T.WebHookLang.Steamname ..
-		"` " .. steamname .. "`"
+		T.WebHookLang.serialnumber .. "** `" .. serialNumber .. "` \n**" ..T.WebHookLang.Desc.."** `" ..desc..  "` \n **".. T.WebHookLang.Steamname .."** `" .. steamname .. "`"
 
 		Core.AddWebhook(title, Config.webhook, description, color, name, logo, footerlogo, avatar)
 
@@ -724,7 +724,7 @@ function InventoryService.DropItem(itemName, itemId, amount, metadata)
 		amount ..
 		"`\n **" ..
 		T.WebHookLang.itemDrop ..
-		"**: `" .. itemName .. "`" .. "**" .. T.WebHookLang.charname .. ":** `" .. charname .. "`\n"
+		"**: `" .. itemName .. "`" .. "\n**" .. T.WebHookLang.charname .. ":** `" .. charname .. "`\n"
 		Core.AddWebhook(title, Config.webhook, description, color, name, logo, footerlogo, avatar)
 
 		if not Config.DeleteOnlyDontDrop then
@@ -747,6 +747,7 @@ function InventoryService.GiveWeapon(weaponId, target)
 	local weapon = userWeapons[weaponId]
 	local wepname = weapon:getName()
 	local serialNumber = weapon:getSerialNumber()
+	local desc = weapon:getDesc()
 
 	if not InventoryService.CheckNewPlayer(_source, charid) then
 		TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
@@ -761,7 +762,7 @@ function InventoryService.GiveWeapon(weaponId, target)
 			InventoryService.giveWeapon2(target, weaponId, _source)
 		end
 		local title = T.WebHookLang.gavewep
-		local description = "**" ..T.WebHookLang.charname .. ":** `" .. charname .."`\n**" .. T.WebHookLang.Steamname .. "** `" .. steamname .. "` \n**"..T.WebHookLang.give .."**  **" .. 1 .. "** \n**" .. T.WebHookLang.Weapontype .. ":** `" .. wepname .."` \n **" .. T.to .. "** ` " .. charname2 .. "` \n**".. T.WebHookLang.Steamname .."** ` " .. steamname2 .. "`\n **" .. T.WebHookLang.serialnumber .. "** `" .. serialNumber .. "`"
+		local description = "**" ..T.WebHookLang.charname .. ":** `" .. charname .."`\n**" .. T.WebHookLang.Steamname .. "** `" .. steamname .. "` \n**"..T.WebHookLang.give .."**  **" .. 1 .. "** \n**" .. T.WebHookLang.Weapontype .. ":** `" .. wepname .."` \n**"..T.WebHookLang.Desc.."** `" ..desc.. "`   **" .. T.to .. "**   ` " .. charname2 .. "` \n**".. T.WebHookLang.Steamname .."** ` " .. steamname2 .. "`\n **" .. T.WebHookLang.serialnumber .. "** `" .. serialNumber .. "`"
 
 		Core.AddWebhook(title, Config.webhook, description, 1912489,name, logo, footerlogo, avatar)
 

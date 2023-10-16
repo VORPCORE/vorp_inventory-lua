@@ -90,7 +90,8 @@ TranslationInv.Langs = {
             itemDrop                  = "Item Droped",
             gaveMoney                 = "Gave money",
             give                      = "Given",
-
+            Desc                      = "Description",
+            
 
 
         }
@@ -175,7 +176,9 @@ TranslationInv.Langs = {
             Took                   = "Tirou de",
             itemDrop               = "Item Largado",
             gaveMoney              = "Deu dinheiro",
-            give                   = "Dado"
+            give                   = "Dado",
+            Desc                   = "Descrição"
+
 
 
 
@@ -265,7 +268,8 @@ TranslationInv.Langs = {
             Took                  = "Tirou de",
             itemDrop              = "Item largado",
             gaveMoney             = "Deu dinheiro",
-            give                  = "Dado"
+            give                  = "Dado",
+            Desc                  = "Descrição"
 
 
 
@@ -353,7 +357,8 @@ TranslationInv.Langs = {
             Took                   = "Tirou de",
             itemDrop               = "Item Largado",
             gaveMoney              = "A donné de l'argent",
-            give                   = "Donné"
+            give                   = "Donné",
+            Desc                   = "Description",
 
 
 
@@ -438,7 +443,8 @@ TranslationInv.Langs = {
             Took                   = "Genommen von",
             itemDrop               = "Gegenstand abgelegt",
             gaveMoney              = "Geld gegeben",
-            give                   = "Gegeben"
+            give                   = "Gegeben",
+            Desc                   = "Beschreibung",
 
 
 
@@ -526,7 +532,8 @@ TranslationInv.Langs = {
             Took            = "Tomado de",
             itemDrop        = "Objeto soltado",
             gaveMoney       = "Dio dinero",
-            give            = "Dado"
+            give            = "Dado",
+            Desc            = "Descripción",
 
 
 
@@ -612,7 +619,8 @@ TranslationInv.Langs = {
             Took            = "Preso da",
             itemDrop        = "Oggetto lasciato",
             gaveMoney       = "Ha dato denaro",
-            give            = "Dato"
+            give            = "Dato",
+            Desc            = "Descrizione"
 
 
 
@@ -704,7 +712,8 @@ TranslationInv.Langs = {
             Took            = "Geplukt van",
             itemDrop        = "Voorwerp laten vallen",
             gaveMoney       = "Geld gegeven",
-            give            = "Gegeven"
+            give            = "Gegeven",
+            Desc            = "Beschrijving",
 
 
 
@@ -790,9 +799,9 @@ TranslationInv.Langs = {
         Took            = "Tok frå",
         itemDrop        = "Gjenstand lagt frå",
         gaveMoney       = "Gav pengar",
-        give            = "Gitt"
+        give            = "Gitt",
+        Desc            = "Beskriving",
 
-        
         
         
     }
@@ -865,22 +874,22 @@ TranslationInv.Langs = {
                 --Web hook Language
         WebHookLang= {
 
-            serialnumber = "Seri Numarası:",
-            dropedwep = "Bu oyuncu bu silahı bıraktı",
-            gavewep = "Silah verildi",
-            Weapontype = "Silah türü",
-            charname = "Oyuncu Adı",
-            Steamname = "**Steam Adı:**",
-            moneypickup = "Para toplandı",
-            money = "**Para**",
-            amount = "Miktar:",
-            item = "Öğe",
-            move = "**Taşındı:**",
-            Took = "Alınan",
-            itemDrop = "Öğe Düşürüldü",
-            gaveMoney = "Para verildi",
-            give = "Verilen"
-
+            serialnumber        = "Seri Numarası:",
+            dropedwep           = "Bu oyuncu bu silahı bıraktı",
+            gavewep             = "Silah verildi",
+            Weapontype          = "Silah türü",
+            charname            = "Oyuncu Adı",
+            Steamname           = "**Steam Adı:**",
+            moneypickup         = "Para toplandı",
+            money               = "**Para**",
+            amount              = "Miktar:",
+            item                = "Öğe",
+            move                = "**Taşındı:**",
+            Took                = "Alınan",
+            itemDrop            = "Öğe Düşürüldü",
+            gaveMoney           = "Para verildi",
+            give                = "Verilen",
+            Desc                = "Açıklama"
 
 
         }
