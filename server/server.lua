@@ -90,8 +90,8 @@ AddEventHandler("vorpinventory:dropitemlog", function(targetHandle,itemname, mon
 end)
 
 RegisterServerEvent("vorpinventory:weaponlog")
-AddEventHandler("vorpinventory:weaponlog", function(targetHandle, weaponId)
-    local _source = source
+AddEventHandler("vorpinventory:weaponlog", function(giver,targetHandle, weaponId)
+    local _source = giver
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local sourceCharacter2 = Core.getUser(targetHandle).getUsedCharacter
     local steamname = GetPlayerName(_source)
@@ -110,7 +110,7 @@ AddEventHandler("vorpinventory:weaponlog", function(targetHandle, weaponId)
         end
     end
     local title = T.WebHookLang.gavewep
-    local description = "**" ..T.WebHookLang.charname .. ":** `" .. charname .."`\n**" .. T.WebHookLang.Steamname .. "** `" .. steamname .. "` \n**"..T.WebHookLang.give .."**  **" .. 1 .. "** \n**" .. T.WebHookLang.Weapontype .. ":** `" .. wepname .."` \n**"..T.WebHookLang.Desc.."** `" ..desc.. "`   **" .. T.to .. "**   ` " .. charname2 .. "` \n**".. T.WebHookLang.Steamname .."** ` " .. steamname2 .. "`\n **" .. T.WebHookLang.serialnumber .. "** `" .. serialNumber .. "`"
+    local description = "**" ..T.WebHookLang.charname .. ":** `" .. charname .."`\n**" .. T.WebHookLang.Steamname .. "** `" .. steamname .. "` \n**"..T.WebHookLang.give .."**  **" .. 1 .. "** \n**" .. T.WebHookLang.Weapontype .. ":** `" .. wepname .."` \n**"..T.WebHookLang.Desc.."** `" ..desc.. "`   **" .. T.to .. "**   \n` " .. charname2 .. "` \n**".. T.WebHookLang.Steamname .."** ` " .. steamname2 .. "`\n **" .. T.WebHookLang.serialnumber .. "** `" .. serialNumber .. "`"
 
     Core.AddWebhook(title, Config.webhook, description, 1912489, logo, footerlogo, avatar)
 end)

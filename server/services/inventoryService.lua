@@ -707,7 +707,7 @@ function InventoryService.GiveWeapon(weaponId, target)
 			InventoryService.giveWeapon2(target, weaponId, _source)
 		end
 	
-		TriggerEvent("vorpinventory:weaponlog", target, weaponId)
+		TriggerEvent("vorpinventory:weaponlog", _source, target, weaponId)
 
 		TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
 		SvUtils.Trem(_source)
