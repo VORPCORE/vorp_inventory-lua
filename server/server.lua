@@ -48,32 +48,6 @@ AddEventHandler("vorpinventory:getLabelFromId", function(id, item2, cb)
     end)
 end)
 
-RegisterServerEvent("vorpinventory:itemlog")
-AddEventHandler("vorpinventory:itemlog", function(_source, targetHandle, itemName, amount)
-    local name = GetPlayerName(_source)
-    local name2 = GetPlayerName(targetHandle)
-    local description = name .. T.transfered .. amount .. " " .. itemName .. T.to .. name2
-    Core.AddWebhook(_source, Config.webhook, description, color, Name, logo, footerlogo, avatar)
-end)
-
-RegisterServerEvent("vorpinventory:weaponlog")
-AddEventHandler("vorpinventory:weaponlog", function(targetHandle, data)
-    local _source = source
-    local name = GetPlayerName(_source)
-    local name2 = GetPlayerName(targetHandle)
-    local description = name .. T.transfered ..
-        data.item .. T.to .. name2 .. T.withid .. data.id
-    Core.AddWebhook(_source, Config.webhook, description, color, Name, logo, footerlogo, avatar) -- if undefined it will choose vorp default.
-end)
-
-RegisterServerEvent("vorpinventory:moneylog")
-AddEventHandler("vorpinventory:moneylog", function(targetHandle, amount)
-    local _source = source
-    local name = GetPlayerName(_source)
-    local name2 = GetPlayerName(targetHandle)
-    local description = name .. T.transfered .. " $" .. amount .. " " .. T.to .. name2
-    Core.AddWebhook(_source, Config.webhook, description, color, Name, logo, footerlogo, avatar)
-end)
 
 RegisterServerEvent("vorpinventory:netduplog")
 AddEventHandler("vorpinventory:netduplog", function()
