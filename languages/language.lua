@@ -92,7 +92,9 @@ TranslationInv.Langs = {
             give                      = "Given",
             Desc                      = "Description",
             with                      = "with",
-            By                        ="By"
+            By                        ="By",
+            pickedgold                = "Picked up Gold",
+            gold                      = "Gold",
 
 
         }
@@ -180,8 +182,9 @@ TranslationInv.Langs = {
             give                   = "Dado",
             Desc                   = "Descrição",
             with                   = "com",
-            By                     = "Por"
-
+            By                     = "Por",
+            pickedgold = "Apanhou ouro",
+            gold = "Ouro"
 
 
 
@@ -274,7 +277,9 @@ TranslationInv.Langs = {
             give                  = "Dado",
             Desc                  = "Descrição",
             with                  = "com",
-            By                    = "Por"
+            By                    = "Por",
+            pickedgold = "Pegou ouro",
+            gold = "Ouro"
 
 
         }
@@ -364,7 +369,9 @@ TranslationInv.Langs = {
             give                   = "Donné",
             Desc                   = "Description",
             with                   = "avec",
-            By                     = "Par"
+            By                     = "Par",
+            pickedgold = "Or ramassé",
+            gold = "Or"
 
 
         }
@@ -451,8 +458,9 @@ TranslationInv.Langs = {
             give                   = "Gegeben",
             Desc                   = "Beschreibung",
             with                   = "mit",
-            By                     = "Durch"
-
+            By                     = "Durch",
+            pickedgold = "Gold aufgehoben",
+            gold = "Gold"
 
 
         }
@@ -541,8 +549,9 @@ TranslationInv.Langs = {
             give            = "Dado",
             Desc            = "Descripción",
             with            = "con",
-            By              = "Por"
-
+            By              = "Por",
+            pickedgold = "Recogió oro",
+            gold = "Oro"
 
 
         }
@@ -629,8 +638,9 @@ TranslationInv.Langs = {
             give            = "Dato",
             Desc            = "Descrizione",
             with            = "con",
-            By              = "Di"
-
+            By              = "Di",
+            pickedgold = "Oro raccolto",
+            gold = "Oro"
 
 
         }
@@ -723,8 +733,9 @@ TranslationInv.Langs = {
             give            = "Gegeven",
             Desc            = "Beschrijving",
             with            = "met",
-            By              = "Door"
-
+            By              = "Door",
+            pickedgold = "Goud opgeraapt",
+            gold = "Goud"
 
 
         }
@@ -811,8 +822,9 @@ TranslationInv.Langs = {
         give            = "Gitt",
         Desc            = "Beskriving",
         with            = "med",
-        By              = "Av"
-        
+        By              = "Av",
+        pickedgold = "Plukka opp gull",
+        gold = "Gull"   
     }
     },
     Turkish = {
@@ -901,6 +913,8 @@ TranslationInv.Langs = {
             Desc                = "Açıklama",
             with                = "ile",
             By                  = "Tarafından",
+            pickedgold = "Altın toplandı",
+            gold = "Altın"
 
         }
     }
