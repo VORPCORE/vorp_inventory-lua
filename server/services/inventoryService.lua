@@ -743,7 +743,10 @@ function InventoryService.shareMoneyPickupServer(obj, amount, position)
 	local _source = source
 	local Character = Core.getUser(_source).getUsedCharacter
 	local money = Character.money
-
+	
+	if money < amount then
+		return
+	end
 
 	Character.removeCurrency(0, amount)
 	TriggerClientEvent("vorpInventory:shareMoneyPickupClient", -1, obj, amount, position, 1)
@@ -792,7 +795,9 @@ function InventoryService.DropWeapon(weaponId)
 	local _source = source
 	if not SvUtils.InProcessing(_source) then
 		SvUtils.ProcessUser(_source)
-
+		local userWeapons = UsersWeapons.default
+		local weapon = userWeapons[weaponId]
+		local wepName = weapon:getName()
 		if not Config.DeleteOnlyDontDrop then
 			TriggerClientEvent("vorpInventory:createPickup", _source, wepName, 1, {}, weaponId)
 		else
