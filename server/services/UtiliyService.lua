@@ -233,3 +233,13 @@ function SvUtils.GenerateSerialNumber(name)
     local randomNumber = math.random(1000, 9999)
     return string.format("%s-%s", timeStamp, randomNumber)
 end
+
+
+--- discord webhook service
+---@param data {title: string, webhook: string, description: string, color: number, name: string, logo: string, footerlogo: string, avatar: string, source: number, target: number}
+function SvUtils.SendDiscordWebhook(data)
+    local _source = data.source
+    if _source then
+        Core.AddWebhook(data.title, data.webhook, data.description)
+    end
+end
