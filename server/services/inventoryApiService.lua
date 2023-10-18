@@ -40,7 +40,6 @@ CustomInventoryInfos = {
 ---@type table<string,function> table of Registered items
 UsableItemsFunctions = {}
 
----@type table<number,table<number,string>> contains players ammo
 allplayersammo = {}
 
 ---@type table<string, table<number, table<number, Item>>> contain users inventory items
@@ -266,6 +265,7 @@ function InventoryAPI.removeAllUserAmmo(player, cb)
 	local _source = player
 	allplayersammo[_source].ammo = {}
 	TriggerClientEvent("vorpinventory:updateuiammocount", _source, allplayersammo[_source].ammo)
+	TriggerClientEvent("vorpinventory:recammo", _source, allplayersammo[_source])
 	return respond(cb, true)
 end
 
@@ -280,25 +280,21 @@ exports("removeAllUserAmmo", InventoryAPI.removeAllUserAmmo)
 ---@return boolean
 function InventoryAPI.addBullets(player, bulletType, amount, cb)
 	local _source = player
-	local sourceCharacter = Core.getUser(_source).getUsedCharacter
-	local charidentifier = sourceCharacter.charIdentifier
-	local query = 'SELECT ammo FROM characters WHERE charidentifier = @charidentifier'
-	local params = { charidentifier = charidentifier }
+	local ammo = allplayersammo[_source].ammo
 
-	DBService.queryAsync(query, params, function(result)
-		local ammo = json.decode(result[1].ammo)
-		if ammo[bulletType] then
-			ammo[bulletType] = tonumber(ammo[bulletType]) + amount
-		else
-			ammo[bulletType] = amount
-		end
-		allplayersammo[_source].ammo = ammo
-		TriggerClientEvent("vorpinventory:updateuiammocount", _source, allplayersammo[_source].ammo)
-		TriggerClientEvent("vorpCoreClient:addBullets", _source, bulletType, ammo[bulletType])
-		local query1 = 'UPDATE characters SET ammo = @ammo WHERE charidentifier = @charidentifier'
-		local params1 = { charidentifier = charidentifier, ammo = json.encode(ammo) }
-		DBService.updateAsync(query1, params1, function(r) end)
-	end)
+	if ammo and ammo[bulletType] then
+		ammo[bulletType] = tonumber(ammo[bulletType]) + amount
+	else
+		ammo[bulletType] = amount
+	end
+
+	allplayersammo[_source].ammo = ammo
+	TriggerClientEvent("vorpinventory:updateuiammocount", _source, allplayersammo[_source].ammo)
+	TriggerClientEvent("vorpCoreClient:addBullets", _source, bulletType, ammo[bulletType])
+	TriggerClientEvent("vorpinventory:recammo", _source, allplayersammo[_source])
+	local query1 = 'UPDATE characters SET ammo = @ammo WHERE charidentifier = @charidentifier'
+	local params1 = { charidentifier = charidentifier, ammo = json.encode(ammo) }
+	DBService.updateAsync(query1, params1, function(r) end)
 	return respond(cb, true)
 end
 
@@ -321,6 +317,7 @@ function InventoryAPI.subBullets(weaponId, bulletType, amount, cb)
 		if userWeapons:getPropietary() == identifier then
 			userWeapons:subAmmo(bulletType, amount)
 			TriggerClientEvent("vorpCoreClient:subBullets", _source, bulletType, amount)
+			TriggerClientEvent("vorpinventory:updateuiammocount", _source, allplayersammo[_source].ammo)
 			return respond(cb, true)
 		end
 	end
@@ -988,11 +985,11 @@ function InventoryAPI.registerWeapon(_target, wepname, ammos, components, comps,
 		end
 
 		local serialNumber = customSerial or hasSerialNumber() or
-		SvUtils.GenerateSerialNumber(name)                                                     -- custom serial number or existent serial number or generate new one
+			SvUtils.GenerateSerialNumber(name) -- custom serial number or existent serial number or generate new one
 		local label = customLabel or hasCustomLabel() or
-		SvUtils.GenerateWeaponLabel(name)                                                      --custom label or existent label or generate new one
+			SvUtils.GenerateWeaponLabel(name) --custom label or existent label or generate new one
 		local desc = customDesc or
-		hasCustomDesc()                                                                        -- custom desc or existent desc or nil
+			hasCustomDesc()           -- custom desc or existent desc or nil
 		local query =
 		'INSERT INTO loadout (identifier, charidentifier, name, ammo,components,comps,label,serial_number,custom_label,custom_desc) VALUES (@identifier, @charid, @name, @ammo, @components,@comps,@label,@serial_number,@custom_label,@custom_desc)'
 		local params = {
