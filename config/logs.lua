@@ -3,7 +3,7 @@ WebHook = {
         -- =================== INVENTORY LOGS =====================--
 
     webhookname = "INVENTORY LOGS",
-    webhook                  = "", 
+    webhook                  = "LOG URL HERR", 
    
     --Gold Logs Color
    colorpickedgold = 65280,
@@ -32,8 +32,8 @@ WebHook = {
     cuslogo = "",
     cusfooterlogo = "",
     cuswebhookname = "CUSTOM INV LOGS",
-    CustomInventoryTakeFrom = "Took From LOG ",
-    CustomInventoryMoveTo = "Moved Item To LOG"
+    CustomInventoryTakeFrom = "Took From LOG URL HERR ",
+    CustomInventoryMoveTo = "Moved Item To LOG URL HERR ",
 },
 
 
