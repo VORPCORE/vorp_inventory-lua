@@ -105,7 +105,7 @@ AddEventHandler('playerDropped', function()
     -- if player is stil in inventory check and remove
     for i, value in pairs(InventoryBeingUsed) do
         if value == _source then
-            table.remove(InventoryBeingUsed, i)
+            InventoryBeingUsed[i] = nil
             break
         end
     end
