@@ -103,7 +103,7 @@ AddEventHandler('playerDropped', function()
     allplayersammo[_source] = nil
 
     -- if player is stil in inventory check and remove
-    for i, value in ipairs(InventoryBeingUsed) do
+    for i, value in pairs(InventoryBeingUsed) do
         if value == _source then
             table.remove(InventoryBeingUsed, i)
             break
