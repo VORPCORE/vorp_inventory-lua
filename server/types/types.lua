@@ -1,14 +1,15 @@
 ---@diagnostic disable: undefined-global
 ---@meta
 
---- checks item limit
+
+--- check inventory limit
 ---@param source number player id
 ---@param amount number amount of item
 ---@param callback fun(canCarry:boolean)?  callback function async or sync leave nil
 ---@return boolean
 function exports.vorp_inventory:canCarryItems(source, amount, callback) end
 
---- check inventory limit
+--- checks item limit
 ---@param source number player id
 ---@param item string item name
 ---@param amount number amount of item
