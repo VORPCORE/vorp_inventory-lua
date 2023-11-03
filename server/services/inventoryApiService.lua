@@ -1436,7 +1436,7 @@ function InventoryAPI.openInventory(player, id)
 			triggerAndReloadInventory()
 		else
 			DBService.GetInventory(charid, id, function(inventory)
-				UsersInventories[id][identifier] = createCharacterInventoryFromDB(inventory, identifier)
+				UsersInventories[id][identifier] = createCharacterInventoryFromDB(inventory, charid)
 				triggerAndReloadInventory()
 			end)
 		end
