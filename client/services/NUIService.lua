@@ -750,19 +750,13 @@ Citizen.CreateThread(function()
 		if not InInventory then
 			sleep = 0
 			if IsControlJustReleased(1, Config.OpenKey) and IsInputDisabled(0) then
-				if Config.DisableDeathInventory then
-					if InInventory and IsPedDeadOrDying(PlayerPedId(), false) then
-						NUIService.CloseInv()
-					else
-						NUIService.OpenInv()
-					end
-				else
-					if InInventory then
-						NUIService.CloseInv()
-					else
-						NUIService.OpenInv()
-					end
-				end
+				NUIService.OpenInv()
+			end
+		end
+
+		if Config.DisableDeathInventory then
+			if InInventory and IsPedDeadOrDying(PlayerPedId(), false) then
+				NUIService.CloseInv()
 			end
 		end
 		Wait(sleep)

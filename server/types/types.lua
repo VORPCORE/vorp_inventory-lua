@@ -202,8 +202,7 @@ function exports.vorp_inventory:deleteWeapon(source, weaponId, callback) end
 ---@param custom_label string? weapon custom label
 ---@param custom_desc? string? weapon custom description
 ---@param callback fun(boolean:boolean)? callback function async or sync leave nil
-function exports.vorp_inventory:createWeapon(source, weaponName, ammo, components, comps, callback, custom_serial,
-                                             custom_label, custom_desc)
+function exports.vorp_inventory:createWeapon(source, weaponName, ammo, components, comps, callback, custom_serial, custom_label, custom_desc)
 end
 
 --- give weapon
