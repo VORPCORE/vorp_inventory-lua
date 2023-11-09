@@ -1369,7 +1369,7 @@ function InventoryService.onNewCharacter(source)
 		InventoryAPI.addItem(source, tostring(key), value, {}, function() end)
 	end
 
-	for _, value in pairs(Config.startWeapons) do
+	for _, value in ipairs(Config.startWeapons) do
 		InventoryAPI.registerWeapon(source, value, {}, {}, {}, function() end)
 	end
 
