@@ -425,7 +425,7 @@ function InventoryService.addItem(target, invId, name, amount, metadata, cb)
 		if item then
 			if amount > 0 then
 				item:addCount(amount, CustomInventoryInfos[invId].ignoreItemStackLimit)
-				DBService.SetItemAmount(charIdentifier, item:getId(), item:getCount())
+				DBService.SetItemAmount(item:getOwner(), item:getId(), item:getCount())
 				return cb(item)
 			end
 			return cb(nil)
