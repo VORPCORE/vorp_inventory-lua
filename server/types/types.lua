@@ -229,13 +229,13 @@ function exports.vorp_inventory:registerInventory(data) end
 ---@param invId string inventory id
 ---@param jobName string job name
 ---@param jobgrade number job grade
-function exports.vorp_inventory:addPermissionMoveToCustom(invId, jobName, jobgrade) end
+function exports.vorp_inventory:AddPermissionMoveToCustom(invId, jobName, jobgrade) end
 
 --- add permissions to take item from inventory
 ---@param invId string inventory id
 ---@param jobName string job name
 ---@param jobgrade number job grade
-function exports.vorp_inventory:addPermissionTakeFromCustom(invId, jobName, jobgrade) end
+function exports.vorp_inventory:AddPermissionTakeFromCustom(invId, jobName, jobgrade) end
 
 --- black list items or weapons
 ---@param invId string inventory id
