@@ -202,7 +202,8 @@ function exports.vorp_inventory:deleteWeapon(source, weaponId, callback) end
 ---@param custom_label string? weapon custom label
 ---@param custom_desc? string? weapon custom description
 ---@param callback fun(boolean:boolean)? callback function async or sync leave nil
-function exports.vorp_inventory:createWeapon(source, weaponName, ammo, components, comps, callback, custom_serial, custom_label, custom_desc)
+function exports.vorp_inventory:createWeapon(source, weaponName, ammo, components, comps, callback, custom_serial,
+                                             custom_label, custom_desc)
 end
 
 --- give weapon
@@ -221,7 +222,7 @@ function exports.vorp_inventory:giveWeapon(source, weaponId, target, callback) e
 function exports.vorp_inventory:subWeapon(source, weaponId, callback) end
 
 --- register custom inventory
----@param data { id:string, name:string, limit:number, acceptWeapons:boolean, shared:boolean, ignoreItemStackLimit:boolean, whitelistItems:table, UsePermissions:boolean, UseBlackList:boolean, whitelistWeapons:table }
+---@param data { id:string, name:string, limit:number, acceptWeapons:boolean, shared:boolean, ignoreItemStackLimit:boolean, whitelistItems:boolean, UsePermissions:boolean, UseBlackList:boolean, whitelistWeapons:boolean }
 function exports.vorp_inventory:registerInventory(data) end
 
 --- add permissions to move item to inventory
