@@ -106,6 +106,18 @@ end)
 local ammoupdate = true
 RegisterNetEvent("vorpinventory:ammoUpdateToggle")
 RegisterNetEvent("vorpinventory:ammoUpdateToggle", function(state)
+    if not ammoupdate and state then 
+        getammoinfo = true
+        TriggerServerEvent("vorpinventory:getammoinfo")
+        while getammoinfo do
+            Wait(100)
+        end
+        addAmmoToPed(playerammoinfo.ammo)
+        SendNUIMessage({
+            action = "updateammo",
+            ammo   = playerammoinfo.ammo
+        })
+    end
     ammoupdate = state
 end)
 
