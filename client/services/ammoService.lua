@@ -103,8 +103,8 @@ Citizen.CreateThread(function()
         Wait(sleep)
     end
 end)
+
 local ammoupdate = true
-RegisterNetEvent("vorpinventory:ammoUpdateToggle")
 RegisterNetEvent("vorpinventory:ammoUpdateToggle", function(state)
     if not ammoupdate and state then 
         getammoinfo = true
