@@ -237,5 +237,5 @@ end
 --- discord webhook service
 ---@param data {title: string, webhook: string, description: string, color: number, name: string, logo: string, footerlogo: string, avatar: string, source: number, target: number}
 function SvUtils.SendDiscordWebhook(data)
-        Core.AddWebhook(data.title, data.webhook, data.description, data.color, data.name)
+    Core.AddWebhook(data.title, data.webhook, data.description, data.color, data.name)
 end
