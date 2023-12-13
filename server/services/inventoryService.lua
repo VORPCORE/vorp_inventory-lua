@@ -1032,7 +1032,7 @@ function InventoryService.giveWeapon2(player, weaponId, target)
 		"** \n**" ..
 		T.WebHookLang.Weapontype ..
 		":** `" ..
-		wepname ..
+		weaponName ..
 		"` \n**" ..
 		T.WebHookLang.Desc ..
 		"** `" ..
