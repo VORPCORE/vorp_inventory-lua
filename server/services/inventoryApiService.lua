@@ -1061,6 +1061,11 @@ function InventoryAPI.giveWeapon(player, weaponId, target, cb)
 	local userWeapons = UsersWeapons.default
 	local DefaultAmount = Config.MaxItemsInInventory.Weapons
 	local weapon = userWeapons[weaponId]
+
+	if not weapon then
+		return respond(cb, false)
+	end
+
 	local weaponName = weapon:getName()
 	local notListed = false
 
