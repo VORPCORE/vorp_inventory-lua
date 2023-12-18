@@ -40,7 +40,7 @@ function NUIService.ReloadInventory(inventory)
 			end
 			if item.custom_desc then
 				local serial_number_str = "<br><br>" .. T.serialnumber .. serial_number
-				if not string.find(item.custom_desc, serial_number_str, 1, true) then 
+				if not string.find(item.custom_desc, serial_number_str, 1, true) then
 					custom_desc = item.custom_desc .. "<br><br>" .. T.serialnumber .. serial_number
 				end
 			end
@@ -50,7 +50,8 @@ function NUIService.ReloadInventory(inventory)
 			end
 
 			if item.desc == nil then
-				item.desc = custom_desc or Utils.GetWeaponDesc(item.name) .. "<br><br>" .. T.serialnumber .. serial_number
+				item.desc = custom_desc or
+					Utils.GetWeaponDesc(item.name) .. "<br><br>" .. T.serialnumber .. serial_number
 			end
 		end
 	end
@@ -60,21 +61,20 @@ function NUIService.ReloadInventory(inventory)
 end
 
 function NUIService.OpenCustomInventory(name, id, capacity)
-	Core.RpcCall("vorp_inventory:Server:CanOpenCustom", function(result)
-		CanOpen = result
-		if CanOpen then
-			CanOpen = false
-			SetNuiFocus(true, true)
-			SendNUIMessage({
-				action = "display",
-				type = "custom",
-				title = tostring(name),
-				id = tostring(id),
-				capacity = capacity
-			})
-			InInventory = true
-		end
-	end, id)
+	local result = Core.Callback.TriggerWait("vorp_inventory:Server:CanOpenCustom", id)
+	CanOpen = result
+	if CanOpen then
+		CanOpen = false
+		SetNuiFocus(true, true)
+		SendNUIMessage({
+			action = "display",
+			type = "custom",
+			title = tostring(name),
+			id = tostring(id),
+			capacity = capacity
+		})
+		InInventory = true
+	end
 end
 
 function NUIService.NUIMoveToCustom(obj)
