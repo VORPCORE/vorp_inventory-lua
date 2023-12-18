@@ -1044,7 +1044,7 @@ exports("createWeapon", InventoryAPI.registerWeapon)
 ---give weapon to target
 ---@param player number source
 ---@param weaponId number weapon id
----@param target number target id
+---@param target number | nil target id
 ---@param cb fun(success: boolean)? async or sync callback
 ---@return  boolean
 function InventoryAPI.giveWeapon(player, weaponId, target, cb)
@@ -1114,17 +1114,19 @@ function InventoryAPI.giveWeapon(player, weaponId, target, cb)
 		}
 
 		DBService.updateAsync(query, params, function(r)
-			if Core.getUser(_target) then
-				weapon:setSource(_target)
-				TriggerClientEvent('vorp:ShowAdvancedRightNotification', _target, T.youGaveWeapon, "inventory_items",
-					weaponName, "COLOR_PURE_WHITE", 4000)
-				TriggerClientEvent("vorpCoreClient:subWeapon", _target, weaponId)
+			if _target and _target > 0 then
+				if Core.getUser(_target) then
+					weapon:setSource(_target)
+					TriggerClientEvent('vorp:ShowAdvancedRightNotification', _target, T.youGaveWeapon, "inventory_items",
+						weaponName, "COLOR_PURE_WHITE", 4000)
+					TriggerClientEvent("vorpCoreClient:subWeapon", _target, weaponId)
+				end
 			end
 			TriggerClientEvent('vorp:ShowAdvancedRightNotification', _source, T.youReceivedWeapon, "inventory_items",
 				weaponName, "COLOR_PURE_WHITE", 4000)
 
-			TriggerClientEvent("vorpInventory:receiveWeapon", _source, weaponId, weaponPropietary, weaponName, weaponAmmo,
-				label, serialNumber, customLabel, _source, customDesc)
+			TriggerClientEvent("vorpInventory:receiveWeapon", _source, weaponId, weaponPropietary, weaponName,
+				weaponAmmo, label, serialNumber, customLabel, _source, customDesc)
 		end)
 	end
 	return respond(cb, true)
