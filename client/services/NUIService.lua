@@ -407,7 +407,6 @@ function NUIService.NUIGiveItem(obj)
 							if isProcessingPay then return end
 							isProcessingPay = true
 							TriggerServerEvent("vorpinventory:giveMoneyToPlayer", target, tonumber(data2.count))
-							--TriggerServerEvent("vorpinventory:moneylog", target, tonumber(data2.count))
 						elseif Config.UseGoldItem and data2.type == "item_gold" then
 							if isProcessingPay then return end
 							isProcessingPay = true
@@ -430,7 +429,6 @@ function NUIService.NUIGiveItem(obj)
 							end
 						else
 							TriggerServerEvent("vorpinventory:serverGiveWeapon", tonumber(itemId), target)
-							--TriggerServerEvent("vorpinventory:weaponlog", target, data2)
 						end
 						if Config.Debug then
 							print('[^NUIGiveItem^7] ^2Info^7: Reloading inv after sending info of giving item ?');

@@ -43,6 +43,8 @@ server_scripts {
 files { 'html/**/*' }
 ui_page 'html/ui.html'
 
+server_exports { 'vorp_inventoryApi' }
+
 -- version
 version '3.3'
 vorp_checker 'yes'
