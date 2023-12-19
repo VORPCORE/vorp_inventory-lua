@@ -61,7 +61,7 @@ function NUIService.ReloadInventory(inventory)
 end
 
 function NUIService.OpenCustomInventory(name, id, capacity)
-	local result = Core.Callback.TriggerAWait("vorp_inventory:Server:CanOpenCustom", id)
+	local result = Core.Callback.TriggerAwait("vorp_inventory:Server:CanOpenCustom", id)
 	CanOpen = result
 	if CanOpen then
 		CanOpen = false
