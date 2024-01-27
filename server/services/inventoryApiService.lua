@@ -675,7 +675,7 @@ function InventoryAPI.subItem(player, name, amount, metadata, cb)
 		return respond(cb, false)
 	end
 
-	sourceCharacter = sourceUser.getUsedCharacter
+	sourceCharacter = sourceCharacter.getUsedCharacter
 	local identifier = sourceCharacter.identifier
 
 	metadata = SharedUtils.MergeTables(svItem.metadata, metadata or {})
