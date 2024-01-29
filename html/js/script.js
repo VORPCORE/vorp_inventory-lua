@@ -57,6 +57,7 @@ window.addEventListener('message', function (event) {
         Config.AddDollarItem = LuaConfig.AddDollarItem;
         Config.AddAmmoItem = LuaConfig.AddAmmoItem;
         Config.DoubleClickToUse = LuaConfig.DoubleClickToUse;
+        Config.UseRolItem = LuaConfig.UseRolItem;
 
         if (!Config.UseGoldItem) {
             $("#inventoryHud").addClass("NoGoldBackground")
@@ -78,17 +79,18 @@ window.addEventListener('message', function (event) {
         if (event.data.money || event.data.money === 0) {
             $("#money-value").text(event.data.money.toFixed(2) + " ");
         }
-        
+
         if (Config.UseGoldItem) {
             if (event.data.gold || event.data.gold === 0) {
                 $("#gold-value").text(event.data.gold.toFixed(2) + " ");
             }
         }
-
-        if (event.data.rol) {
-            $("#rol-value").text(event.data.rol.toFixed(2) + " ");
+        if (Config.UseRolItem) {
+            if (event.data.rol) {
+                $("#rol-value").text(event.data.rol.toFixed(2) + " ");
+            }
         }
-        
+
         if (event.data.id) {
             $("#id-value").text("ID " + event.data.id);
         }
