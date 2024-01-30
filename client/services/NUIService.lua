@@ -610,6 +610,10 @@ function NUIService.NUIFocusOff()
 	NUIService.CloseInv()
 end
 
+function NUIService.OfflineFocusOff()
+	NUIService.CloseInventory()
+end
+
 function NUIService.LoadInv()
 	local payload = {}
 	local items = {}

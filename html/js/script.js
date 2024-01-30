@@ -268,4 +268,8 @@ window.addEventListener('message', function (event) {
     }
 });
 
+window.addEventListener("offline", function () {
+    $.post(`https://${GetParentResourceName()}/OfflineFocusOff`)
+});
+
 //for gold cash and ID
