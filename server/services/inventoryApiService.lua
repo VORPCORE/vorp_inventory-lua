@@ -169,6 +169,11 @@ function InventoryAPI.registerUsableItem(name, cb)
 	end
 
 	local callbackId = SvUtils.GenerateUniqueID()
+
+	if not UsableItemsFunctions[name] then
+		UsableItemsFunctions[name] = {}
+	end
+
 	UsableItemsFunctions[name][callbackId] = cb
 
 	return callbackId
