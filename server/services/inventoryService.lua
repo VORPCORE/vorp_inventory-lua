@@ -424,37 +424,38 @@ function InventoryService.addItem(target, invId, name, amount, metadata, cb)
 		userInventory = UsersInventories[invId][identifier]
 	end
 
-	if userInventory ~= nil then
-		local item = SvUtils.FindItemByNameAndMetadata(invId, identifier, name, metadata)
-		if item then
-			if amount > 0 then
-				item:addCount(amount, CustomInventoryInfos[invId].ignoreItemStackLimit)
-				DBService.SetItemAmount(item:getOwner(), item:getId(), item:getCount())
-				return cb(item)
-			end
-			return cb(nil)
-		else
-			DBService.CreateItem(charIdentifier, svItem:getId(), amount, metadata, function(craftedItem)
-				item = Item:New({
-					id = craftedItem.id,
-					count = amount,
-					limit = svItem:getLimit(),
-					label = svItem:getLabel(),
-					metadata = SharedUtils.MergeTables(svItem.metadata, metadata),
-					name = name,
-					type = "item_standard",
-					canUse = svItem:getCanUse(),
-					canRemove = svItem:getCanRemove(),
-					owner = charIdentifier,
-					desc = svItem:getDesc(),
-					group = svItem:getGroup()
-				})
-				userInventory[craftedItem.id] = item
-				return cb(item)
-			end, invId)
-		end
+	if not userInventory then
+		return cb(nil)
 	end
-	return cb(nil)
+
+	local item = SvUtils.FindItemByNameAndMetadata(invId, identifier, name, metadata)
+	if item then
+		if amount > 0 then
+			item:addCount(amount, CustomInventoryInfos[invId].ignoreItemStackLimit)
+			DBService.SetItemAmount(item:getOwner(), item:getId(), item:getCount())
+			return cb(item)
+		end
+		return cb(nil)
+	else
+		DBService.CreateItem(charIdentifier, svItem:getId(), amount, metadata, function(craftedItem)
+			item = Item:New({
+				id = craftedItem.id,
+				count = amount,
+				limit = svItem:getLimit(),
+				label = svItem:getLabel(),
+				metadata = SharedUtils.MergeTables(svItem.metadata, metadata),
+				name = name,
+				type = "item_standard",
+				canUse = svItem:getCanUse(),
+				canRemove = svItem:getCanRemove(),
+				owner = charIdentifier,
+				desc = svItem:getDesc(),
+				group = svItem:getGroup()
+			})
+			userInventory[craftedItem.id] = item
+			return cb(item)
+		end, invId)
+	end
 end
 
 function InventoryService.addWeapon(target, weaponId)
