@@ -1099,7 +1099,7 @@ function InventoryService.GiveItem(itemId, amount, target)
 		if Config.Debug then
 			Log.error("ServerGiveItem: User " ..
 				sourceCharacter.firstname ..
-				' ' .. sourceCharacter.lastname .. '#' .. _source .. ' ' .. 'inventory item ' .. itemName .. ' not found')
+				' ' .. sourceCharacter.lastname .. '#' .. _source .. ' ' .. 'inventory item  not found')
 		end
 		TriggerClientEvent("vorp_inventory:transactionCompleted", _source)
 		SvUtils.Trem(_source)
@@ -1167,7 +1167,7 @@ function InventoryService.GiveItem(itemId, amount, target)
 		Core.NotifyRightTip(_target, T.youreceive .. amount .. T.of .. ItemsLabel .. "", 2000)
 	end
 	InventoryAPI.canCarryItem(_target, itemName, amount, function(canGive)
-		if canGive then
+		if not canGive then
 			local targetItem = SvUtils.FindItemByNameAndMetadata("default", targetIdentifier, itemName, itemMetadata)
 			if targetItem ~= nil then
 				targetItem:addCount(amount)
@@ -1672,7 +1672,7 @@ function InventoryService.MoveToCustom(obj)
 		end
 		Core.NotifyAvanced(_source, text, "inventory_items", Icon, "COLOR_PURE_WHITE", 4000)
 	else
-		if item.count and amount and items.count < amount then
+		if item.count and amount and item.count < amount then
 			return print("Error: Amount is greater than item count")
 		end
 
@@ -1758,7 +1758,7 @@ function InventoryService.TakeFromCustom(obj)
 		end
 
 		local canCarryItem = InventoryAPI.canCarryItem(_source, item.name, amount)
-		local invHasSpace = InventoryAPI.canCarryAmountItem(_source, item.name)
+		local invHasSpace = InventoryAPI.canCarryAmountItem(_source, amount)
 
 		if not canCarryItem then
 			return Core.NotifyRightTip(_source, "Cant carry more of this item stack limit achieved", 2000)
