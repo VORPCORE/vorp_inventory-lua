@@ -1682,15 +1682,15 @@ function InventoryService.MoveToCustom(obj)
 
 		InventoryService.subItem(_source, "default", item.id, amount)
 		TriggerClientEvent("vorpInventory:removeItem", _source, item.name, item.id, amount)
-		local itemAdded = InventoryService.addItem(_source, invId, item.name, amount, item.metadata)
+		InventoryService.addItem(_source, invId, item.name, amount, item.metadata, function(itemAdded)
+			if not itemAdded then
+				return print("Error: Could not add item to inventory")
+			end
 
-		if not itemAdded then
-			return print("Error: Could not add item to inventory")
-		end
-
-		Core.NotifyRightTip(_source, "you have Moved " .. amount .. " " .. item.label .. " to storage", 2000)
-		InventoryService.reloadInventory(_source, invId)
-		InventoryService.DiscordLogs(invId, item.name, amount, sourceName, "Move")
+			Core.NotifyRightTip(_source, "you have Moved " .. amount .. " " .. item.label .. " to storage", 2000)
+			InventoryService.reloadInventory(_source, invId)
+			InventoryService.DiscordLogs(invId, item.name, amount, sourceName, "Move")
+		end)
 	end
 end
 
@@ -1774,16 +1774,16 @@ function InventoryService.TakeFromCustom(obj)
 			return print("Error: Could not remove item from inventory")
 		end
 
-		local itemAdded = InventoryService.addItem(_source, "default", item.name, amount, item.metadata)
+		InventoryService.addItem(_source, "default", item.name, amount, item.metadata, function(itemAdded)
+			if not itemAdded then
+				return print("Error: Could not add item to inventory")
+			end
 
-		if not itemAdded then
-			return print("Error: Could not add item to inventory")
-		end
-
-		TriggerClientEvent("vorpInventory:receiveItem", _source, item.name, itemAdded:getId(), amount,
-			itemAdded:getMetadata())
-		InventoryService.reloadInventory(_source, invId)
-		InventoryService.DiscordLogs(invId, item.name, amount, sourceName, "Take")
-		Core.NotifyRightTip(_source, "you have Taken " .. amount .. " " .. item.label .. " from storage ", 2000)
+			TriggerClientEvent("vorpInventory:receiveItem", _source, item.name, itemAdded:getId(), amount,
+				itemAdded:getMetadata())
+			InventoryService.reloadInventory(_source, invId)
+			InventoryService.DiscordLogs(invId, item.name, amount, sourceName, "Take")
+			Core.NotifyRightTip(_source, "you have Taken " .. amount .. " " .. item.label .. " from storage ", 2000)
+		end)
 	end
 end
