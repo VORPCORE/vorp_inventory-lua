@@ -1143,7 +1143,7 @@ function InventoryService.GiveItem(itemId, amount, target)
 		Core.NotifyRightTip(_target, T.youreceive .. amount .. T.of .. ItemsLabel .. "", 2000)
 	end
 	InventoryAPI.canCarryItem(_target, itemName, amount, function(canGive)
-		if not canGive then
+		if canGive then
 			local targetItem = SvUtils.FindItemByNameAndMetadata("default", targetIdentifier, itemName, itemMetadata)
 			if targetItem ~= nil then
 				targetItem:addCount(amount)
