@@ -660,6 +660,9 @@ function InventoryAPI.subItemID(player, id, cb)
 	local charIdentifier = sourceCharacter.charIdentifier
 	local userInventory = UsersInventories.default[identifier]
 	local item = userInventory[id]
+	if not item then
+		return respond(cb, false)
+	end
 	local itemid = item:getId()
 	local itemCount = item:getCount()
 
