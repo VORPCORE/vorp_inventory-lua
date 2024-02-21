@@ -35,7 +35,7 @@ end
 PickupsService.CheckAndRemoveExpiredEntities = function()
 	local currentTime = GetGameTimer()
 	for entityHandle, creationTime in pairs(entityTimers) do
-		if (currentTime - creationTime) > (Config.DeleteDropAfterMinuts * 60000) then
+		if currentTime - creationTime > Config.DeleteDropAfterMinuts * 60000 then
 				PickupsService.removePickupClient(entityHandle)
 				entityTimers[entityHandle] = nil
 		end
