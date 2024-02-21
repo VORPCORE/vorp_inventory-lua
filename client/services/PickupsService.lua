@@ -1,6 +1,7 @@
 PickupsService = {}
 local promptGroup = GetRandomIntInRange(0, 0xffffff)
 local WorldPickups = {}
+local entityTimers = {}
 local dropAll = false
 local lastCoords = {}
 
@@ -26,7 +27,19 @@ PickupsService.CreateObject = function(model, position)
 	Citizen.InvokeNative(0xF66F820909453B8C, entityHandle, false, true) -- SetEntityCollision
 	SetModelAsNoLongerNeeded(objectHash)
 
+	entityTimers[entityHandle] = GetGameTimer()
+
 	return entityHandle
+end
+
+PickupsService.CheckAndRemoveExpiredEntities = function()
+	local currentTime = GetGameTimer()
+	for entityHandle, creationTime in pairs(entityTimers) do
+		if (currentTime - creationTime) > (Config.DeleteDropAfterMinuts * 60000) then
+				PickupsService.removePickupClient(entityHandle)
+				entityTimers[entityHandle] = nil
+		end
+	end
 end
 
 PickupsService.createPickup = function(name, amount, metadata, weaponId, id)
@@ -343,5 +356,14 @@ Citizen.CreateThread(function()
 			end
 		end
 		Wait(sleep)
+	end
+end)
+
+Citizen.CreateThread(function()
+	while true do
+		Citizen.Wait(60000)
+		if Config.EnableDeleteDropAfterMinuts then
+			PickupsService.CheckAndRemoveExpiredEntities()
+		end
 	end
 end)
