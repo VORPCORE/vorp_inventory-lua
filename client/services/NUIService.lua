@@ -51,9 +51,7 @@ function NUIService.ReloadInventory(inventory)
 
 			if item.desc == nil then
 				local applySerial = Utils.filterWeaponsSerialNumber(item.name)
-				item.desc = applySerial and
-					Utils.GetWeaponDesc(item.name) .. "<br><br>" .. T.serialnumber .. serial_number or
-					Utils.GetWeaponDesc(item.name)
+				item.desc = applySerial and Utils.GetWeaponDesc(item.name) .. "<br><br>" .. T.serialnumber .. serial_number or Utils.GetWeaponDesc(item.name)
 			end
 		end
 	end
@@ -129,23 +127,26 @@ function NUIService.NUITakeFromContainer(obj)
 	TriggerServerEvent("syn_Container:TakeFromContainer", json.encode(obj))
 end
 
+local function UserInventories()
+	for _, item in pairs(UserInventory) do
+		if item.metadata ~= nil and item.metadata.description ~= nil and (item.metadata.orgdescription ~= nil or item.metadata.orgdescription == "") then
+			if item.metadata.orgdescription == "" then
+				item.metadata.description = nil
+			else
+				item.metadata.description = item.metadata.orgdescription
+			end
+			item.metadata.orgdescription = nil
+		end
+	end
+end
+
 function NUIService.CloseInventory()
 	if storemenu then
 		storemenu = false
 		geninfo = {}
-		for _, item in pairs(UserInventory) do
-			if item.metadata ~= nil and item.metadata.description ~= nil and
-				(item.metadata.orgdescription ~= nil or item.metadata.orgdescription == "") then
-				if item.metadata.orgdescription == "" then
-					item.metadata.description = nil
-				else
-					item.metadata.description = item.metadata.orgdescription
-				end
-				item.metadata.orgdescription = nil
-			end
-		end
+		UserInventories()
 	end
-	if not CanOpen then -- only trigger if someone is inside custom inv
+	if not CanOpen then
 		TriggerServerEvent("vorp_inventory:Server:UnlockCustomInv")
 	end
 	SetNuiFocus(false, false)
@@ -159,17 +160,7 @@ function NUIService.CloseInv()
 	if storemenu then
 		storemenu = false
 		geninfo = {}
-		for _, item in pairs(UserInventory) do
-			if item.metadata ~= nil and item.metadata.description ~= nil and
-				(item.metadata.orgdescription ~= nil or item.metadata.orgdescription == "") then
-				if item.metadata.orgdescription == "" then
-					item.metadata.description = nil
-				else
-					item.metadata.description = item.metadata.orgdescription
-				end
-				item.metadata.orgdescription = nil
-			end
-		end
+		UserInventories()
 	end
 
 	if not CanOpen then -- only trigger if somone is inside
@@ -429,8 +420,6 @@ function NUIService.NUIGiveItem(obj)
 						local item = UserInventory[itemId]
 
 						if amount > 0 and item ~= nil and item:getCount() >= amount then
-							local itemName = item:getName()
-
 							TriggerServerEvent("vorpinventory:serverGiveItem", itemId, amount, target)
 						end
 					else
@@ -447,67 +436,67 @@ function NUIService.NUIGiveItem(obj)
 end
 
 function NUIService.NUIDropItem(obj)
-	if candrop then
-		local aux = Utils.expandoProcessing(obj)
-		local isvalid = Validator.IsValidNuiCallback(aux.hsn)
+	if not candrop then
+		return TriggerEvent('vorp:TipRight', T.cantdrophere, 5000)
+	end
 
-		if isvalid then
-			local itemName = aux.item
-			local itemId = aux.id
-			local metadata = aux.metadata
-			local type = aux.type
-			local qty = tonumber(aux.number)
+	local aux = Utils.expandoProcessing(obj)
+	local isvalid = Validator.IsValidNuiCallback(aux.hsn)
 
-			if type == "item_money" then
-				TriggerServerEvent("vorpinventory:serverDropMoney", qty)
-			end
+	if isvalid then
+		local itemName = aux.item
+		local itemId = aux.id
+		local metadata = aux.metadata
+		local type = aux.type
+		local qty = tonumber(aux.number)
 
-			if Config.UseGoldItem then
-				if type == "item_gold" then
-					TriggerServerEvent("vorpinventory:serverDropGold", qty)
-				end
-			end
-
-			if type == "item_standard" then
-				if aux.number ~= nil and aux.number ~= '' then
-					local item = UserInventory[itemId]
-					if not item then
-						return
-					end
-
-					if qty <= 0 or qty > item:getCount() then
-						return
-					end
-
-					TriggerServerEvent("vorpinventory:serverDropItem", itemName, itemId, qty, metadata)
-
-					item:quitCount(qty)
-					if item:getCount() == 0 then
-						UserInventory[itemId] = nil
-					end
-				end
-			end
-
-			if type == "item_weapon" then
-				TriggerServerEvent("vorpinventory:serverDropWeapon", aux.id)
-
-				if UserWeapons[aux.id] then
-					local weapon = UserWeapons[aux.id]
-
-					if weapon:getUsed() then
-						weapon:setUsed(false)
-						weapon:UnequipWeapon()
-					end
-
-					UserWeapons[aux.id] = nil
-				end
-			end
-			SetTimeout(100, function()
-				NUIService.LoadInv()
-			end)
+		if type == "item_money" then
+			TriggerServerEvent("vorpinventory:serverDropMoney", qty)
 		end
-	else
-		TriggerEvent('vorp:TipRight', T.cantdrophere, 5000)
+
+		if Config.UseGoldItem then
+			if type == "item_gold" then
+				TriggerServerEvent("vorpinventory:serverDropGold", qty)
+			end
+		end
+
+		if type == "item_standard" then
+			if aux.number ~= nil and aux.number ~= '' then
+				local item = UserInventory[itemId]
+				if not item then
+					return
+				end
+
+				if qty <= 0 or qty > item:getCount() then
+					return
+				end
+
+				TriggerServerEvent("vorpinventory:serverDropItem", itemName, itemId, qty, metadata)
+
+				item:quitCount(qty)
+				if item:getCount() == 0 then
+					UserInventory[itemId] = nil
+				end
+			end
+		end
+
+		if type == "item_weapon" then
+			TriggerServerEvent("vorpinventory:serverDropWeapon", aux.id)
+
+			if UserWeapons[aux.id] then
+				local weapon = UserWeapons[aux.id]
+
+				if weapon:getUsed() then
+					weapon:setUsed(false)
+					weapon:UnequipWeapon()
+				end
+
+				UserWeapons[aux.id] = nil
+			end
+		end
+		SetTimeout(100, function()
+			NUIService.LoadInv()
+		end)
 	end
 end
 
@@ -574,9 +563,9 @@ function NUIService.NUIUseItem(data)
 		local _, weaponHash = GetCurrentPedWeapon(ped, false, 0, false)
 		local weaponId = tonumber(data.id)
 		local weapName = joaat(UserWeapons[weaponId]:getName())
-		local isWeaponAGun = Citizen.InvokeNative(0x705BE297EEBDB95D, weapName)
-		local isWeaponOneHanded = Citizen.InvokeNative(0xD955FEE4B87AFA07, weapName)
-		local isArmed = Citizen.InvokeNative(0xCB690F680A3EA971, ped, 4)
+		local isWeaponAGun = IsWeaponAGun(weapName)
+		local isWeaponOneHanded = IsWeaponOneHanded(weapName)
+		local isArmed = IsPedArmed(ped, 4)
 		local notdual = false
 
 		if (isWeaponAGun and isWeaponOneHanded) and isArmed then
@@ -591,7 +580,7 @@ function NUIService.NUIUseItem(data)
 			UserWeapons[weaponId]:loadComponents()
 			UserWeapons[weaponId]:setUsed(true)
 			TriggerServerEvent("syn_weapons:weaponused", data)
-		elseif not UserWeapons[weaponId]:getUsed() and not Citizen.InvokeNative(0x8DECB02F88F428BC, ped, weapName, 0, true) or Citizen.InvokeNative(0x30E7C16B12DA8211, joaat(weapName)) then
+		elseif not UserWeapons[weaponId]:getUsed() and not HasPedGotWeapon(ped, weapName, 0, true) or IsWeaponThrowable(joaat(weapName)) then
 			notdual = true
 		end
 
@@ -641,8 +630,7 @@ function NUIService.LoadInv()
 					if item.name == v.name then
 						if item.metadata.description ~= nil then
 							item.metadata.orgdescription = item.metadata.description
-							item.metadata.description = item.metadata.description ..
-								"<br><span style=color:Green;>" .. T.cansell .. v.price .. "</span>"
+							item.metadata.description = item.metadata.description .. "<br><span style=color:Green;>" .. T.cansell .. v.price .. "</span>"
 						else
 							item.metadata.orgdescription = ""
 							item.metadata.description = "<span style=color:Green;>" .. T.cansell .. v.price .. "</span>"
@@ -760,9 +748,9 @@ Citizen.CreateThread(function()
 			sleep = 0
 			if IsControlJustReleased(1, Config.OpenKey) and IsInputDisabled(0) then
 				local player = PlayerPedId()
-				local hogtied = Citizen.InvokeNative(0x3AA24CCC0D451379, player)
-				local cuffed = Citizen.InvokeNative(0x74E559B3BC910685, player)
-				if not hogtied and not cuffed and not InventoryIsDisabled then
+				local isHogtied = IsPedHogtied(player)
+				local isPedInCuffs = IsPedCuffed(player)
+				if not isHogtied and not isPedInCuffs and not InventoryIsDisabled then
 					NUIService.OpenInv()
 				end
 			end
