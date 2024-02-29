@@ -5,20 +5,25 @@ local dropAll = false
 local lastCoords = {}
 
 PickupsService.CreateObject = function(model, position)
-	local objectHash = model
+	local objectHash = joaat(model)
 
 	if not HasModelLoaded(objectHash) then
 		RequestModel(objectHash, false)
-		repeat Wait(0) until HasModelLoaded(objectHash)
 	end
 
-	local entityHandle = CreateObject(joaat(objectHash), position.x, position.y, position.z, true, true, true)
-	repeat Wait(0) until DoesEntityExist(entityHandle)
-	PlaceObjectOnGroundProperly(entityHandle, false)
-	SetEntityAsMissionEntity(entityHandle, true, true)
-	FreezeEntityPosition(entityHandle, true)
-	SetPickupLight(entityHandle, true)
-	SetEntityCollision(entityHandle, true, true)
+	while not HasModelLoaded(objectHash) do
+		Wait(1)
+	end
+
+	local entityHandle = CreateObject(objectHash, position.x, position.y, position.z, true, true, true)
+	while not DoesEntityExist(entityHandle) do
+		Wait(20)
+	end
+	Citizen.InvokeNative(0x58A850EAEE20FAA3, entityHandle)           -- PlaceObjectOnGroundProperly
+	Citizen.InvokeNative(0xDC19C288082E586E, entityHandle, true, false) -- SetEntityAsMissionEntity
+	Citizen.InvokeNative(0x7D9EFB7AD6B19754, entityHandle, true)     -- FreezeEntityPosition
+	Citizen.InvokeNative(0x7DFB49BCDB73089A, entityHandle, true)     -- SetPickupLight
+	Citizen.InvokeNative(0xF66F820909453B8C, entityHandle, false, true) -- SetEntityCollision
 	SetModelAsNoLongerNeeded(objectHash)
 
 	return entityHandle
@@ -186,7 +191,7 @@ PickupsService.shareGoldPickupClient = function(entityHandle, amount, position, 
 end
 
 PickupsService.removePickupClient = function(entityHandle)
-	SetEntityAsMissionEntity(entityHandle, false, true)
+	Citizen.InvokeNative(0xDC19C288082E586E, entityHandle, false, true) -- SetEntityAsMissionEntity
 	NetworkRequestControlOfEntity(entityHandle)
 	local timeout = 0
 
@@ -200,22 +205,21 @@ PickupsService.removePickupClient = function(entityHandle)
 		Wait(100)
 	end
 
-	FreezeEntityPosition(entityHandle, false)
-	SetPickupLight(entityHandle, false)
+	FreezeEntityPosition(entityHandle, false)                  -- FreezeEntityPosition
+	Citizen.InvokeNative(0x7DFB49BCDB73089A, entityHandle, false) -- SetPickupLight
 	DeleteObject(entityHandle)
 end
 
 PickupsService.playerAnim = function(obj)
 	local playerPed = PlayerPedId()
 	local animDict = "amb_work@world_human_box_pickup@1@male_a@stand_exit_withprop"
+	RequestAnimDict(animDict)
 
-	if not HasAnimDictLoaded(animDict) then
-		RequestAnimDict(animDict)
-		repeat Wait(0) until HasAnimDictLoaded(animDict)
+	while not HasAnimDictLoaded(animDict) do
+		Wait(10)
 	end
 
 	TaskPlayAnim(playerPed, animDict, "exit_front", 1.0, 8.0, -1, 1, 0, false, false, false)
-	repeat Wait(0) until IsEntityPlayingAnim(playerPed, animDict, "exit_front", 3)
 	Wait(1200)
 	PlaySoundFrontend("CHECKPOINT_PERFECT", "HUD_MINI_GAME_SOUNDSET", true, 1)
 	Wait(1000)
@@ -308,13 +312,12 @@ Citizen.CreateThread(function()
 				for key, pickup in pairs(pickupsInRange) do
 					if pickup:Distance() <= 1.2 then
 						sleep = 0
-
-						TaskLookAtEntity(playerPed, pickup.entityId, 3000, 2048, 3, 0)
+						Citizen.InvokeNative(0x69F4BE8C8CC4796C, playerPed, pickup.entityId, 3000, 2048, 3) -- TaskLookAtEntity
 						local isDead = IsEntityDead(playerPed)
 						pickup.prompt:SetVisible(not isDead)
 
 						local promptSubLabel = CreateVarString(10, "LITERAL_STRING", pickup.name)
-						UiPromptSetActiveGroupThisFrame(promptGroup, promptSubLabel, 1, 0, 0)
+						PromptSetActiveGroupThisFrame(promptGroup, promptSubLabel, 1)
 
 						if pickup.prompt:HasHoldModeCompleted() then
 							if pickup.isMoney then
