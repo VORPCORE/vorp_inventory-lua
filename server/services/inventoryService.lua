@@ -1395,6 +1395,42 @@ function InventoryService.MoveToCustom(obj)
 	local CanMove = InventoryService.DoesHavePermission(invId, job, grade, Table)
 	local IsBlackListed = InventoryService.CheckIsBlackListed(invId, string.lower(item.name)) -- lower so we can checkitems and weapons
 
+	local function CanProceed()
+		if item.type == "item_weapon" then
+			if not UsersWeapons.default[item.id] then
+				print("Player: " .. sourceName .. " is trying to add weapons to a custom inventory that he does not have, possible Cheat!!")
+				return false
+			end
+			local weaponCount = 0
+			for _, weapon in pairs(UsersWeapons.default) do
+				if weapon.name == item.name then
+					weaponCount = weaponCount + 1
+				end
+			end
+			if weaponCount < amount then
+				print("Player: " .. sourceName .. " is trying to add ammount of weapons to a custom inventory that he does not have, possible Cheat!!")
+				return false
+			end
+		else
+			local inventory = UsersInventories.default[sourceIdentifier]
+			if not inventory or not inventory[item.id] then
+				print("Player: " .. sourceName .. " is trying to add items to a custom inventory that he does not have, possible Cheat!!")
+				return false
+			end
+
+			if inventory[item.id]:getCount() < amount then
+				print("Player: " .. sourceName .. " is trying to add ammount of items to a custom inventory that he does not have, possible Cheat!!")
+				return false
+			end
+		end
+
+		return true
+	end
+
+	if not CanProceed() then
+		return
+	end
+
 	if not IsBlackListed then
 		return Core.NotifyObjective(_source, "Item is blackListed", 5000)
 	end
@@ -1433,15 +1469,6 @@ function InventoryService.MoveToCustom(obj)
 	else
 		if item.count and amount and item.count < amount then
 			return print("Error: Amount is greater than item count")
-		end
-
-		--check if the user really has the amount
-		local inventory = UsersInventories.default[sourceIdentifier]
-		if ((not inventory) or (not inventory[item.id]) or inventory[item.id]:getCount() < amount) then
-			local sourceName = sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname
-
-			print("User is probably trying to cheat via NUI, user: " .. sourceName)
-			return
 		end
 
 		if not InventoryService.canStoreItem(sourceIdentifier, sourceCharIdentifier, invId, item.name, amount) then
