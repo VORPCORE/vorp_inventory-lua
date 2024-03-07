@@ -1435,6 +1435,15 @@ function InventoryService.MoveToCustom(obj)
 			return print("Error: Amount is greater than item count")
 		end
 
+		--check if the user really has the amount
+		local inventory = UsersInventories.default[sourceIdentifier]
+		if ((not inventory) or (not inventory[item.id]) or inventory[item.id]:getCount() < amount) then
+			local sourceName = sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname
+
+			print("User is probably trying to cheat via NUI, user: " .. sourceName)
+			return
+		end
+
 		if not InventoryService.canStoreItem(sourceIdentifier, sourceCharIdentifier, invId, item.name, amount) then
 			return Core.NotifyRightTip(_source, T.fullInventory, 2000)
 		end
