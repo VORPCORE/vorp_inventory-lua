@@ -564,7 +564,7 @@ end
 function NUIService.NUIUseItem(data)
 	if data.type == "item_standard" then
 		if timerUse <= 0 then
-			TriggerServerEvent("vorp_inventory:useItem", data.item, data.id)
+			TriggerServerEvent("vorp_inventory:useItem", data)
 			timerUse = 2000
 		else
 			TriggerEvent('vorp:TipRight', T.slow, 5000)
