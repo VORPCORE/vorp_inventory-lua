@@ -601,6 +601,10 @@ function NUIService.NUIUseItem(data)
 			UserWeapons[weaponId]:setUsed(true)
 			TriggerServerEvent("syn_weapons:weaponused", data)
 		end
+		if UserWeapons[weaponId]:getUsed() then
+			local serial = UserWeapons[weaponId]:getSerialNumber()
+			LocalPlayer.state:set("GetEquippedWeaponData", { weaponId = weaponId, serialNumber = serial }, false)
+		end
 		NUIService.LoadInv()
 	end
 end
