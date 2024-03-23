@@ -804,7 +804,9 @@ function InventoryService.giveWeapon2(player, weaponId, target)
 	local charname, scourceidentifier, steamname = getSourceInfo(_source)
 	local charname2, scourceidentifier2, steamname2 = getSourceInfo(target)
 	local notListed = false
-
+	if not desc then  
+		desc = userWeapons[weaponId]:getDesc()
+	end
 	if Config.JobsAllowed[job] then
 		DefaultAmount = Config.JobsAllowed[job]
 	end
@@ -848,9 +850,7 @@ function InventoryService.giveWeapon2(player, weaponId, target)
 	TriggerClientEvent("vorpinventory:updateinventorystuff", _source)
 	TriggerClientEvent("vorpCoreClient:subWeapon", _target, weaponId)
 
-	if not desc or desc == "" then
-		desc = "Custom Description not set"
-	end
+	
 	if not serialNumber or serialNumber == "" then
 		serialNumber = "Serial Number not set"
 	end
