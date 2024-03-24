@@ -15,6 +15,8 @@ $("document").ready(function () {
                 $('#disabler').hide();
             } else {
                 closeInventory();
+                document.querySelectorAll('.dropdownButton[data-type="itemtype"], .dropdownButton1[data-type="itemtype"]').forEach(btn => btn.classList.remove('active'));
+                document.querySelector(`.dropdownButton[data-param="all"][data-type="itemtype"], .dropdownButton1[data-param="all"][data-type="itemtype"]`)?.classList.add('active');
             }
         }
     });
