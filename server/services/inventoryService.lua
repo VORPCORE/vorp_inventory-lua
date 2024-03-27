@@ -1152,7 +1152,7 @@ function InventoryService.reloadInventory(player, id, type, source)
 	local sourceCharacter = Core.getUser(player).getUsedCharacter
 	local sourceIdentifier = sourceCharacter.identifier
 	local sourceCharIdentifier = sourceCharacter.charIdentifier
-
+	type = type or "custom"
 	local userInventory = {}
 	local itemList = {}
 	if type == "custom" then
