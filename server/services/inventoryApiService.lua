@@ -179,8 +179,8 @@ function InventoryAPI.registerUsableItem(name, cb)
 		print("item ", name, " already registered, cant register the same item twice")
 	end
 
-	if not ServerItems[name].canUse then
-		return
+	if ServerItems[name].canUse == 0 then
+		return print("item is not usable in db")
 	end
 
 	UsableItemsFunctions[name] = cb
