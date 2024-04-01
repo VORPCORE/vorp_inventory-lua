@@ -182,7 +182,7 @@ function InventoryAPI.registerUsableItem(name, cb)
 		end
 
 		if UsableItemsFunctions[name] then
-			print("Warning: item ", name, " is already registered, cant register the same item twice")
+			print("Warning: item ", name, " is already registered, cant register the same item twice, if you restarting a script this is normal.")
 		end
 
 		UsableItemsFunctions[name] = cb
