@@ -171,8 +171,16 @@ function InventoryAPI.registerUsableItem(name, cb)
 		return print("InventoryAPI.registerUsableItem: name is required")
 	end
 
+	if not ServerItems[name] then
+		return print("InventoryAPI.registerUsableItem: item " .. name .. " does not exist")
+	end
+
 	if UsableItemsFunctions[name] then
 		print("item ", name, " already registered, cant register the same item twice")
+	end
+
+	if not ServerItems[name].canUse then
+		return
 	end
 
 	UsableItemsFunctions[name] = cb
