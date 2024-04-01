@@ -163,25 +163,25 @@ exports("getUserInventoryItems", InventoryAPI.getInventory)
 function InventoryAPI.registerUsableItem(name, cb)
 	if Config.Debug then
 		SetTimeout(9000, function()
-			Log.print("Callback for item[^3" .. name .. "^7] ^2Registered!^7")
+			print("Callback for item[^3" .. name .. "^7] ^2Registered!^7")
 		end)
 	end
 
 	if not name then
-		return Log.error("InventoryAPI.registerUsableItem: specify a name must be a string")
+		return error("InventoryAPI.registerUsableItem: specify a name must be a string")
 	end
 
 	if UsableItemsFunctions[name] then
-		Log.Warning("InventoryAPI.registerUsableItem: item " .. name .. " is being registered twice")
+		print("InventoryAPI.registerUsableItem: item " .. name .. " is being registered twice")
 	end
 
 	SetTimeout(4000, function()
 		if not ServerItems[name] then
-			Log.Warning("InventoryAPI.registerUsableItem: item " .. name .. " does not exist in database")
+			print("InventoryAPI.registerUsableItem: item " .. name .. " does not exist in database")
 		end
 
 		if ServerItems[name] and not ServerItems[name].canUse then
-			Log.Warning("InventoryAPI.registerUsableItem: item " .. name .. " is not set to usable in database")
+			print("InventoryAPI.registerUsableItem: item " .. name .. " is not set to usable in database")
 		end
 	end)
 
