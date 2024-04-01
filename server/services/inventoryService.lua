@@ -43,21 +43,17 @@ function InventoryService.UseItem(data)
 
 	local identifier = sourceCharacter.getUsedCharacter.identifier
 	local userInventory = UsersInventories.default[identifier]
-	local svItem = ServerItems[itemName]
+
 
 	if not SvUtils.DoesItemExist(itemName, "UseItem") then
 		return
 	end
 
-	if not UsableItemsFunctions[itemName] and not userInventory[itemId] then
+	if not UsableItemsFunctions[itemName] or not userInventory[itemId] then
 		return
 	end
 
-	local item = userInventory[itemId]
-	if not item then
-		return
-	end
-
+	local svItem = ServerItems[itemName]
 	local itemArgs = json.decode(json.encode(svItem))
 	itemArgs.metadata = item:getMetadata()
 	itemArgs.mainid = itemId
