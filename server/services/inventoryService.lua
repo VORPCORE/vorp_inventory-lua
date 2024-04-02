@@ -49,7 +49,12 @@ function InventoryService.UseItem(data)
 		return
 	end
 
-	if not UsableItemsFunctions[itemName] or not userInventory[itemId] then
+	if not UsableItemsFunctions[itemName] then
+		return
+	end
+
+	local item = userInventory[itemId]
+	if not item then
 		return
 	end
 
