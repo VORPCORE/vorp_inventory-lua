@@ -1502,14 +1502,9 @@ function InventoryAPI.openInventory(player, id)
 		return
 	end
 
-	if type(CustomInventoryInfos[id]:getLimit() ~= "number") then
-		Log.error("InventoryAPI.openInventory: limit is not a number")
-		return
-	end
-
 	local sourceCharacter = Core.getUser(_source)
 	if not sourceCharacter then
-		Log.error("InventoryAPI.openInventory: user is not logged in")
+		print("InventoryAPI.openInventory: user is not logged in")
 		return
 	end
 	sourceCharacter = sourceCharacter.getUsedCharacter
