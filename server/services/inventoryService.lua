@@ -31,6 +31,7 @@ local function getSourceInfo(_source)
 	return charname, sourceIdentifier, steamname
 end
 
+
 function InventoryService.UseItem(data)
 	local _source = source
 	local sourceCharacter = Core.getUser(_source)
@@ -69,7 +70,7 @@ function InventoryService.UseItem(data)
 	local success, result = pcall(UsableItemsFunctions[itemName], arguments)
 
 	if not success then
-		return print("Function call failed with error:", result, "a usable item have an error in the callback function")
+		return print("Function call failed with error:", result, "a usable item :", itemName, " have an error in the callback function")
 	end
 end
 

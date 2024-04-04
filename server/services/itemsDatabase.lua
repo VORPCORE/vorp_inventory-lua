@@ -79,8 +79,8 @@ local function loadPlayerWeapons(source, character)
 end
 
 
-MySQL.ready(function()
-	-- load all items from databse
+CreateThread(function()
+	-- load all items from database
 	DBService.queryAsync("SELECT * FROM items", {}, function(result)
 		for _, db_item in pairs(result) do
 			if db_item.id then
@@ -110,6 +110,7 @@ MySQL.ready(function()
 		end
 	end)
 end)
+
 
 -- on player select character event
 RegisterNetEvent("vorp:SelectedCharacter", loadPlayerWeapons)
