@@ -79,7 +79,7 @@ local function loadPlayerWeapons(source, character)
 end
 
 
-CreateThread(function()
+MySQL.ready(function()
 	-- load all items from database
 	DBService.queryAsync("SELECT * FROM items", {}, function(result)
 		for _, db_item in pairs(result) do

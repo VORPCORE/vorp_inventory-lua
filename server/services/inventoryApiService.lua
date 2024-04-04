@@ -171,22 +171,22 @@ function InventoryAPI.registerUsableItem(name, cb)
 	if not name then
 		return print("InventoryAPI.registerUsableItem: name is required")
 	end
-	-- wait for all items to be loaded, when restarting script will take some time as well. but this needs to be here to ensure proper functionallity
-	SetTimeout(5000, function()
+	-- this is just to help users see whats wrong with their items and to fix them
+	SetTimeout(20000, function()
 		if not ServerItems[name] then
-			return print("Waring: item ", name, " does not exist in database")
+			print("^3Warning^7: item ", name, " was added as usabled but ^1 does not exist in database ^7")
 		end
 
 		if ServerItems[name] and not ServerItems[name].canUse then
-			return print("Warning: item", name, " is not usable in database, set usable to 1 in database")
+			print("^3Warning^7: item", name, " is not usable in database , ^1 you need to set usable to 1 in database ^7")
 		end
-
-		if UsableItemsFunctions[name] then
-			print("Warning: item ", name, " is already registered, cant register the same item twice, if you restarting a script this is normal.")
-		end
-
-		UsableItemsFunctions[name] = cb
 	end)
+
+	if UsableItemsFunctions[name] then
+		print("^3Warning^7: item ", name, " is already registered, ^1 cant register the same item twice ^7")
+		print("^5Info:^7 if you restarting a script this is normal and you can ignore it!.^7")
+	end
+	UsableItemsFunctions[name] = cb
 end
 
 exports("registerUsableItem", InventoryAPI.registerUsableItem)
