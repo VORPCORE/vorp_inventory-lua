@@ -46,7 +46,7 @@ end
 
 local lastLantern = 0
 CreateThread(function()
-    if Config.DontUseLanternPutOnBelt then
+    if not Config.UseLanternPutOnBelt then
         return
     end
 
