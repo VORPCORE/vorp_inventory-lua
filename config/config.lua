@@ -34,8 +34,8 @@ Config = {
 	-- =================== CLEAR ITEMS WEAPONS MONEY GOLD =====================--
 
 
-	UseClearAll     = false, -- if you want to use the clear item function if false will use DropOnDeath function
-	OnPlayerRespawn = {
+	UseClearAll         = false, -- if you want to use the clear item function if false will use DropOnDeath function
+	OnPlayerRespawn     = {
 		Money = {
 			JobLock         = { "police", "doctor" },
 			ClearMoney      = true, -- if true then removes all money from player
@@ -64,7 +64,7 @@ Config = {
 
 	-- =================== DROP ON DEATH =====================--
 
-	DropOnRespawn   = {
+	DropOnRespawn       = {
 		AllMoney       = false,
 		PartMoney      = false,
 		PartPercentage = 25,
@@ -73,16 +73,16 @@ Config = {
 		Items          = false
 	},
 
-
-	-- HOW MANY WEAPONS AND ITEMS ALLOWED PER PLAYER
+	-- HOW MANY WEAPONS ALLOWED PER PLAYER FOR ITEMS IS IN VORP CORE CONFIG
 	MaxItemsInInventory = {
 		Weapons = 6,
-		Items = 200,
 	},
+
 	-- HERE YOU CAN SET THE MAX AMOUNT OF WEAPONS PER JOB (IF YOU WANT)
 	JobsAllowed         = {
 		police = 10 -- job name and max weapons allowed dont allow less than the above
 	},
+
 	-- FIRST JOIN
 	startItems          = {
 		consumable_raspberrywater = 2, --ITEMS SAME NAME AS IN DATABASE
