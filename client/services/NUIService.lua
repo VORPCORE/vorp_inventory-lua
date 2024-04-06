@@ -786,6 +786,7 @@ end
 Citizen.CreateThread(function()
 	Wait(5000)
 	NUIService.initiateData()
+	repeat Wait(0) until LocalPlayer.state.IsInSession
 
 	while true do
 		local sleep = 1000
