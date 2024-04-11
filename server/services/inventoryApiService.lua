@@ -1327,6 +1327,7 @@ local function canContinue(id, jobName, grade)
 	if not jobName and not grade then
 		return false
 	end
+	return true
 end
 --- add permissions to move items to custom inventory
 ---@param id string inventory id
