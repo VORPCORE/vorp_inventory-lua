@@ -11,10 +11,6 @@ RegisterNetEvent("vorp:PlayerForceRespawn", function()
     local _value = Config.OnPlayerRespawn
     local job = User.job
 
-    if not User then
-        return
-    end
-
     if not Config.UseClearAll then
         return
     end
