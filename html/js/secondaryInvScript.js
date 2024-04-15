@@ -334,7 +334,8 @@ function secondInventorySetup(items, info) {
             const custom = item.metadata.tooltip ? "<br>" + item.custom : "";
             const degradation = item.degradation ? "<br>" + "Decay  " + item.degradation + "%" : "";
             const weight = item.weight ? "Weight   " + (item.weight * item.count) + " Kg" : "Weight " + item.count / 4 + " Kg";
-            $("#secondInventoryElement").append(` <div data-label='${item.label}' data-group ='${item.group}' style='background-image: url(\"img/items/${item.name ? item.name.toLowerCase() : ""}.png\"); background-size: 5vw 7.7vh; background-repeat: no-repeat; background-position: center;' id="item-${index}"  class='item' class='item' data-tooltip="${weight + degradation + custom}"> <div class='count'>${count || 0}</div><div class='text'></div></div> `);
+            const groupImg = "satchel_nav_herbs.png"; // add group check here  Config.GroupImages[group]
+            $("#secondInventoryElement").append(` <div data-label='${item.label}' data-group ='${item.group}' style='background-image: url(\"img/items/${item.name ? item.name.toLowerCase() : ""}.png\"); background-size: 5vw 7.7vh; background-repeat: no-repeat; background-position: center;' id="item-${index}"  class='item' class='item' data-tooltip="<img src="img/itemtypes/${groupImg}">${weight + degradation + custom}"> <div class='count'>${count || 0}</div><div class='text'></div></div> `);
 
         } else {
 
