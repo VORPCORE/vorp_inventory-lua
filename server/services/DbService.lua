@@ -133,7 +133,7 @@ end)
 --- update asynchronously
 ---@param query string @SQL query
 ---@param params table @SQL params
----@param cb function? @Callback function
+---@param cb function @Callback function
 function DBService.updateAsync(query, params, cb)
     MySQL.update(query, params, cb)
 end
@@ -141,7 +141,7 @@ end
 --- insert asynchronously
 ---@param query string @SQL query
 ---@param params table @SQL params
----@param cb function? @Callback function
+---@param cb function @Callback function
 function DBService.insertAsync(query, params, cb)
     MySQL.insert(query, params, cb)
 end
@@ -149,7 +149,7 @@ end
 --- query asynchronously
 ---@param query string @SQL query
 ---@param params table @SQL params
----@param cb function? @Callback function
+---@param cb function @Callback function
 function DBService.queryAsync(query, params, cb)
     MySQL.query(query, params, cb)
 end

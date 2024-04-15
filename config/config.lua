@@ -7,7 +7,7 @@ Lang = "English"
 Config = {
 	--======================= DEVELOPMENT ==============================--
 	Debug                    = false, -- if your server is live set this to false.  to true only if you are testing things
-	DevMode                  = false, -- if your server is live set this to false.  to true only if you are testing things (auto load inventory when script restart and before character selection. Alos add /getInv command)
+	DevMode                  = true, -- if your server is live set this to false.  to true only if you are testing things (auto load inventory when script restart and before character selection. Alos add /getInv command)
 	dbupdater                = true,
 	--======================= CONFIGURATION =============================--
 	ShowCharacterNameOnGive  = false, -- when giving an item, show the character name of nearby players instead of their player ID. if set to false, show the player ID
@@ -25,6 +25,7 @@ Config = {
 	DisableDeathInventory    = true, -- prevent the ability to access inventory while dead
 	--{ I } OPEN INVENTORY
 	OpenKey                  = 0xC1989F95,
+	UseFilter                = true, -- if true then will use the filter opening inventory
 	--RMB mouse PROMPT PICKUP
 	PickupKey                = 0xF84FA74F,
 	discordid                = true, -- turn to true if ur using discord whitelist
