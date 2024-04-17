@@ -689,7 +689,7 @@ function NUIService.LoadInv()
 
 	if not storemenu then
 		for _, item in pairs(UserInventory) do
-			item.degradation = math.random(500, 1000) / 10 -- just for tests
+			item.degradation = math.random(100, 1000) / 10 -- just for tests not implemented yet
 			table.insert(items, item)
 		end
 	elseif storemenu then
@@ -869,5 +869,5 @@ function NUIService.DisableInventory(param)
 end
 
 function NUIService.getActionsConfig(obj, cb)
-    cb(Actions)
+	cb(Actions)
 end
