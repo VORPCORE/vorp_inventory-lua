@@ -9,11 +9,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function bindButtonEventListeners() {
     document.querySelectorAll('.dropdownButton[data-type="itemtype"]').forEach(button => {
-        button.addEventListener('mouseenter', function() {
+        button.addEventListener('mouseenter', function () {
             OverSetTitle(this.getAttribute('data-param'));
             OverSetDesc(this.getAttribute('data-desc'));
         });
-        button.addEventListener('mouseleave', function() {
+        button.addEventListener('mouseleave', function () {
             OverSetTitle(" ");
             OverSetDesc(" ");
         });
@@ -22,11 +22,11 @@ function bindButtonEventListeners() {
 
 function bindSecondButtonEventListeners() {
     document.querySelectorAll('.dropdownButton1[data-type="itemtype"]').forEach(button => {
-        button.addEventListener('mouseenter', function() {
+        button.addEventListener('mouseenter', function () {
             OverSetTitleSecond(this.getAttribute('data-param'));
             OverSetDescSecond(this.getAttribute('data-desc'));
         });
-        button.addEventListener('mouseleave', function() {
+        button.addEventListener('mouseleave', function () {
             OverSetTitleSecond(" ");
             OverSetDescSecond(" ");
         });
@@ -39,11 +39,11 @@ document.addEventListener('DOMContentLoaded', function () {
     bindSecondButtonEventListeners();
 
     document.querySelectorAll('.dropdownButton[data-type="clothing"]').forEach(button => {
-        button.addEventListener('mouseenter', function() {
+        button.addEventListener('mouseenter', function () {
             OverSetTitle(this.getAttribute('data-param'));
             OverSetDesc(this.getAttribute('data-desc'));
         });
-        button.addEventListener('mouseleave', function() {
+        button.addEventListener('mouseleave', function () {
             OverSetTitle(" ");
             OverSetDesc(" ");
         });
@@ -117,24 +117,22 @@ function loadActionsConfig() {
                     'Content-Type': 'application/json; charset=UTF-8',
                 }
             })
-            .then(response => response.json())
-            .then(actionsConfig => {
-                console.log('Actions config received:', actionsConfig);
-                window.Actions = actionsConfig;
-                resolve(actionsConfig);
-            })
-            .catch(error => {
-                console.error('Error fetching Actions config:', error);
-                reject(error);
-            });
+                .then(response => response.json())
+                .then(actionsConfig => {
+                    window.Actions = actionsConfig;
+                    resolve(actionsConfig);
+                })
+                .catch(error => {
+                    reject(error);
+                });
         });
     }
-    return actionsConfigLoaded; 
+    return actionsConfigLoaded;
 }
 
 function generateActionButtons(actionsConfig, containerId, inventoryContext, buttonClass) {
-    const basePath = "img/itemtypes/"; 
-    const container = document.getElementById(containerId); 
+    const basePath = "img/itemtypes/";
+    const container = document.getElementById(containerId);
 
     if (container) {
         Object.keys(actionsConfig).forEach(key => {
@@ -156,7 +154,7 @@ function generateActionButtons(actionsConfig, containerId, inventoryContext, but
             container.appendChild(button);
         });
 
-        bindButtonEventListeners(); 
+        bindButtonEventListeners();
         bindSecondButtonEventListeners();
     } else {
         console.warn(`Container for action buttons not found: ${containerId}`);
@@ -267,6 +265,18 @@ function moveInventory(inv) {
     }
 }
 
+function getColorForDegradation(degradation) {
+    if (degradation < 15) {
+        return "red";
+    } else if (degradation < 40) {
+        return "orange";
+    } else if (degradation < 70) {
+        return "gold";
+    } else {
+        return "green";
+    }
+}
+
 function inventorySetup(items) {
 
     $("#inventoryElement").html("");
@@ -283,32 +293,31 @@ function inventorySetup(items) {
         const group = item.type != "item_weapon" ? !item.group ? 1 : item.group : 5;
 
         if (item.type != "item_weapon") {
-
-            const custom = item.metadata.tooltip ? "<br>" + item.custom : "";
-            const degradation = item.degradation ? "<br>Decay  " + item.degradation + "%" : "";
+            const custom = item.metadata.tooltip ? "<br>" + item.metadata.tooltip : "";
+            const degradation = item.degradation ? `<br>Decay <span style="color: ${getColorForDegradation(item.degradation)}">${item.degradation}%</span>` : "";
             const weight = item.weight ? "<br>Weight   " + (item.weight * count) + " Kg" : "<br>Weight " + count / 4 + " Kg";
-            //const groupImg = "satchel_nav_herbs.png"; // add group check here  Config.GroupImages[group]
-
-            const groupKey = Object.keys(window.Actions).find(key => window.Actions[key].types.includes(group));
+            const groupKey = Object.keys(window.Actions).find(key =>
+                key !== "all" && window.Actions[key].types.includes(group)
+            );
             const groupImg = groupKey ? window.Actions[groupKey].img : 'satchel_nav_all.png';
+            const tooltipContent = group > 1 ? `<img src="img/itemtypes/${groupImg}"> ${"Limit " + limit + custom + weight + degradation}` : `Limit ${limit}${custom}${weight}${degradation}`;
 
             $("#inventoryElement").append(`
-                <div data-group='${group}' data-label='${item.label}' style='background-image: url("img/items/${item.name.toLowerCase()}.png"); background-size: 5vw 7.7vh; background-repeat: no-repeat; background-position: center;' id='item-${index}' class='item' data-tooltip='<img src="img/itemtypes/${groupImg}"> ${"Limit " + limit + custom + weight + degradation}'> 
-                    <div class='count' >
+                <div data-group='${group}' data-label='${item.label}' style='background-image: url("img/items/${item.name.toLowerCase()}.png"); background-size: 5vw 7.7vh; background-repeat: no-repeat; background-position: center;' id='item-${index}' class='item' data-tooltip='${tooltipContent}'> 
+                    <div class='count'>
                         <span style='color:Black'>${count}</span>
                     </div>
                     <div class='text'></div>
                 </div>`);
         } else {
-
             const weight = item.weight ? "Weight   " + item.weight + " Kg" : "Weight " + count / 4 + " Kg";
             const info = item.serial_number ? "<br>Ammo " + item.count + "<br>Serial No " + item.serial_number : "";
             $("#inventoryElement").append(`
-            <div data-label='${item.label}' data-group='${group}' style='background-image: url("img/items/${item.name.toLowerCase()}.png"); background-size: 5vw 7.7vh; background-repeat: no-repeat; background-position: center;' id='item-${index}' class='item' data-tooltip="${weight + info}">
-              <div class='equipped-icon' style='display: ${!item.used && !item.used2 ? "none" : "block"};'></div>
-            </div>
-        `);
+                <div data-label='${item.label}' data-group='${group}' style='background-image: url("img/items/${item.name.toLowerCase()}.png"); background-size: 5vw 7.7vh; background-repeat: no-repeat; background-position: center;' id='item-${index}' class='item' data-tooltip="${weight + info}">
+                    <div class='equipped-icon' style='display: ${!item.used && !item.used2 ? "none" : "block"};'></div>
+                </div>`);
         }
+
 
         $("#item-" + index).data("item", item);
         $("#item-" + index).data("inventory", "main");
