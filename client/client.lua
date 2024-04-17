@@ -3,7 +3,7 @@ T = TranslationInv.Langs[Lang]
 Core = exports.vorp_core:GetCore()
 
 
-RegisterNetEvent('vorpinventory:send_slots"', function(itemTotal, slots, mon, gol, rol)
+RegisterNetEvent('vorpinventory:send_slots', function(itemTotal, slots, mon, gol, rol)
     SendNUIMessage({ action = "changecheck", check = itemTotal, info = slots })
     SendNUIMessage({
         action = "updateStatusHud",
