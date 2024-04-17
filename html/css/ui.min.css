@@ -305,124 +305,124 @@ body {
 /*Buttons for filters and cloths*/
 
 .imageButtonContainer {
-	border-radius: 20px;
-	display: flex;
-	justify-content: center;
-	left: 0.2vw;
-	margin: auto;
-	max-width: 25vh;
-	top: 14vh;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    left: 0.2vw;
+    margin: auto;
+    max-width: 25vh;
+    top: 14vh;
     position: relative;
     width: 100%;
     height: auto;
 }
 
 .imageButtonContainer1 {
-	border-radius: 20px;
-	display: flex;
-	justify-content: center;
-	margin-bottom: auto;
-	margin-left: auto;
-	margin-right: auto;
-	max-width: 25vh;
-	position: absolute;
-	position: relative;
-	top: 14vh;
-	width: 100%;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: auto;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 25vh;
+    position: absolute;
+    position: relative;
+    top: 14vh;
+    width: 100%;
 }
 
 .dropdownButtonContainer {
-	-webkit-overflow-scrolling: touch;
-	display: flex;
-	flex-wrap: nowrap;
-	height: 5vh;
-	margin-top: 0.9vh;
-	overflow-x: auto;
-	overflow-y: hidden;
-	scroll-behavior: smooth;
-	scrollbar-width: thin;
-	white-space: nowrap;
-	width: 9.9vw;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-wrap: nowrap;
+    height: 5vh;
+    margin-top: 0.9vh;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    white-space: nowrap;
+    width: 9.9vw;
 }
 
 .mainButton {
-	background-color: none;
-	border: none;
-	cursor: pointer;
-	max-height: 3vh;
-	max-width: 3vw;
-	padding: 1px;
-	transition: transform 0.2s ease, opacity 0.2s ease;
+    background-color: none;
+    border: none;
+    cursor: pointer;
+    max-height: 3vh;
+    max-width: 3vw;
+    padding: 1px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 .mainButton:hover {
-	transform: scale(1.15);
+    transform: scale(1.15);
 }
 
 .dropdownButton {
-	background-color: none;
-	border: none;
-	cursor: pointer;
-	display: none;
-	flex: 0 0 auto;
-	margin: 0 5px;
-	max-height: 2vh;
-	max-width: 1.3vw;
-	opacity: 0.6;
-	padding: 0px;
-	transition: transform 0.2s ease, opacity 0.2s ease;
-    z-index: 3; 
+    background-color: none;
+    border: none;
+    cursor: pointer;
+    display: none;
+    flex: 0 0 auto;
+    margin: 0 5px;
+    max-height: 2vh;
+    max-width: 1.3vw;
+    opacity: 0.6;
+    padding: 0px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    z-index: 3;
 }
 
 .dropdownButton1 {
-	background-color: none;
-	border: none;
-	flex: 0 0 auto;
-	margin: 0 5px;
-	max-height: 2vh;
-	max-width: 1.3vw;
-	opacity: 0.6;
-	padding: 0px;
-	transition: transform 0.2s ease, opacity 0.2s ease;
-    z-index: 3; 
+    background-color: none;
+    border: none;
+    flex: 0 0 auto;
+    margin: 0 5px;
+    max-height: 2vh;
+    max-width: 1.3vw;
+    opacity: 0.6;
+    padding: 0px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    z-index: 3;
 }
 
-.dropdownButton:hover, .dropdownButton1:hover {
-	opacity: 1.0;
-	transform: scale(1.15);
+.dropdownButton:hover,
+.dropdownButton1:hover {
+    opacity: 1.0;
+    transform: scale(1.15);
 }
 
 .showDropdown .dropdownButton {
-	display: inline-block;
+    display: inline-block;
 }
 
 .dropdownButton img {
-	/*height: 100%;*/
-	width: 100%;
+    width: 100%;
 }
 
 .dropdownButton1 img {
-	height: 100%;
-	width: 100%;
+    height: 100%;
+    width: 100%;
 }
 
 .mainButton img {
-	height: 1.9vh;
-	width: 1vw;
+    height: 2.5vh;
+    width: 1.5vw;
 }
 
 .mainButtonContainer {
-	display: flex;
-	left: 33vw;
-	position: absolute;
-	top: 11vh;
+    display: flex;
+    left: 32vw;
+    position: absolute;
+    top: 11vh;
 }
 
 .carouselWrapper {
-	margin: auto;
+    margin: auto;
     position: absolute;
-    top: 0; /* Adjust if necessary */
-    left: 0; /* Adjust if necessary */
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     display: flex;
@@ -432,98 +432,107 @@ body {
 }
 
 .carouselContainer {
-	align-items: center;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	margin: auto;
-	position: relative;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: auto;
+    position: relative;
 }
 
 .carousel-control {
-	align-items: center;
-	background-color: white;
-	border-radius: 50px;
-	border: none;
-	display: flex;
-	height: 1.8vh;
-	justify-content: center;
-	position: absolute;
-	top: 2vh;
-	transform: translateY(-50%);
-	visibility: hidden;
-	width: 1.0vw;
-	z-index: 2;
+    align-items: center;
+    background-color: white;
+    border-radius: 50px;
+    border: none;
+    display: flex;
+    height: 1.8vh;
+    justify-content: center;
+    position: absolute;
+    top: 2vh;
+    transform: translateY(-50%);
+    visibility: hidden;
+    width: 1.0vw;
+    z-index: 2;
 }
 
 .carousel-control.left {
-	color: #000;
-	left: -3vh;
-}
+    color: #000;
+    left: -3vh;
+} 
 
 .carousel-control.right {
-	color: #000;
-	right: -3vh;
+    color: #000;
+    right: -3vh;
 }
 
-.dropdownButton.active, .dropdownButton1.active {
-	opacity: 1.0;
-	transform: scale(1.15);
+.carousel-control.right:hover,
+.carousel-control.left:hover {
+     opacity: 0.8;
+
+}
+
+
+
+.dropdownButton.active,
+.dropdownButton1.active {
+    opacity: 1.0;
+    transform: scale(1.15);
 }
 
 .carouselWrapper1 {
-	margin: auto;
-	position: relative;
+    margin: auto;
+    position: relative;
 }
 
 .carouselContainer1 {
-	align-items: center;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	margin: auto;
-	position: relative;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: auto;
+    position: relative;
 }
 
 .carousel-control1 {
-	align-items: center;
-	background-color: #ddd;
-	border-radius: 50px;
-	border: none;
-	cursor: pointer;
-	display: flex;
-	height: 1.8vh;
-	justify-content: center;
-	position: absolute;
-	top: 2vh;
-	transform: translateY(-50%);
-	visibility: hidden;
-	width: 1.0vw;
-	z-index: 2;
+    align-items: center;
+    background-color: #ddd;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    height: 1.8vh;
+    justify-content: center;
+    position: absolute;
+    top: 2vh;
+    transform: translateY(-50%);
+    visibility: hidden;
+    width: 1.0vw;
+    z-index: 2;
 }
 
 .carousel-control1.left {
-	color: #000;
-	left: -3vh;
+    color: #000;
+    left: -3vh;
 }
 
 .carousel-control1.right {
-	color: #000;
-	right: -3vh;
+    color: #000;
+    right: -3vh;
 }
 
 .dropdownButtonContainer1 {
-	-webkit-overflow-scrolling: touch;
-	display: flex;
-	flex-wrap: nowrap;
-	height: 5vh;
-	margin-top: 0.9vh;
-	overflow-x: auto;
-	overflow-y: hidden;
-	scroll-behavior: smooth;
-	scrollbar-width: thin;
-	white-space: nowrap;
-	width: 9.9vw;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-wrap: nowrap;
+    height: 5vh;
+    margin-top: 0.9vh;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    white-space: nowrap;
+    width: 9.9vw;
 }
 
 /* FINAL */
@@ -642,17 +651,20 @@ input#secondarysearch:-ms-input-placeholder {
 }
 
 .item .count {
-    margin-left: 3.8vw;
-    margin-top: 5.9vh;
+    position: absolute;
+    left: 3.6vw;
+    top: 5.5vh;
     text-align: center;
-    font-size: 0.9vw;
+    font-size: 1vw;
     width: 2vw;
+    height: 3vh;
     color: black;
     font-family: "crock";
     background-image: url(../img/count.png);
     background-repeat: no-repeat;
     background-position: center;
-
+    background-size: 2.8vw, 1vh;
+    line-height: 3vh; 
 }
 
 /* New class to indicate an item is equipped */
@@ -747,31 +759,30 @@ input#secondarysearch:-ms-input-placeholder {
 }
 
 .tooltip img {
-    position: relative;
-    width: 1.8vw;   
-    height: 3.5vh;  
-    top: 1.2vh;
-    left: 7.5vw;
+    position: absolute;
+    width: 1.3vw;
+    height: 1.9vh;
+    top: 5.3vh;
+    left: 8vw
 }
 
 .tooltip {
     display: none;
     position: absolute;
-    padding: 1.5vw;  
+    padding: 3vw;
     color: white;
     margin-left: 3.9vw;
     margin-top: -18vh;
-    border-radius: 19px;
     z-index: 1000;
     text-align: left;
     background-image: url(../img/tooltip.png);
     background-repeat: no-repeat;
     background-position: center;
-    background-size: contain; 
-    width: 8vw; 
-    height: auto; 
-    font-size: 0.5vw;
+    background-size: 12vw 11vh;
+    background-size: contain;
+    font-size: 0.6vw;
 }
+
 #transaction-loader .revolver-part:before {
     position: absolute;
     height: 12px;
