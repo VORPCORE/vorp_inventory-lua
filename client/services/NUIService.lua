@@ -867,3 +867,7 @@ end
 function NUIService.DisableInventory(param)
 	InventoryIsDisabled = param
 end
+
+function NUIService.getActionsConfig(obj, cb)
+    cb(Actions)
+end

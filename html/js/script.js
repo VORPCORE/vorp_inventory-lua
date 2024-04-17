@@ -40,6 +40,14 @@ window.addEventListener('message', function (event) {
         Config.AddAmmoItem = LuaConfig.AddAmmoItem;
         Config.DoubleClickToUse = LuaConfig.DoubleClickToUse;
         Config.UseRolItem = LuaConfig.UseRolItem;
+        // Fetch the Actions configuration from Lua
+        loadActionsConfig().then(actionsConfig => {
+            generateActionButtons(actionsConfig, 'carousel1', 'inventoryElement', 'dropdownButton');
+            generateActionButtons(actionsConfig, 'staticCarousel', 'secondInventoryElement', 'dropdownButton1');
+            console.log("Guaranteed that Actions configuration is loaded here.");
+        }).catch(error => {
+            console.error("Failed to load or process the Actions configuration:", error);
+        });
 
         if (!Config.UseGoldItem) {
             $("#inventoryHud").addClass("NoGoldBackground")

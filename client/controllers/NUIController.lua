@@ -11,6 +11,7 @@ RegisterNUICallback('MoveToCustom', NUIService.NUIMoveToCustom)
 RegisterNUICallback("ChangeClothing", NUIService.ChangeClothing)
 RegisterNUICallback("TakeFromPlayer", NUIService.NUITakeFromPlayer)
 RegisterNUICallback("MoveToPlayer", NUIService.NUIMoveToPlayer)
+RegisterNUICallback('getActionsConfig', NUIService.getActionsConfig)
 --========================================================================--
 -- shared
 RegisterNetEvent("vorp_inventory:CloseInv")

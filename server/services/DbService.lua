@@ -124,6 +124,13 @@ function DBService.CreateItem(sourceCharIdentifier, itemId, amount, metadata, cb
                 end)
         end)
 end
+---delete asynchronously
+---@param query string @SQL query
+---@param params table? @SQL params
+---@param cb function? @Callback function
+function DBService.deleteAsync(query, params, cb)
+    MySQL.query(query, params or {}, cb)
+end
 
 MySQL.ready(function()
     local query = "DELETE FROM items_crafted WHERE NOT EXISTS (SELECT 1 FROM characters WHERE characters.charidentifier = items_crafted.character_id);"
@@ -154,13 +161,6 @@ function DBService.queryAsync(query, params, cb)
     MySQL.query(query, params, cb)
 end
 
----delete asynchronously
----@param query string @SQL query
----@param params table? @SQL params
----@param cb function? @Callback function
-function DBService.deleteAsync(query, params, cb)
-    MySQL.query(query, params or {}, cb)
-end
 
 --- query asynchronously
 ---@param query string @SQL query

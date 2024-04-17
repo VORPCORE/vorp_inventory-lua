@@ -305,239 +305,228 @@ body {
 /*Buttons for filters and cloths*/
 
 .imageButtonContainer {
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    width: 5vw;
-    height: 3vh;
-    top: 15vh;
-    left: 5.5vw;
+	border-radius: 20px;
+	display: flex;
+	justify-content: center;
+	left: 0.2vw;
+	margin: auto;
+	max-width: 25vh;
+	top: 14vh;
+    position: relative;
+    width: 100%;
+    height: auto;
 }
 
 .imageButtonContainer1 {
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    top: 14vh;
+	border-radius: 20px;
+	display: flex;
+	justify-content: center;
+	margin-bottom: auto;
+	margin-left: auto;
+	margin-right: auto;
+	max-width: 25vh;
+	position: absolute;
+	position: relative;
+	top: 14vh;
+	width: 100%;
 }
 
 .dropdownButtonContainer {
-    display: flex;
+	-webkit-overflow-scrolling: touch;
+	display: flex;
+	flex-wrap: nowrap;
+	height: 5vh;
+	margin-top: 0.9vh;
+	overflow-x: auto;
+	overflow-y: hidden;
+	scroll-behavior: smooth;
+	scrollbar-width: thin;
+	white-space: nowrap;
+	width: 9.9vw;
 }
 
 .mainButton {
-    background-color: none;
-    padding: 1px;
-    border: none;
-    max-width: 3vw;
-    max-height: 3vh;
-    transition: transform 0.2s ease, opacity 0.2s ease;
+	background-color: none;
+	border: none;
+	cursor: pointer;
+	max-height: 3vh;
+	max-width: 3vw;
+	padding: 1px;
+	transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 .mainButton:hover {
-    transform: scale(1.15);
+	transform: scale(1.15);
 }
 
 .dropdownButton {
-    display: none;
-    background-color: none;
-    padding: 0px;
-    border: none;
-    max-width: 1.3vw;
-    max-height: 2vh;
-    opacity: 0.6;
-    transition: transform 0.2s ease, opacity 0.2s ease;
+	background-color: none;
+	border: none;
+	cursor: pointer;
+	display: none;
+	flex: 0 0 auto;
+	margin: 0 5px;
+	max-height: 2vh;
+	max-width: 1.3vw;
+	opacity: 0.6;
+	padding: 0px;
+	transition: transform 0.2s ease, opacity 0.2s ease;
+    z-index: 3; 
 }
 
 .dropdownButton1 {
-    background-color: none;
-    padding: 0px;
-    border: none;
-    max-width: 1.3vw;
-    max-height: 2vh;
-    opacity: 0.6;
-    transition: transform 0.2s ease, opacity 0.2s ease;
+	background-color: none;
+	border: none;
+	flex: 0 0 auto;
+	margin: 0 5px;
+	max-height: 2vh;
+	max-width: 1.3vw;
+	opacity: 0.6;
+	padding: 0px;
+	transition: transform 0.2s ease, opacity 0.2s ease;
+    z-index: 3; 
 }
 
-
-.dropdownButton:hover,
-.dropdownButton1:hover {
-    transform: scale(1.15);
-    opacity: 1.0;
+.dropdownButton:hover, .dropdownButton1:hover {
+	opacity: 1.0;
+	transform: scale(1.15);
 }
 
 .showDropdown .dropdownButton {
-    display: inline-block;
+	display: inline-block;
 }
 
 .dropdownButton img {
-    width: 100%;
-    height: 100%;
+	/*height: 100%;*/
+	width: 100%;
 }
 
 .dropdownButton1 img {
-    width: 100%;
-    height: 100%;
+	height: 100%;
+	width: 100%;
 }
 
 .mainButton img {
-    width: 1.8vw;
-    height: 2.5vh;
+	height: 1.9vh;
+	width: 1vw;
 }
 
-/* main buttons*/
 .mainButtonContainer {
-    position: absolute;
-    display: flex;
-    top: 10.5vh;
-    left: 30.5vw;
+	display: flex;
+	left: 33vw;
+	position: absolute;
+	top: 11vh;
 }
 
 .carouselWrapper {
-    position: relative;
-    margin: auto;
+	margin: auto;
+    position: absolute;
+    top: 0; /* Adjust if necessary */
+    left: 0; /* Adjust if necessary */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
 }
 
 .carouselContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    margin: auto;
-
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	margin: auto;
+	position: relative;
 }
 
 .carousel-control {
-    background-color: white;
-    border: none;
-    position: absolute;
-    top: 2vh;
-    transform: translateY(-50%);
-    z-index: 2;
-    visibility: hidden;
-    width: 1.0vw;
-    height: 1.8vh;
-    display: flex;
-    border-radius: 50px;
-    align-items: center;
-    justify-content: center;
+	align-items: center;
+	background-color: white;
+	border-radius: 50px;
+	border: none;
+	display: flex;
+	height: 1.8vh;
+	justify-content: center;
+	position: absolute;
+	top: 2vh;
+	transform: translateY(-50%);
+	visibility: hidden;
+	width: 1.0vw;
+	z-index: 2;
 }
 
 .carousel-control.left {
-    left: -3vh;
-    color: #000;
+	color: #000;
+	left: -3vh;
 }
 
 .carousel-control.right {
-    right: -3vh;
-    color: #000;
+	color: #000;
+	right: -3vh;
 }
 
-.dropdownButtonContainer {
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    width: 9.9vw;
-    height: 5vh;
-    scrollbar-width: thin;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    margin-top: 0.9vh;
-    overflow-y: hidden;
-    white-space: nowrap;
-}
-
-.dropdownButton {
-    flex: 0 0 auto;
-    margin: 0 5px;
-}
-
-.imageButtonContainer {
-    position: relative;
-    width: 100%;
-    max-width: 25vh;
-    margin: auto;
-    border-radius: 20px;
-}
-
-.dropdownButton.active,
-.dropdownButton1.active {
-    transform: scale(1.15);
-    opacity: 1.0;
+.dropdownButton.active, .dropdownButton1.active {
+	opacity: 1.0;
+	transform: scale(1.15);
 }
 
 .carouselWrapper1 {
-    position: relative;
-    margin: auto;
+	margin: auto;
+	position: relative;
 }
 
 .carouselContainer1 {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    margin: auto;
-
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	margin: auto;
+	position: relative;
 }
 
 .carousel-control1 {
-    background-color: #ddd;
-    border: none;
-    cursor: pointer;
-    position: absolute;
-    top: 2vh;
-    transform: translateY(-50%);
-    z-index: 2;
-    visibility: hidden;
-    width: 1.0vw;
-    height: 1.8vh;
-    display: flex;
-    border-radius: 50px;
-    align-items: center;
-    justify-content: center;
-
+	align-items: center;
+	background-color: #ddd;
+	border-radius: 50px;
+	border: none;
+	cursor: pointer;
+	display: flex;
+	height: 1.8vh;
+	justify-content: center;
+	position: absolute;
+	top: 2vh;
+	transform: translateY(-50%);
+	visibility: hidden;
+	width: 1.0vw;
+	z-index: 2;
 }
 
 .carousel-control1.left {
-    left: -3vh;
-    color: #000;
+	color: #000;
+	left: -3vh;
 }
 
 .carousel-control1.right {
-    right: -3vh;
-    color: #000;
+	color: #000;
+	right: -3vh;
 }
 
 .dropdownButtonContainer1 {
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    width: 9.9vw;
-    height: 5vh;
-    scrollbar-width: thin;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    margin-top: 0.9vh;
-    overflow-y: hidden;
-    white-space: nowrap;
+	-webkit-overflow-scrolling: touch;
+	display: flex;
+	flex-wrap: nowrap;
+	height: 5vh;
+	margin-top: 0.9vh;
+	overflow-x: auto;
+	overflow-y: hidden;
+	scroll-behavior: smooth;
+	scrollbar-width: thin;
+	white-space: nowrap;
+	width: 9.9vw;
 }
 
-.dropdownButton1 {
-    flex: 0 0 auto;
-    margin: 0 5px;
-}
-
-.imageButtonContainer1 {
-    position: relative;
-    width: 100%;
-    max-width: 25vh;
-    border-radius: 20px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: auto;
-}
+/* FINAL */
 
 /*END Filter buttons*/
 
@@ -758,19 +747,17 @@ input#secondarysearch:-ms-input-placeholder {
 }
 
 .tooltip img {
-    /* Your styles here */
-    position: absolute;
-    width: 1.3vw;
-    height: 1.9vh;
-    top: 5.3vh;
-    /*6.7*/
-    left: 7.5vw
+    position: relative;
+    width: 1.8vw;   
+    height: 3.5vh;  
+    top: 1.2vh;
+    left: 7.5vw;
 }
 
 .tooltip {
     display: none;
     position: absolute;
-    padding: 70px;
+    padding: 1.5vw;  
     color: white;
     margin-left: 3.9vw;
     margin-top: -18vh;
@@ -780,11 +767,11 @@ input#secondarysearch:-ms-input-placeholder {
     background-image: url(../img/tooltip.png);
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 12vw 11vh;
-    background-size: contain;
-    /* or 'contain', depending on which looks better */
+    background-size: contain; 
+    width: 8vw; 
+    height: auto; 
+    font-size: 0.5vw;
 }
-
 #transaction-loader .revolver-part:before {
     position: absolute;
     height: 12px;

@@ -6,36 +6,44 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-document.addEventListener('DOMContentLoaded', function () {
+
+function bindButtonEventListeners() {
     document.querySelectorAll('.dropdownButton[data-type="itemtype"]').forEach(button => {
-        button.addEventListener('mouseenter', function () {
+        button.addEventListener('mouseenter', function() {
             OverSetTitle(this.getAttribute('data-param'));
             OverSetDesc(this.getAttribute('data-desc'));
         });
-        button.addEventListener('mouseleave', function () {
+        button.addEventListener('mouseleave', function() {
             OverSetTitle(" ");
             OverSetDesc(" ");
         });
     });
+}
 
-    // For the second inventory buttons
+function bindSecondButtonEventListeners() {
     document.querySelectorAll('.dropdownButton1[data-type="itemtype"]').forEach(button => {
-        button.addEventListener('mouseenter', function () {
+        button.addEventListener('mouseenter', function() {
             OverSetTitleSecond(this.getAttribute('data-param'));
             OverSetDescSecond(this.getAttribute('data-desc'));
         });
-        button.addEventListener('mouseleave', function () {
+        button.addEventListener('mouseleave', function() {
             OverSetTitleSecond(" ");
             OverSetDescSecond(" ");
         });
     });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    bindButtonEventListeners();
+    // For the second inventory buttons
+    bindSecondButtonEventListeners();
 
     document.querySelectorAll('.dropdownButton[data-type="clothing"]').forEach(button => {
-        button.addEventListener('mouseenter', function () {
+        button.addEventListener('mouseenter', function() {
             OverSetTitle(this.getAttribute('data-param'));
             OverSetDesc(this.getAttribute('data-desc'));
         });
-        button.addEventListener('mouseleave', function () {
+        button.addEventListener('mouseleave', function() {
             OverSetTitle(" ");
             OverSetDesc(" ");
         });
@@ -97,22 +105,63 @@ function scrollCarousel(carouselId, direction) {
     });
     container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
 }
-/* 0 is empty divs 1 is fixed divs like money and ammo */
-const Actions = {
-    all: { types: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] },
-    medical: { types: [0, 2] },
-    foods: { types: [0, 3] },
-    weapons: { types: [0, 5] },
-    ammo: { types: [0, 6] },
-    tools: { types: [0, 4] },
-    animals: { types: [0, 8] },
-    documents: { types: [0, 7] },
-    valuables: { types: [0, 9] },
-    horse: { types: [0, 10] },
-    herbs: { types: [0, 11] },
 
-};
+let actionsConfigLoaded; // Holds the promise once initialized
 
+function loadActionsConfig() {
+    if (!actionsConfigLoaded) {
+        actionsConfigLoaded = new Promise((resolve, reject) => {
+            fetch(`https://${GetParentResourceName()}/getActionsConfig`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8',
+                }
+            })
+            .then(response => response.json())
+            .then(actionsConfig => {
+                console.log('Actions config received:', actionsConfig);
+                window.Actions = actionsConfig;
+                resolve(actionsConfig);
+            })
+            .catch(error => {
+                console.error('Error fetching Actions config:', error);
+                reject(error);
+            });
+        });
+    }
+    return actionsConfigLoaded; 
+}
+
+function generateActionButtons(actionsConfig, containerId, inventoryContext, buttonClass) {
+    const basePath = "img/itemtypes/"; 
+    const container = document.getElementById(containerId); 
+
+    if (container) {
+        Object.keys(actionsConfig).forEach(key => {
+            const action = actionsConfig[key];
+            const button = document.createElement('button');
+            button.className = buttonClass;
+            button.type = 'button';
+            button.setAttribute('data-type', 'itemtype');
+            button.setAttribute('data-param', key);
+            button.setAttribute('data-desc', action.desc);
+            button.setAttribute('onclick', `action('itemtype', '${key}', '${inventoryContext}')`);
+
+            const div = document.createElement('div');
+            const img = document.createElement('img');
+            img.src = basePath + action.img;
+            img.alt = "Image";
+            div.appendChild(img);
+            button.appendChild(div);
+            container.appendChild(button);
+        });
+
+        bindButtonEventListeners(); 
+        bindSecondButtonEventListeners();
+    } else {
+        console.warn(`Container for action buttons not found: ${containerId}`);
+    }
+}
 
 function action(type, param, inv) {
     if (type === 'itemtype') {
@@ -238,7 +287,10 @@ function inventorySetup(items) {
             const custom = item.metadata.tooltip ? "<br>" + item.custom : "";
             const degradation = item.degradation ? "<br>Decay  " + item.degradation + "%" : "";
             const weight = item.weight ? "<br>Weight   " + (item.weight * count) + " Kg" : "<br>Weight " + count / 4 + " Kg";
-            const groupImg = "satchel_nav_herbs.png"; // add group check here  Config.GroupImages[group]
+            //const groupImg = "satchel_nav_herbs.png"; // add group check here  Config.GroupImages[group]
+
+            const groupKey = Object.keys(window.Actions).find(key => window.Actions[key].types.includes(group));
+            const groupImg = groupKey ? window.Actions[groupKey].img : 'satchel_nav_all.png';
 
             $("#inventoryElement").append(`
                 <div data-group='${group}' data-label='${item.label}' style='background-image: url("img/items/${item.name.toLowerCase()}.png"); background-size: 5vw 7.7vh; background-repeat: no-repeat; background-position: center;' id='item-${index}' class='item' data-tooltip='<img src="img/itemtypes/${groupImg}"> ${"Limit " + limit + custom + weight + degradation}'> 
