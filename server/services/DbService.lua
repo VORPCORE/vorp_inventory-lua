@@ -124,6 +124,7 @@ function DBService.CreateItem(sourceCharIdentifier, itemId, amount, metadata, cb
                 end)
         end)
 end
+
 ---delete asynchronously
 ---@param query string @SQL query
 ---@param params table? @SQL params
