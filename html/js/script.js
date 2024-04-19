@@ -203,7 +203,7 @@ window.addEventListener('message', function (event) {
         });
 
     } else if (event.data.action == "hide") {
-
+        $('.tooltip').remove();
         $("#inventoryHud").fadeOut();
         $(".controls").fadeOut();
         $(".site-cm-box").remove();
