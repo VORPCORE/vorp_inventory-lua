@@ -55,7 +55,7 @@ local function respond(cb, result)
 	return result
 end
 
---- check inventory limit
+--- check can carry item or weapon in inventory
 ---@param player number source
 ---@param amount number amount of items
 ---@param cb fun(canCarry: boolean)? async or sync callback
@@ -72,7 +72,8 @@ function InventoryAPI.canCarryAmountItem(player, amount, cb)
 	end
 	local function cancarryammount()
 		local totalAmount = InventoryAPI.getUserTotalCountItems(identifier, charid)
-		return limit ~= -1 and totalAmount + amount <= limit
+		local totalAmountWeapons = InventoryAPI.getUserTotalCountWeapons(identifier, charid, true)
+		return limit ~= -1 and totalAmount + amount + totalAmountWeapons <= limit
 	end
 
 	local canCarry = cancarryammount()
@@ -88,28 +89,18 @@ exports("canCarryItems", InventoryAPI.canCarryAmountItem)
 ---@param amount number amount of item
 ---@param cb fun(canCarry: boolean)? async or sync callback
 function InventoryAPI.canCarryItem(player, itemName, amount, cb)
-	local function exceedsItemLimit(identifier, itemName, weight, limit)
+	local function exceedsItemLimit(identifier, itemName, limit)
 		local items = SvUtils.FindAllItemsByName("default", identifier, itemName)
-		local totalWeight = 0
-
+		local count = 0
 		for _, item in pairs(items) do
-			local count = item:getWeight() or (item:getCount() / 4)
-			totalWeight = totalWeight + count
+			count = count + item:getCount()
 		end
-
-		return totalWeight + weight > limit
-	end
-
-	local function exceedsInventoryLimit(identifier, charid, weight, invCapacity)
-		local totalAmount = InventoryAPI.getUserTotalCountItems(identifier, charid)
-		return invCapacity ~= -1 and totalAmount + weight > invCapacity
+		return count > limit
 	end
 
 	local _source = player
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local identifier = sourceCharacter.identifier
-	local charid = sourceCharacter.charIdentifier
-	local invCapacity = tonumber(sourceCharacter.invCapacity)
 	local svItem = ServerItems[itemName]
 	local canCarry = false
 
@@ -117,15 +108,12 @@ function InventoryAPI.canCarryItem(player, itemName, amount, cb)
 		return respond(cb, false)
 	end
 
-	local weight = (svItem.weight or 0)
 	local limit = svItem.limit
-	local totalWeight = (weight * amount)
 
-
-	if limit ~= -1 and not exceedsItemLimit(identifier, itemName, totalWeight, limit) then
-		canCarry = not exceedsInventoryLimit(identifier, charid, totalWeight, invCapacity)
+	if limit ~= -1 and not exceedsItemLimit(identifier, itemName, limit) then
+		canCarry = false
 	elseif limit == -1 then
-		canCarry = not exceedsInventoryLimit(identifier, charid, totalWeight, invCapacity)
+		canCarry = true
 	end
 
 	return respond(cb, canCarry)
@@ -140,7 +128,6 @@ function InventoryAPI.getInventory(player, cb)
 	local _source = player
 	local sourceCharacter = Core.getUser(_source)
 	if not sourceCharacter then
-		Log.error("InventoryAPI.getInventory: user is not logged in")
 		return respond(cb, nil)
 	end
 	sourceCharacter = sourceCharacter.getUsedCharacter
