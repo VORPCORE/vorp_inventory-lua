@@ -4,7 +4,7 @@ Core = exports.vorp_core:GetCore()
 
 
 RegisterNetEvent('vorpinventory:send_slots', function(itemTotal, slots, mon, gol, rol)
-    SendNUIMessage({ action = "changecheck", check = itemTotal, info = slots })
+    SendNUIMessage({ action = "changecheck", check = string.format("%.1f", itemTotal), info = string.format("%.1f", slots) })
     SendNUIMessage({
         action = "updateStatusHud",
         show   = not IsRadarHidden(),
