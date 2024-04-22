@@ -111,7 +111,7 @@ function InventoryAPI.canCarryItem(player, itemName, amount, cb)
 	local limit = svItem.limit
 
 	if limit ~= -1 and not exceedsItemLimit(identifier, itemName, limit) then
-		canCarry = false
+		canCarry = true
 	elseif limit == -1 then
 		canCarry = true
 	end
