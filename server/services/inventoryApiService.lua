@@ -84,11 +84,16 @@ exports("canCarryItems", InventoryAPI.canCarryAmountItem)
 
 
 ---check limit of item
----@param player number source
+---@param target number source
 ---@param itemName string item name
 ---@param amount number amount of item
 ---@param cb fun(canCarry: boolean)? async or sync callback
-function InventoryAPI.canCarryItem(player, itemName, amount, cb)
+function InventoryAPI.canCarryItem(target, itemName, amount, cb)
+	local user = Core.getUser(target)
+	if not user then
+		return respond(cb, false)
+	end
+
 	local function exceedsItemLimit(identifier, limit)
 		local items = SvUtils.FindAllItemsByName("default", identifier, itemName)
 		local count = 0
@@ -98,9 +103,7 @@ function InventoryAPI.canCarryItem(player, itemName, amount, cb)
 		return count + amount > limit
 	end
 
-	local _source = player
-	local sourceCharacter = Core.getUser(_source).getUsedCharacter
-	local identifier = sourceCharacter.identifier
+	local character = user.getUsedCharacter
 	local svItem = ServerItems[itemName]
 	local canCarry = false
 
@@ -108,11 +111,9 @@ function InventoryAPI.canCarryItem(player, itemName, amount, cb)
 		return respond(cb, false)
 	end
 
-	local limit = svItem.limit
-
-	if limit ~= -1 and not exceedsItemLimit(identifier, limit) then
+	if svItem.limit ~= -1 and not exceedsItemLimit(character.identifier, svItem.limit) then
 		canCarry = true
-	elseif limit == -1 then
+	elseif svItem.limit == -1 then
 		canCarry = true
 	end
 
