@@ -457,113 +457,109 @@ function InventoryService.onPickup(data)
 	local _source = source
 	local pickups = data.data[data.key]
 	local uid = pickups.uid
-
-	if not ItemUids[uid] then
+	local user = Core.getUser(_source)
+	if not ItemUids[uid] or not user or SvUtils.InProcessing(_source) then
 		return
 	end
-
-	if SvUtils.InProcessing(_source) then
-		return
-	end
-
 	SvUtils.ProcessUser(_source)
-	local sourceCharacter = Core.getUser(_source).getUsedCharacter
-	local identifier = sourceCharacter.identifier
-	local charId = sourceCharacter.charIdentifier
-	local invCapacity = sourceCharacter.invCapacity
-	local job = sourceCharacter.job
+
+	local character = user.getUsedCharacter
+	local identifier = character.identifier
+	local charId = character.charIdentifier
+	local invCapacity = character.invCapacity
+	local job = character.job
 	local userInventory = UsersInventories.default[identifier]
-	local userWeapons = UsersWeapons.default
+	local pickup = ItemPickUps[uid]
 
-	if ItemPickUps[uid] ~= nil then
-		local name = ItemPickUps[uid].name
-		local amount = ItemPickUps[uid].amount
-		local metadata = ItemPickUps[uid].metadata
+	if not userInventory then
+		SvUtils.Trem(_source, false)
+		return
+	end
 
-		if ItemPickUps[uid].weaponid == 1 then
-			if userInventory ~= nil then
-				InventoryAPI.canCarryItem(_source, name, amount, function(canAdd)
-					if canAdd and ItemPickUps[uid] then
-						InventoryService.addItem(_source, "default", name, amount, metadata, function(item)
-							if item ~= nil then
-								local dataItem = { name = name, obj = ItemPickUps[uid].obj, amount = amount, metadata = metadata, position = ItemPickUps[uid].coords, id = ItemPickUps[uid].id }
-								ItemPickUps[uid] = nil
-								ItemUids[uid] = nil
-								local charname, scourceidentifier, steamname = getSourceInfo(_source)
-								local title = T.itempickup
-								local description = "**" .. T.WebHookLang.amount .. "** `" .. amount .. "`\n **" .. T.WebHookLang.item .. "** `" .. name .. "` \n**" .. T.WebHookLang.charname .. ":** `" .. charname .. "`\n**" .. T.WebHookLang.Steamname .. "** `" .. steamname .. "`"
-								local info = { source = _source, name = Logs.WebHook.webhookname, title = title, description = description, webhook = Logs.WebHook.webhook, color = Logs.WebHook.coloritempickup, }
-								TriggerClientEvent("vorpInventory:sharePickupClient", -1, dataItem, 2)
-								TriggerClientEvent("vorpInventory:removePickupClient", -1, dataItem.obj)
-								TriggerClientEvent("vorpInventory:receiveItem", _source, name, item:getId(), amount, metadata)
-								TriggerClientEvent("vorpInventory:playerAnim", _source, uid)
-								SvUtils.SendDiscordWebhook(info)
-							end
-						end)
-					else
-						Core.NotifyRightTip(_source, T.fullInventory, 2000)
-						SvUtils.Trem(_source, false)
-					end
-				end)
+	-- is item
+	if ItemPickUps[uid].weaponid == 1 then
+		
+		local canCarryWeight = InventoryAPI.canCarryAmountItem(_source, pickup.amount)
+		local canCarryLimit = InventoryAPI.canCarryItem(_source, pickup.name, pickup.amount)
+
+		if not canCarryWeight or not canCarryLimit then
+			Core.NotifyRightTip(_source, T.fullInventory, 2000)
+			SvUtils.Trem(_source, false)
+			return
+		end
+
+		InventoryService.addItem(_source, "default", pickup.name, pickup.amount, pickup.metadata, function(item)
+			if item ~= nil then
+				local dataItem = { name = pickup.name, obj = ItemPickUps[uid].obj, amount = pickup.amount, metadata = pickup.metadata, position = ItemPickUps[uid].coords, id = ItemPickUps[uid].id }
+				ItemPickUps[uid] = nil
+				ItemUids[uid] = nil
+				local charname, scourceidentifier, steamname = getSourceInfo(_source)
+				local title = T.itempickup
+				local description = "**" .. T.WebHookLang.amount .. "** `" .. pickup.amount .. "`\n **" .. T.WebHookLang.item .. "** `" .. pickup.name .. "` \n**" .. T.WebHookLang.charname .. ":** `" .. charname .. "`\n**" .. T.WebHookLang.Steamname .. "** `" .. steamname .. "`"
+				local info = { source = _source, name = Logs.WebHook.webhookname, title = title, description = description, webhook = Logs.WebHook.webhook, color = Logs.WebHook.coloritempickup, }
+				TriggerClientEvent("vorpInventory:sharePickupClient", -1, dataItem, 2)
+				TriggerClientEvent("vorpInventory:removePickupClient", -1, dataItem.obj)
+				TriggerClientEvent("vorpInventory:receiveItem", _source, pickup.name, item:getId(), pickup.amount, pickup.metadata)
+				TriggerClientEvent("vorpInventory:playerAnim", _source, uid)
+				SvUtils.SendDiscordWebhook(info)
+			end
+		end)
+	else
+		-- weapons
+		local notListed = false
+		local totalInvWeight = 0
+		local sourceInventoryWeaponCount = 0
+		local DefaultAmount = Config.MaxItemsInInventory.Weapons
+		local weaponId = ItemPickUps[uid].weaponid
+		local userWeapons = UsersWeapons.default
+		local weapon = userWeapons[weaponId]
+		local serialNumber = weapon:getSerialNumber()
+		local weaponCustomDesc = weapon:getCustomDesc()
+
+		if Config.JobsAllowed[job] then
+			DefaultAmount = Config.JobsAllowed[job]
+		end
+
+		if DefaultAmount ~= 0 then
+			if weapon:getName() then
+				if SharedUtils.IsValueInArray(string.upper(weapon:getName()), Config.notweapons) then
+					notListed = true
+				end
+			end
+			if not notListed then
+				local itemsToTalWeight = InventoryAPI.getUserTotalCountItems(identifier, charId)
+				local sourceInventoryWeaponWeight = InventoryAPI.getUserTotalCountWeapons(identifier, charId, true)
+				totalInvWeight = (itemsToTalWeight + weapon:getWeight() + sourceInventoryWeaponWeight)
+				sourceInventoryWeaponCount = InventoryAPI.getUserTotalCountWeapons(identifier, charId) + 1
+			end
+
+			if totalInvWeight <= invCapacity or sourceInventoryWeaponCount <= DefaultAmount then
+				local weaponObj = ItemPickUps[uid].obj
+
+				weapon:setDropped(0)
+				local dataweapon = { name = weapon:getName(), obj = weaponObj, amount = pickup.amount, metadata = {}, weaponId = weaponId, position = ItemPickUps[uid].coords, custom_label = weapon:getCustomLabel(), serial_number = serialNumber, custom_desc = weaponCustomDesc, id = nil }
+				ItemPickUps[uid] = nil
+				if weaponCustomDesc == nil then
+					weaponCustomDesc = "Custom Description not set"
+				end
+				if serialNumber == nil then
+					serialNumber = "Serial Number not set"
+				end
+				local charname, scourceidentifier, steamname = getSourceInfo(_source)
+				local title = T.weppickup
+				local description = "**" .. T.WebHookLang.Weapontype .. ":** `" .. weapon:getName() .. "`\n**" .. T.WebHookLang.charname .. ":** `" .. charname .. "`\n**" .. T.WebHookLang.serialnumber .. "** `" .. serialNumber .. "`\n **" .. T.WebHookLang.Desc .. "** `" .. weaponCustomDesc .. "` \n **" .. T.WebHookLang.Steamname .. "** `" .. steamname .. "`"
+				local info = { source = _source, name = Logs.WebHook.webhookname, title = title, description = description, webhook = Logs.WebHook.webhook, color = Logs.WebHook.colorweppickupd }
+				TriggerClientEvent("vorpInventory:sharePickupClient", -1, dataweapon, 2)
+				TriggerClientEvent("vorpInventory:removePickupClient", -1, weaponObj)
+				TriggerClientEvent("vorpInventory:playerAnim", _source, uid)
+				InventoryService.addWeapon(_source, weaponId)
+				SvUtils.SendDiscordWebhook(info)
 			end
 		else
-			-- weapons
-			local notListed = false
-			local totalInvWeight = 0
-			local sourceInventoryWeaponCount = 0
-			local DefaultAmount = Config.MaxItemsInInventory.Weapons
-			local weaponId = ItemPickUps[uid].weaponid
-			local weapon = userWeapons[weaponId]
-			local wepname = weapon:getName()
-			local weaponWeight = weapon:getWeight()
-			local weaponCustomLabel = weapon:getCustomLabel()
-			local serialNumber = weapon:getSerialNumber()
-			local weaponCustomDesc = weapon:getCustomDesc()
-
-			if Config.JobsAllowed[job] then
-				DefaultAmount = Config.JobsAllowed[job]
-			end
-
-			if DefaultAmount ~= 0 then
-				if wepname then
-					if SharedUtils.IsValueInArray(string.upper(wepname), Config.notweapons) then
-						notListed = true
-					end
-				end
-				if not notListed then
-					local itemsToTalWeight = InventoryAPI.getUserTotalCountItems(identifier, charId)
-					local sourceInventoryWeaponWeight = InventoryAPI.getUserTotalCountWeapons(identifier, charId, true)
-					totalInvWeight = (itemsToTalWeight + weaponWeight + sourceInventoryWeaponWeight)
-					sourceInventoryWeaponCount = InventoryAPI.getUserTotalCountWeapons(identifier, charId) + 1
-				end
-
-				if totalInvWeight <= invCapacity or sourceInventoryWeaponCount <= DefaultAmount then
-					local weaponObj = ItemPickUps[uid].obj
-
-					weapon:setDropped(0)
-					local dataweapon = { name = wepname, obj = weaponObj, amount = amount, metadata = metadata, weaponId = weaponId, position = ItemPickUps[uid].coords, custom_label = weaponCustomLabel, serial_number = serialNumber, custom_desc = weaponCustomDesc, id = nil }
-					ItemPickUps[uid] = nil
-					if weaponCustomDesc == nil then
-						weaponCustomDesc = "Custom Description not set"
-					end
-					if serialNumber == nil then
-						serialNumber = "Serial Number not set"
-					end
-					local charname, scourceidentifier, steamname = getSourceInfo(_source)
-					local title = T.weppickup
-					local description = "**" .. T.WebHookLang.Weapontype .. ":** `" .. wepname .. "`\n**" .. T.WebHookLang.charname .. ":** `" .. charname .. "`\n**" .. T.WebHookLang.serialnumber .. "** `" .. serialNumber .. "`\n **" .. T.WebHookLang.Desc .. "** `" .. weaponCustomDesc .. "` \n **" .. T.WebHookLang.Steamname .. "** `" .. steamname .. "`"
-					local info = { source = _source, name = Logs.WebHook.webhookname, title = title, description = description, webhook = Logs.WebHook.webhook, color = Logs.WebHook.colorweppickupd }
-					TriggerClientEvent("vorpInventory:sharePickupClient", -1, dataweapon, 2)
-					TriggerClientEvent("vorpInventory:removePickupClient", -1, weaponObj)
-					TriggerClientEvent("vorpInventory:playerAnim", _source, uid)
-					InventoryService.addWeapon(_source, weaponId)
-					SvUtils.SendDiscordWebhook(info)
-				end
-			else
-				Core.NotifyRightTip(_source, T.fullInventoryWeapon, 2000)
-			end
+			Core.NotifyRightTip(_source, T.fullInventoryWeapon, 2000)
 		end
 	end
+
 	SvUtils.Trem(_source, false)
 end
 
