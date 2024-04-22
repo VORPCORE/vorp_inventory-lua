@@ -235,6 +235,7 @@ $(document).ready(function () {
             var tooltipText = $(this).data('tooltip');
             var $tooltip = $('<div></div>')
                 .addClass('tooltip')
+                .css('pointer-events', 'none')
                 .html(tooltipText)
                 .appendTo('body');
 
@@ -553,8 +554,7 @@ function inventorySetup(items) {
     if (Config.AddDollarItem) {
         $("#inventoryElement").append(
             "<div data-label='" + m_label + "'data-group ='1' style='background-image: url(\"img/items/" + m_item +
-            ".png\"), url(); background-size: 4.5vw 6.7vh; background-repeat: no-repeat; background-position: center;' id='item-" +
-            m_item + "' class='item'><div class='text'></div></div>"
+            ".png\"), url(); background-size: 4.5vw 6.7vh; background-repeat: no-repeat; background-position: center;' id='item-" + m_item + "' class='item'><div class='text'></div></div>"
         );
 
         $("#item-" + m_item).contextMenu([data], {
@@ -627,11 +627,8 @@ function inventorySetup(items) {
 
         if (Config.AddGoldItem) {
             $("#inventoryElement").append(
-                "<div data-label='" + g_label + "'data-group ='1' style='background-image: url(\"img/items/" +
-                g_item +
-                ".png\"), url(); background-size: 4.5vw 6.7vh; background-repeat: no-repeat; background-position: center;' id='item-" +
-                g_item +
-                "' class='item'><div class='text'></div></div>"
+                "<div data-label='" + g_label + "'data-group ='1' style='background-image: url(\"img/items/" + g_item +
+                ".png\"), url(); background-size: 4.5vw 6.7vh; background-repeat: no-repeat; background-position: center;' id='item-" + g_item + "' class='item'><div class='text'></div></div>"
             );
 
             $("#item-" + g_item).contextMenu([data], {
