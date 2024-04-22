@@ -321,7 +321,7 @@ function secondInventorySetup(items, info) {
             const groupImg = groupKey ? window.Actions[groupKey].img : 'satchel_nav_all.png';
             const tooltipContent = group > 1 ? `<img src="img/itemtypes/${groupImg}"> ${weight + degradation + custom}` : `${weight + degradation + custom}`;
 
-            $("#secondInventoryElement").append(` <div data-label='${item.label}' data-group ='${item.group}' style='background-image: url(\"img/items/${item.name ? item.name.toLowerCase() : ""}.png\"); background-size: 5vw 7.7vh; background-repeat: no-repeat; background-position: center;' id="item-${index}"  class='item' class='item' data-tooltip='${tooltipContent}'> <div class='count'>${count || 0}</div><div class='text'></div></div> `);
+            $("#secondInventoryElement").append(` <div data-label='${item.label}' data-group ='${item.group}' style='background-image: url(\"img/items/${item.name ? item.name.toLowerCase() : ""}.png\"); background-size: 4.5vw 7.7vh; background-repeat: no-repeat; background-position: center;' id="item-${index}"  class='item' class='item' data-tooltip='${tooltipContent}'> <div class='count'>${count || 0}</div><div class='text'></div></div> `);
 
 
         } else {
@@ -330,7 +330,7 @@ function secondInventorySetup(items, info) {
             const weight = item.weight ? "Weight   " + (item.weight * item.count) + " Kg" : "Weight " + item.count / 4 + " Kg";
             $("#secondInventoryElement").append(`
             <div data-label='${item.label}' data-group ='${group}'
-            style='background-image: url("img/items/${item.name.toLowerCase()}.png"); background-size: 5vw 7.7vh; background-repeat: no-repeat; background-position: center;' id='item-${index}' class='item' data-tooltip="${weight + info}">
+            style='background-image: url("img/items/${item.name.toLowerCase()}.png"); background-size: 4.5vw 7.7vh; background-repeat: no-repeat; background-position: center;' id='item-${index}' class='item' data-tooltip="${weight + info}">
             </div>`);
         }
 

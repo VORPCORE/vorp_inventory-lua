@@ -303,7 +303,7 @@ function inventorySetup(items) {
             const tooltipContent = group > 1 ? `<img src="img/itemtypes/${groupImg}"> ${"Limit " + limit + custom + weight + degradation}` : `Limit ${limit}${custom}${weight}${degradation}`;
 
             $("#inventoryElement").append(`
-                <div data-group='${group}' data-label='${item.label}' style='background-image: url("img/items/${item.name.toLowerCase()}.png"); background-size: 5vw 7.7vh; background-repeat: no-repeat; background-position: center;' id='item-${index}' class='item' data-tooltip='${tooltipContent}'> 
+                <div data-group='${group}' data-label='${item.label}' style='background-image: url("img/items/${item.name.toLowerCase()}.png"); background-size: 4.5vw 7.7vh; background-repeat: no-repeat; background-position: center;' id='item-${index}' class='item' data-tooltip='${tooltipContent}'> 
                     <div class='count'>
                         <span style='color:Black'>${count}</span>
                     </div>
@@ -313,7 +313,7 @@ function inventorySetup(items) {
             const weight = item.weight ? "Weight   " + item.weight + " Kg" : "Weight " + count / 4 + " Kg";
             const info = item.serial_number ? "<br>Ammo " + item.count + "<br>Serial No " + item.serial_number : "";
             $("#inventoryElement").append(`
-                <div data-label='${item.label}' data-group='${group}' style='background-image: url("img/items/${item.name.toLowerCase()}.png"); background-size: 5vw 7.7vh; background-repeat: no-repeat; background-position: center;' id='item-${index}' class='item' data-tooltip="${weight + info}">
+                <div data-label='${item.label}' data-group='${group}' style='background-image: url("img/items/${item.name.toLowerCase()}.png"); background-size: 4.5vw 7.7vh; background-repeat: no-repeat; background-position: center;' id='item-${index}' class='item' data-tooltip="${weight + info}">
                     <div class='equipped-icon' style='display: ${!item.used && !item.used2 ? "none" : "block"};'></div>
                 </div>`);
         }
@@ -483,7 +483,7 @@ function inventorySetup(items) {
 
     if (Config.AddAmmoItem) {
         $("#inventoryElement").append(
-            "<div data-label='" + gunbelt_label + "'data-group ='1' style='background-image: url(\"img/items/" + gunbelt_item + ".png\"); background-size: 4vw 6.7vh; background-repeat: no-repeat; background-position: center;' id='item-" + gunbelt_item + "' class='item'>  <div class='text'></div> </div>");
+            "<div data-label='" + gunbelt_label + "'data-group ='1' style='background-image: url(\"img/items/" + gunbelt_item + ".png\"); background-size: 4.5vw 6.7vh; background-repeat: no-repeat; background-position: center;' id='item-" + gunbelt_item + "' class='item'>  <div class='text'></div> </div>");
 
         $("#item-" + gunbelt_item).contextMenu([data], {
             offsetX: 1,
@@ -553,7 +553,7 @@ function inventorySetup(items) {
     if (Config.AddDollarItem) {
         $("#inventoryElement").append(
             "<div data-label='" + m_label + "'data-group ='1' style='background-image: url(\"img/items/" + m_item +
-            ".png\"), url(); background-size: 4vw 6.7vh; background-repeat: no-repeat; background-position: center;' id='item-" +
+            ".png\"), url(); background-size: 4.5vw 6.7vh; background-repeat: no-repeat; background-position: center;' id='item-" +
             m_item + "' class='item'><div class='text'></div></div>"
         );
 
@@ -629,7 +629,7 @@ function inventorySetup(items) {
             $("#inventoryElement").append(
                 "<div data-label='" + g_label + "'data-group ='1' style='background-image: url(\"img/items/" +
                 g_item +
-                ".png\"), url(); background-size: 4vw 6.7vh; background-repeat: no-repeat; background-position: center;' id='item-" +
+                ".png\"), url(); background-size: 4.5vw 6.7vh; background-repeat: no-repeat; background-position: center;' id='item-" +
                 g_item +
                 "' class='item'><div class='text'></div></div>"
             );
