@@ -244,9 +244,13 @@ body {
 
 .capacity {
     position: absolute;
-    right: 20.5vw;
-    top: 19vh;
-    font-size: 0.8vw;
+    left: 47%;
+    top: 20%;
+    transform: translate(50%, 50%);
+    color: #ffffff;
+    font-size: 0.9vw;
+    text-align: center;
+    white-space: nowrap;
 }
 
 /* item label*/
@@ -459,7 +463,7 @@ body {
 .carousel-control.left {
     color: #000;
     left: -3vh;
-} 
+}
 
 .carousel-control.right {
     color: #000;
@@ -468,7 +472,7 @@ body {
 
 .carousel-control.right:hover,
 .carousel-control.left:hover {
-     opacity: 0.8;
+    opacity: 0.8;
 
 }
 
@@ -587,11 +591,15 @@ body {
 /*capacity*/
 .controls #check {
     position: absolute;
-    left: 3.4vw;
-    width: 6vw;
+    left: 54%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     color: #ffffff;
     font-size: 0.9vw;
+    text-align: center;
+    white-space: nowrap;
 }
+
 
 
 button {
@@ -664,7 +672,7 @@ input#secondarysearch:-ms-input-placeholder {
     background-repeat: no-repeat;
     background-position: center;
     background-size: 2.8vw, 1vh;
-    line-height: 3vh; 
+    line-height: 3vh;
 }
 
 /* New class to indicate an item is equipped */
