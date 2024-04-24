@@ -673,6 +673,7 @@ input#secondarysearch:-ms-input-placeholder {
     background-position: center;
     background-size: 2.8vw, 1vh;
     line-height: 3vh;
+    pointer-events: none;
 }
 
 /* New class to indicate an item is equipped */
