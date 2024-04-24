@@ -28,6 +28,7 @@ local function applyPosfx()
 		AnimpostfxSetStrength("OJDominoBlur", 0.5)
 	end
 end
+
 function NUIService.ReloadInventory(inventory)
 	local payload = json.decode(inventory)
 	if payload.itemList == '[]' then
