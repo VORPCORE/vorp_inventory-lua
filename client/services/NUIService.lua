@@ -185,6 +185,7 @@ function NUIService.CloseInventory()
 	if not CanOpen then -- only trigger if someone is inside custom inv
 		TriggerServerEvent("vorp_inventory:Server:UnlockCustomInv")
 	end
+	DisplayRadar(true)
 	SetNuiFocus(false, false)
 	SendNUIMessage({ action = "hide" })
 	InInventory = false
