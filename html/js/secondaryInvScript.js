@@ -321,7 +321,7 @@ function secondInventorySetup(items, info) {
             const groupImg = groupKey ? window.Actions[groupKey].img : 'satchel_nav_all.png';
             const tooltipContent = group > 1 ? `<img src="img/itemtypes/${groupImg}"> ${weight + degradation + custom}` : `${weight + degradation + custom}`;
 
-            $("#secondInventoryElement").append(` <div data-label='${item.label}' data-group ='${item.group}' style='background-image: url(\"img/items/${item.name ? item.name.toLowerCase() : ""}.png\"); background-size: 4.5vw 7.7vh; background-repeat: no-repeat; background-position: center;' id="item-${index}"  class='item' class='item' data-tooltip='${tooltipContent}'> ${count > 0 ? `<div class='count'>${count}</div>` : ``}<div class='text'></div></div> `);
+            $("#secondInventoryElement").append(` <div data-label='${item.label}' data-group ='${group}' style='background-image: url(\"img/items/${item.name ? item.name.toLowerCase() : ""}.png\"); background-size: 4.5vw 7.7vh; background-repeat: no-repeat; background-position: center;' id="item-${index}"  class='item' class='item' data-tooltip='${tooltipContent}'> ${count > 0 ? `<div class='count'>${count}</div>` : ``}<div class='text'></div></div> `);
         } else {
 
             const info = item.serial_number ? "<br>Ammo " + item.count + "<br>Serial No " + item.serial_number : "";
