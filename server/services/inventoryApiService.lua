@@ -73,7 +73,7 @@ function InventoryAPI.canCarryAmountItem(player, amount, cb)
 	local function cancarryammount()
 		local totalAmount = InventoryAPI.getUserTotalCountItems(identifier, charid)
 		local totalAmountWeapons = InventoryAPI.getUserTotalCountWeapons(identifier, charid, true)
-		return limit ~= -1 and totalAmount + amount + totalAmountWeapons <= limit
+		return limit ~= -1 and totalAmount + totalAmountWeapons <= limit
 	end
 
 	local canCarry = cancarryammount()
@@ -103,6 +103,13 @@ function InventoryAPI.canCarryItem(target, itemName, amount, cb)
 		return count + amount > limit
 	end
 
+	local function exceedsInvLimit(identifier, charIdentifier, limit, itemWeight)
+		local totalAmount = InventoryAPI.getUserTotalCountItems(identifier, charIdentifier)
+		local totalAmountWeapons = InventoryAPI.getUserTotalCountWeapons(identifier, charIdentifier, true)
+		itemWeight = itemWeight * amount
+		return limit ~= -1 and totalAmount + totalAmountWeapons + itemWeight > limit
+	end
+
 	local character = user.getUsedCharacter
 	local svItem = ServerItems[itemName]
 	local canCarry = false
@@ -112,7 +119,7 @@ function InventoryAPI.canCarryItem(target, itemName, amount, cb)
 	end
 
 	if svItem.limit ~= -1 and not exceedsItemLimit(character.identifier, svItem.limit) then
-		canCarry = true
+		canCarry = exceedsInvLimit(character.identifier, character.charIdentifier, svItem.limit, svItem.weight)
 	elseif svItem.limit == -1 then
 		canCarry = true
 	end
