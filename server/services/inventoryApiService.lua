@@ -830,6 +830,23 @@ end
 
 exports("removeAllUserAmmo", InventoryAPI.removeAllUserAmmo)
 
+--- get all user ammo
+---@param player number source
+---@param cb fun(ammo: table)? async or sync callback
+---@return table
+function InventoryAPI.getUserAmmo(player, cb)
+	local _source = player
+	local sourceCharacter = Core.getUser(_source)
+	if not sourceCharacter then
+		return respond(cb, nil)
+	end
+	local ammo = allplayersammo[_source].ammo
+	if not ammo then
+		return respond(cb, nil)
+	end
+
+	return respond(cb, ammo)
+end
 
 --- add bullets to player
 ---@param player number source
