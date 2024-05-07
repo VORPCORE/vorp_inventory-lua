@@ -830,7 +830,7 @@ function InventoryAPI.removeAllUserAmmo(player, cb)
 	allplayersammo[_source].ammo = {}
 	TriggerClientEvent("vorpinventory:updateuiammocount", _source, allplayersammo[_source].ammo)
 	TriggerClientEvent("vorpinventory:recammo", _source, allplayersammo[_source])
-	local params = { charId = sourceCharacter.charIdentifier,ammo = json.encode({})}
+	local params = { charId = sourceCharacter.charIdentifier, ammo = json.encode({}) }
 	DBService.updateAsync('UPDATE characters SET ammo = @ammo WHERE charidentifier = @charId', params)
 	return respond(cb, true)
 end
@@ -854,6 +854,8 @@ function InventoryAPI.getUserAmmo(player, cb)
 
 	return respond(cb, ammo)
 end
+
+exports("getUserAmmo", InventoryAPI.getUserAmmo)
 
 --- add bullets to player
 ---@param player number source
