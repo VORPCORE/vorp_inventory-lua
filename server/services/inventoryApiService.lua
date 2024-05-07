@@ -822,9 +822,16 @@ exports("getWeaponBullets", InventoryAPI.getWeaponBullets)
 ---@return boolean
 function InventoryAPI.removeAllUserAmmo(player, cb)
 	local _source = player
+	local sourceCharacter = Core.getUser(_source)
+	if not sourceCharacter then
+		return respond(cb, nil)
+	end
+	sourceCharacter = sourceCharacter.getUsedCharacter
 	allplayersammo[_source].ammo = {}
 	TriggerClientEvent("vorpinventory:updateuiammocount", _source, allplayersammo[_source].ammo)
 	TriggerClientEvent("vorpinventory:recammo", _source, allplayersammo[_source])
+	local params = { charId = sourceCharacter.charIdentifier,ammo = json.encode({})}
+	DBService.updateAsync('UPDATE characters SET ammo = @ammo WHERE charidentifier = @charId', params)
 	return respond(cb, true)
 end
 
