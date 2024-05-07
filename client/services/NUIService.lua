@@ -91,6 +91,7 @@ function NUIService.OpenPlayerInventory(name, id)
 	local result = Core.Callback.TriggerAwait("vorp_inventory:Server:CanOpenCustom", id)
 	CanOpen = result
 	if CanOpen then
+		CanOpen = false
 		applyPosfx()
 		DisplayRadar(false)
 		SetNuiFocus(true, true)
