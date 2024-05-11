@@ -885,7 +885,7 @@ function InventoryAPI.addBullets(player, bulletType, amount, cb)
 	TriggerClientEvent("vorpinventory:recammo", _source, allplayersammo[_source])
 	local query1 = 'UPDATE characters SET ammo = @ammo WHERE charidentifier = @charidentifier'
 	local params1 = { charidentifier = charidentifier, ammo = json.encode(ammo) }
-	DBService.updateAsync(query1, params1, function(r) end)
+	DBService.updateAsync(query1, params1)
 	return respond(cb, true)
 end
 
@@ -1103,7 +1103,7 @@ function InventoryAPI.registerWeapon(_target, wepname, ammos, components, comps,
 		return respond(cb, nil)
 	end
 
-	local isValid = IsWeaponValid(joaat(wepname))
+	local isValid = Citizen.InvokeNative(0x937C71165CF334B3, joaat(wepname))
 	if not isValid then
 		return respond(cb, nil)
 	end
