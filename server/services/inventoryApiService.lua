@@ -1102,6 +1102,24 @@ function InventoryAPI.registerWeapon(_target, wepname, ammos, components, comps,
 	if not targetUser then
 		return respond(cb, nil)
 	end
+
+	local isValid = IsWeaponValid(joaat(wepname))
+	if not isValid then
+		return respond(cb, nil)
+	end
+
+	local function isWeaponInConfig()
+		for index, value in ipairs(SharedData.Weapons) do
+			if value.HashName == wepname then
+				return true
+			end
+		end
+	end
+
+	if not isWeaponInConfig() then
+		return respond(cb, nil)
+	end
+
 	local function isInventryFull(targetIdentifier, targetCharId, targetCharacter)
 		local weaponWeight = SvUtils.GetWeaponWeight(wepname)
 		local itemsTotalWeight = InventoryAPI.getUserTotalCountItems(targetIdentifier, targetCharId)
