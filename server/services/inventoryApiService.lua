@@ -947,7 +947,7 @@ function InventoryAPI.canCarryAmountWeapons(player, amount, cb, weaponName)
 
 	weaponName = getWeaponNameFromHash()
 
-	local function isInventryFull(identifier, charId, invCapacity)
+	local function isInventoryFull(identifier, charId, invCapacity)
 		local weaponWeight = SvUtils.GetWeaponWeight(weaponName)
 		local itemsTotalWeight = InventoryAPI.getUserTotalCountItems(identifier, charId)
 		local weaponsTotalWeight = InventoryAPI.getUserTotalCountWeapons(identifier, charId, true)
@@ -965,7 +965,7 @@ function InventoryAPI.canCarryAmountWeapons(player, amount, cb, weaponName)
 	local job = sourceCharacter.job
 	local DefaultAmount = Config.MaxItemsInInventory.Weapons
 
-	if weaponName and isInventryFull(identifier, charId, invCapacity) then
+	if weaponName and isInventoryFull(identifier, charId, invCapacity) then
 		return respond(cb, false)
 	end
 
@@ -1103,10 +1103,7 @@ function InventoryAPI.registerWeapon(_target, wepname, ammos, components, comps,
 		return respond(cb, nil)
 	end
 
-	local isValid = Citizen.InvokeNative(0x937C71165CF334B3, joaat(wepname))
-	if not isValid then
-		return respond(cb, nil)
-	end
+	
 
 	local function isWeaponInConfig()
 		for index, value in ipairs(SharedData.Weapons) do
