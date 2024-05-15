@@ -1002,9 +1002,8 @@ function InventoryAPI.setWeaponCustomLabel(weaponId, label, cb)
 
 	if userWeapons then
 		userWeapons:setCustomLabel(label)
-		DBService.updateAsync('UPDATE loadout SET custom_label = @custom_label WHERE id = @id',
-			{ id = weaponId, custom_label = label }, function(r)
-			end)
+		TriggerClientEvent("vorpInventory:setWeaponCustomLabel", -1, weaponId, label)
+		DBService.updateAsync('UPDATE loadout SET custom_label = @custom_label WHERE id = @id', { id = weaponId, custom_label = label })
 		return respond(cb, true)
 	end
 	return respond(cb, false)
@@ -1022,6 +1021,7 @@ function InventoryAPI.setWeaponSerialNumber(weaponId, serial, cb)
 
 	if userWeapons then
 		userWeapons:setSerialNumber(serial)
+		TriggerClientEvent("vorpInventory:setWeaponSerialNumber", -1, weaponId, serial)
 		DBService.updateAsync('UPDATE loadout SET serial_number = @serial_number WHERE id = @id', { id = weaponId, serial_number = serial })
 		return respond(cb, true)
 	end
@@ -1037,15 +1037,13 @@ exports("setWeaponSerialNumber", InventoryAPI.setWeaponSerialNumber)
 ---@return boolean
 function InventoryAPI.setWeaponCustomDesc(weaponId, desc, cb)
 	local userWeapons = UsersWeapons.default[weaponId]
-
-	if userWeapons then
-		userWeapons:setCustomDesc(desc)
-		DBService.updateAsync('UPDATE loadout SET custom_desc = @custom_desc WHERE id = @id',
-			{ id = weaponId, custom_desc = desc }, function(r)
-			end)
-		return respond(cb, true)
+	if not userWeapons then
+		return respond(cb, false)
 	end
-	return respond(cb, false)
+	TriggerClientEvent("vorpInventory:setWeaponCustomDesc", -1, weaponId, desc)
+	userWeapons:setCustomDesc(desc)
+	DBService.updateAsync('UPDATE loadout SET custom_desc = @custom_desc WHERE id = @id', { id = weaponId, custom_desc = desc })
+	return respond(cb, true)
 end
 
 exports("setWeaponCustomDesc", InventoryAPI.setWeaponCustomDesc)
