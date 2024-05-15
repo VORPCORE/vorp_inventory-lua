@@ -618,6 +618,7 @@ input#secondarysearch {
     padding-left: 20px;
     font-family: "crock";
     font-size: 0.8vw;
+    color: white;
 }
 
 input#search::-webkit-input-placeholder,
