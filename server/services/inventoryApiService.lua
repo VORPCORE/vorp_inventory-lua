@@ -1022,9 +1022,7 @@ function InventoryAPI.setWeaponSerialNumber(weaponId, serial, cb)
 
 	if userWeapons then
 		userWeapons:setSerialNumber(serial)
-		DBService.updateAsync('UPDATE loadout SET serial_number = @serial_number WHERE id = @id',
-			{ id = weaponId, serial_number = serial }, function(r)
-			end)
+		DBService.updateAsync('UPDATE loadout SET serial_number = @serial_number WHERE id = @id', { id = weaponId, serial_number = serial })
 		return respond(cb, true)
 	end
 	return respond(cb, false)
@@ -1103,7 +1101,7 @@ function InventoryAPI.registerWeapon(_target, wepname, ammos, components, comps,
 		return respond(cb, nil)
 	end
 
-	
+
 
 	local function isWeaponInConfig()
 		for index, value in ipairs(SharedData.Weapons) do
