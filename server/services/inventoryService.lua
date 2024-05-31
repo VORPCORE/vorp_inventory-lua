@@ -388,7 +388,7 @@ function InventoryService.addItem(target, invId, name, amount, metadata, cb)
 		return cb(nil)
 	else
 		-- listen on item given
-		DBService.CreateItem(charIdentifier, svItem:getId(), amount, metadata, function(craftedItem)
+		DBService.CreateItem(charIdentifier, svItem:getId(), amount, metadata, name, function(craftedItem)
 			item = Item:New({
 				id = craftedItem.id,
 				count = amount,
@@ -947,7 +947,7 @@ function InventoryService.GiveItem(itemId, amount, target)
 		DBService.SetItemAmount(targetCharId, targetItem:getId(), targetItem:getCount())
 		updateClient(targetItem)
 	else
-		DBService.CreateItem(targetCharId, svItem:getId(), amount, item:getMetadata(), function(craftedItem)
+		DBService.CreateItem(targetCharId, svItem:getId(), amount, item:getMetadata(), itemName, function(craftedItem)
 			targetItem = Item:New({
 				id = craftedItem.id,
 				count = amount,
