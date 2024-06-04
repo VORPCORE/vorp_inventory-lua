@@ -1,14 +1,11 @@
----@diagnostic disable: undefined-global
-local T = TranslationInv.Langs[Lang]
-local Core = exports.vorp_core:GetCore()
-local newchar = {}
-local timer = 120 -- in minutes --!needs a config
-
-
+local T          = TranslationInv.Langs[Lang]
+local Core       = exports.vorp_core:GetCore()
+local timer      = 120 -- in minutes --todo needs a config
+local newchar    = {}
 InventoryService = {}
-ItemPickUps = {}
-MoneyPickUps = {}
-GoldPickUps = {}
+ItemPickUps      = {}
+MoneyPickUps     = {}
+GoldPickUps      = {}
 math.randomseed(GetGameTimer())
 ItemUids = {}
 
