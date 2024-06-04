@@ -71,7 +71,6 @@ end
 function InventoryService.receiveWeapon(id, propietary, name, ammos, label, serial_number, custom_label, source, custom_desc, weight)
 	local weaponAmmo = {}
 	local desc = ""
-
 	for type, amount in pairs(ammos) do
 		weaponAmmo[type] = tonumber(amount)
 	end
@@ -102,7 +101,7 @@ function InventoryService.receiveWeapon(id, propietary, name, ammos, label, seri
 			serial_number = serial_number,
 			custom_label = custom_label,
 			custom_desc = custom_desc,
-			weight = weight
+			weight = weight,
 
 		})
 		UserWeapons[newWeapon:getId()] = newWeapon
@@ -144,8 +143,8 @@ end
 
 function InventoryService.processItems(items)
 	ClientItems = {}
-	local items = msgpack.unpack(items)
-	for _, item in pairs(items) do
+	local data = msgpack.unpack(items)
+	for _, item in pairs(data) do
 		ClientItems[item.item] = Item:New(item)
 	end
 end
@@ -154,7 +153,6 @@ end
 function InventoryService.getLoadout(loadout)
 	for _, weapon in pairs(loadout) do
 		local weaponAmmo = weapon.ammo
-
 		for type, amount in pairs(weaponAmmo) do
 			weaponAmmo[type] = tonumber(amount)
 		end
@@ -193,7 +191,8 @@ function InventoryService.getLoadout(loadout)
 				custom_label = weapon.custom_label,
 				serial_number = weapon.serial_number,
 				custom_desc = custom_desc,
-				weight = weapon.weight,
+				weight = weapon.weight
+
 			})
 			UserWeapons[newWeapon:getId()] = newWeapon
 
