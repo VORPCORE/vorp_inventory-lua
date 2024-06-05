@@ -937,11 +937,6 @@ function InventoryAPI.canCarryAmountWeapons(player, amount, cb, weaponName)
 		return respond(cb, false)
 	end
 
-	if not weaponName then
-		print("InventoryAPI.canCarryAmountWeapons: weapon name is required since inv weight addition, please provide a weapon name to properly check the weight of the weapon.")
-		print("this function will still work but will not check the weight of the weapon")
-	end
-
 	-- suport for hash not only names
 	local function getWeaponNameFromHash()
 		if weaponName and type(weaponName) == "number" then
