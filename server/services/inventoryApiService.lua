@@ -1115,17 +1115,6 @@ function InventoryAPI.registerWeapon(_target, wepname, ammos, components, comps,
 		return respond(cb, nil)
 	end
 
-	local function isInventryFull(targetIdentifier, targetCharId, targetCharacter)
-		local weaponWeight = SvUtils.GetWeaponWeight(wepname)
-		local itemsTotalWeight = InventoryAPI.getUserTotalCountItems(targetIdentifier, targetCharId)
-		local weaponsTotalWeight = InventoryAPI.getUserTotalCountWeapons(targetIdentifier, targetCharId, true)
-		if (itemsTotalWeight + weaponsTotalWeight + weaponWeight) > targetCharacter.invCapacity then
-			Core.NotifyRightTip(_target, T.cantweapons, 2000)
-			return true
-		end
-		return false
-	end
-
 	local targetCharacter = targetUser.getUsedCharacter
 	local targetIdentifier = targetCharacter.identifier
 	local targetCharId = targetCharacter.charIdentifier
@@ -1150,10 +1139,6 @@ function InventoryAPI.registerWeapon(_target, wepname, ammos, components, comps,
 			if SharedUtils.IsValueInArray(name, Config.notweapons) then
 				notListed = true
 			end
-		end
-		-- look for weight
-		if isInventryFull(targetIdentifier, targetCharId, targetCharacter) then
-			return respond(cb, nil)
 		end
 
 		if not notListed then
