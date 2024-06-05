@@ -936,6 +936,12 @@ function InventoryAPI.canCarryAmountWeapons(player, amount, cb, weaponName)
 	if not sourceCharacter then
 		return respond(cb, false)
 	end
+
+	if not weaponName then
+		print("InventoryAPI.canCarryAmountWeapons: weapon name is required since inv weight addition, please provide a weapon name to properly check the weight of the weapon.")
+		print("this function will still work but will not check the weight of the weapon")
+	end
+
 	-- suport for hash not only names
 	local function getWeaponNameFromHash()
 		if weaponName and type(weaponName) == "number" then
@@ -1118,36 +1124,12 @@ function InventoryAPI.registerWeapon(_target, wepname, ammos, components, comps,
 	local targetCharacter = targetUser.getUsedCharacter
 	local targetIdentifier = targetCharacter.identifier
 	local targetCharId = targetCharacter.charIdentifier
-	local job = targetCharacter.job
 	local name = wepname:upper()
 	local ammo = {}
 	local component = {}
-	local DefaultAmount = Config.MaxItemsInInventory.Weapons
-
-	local notListed = false
 
 	if not comps then
 		comps = {}
-	end
-
-	if Config.JobsAllowed[job] then
-		DefaultAmount = Config.JobsAllowed[job]
-	end
-
-	if DefaultAmount ~= 0 then
-		if name then
-			if SharedUtils.IsValueInArray(name, Config.notweapons) then
-				notListed = true
-			end
-		end
-
-		if not notListed then
-			local targetTotalWeaponCount = InventoryAPI.getUserTotalCountWeapons(targetIdentifier, targetCharId) + 1
-			if targetTotalWeaponCount > DefaultAmount then
-				Core.NotifyRightTip(_target, T.cantweapons2, 2000)
-				return respond(cb, nil)
-			end
-		end
 	end
 
 	if ammos then
