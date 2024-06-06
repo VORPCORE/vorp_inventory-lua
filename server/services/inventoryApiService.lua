@@ -926,8 +926,8 @@ exports("subBullets", InventoryAPI.subBullets)
 --- can carry ammount of weapons
 ---@param player number source
 ---@param amount number amount to check
----@param weaponName string|number? weapon name not neccesary but allows to check if weapon is in the list of not weapons
 ---@param cb fun(success: boolean)?   async or sync callback
+---@param weaponName string|number weapon name not neccesary but allows to check if weapon is in the list of not weapons
 ---@return boolean
 function InventoryAPI.canCarryAmountWeapons(player, amount, cb, weaponName)
 	local _source = player
@@ -937,10 +937,9 @@ function InventoryAPI.canCarryAmountWeapons(player, amount, cb, weaponName)
 		return respond(cb, false)
 	end
 
-	-- suport for hash not only names
 	local function getWeaponNameFromHash()
 		if weaponName and type(weaponName) == "number" then
-			for name, value in ipairs(SharedData.Weapons) do
+			for _, value in ipairs(SharedData.Weapons) do
 				if joaat(value.HashName) == weaponName then
 					return value.HashName
 				end
