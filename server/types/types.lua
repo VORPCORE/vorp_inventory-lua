@@ -256,7 +256,7 @@ function exports.vorp_inventory:subWeapon(source, weaponId, callback) end
 
 --- see [documentation](https://vorpcore.github.io/VORP_Documentation/api/inventory#inventory-exports)<br>
 --- register custom inventory
----@param data { id:string, name:string, limit:number, acceptWeapons:boolean, shared:boolean, ignoreItemStackLimit:boolean, whitelistItems:boolean, UsePermissions:boolean, UseBlackList:boolean, whitelistWeapons:boolean }
+---@param data { id:string, name:string, limit:number, acceptWeapons:boolean, shared:boolean, ignoreItemStackLimit:boolean, whitelistItems:boolean, UsePermissions:boolean, UseBlackList:boolean, whitelistWeapons:boolean,webhook:string }
 ---@return table methods to interact with the inventory
 function exports.vorp_inventory:registerInventory(data) end
 
