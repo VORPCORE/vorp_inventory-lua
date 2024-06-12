@@ -306,9 +306,10 @@ function inventorySetup(items) {
             const groupImg = groupKey ? window.Actions[groupKey].img : 'satchel_nav_all.png';
             const tooltipContent = group > 1 ? `<img src="img/itemtypes/${groupImg}"> ${LANGUAGE.labels.limit + limit + custom + weight + degradation}` : `${LANGUAGE.labels.limit} ${limit}${custom}${weight}${degradation}`;
 
+            const label = item.metadata.custom_label ? item.metadata.custom_label : item.label;
             const imgSrc = item.metadata.custom_img ? item.metadata.custom_img : `img/items/${item.name.toLowerCase()}.png`;
             $("#inventoryElement").append(`
-                <div data-group='${group}' data-label='${item.label}' style='background-image: url("${imgSrc}"); background-size: 4.5vw 7.7vh; background-repeat: no-repeat; background-position: center;' id='item-${index}' class='item' data-tooltip='${tooltipContent}'> 
+                <div data-group='${group}' data-label='${label}' style='background-image: url("${imgSrc}"); background-size: 4.5vw 7.7vh; background-repeat: no-repeat; background-position: center;' id='item-${index}' class='item' data-tooltip='${tooltipContent}'> 
                     <div class='count'>
                         <span style='color:Black'>${count}</span>
                     </div>
@@ -435,7 +436,8 @@ function inventorySetup(items) {
 
         $("#item-" + index).hover(
             function () {
-                OverSetTitle(item.label);
+                const label = item.metadata.custom_label ? item.metadata.custom_label : item.label;
+                OverSetTitle(label);
             },
             function () {
                 OverSetTitle(" ");
