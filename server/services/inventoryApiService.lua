@@ -1570,6 +1570,7 @@ function InventoryAPI.openInventory(player, id)
 
 	local function triggerAndReloadInventory()
 		TriggerClientEvent("vorp_inventory:OpenCustomInv", _source, CustomInventoryInfos[id]:getName(), id, capacity, weight)
+		TriggerEvent("vorp_inventory:OpenCustomInv", _source, CustomInventoryInfos[id]:getName(), id, capacity, weight)
 		InventoryService.reloadInventory(_source, id)
 	end
 
