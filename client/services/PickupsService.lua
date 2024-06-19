@@ -176,7 +176,7 @@ PickupsService.removePickupClient     = function(entityHandle)
 	local timeout = 0
 	while not NetworkHasControlOfEntity(entityHandle) and timeout < 5000 do
 		timeout = timeout + 100
-		if timeout == 5000 then
+		if timeout >= 5000 then
 			print("Failed to get Control of the Entity" .. entityHandle)
 			break
 		end
