@@ -1390,7 +1390,7 @@ local function canContinue(id, jobName, grade, charid)
 		return false
 	end
 
-	if not jobName and not grade or not charid then
+	if not jobName and not grade and not charid then
 		return false
 	end
 
@@ -1432,7 +1432,7 @@ exports("AddPermissionTakeFromCustom", InventoryAPI.AddPermissionTakeFromCustom)
 ---@param charid string charid
 ---@param state boolean | nil
 function InventoryAPI.AddCharIdPermissionMoveToCustom(id, charid, state)
-	if canContinue(id, nil, nil, charid) then
+	if canContinue(id, false, false, charid) then
 		return
 	end
 
@@ -1447,7 +1447,7 @@ exports("AddCharIdPermissionMoveToCustom", InventoryAPI.AddCharIdPermissionMoveT
 ---@param charid string charid
 ---@param state boolean | nil
 function InventoryAPI.AddCharIdPermissionTakeFromCustom(id, charid, state)
-	if canContinue(id, nil, nil, charid) then
+	if canContinue(id, false, false, charid) then
 		return
 	end
 
