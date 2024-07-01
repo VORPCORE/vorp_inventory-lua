@@ -1074,6 +1074,9 @@ exports("getWeaponComponents", InventoryAPI.getcomps)
 ---@return nil | boolean
 function InventoryAPI.deleteWeapon(player, weaponid, cb)
 	local userWeapons = UsersWeapons.default
+	if not userWeapons[weaponid] then
+		return respond(cb, false)
+	end
 	userWeapons[weaponid]:setPropietary('')
 	local query = 'DELETE FROM loadout WHERE id = @id'
 	local params = { id = weaponid }
