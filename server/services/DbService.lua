@@ -121,6 +121,22 @@ function DBService.CreateItem(sourceCharIdentifier, itemId, amount, metadata, na
     end)
 end
 
+function DBService.GetTotalItemsInCustomInventory(id)
+    local result = MySQL.query.await("SELECT SUM(amount) as total_amount FROM character_inventories WHERE inventory_type = @invType;", { invType = id })
+    if result[1] and result[1].total_amount then
+        return result[1].total_amount
+    end
+    return 0
+end
+
+function DBService.GetTotalWeaponsInCustomInventory(id)
+    local result = MySQL.query.await("SELECT COUNT(*) as total_count FROM loadout WHERE curr_inv = @invType", { invType = id })
+    if result[1] and result[1].total_count then
+        return result[1].total_count
+    end
+    return 0
+end
+
 ---delete asynchronously
 ---@param query string @SQL query
 ---@param params table? @SQL params
