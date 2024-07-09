@@ -949,7 +949,7 @@ function InventoryAPI.canCarryAmountWeapons(player, amount, cb, weaponName)
 	weaponName = getWeaponNameFromHash()
 
 	local function isInventoryFull(identifier, charId, invCapacity)
-		local weaponWeight = SvUtils.GetWeaponWeight(weaponName)
+		local weaponWeight = SvUtils.GetWeaponWeight(weaponName) * amount
 		local itemsTotalWeight = InventoryAPI.getUserTotalCountItems(identifier, charId)
 		local weaponsTotalWeight = InventoryAPI.getUserTotalCountWeapons(identifier, charId, true)
 
