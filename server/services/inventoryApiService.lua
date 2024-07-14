@@ -1868,29 +1868,3 @@ end
 
 exports('GetTotalOfWeaponInCustomInventory', InventoryAPI.GetTotalOfWeaponInCustomInventory)
 
---EXAMPLES
---RegisterCommand("test1", function(source, args)
---	local items = {
---		{ name = "apple", amount = 1, metadata = { quality = 90 } },
---		{ name = "coal",  amount = 1 },
---	}
---	exports.vorp_inventory:addItemsToCustomInventory("outsider_mailman1", items, 147, function(success)
---		if success then
---			print("success")
---		else
---			print("failed")
---		end
---	end)
---
---	local weapons = {
---		{ name = "WEAPON_REVOLVER_CATTLEMAN" },
---		--{ name = "WEAPON_REVOLVER_CATTLEMAN" ,custom_label = "test", custom_desc = "test", serial_number = "test" } -- or this way
---	}
---	exports.vorp_inventory:addWeaponsToCustomInventory("outsider_mailman1", weapons, 147, function(success)
---		if success then
---			print("success")
---		else
---			print("failed")
---		end
---	end)
---end, false)
