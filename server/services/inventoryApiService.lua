@@ -1847,7 +1847,10 @@ end
 
 exports("addWeaponsToCustomInventory", InventoryAPI.addWeaponsToCustomInventory)
 
-function InventoryAPI.GetTotalOfItemInCustomInventory(id, item_name)
+function InventoryAPI.getCustomInventoryItemCount(id, item_name)
+	if not CustomInventoryInfos[id] then
+		return 0
+	end
 	local result = MySQL.query.await("SELECT SUM(amount) as total_amount FROM character_inventories WHERE inventory_type = @invType AND item_name = @item_name;", { invType = id, item_name = item_name })
 	if result[1] and result[1].total_amount then
 		return result[1].total_amount
@@ -1855,10 +1858,14 @@ function InventoryAPI.GetTotalOfItemInCustomInventory(id, item_name)
 	return 0
 end
 
-exports('GetTotalOfItemInCustomInventory', InventoryAPI.GetTotalOfItemInCustomInventory)
+exports('getCustomInventoryItemCount', InventoryAPI.getCustomInventoryItemCount)
 
 
-function InventoryAPI.GetTotalOfWeaponInCustomInventory(id, weapon_name)
+function InventoryAPI.getCustomInventoryWeaponCount(id, weapon_name)
+	if not CustomInventoryInfos[id] then
+		return 0
+	end
+
 	local result = MySQL.query.await("SELECT COUNT(*) as total_count FROM loadout WHERE curr_inv = @invType AND weapon = @weapon_name", { invType = id, weapon_name = weapon_name })
 	if result[1] and result[1].total_count then
 		return result[1].total_count
@@ -1866,5 +1873,4 @@ function InventoryAPI.GetTotalOfWeaponInCustomInventory(id, weapon_name)
 	return 0
 end
 
-exports('GetTotalOfWeaponInCustomInventory', InventoryAPI.GetTotalOfWeaponInCustomInventory)
-
+exports('getCustomInventoryWeaponCount', InventoryAPI.getCustomInventoryWeaponCount)

@@ -369,3 +369,19 @@ function exports.vorp_inventory:addItemsToCustomInventory(invId, item, charId, c
 ---@param charId number char id
 ---@param callback fun(success:boolean)? callback function async or sync leave nil
 function exports.vorp_inventory:addWeaponsToCustomInventory(invId, weapons, charId, callback) end
+
+--- see [documentation](https://vorpcore.github.io/VORP_Documentation/api/inventory#inventory-exports)<br>
+--- get amount of item in custom inventory
+---@param invId string inventory id
+---@param item string item name
+---@param callback fun(amount:number)? callback function async or sync leave nil
+---@return number
+function exports.vorp_inventory:getCustomInventoryItemCount(invId, item, callback) end
+
+--- see [documentation](https://vorpcore.github.io/VORP_Documentation/api/inventory#inventory-exports)<br>
+--- get amount weapon in custom inventory
+---@param invId string inventory id
+---@param weaponName string weapon name
+---@param callback fun(amount:number)? callback function async or sync leave nil
+---@return number
+function exports.vorp_inventory:getCustomInventoryWeaponCount(invId, weaponName, callback) end
