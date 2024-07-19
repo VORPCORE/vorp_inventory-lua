@@ -1,9 +1,8 @@
 <3.8>
 - new exports for custom inventories using char id permissions just like jobs
-- new feature to pass image variable with item name for metadata to display differente images
+- new feature to pass image variable with item name for metadata to display different images
 - new exports for custom inventories add/get items
-- added CharId to statebag Character
-- added to  export registerCustomInventory webhook varialbe that can contain url link for logs of each custom invalid
+- added to  export registerCustomInventory webhook variable that can contain url link for logs of each custom inv
 - export registerCustomInventory now returns with an object including methods getters and setters.
 - updated types for exports
 - fix canCarryWeapons not counting with ammount requested because of the new weight feature
