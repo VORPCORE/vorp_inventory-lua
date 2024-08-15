@@ -1800,7 +1800,7 @@ function InventoryService.addItemsToCustomInventory(id, items, charid)
 				local resulItems = {}
 				for k, v in ipairs(result1) do -- if there is more than one apple we need to check which ones have metadata
 					local result2 = DBService.queryAwait("SELECT metadata FROM items_crafted WHERE id =@id", { id = v.item_crafted_id })
-					local hasMetadata = json.decode(result2[1].metadata)
+					local hasMetadata = result2[1] and json.decode(result2[1].metadata) or {}
 					if next(hasMetadata) then
 						resulItems[#resulItems + 1] = v
 					end
