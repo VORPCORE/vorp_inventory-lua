@@ -1,6 +1,6 @@
 local T          = TranslationInv.Langs[Lang]
 local Core       = exports.vorp_core:GetCore()
-local timer      = 120 -- in minutes --todo needs a config
+local timer      = Config.CoolDownNewPlayer or 120
 local newchar    = {}
 InventoryService = {}
 ItemPickUps      = {}
