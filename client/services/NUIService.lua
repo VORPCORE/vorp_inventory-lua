@@ -628,14 +628,14 @@ CreateThread(function()
 		if InInventory then
 			if not controlVar then
 				controlVar = true
-				LocalPlayer.state:set("IsInvOpen", true, true)
-				TriggerEvent("vorp_inventory:Client:IsInvOpen", true)
+				LocalPlayer.state:set("IsInvActive", true, true)
+				TriggerEvent("vorp_inventory:Client:OnInvStateChange", true)
 			end
 		else
 			if controlVar then
 				controlVar = false
-				LocalPlayer.state:set("IsInvOpen", false, true)
-				TriggerEvent("vorp_inventory:Client:IsInvOpen", false)
+				LocalPlayer.state:set("IsInvActive", false, true)
+				TriggerEvent("vorp_inventory:Client:OnInvStateChange", false)
 			end
 		end
 
