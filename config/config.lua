@@ -87,7 +87,8 @@ Config = {
 		PartPercentage = 25,
 		Gold           = false, -- TRUE ONLY IF UseGoldItem = true
 		Weapons        = false,
-		Items          = false
+		Items          = false,
+		Ammo 		   = false,
 	},
 
 	-- HOW MANY WEAPONS ALLOWED PER PLAYER FOR ITEMS IS IN VORP CORE CONFIG
