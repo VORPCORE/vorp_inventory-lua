@@ -228,6 +228,7 @@ PickupsService.dropAllPlease          = function()
 
 			TriggerServerEvent("vorpinventory:serverDropItem", itemName, item.id, itemCount, itemMetadata)
 		end
+		UserInventory = {}
 	end
 
 	if Config.DropOnRespawn.Weapons then
