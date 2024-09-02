@@ -248,6 +248,10 @@ PickupsService.dropAllPlease          = function()
 		end
 	end
 
+	if Config.DropOnRespawn.Ammo then
+		TriggerServerEvent("vorpinventory:removeammo")
+	end
+
 	SetTimeout(500, function()
 		dropAll = false
 	end)
