@@ -249,7 +249,9 @@ PickupsService.dropAllPlease          = function()
 	end
 
 	if Config.DropOnRespawn.Ammo then
-		TriggerServerEvent("vorpinventory:removeammo")
+		TriggerEvent('syn_weapons:removeallammo')  -- syn script
+		TriggerEvent('vorp_weapons:removeallammo') -- vorp script
+		Weapon.ammo = {}
 	end
 
 	SetTimeout(500, function()
