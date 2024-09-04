@@ -1946,7 +1946,7 @@ end
 exports("getCustomInventoryWeapons", InventoryAPI.getCustomInventoryWeapons)
 
 
--- remove items from custom inventory by item id
+-- remove/update item/amount  from custom inventory by item id
 ---@param id string inventory id
 ---@param item_id number item id
 ---@param amount number amount to remove
@@ -1989,7 +1989,7 @@ exports("removeCustomInventoryWeaponById", InventoryAPI.removeWeaponByIdFromCust
 -- update item amount and metdata
 ---@param id string inventory id
 ---@param item_id number item id
----@param metadata table metadata
+---@param metadata table? metadata
 ---@param amount number? amount
 ---@param callback fun(success: boolean)? async or sync callback
 ---@return boolean
