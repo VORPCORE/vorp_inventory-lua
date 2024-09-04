@@ -2000,11 +2000,14 @@ function InventoryService.updateItemInCustomInventory(invId, item_crafted_id, me
 	local item = result[1]
 	local itemAmount = amount or item.amount
 
-	if type(metadata) == "table" then
+	if metadata and type(metadata) == "table" then
 		metadata = json.encode(metadata)
 	end
 
 	DBService.updateAsync("UPDATE character_inventories SET amount = @amount WHERE item_crafted_id = @item_crafted_id AND inventory_type = @inventory_type", { amount = itemAmount, item_crafted_id = item_crafted_id, inventory_type = invId })
-	DBService.updateAsync("UPDATE items_crafted SET metadata = @metadata WHERE id = @id", { metadata = metadata, id = item_crafted_id })
+
+	if metadata then
+		DBService.updateAsync("UPDATE items_crafted SET metadata = @metadata WHERE id = @id", { metadata = metadata, id = item_crafted_id })
+	end
 	return true
 end
