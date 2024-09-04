@@ -1943,7 +1943,6 @@ function InventoryService.getAllItemsFromCustomInventory(invId)
 	return items
 end
 
-
 function InventoryService.getAllWeaponsFromCustomInventory(invId)
 	local result = DBService.queryAwait("SELECT id, name, serial_number, label, custom_label, custom_desc FROM loadout WHERE curr_inv = @invId", { invId = invId })
 	local weapons = {}
@@ -1958,4 +1957,54 @@ function InventoryService.getAllWeaponsFromCustomInventory(invId)
 		}
 	end
 	return weapons
+end
+
+function InventoryService.removeItemsByIdFromCustomInventory(invId, item_crafted_id, amount)
+	local result = DBService.queryAwait("SELECT item_name, amount FROM character_inventories WHERE item_crafted_id = @item_crafted_id AND inventory_type = @inventory_type", { item_crafted_id = item_crafted_id, inventory_type = invId })
+	if not result[1] then
+		return false
+	end
+
+	local item = result[1]
+	local itemAmount = item.amount
+	if amount >= itemAmount then
+		DBService.updateAsync("DELETE FROM character_inventories WHERE item_crafted_id = @item_crafted_id AND inventory_type = @inventory_type", { item_crafted_id = item_crafted_id, inventory_type = invId })
+		DBService.updateAsync("DELETE FROM items_crafted WHERE id = @id", { id = item_crafted_id })
+	else
+		DBService.updateAsync("UPDATE character_inventories SET amount = amount - @amount WHERE item_crafted_id = @item_crafted_id AND inventory_type = @inventory_type", { amount = amount, item_crafted_id = item_crafted_id, inventory_type = invId })
+	end
+
+	return true
+end
+
+function InventoryService.removeWeaponsByIdFromCustomInventory(invId, weaponId)
+	local result = DBService.queryAwait("SELECT id FROM loadout WHERE id = @id AND curr_inv = @invId", { id = weaponId, invId = invId })
+	if not result[1] then
+		return false
+	end
+
+	DBService.updateAsync("DELETE FROM loadout WHERE id = @id", { id = weaponId })
+	if UsersWeapons[invId] then
+		UsersWeapons[invId][weaponId] = nil
+	end
+	return true
+end
+
+-- update item metadata,or amount in cutom inventory
+function InventoryService.updateItemInCustomInventory(invId, item_crafted_id, metadata, amount)
+	local result = DBService.queryAwait("SELECT amount FROM character_inventories WHERE item_crafted_id = @item_crafted_id AND inventory_type = @inventory_type", { item_crafted_id = item_crafted_id, inventory_type = invId })
+	if not result[1] or not metadata then
+		return false
+	end
+
+	local item = result[1]
+	local itemAmount = amount or item.amount
+
+	if type(metadata) == "table" then
+		metadata = json.encode(metadata)
+	end
+
+	DBService.updateAsync("UPDATE character_inventories SET amount = @amount WHERE item_crafted_id = @item_crafted_id AND inventory_type = @inventory_type", { amount = itemAmount, item_crafted_id = item_crafted_id, inventory_type = invId })
+	DBService.updateAsync("UPDATE items_crafted SET metadata = @metadata WHERE id = @id", { metadata = metadata, id = item_crafted_id })
+	return true
 end
