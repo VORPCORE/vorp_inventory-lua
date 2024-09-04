@@ -1777,7 +1777,6 @@ function InventoryService.TakeFromPlayer(obj)
 end
 
 function InventoryService.addItemsToCustomInventory(id, items, charid)
-	local resulItems = {}
 	local newTable = {}
 	local result = DBService.queryAwait("SELECT inventory_type FROM character_inventories WHERE inventory_type = @id", { id = id })
 
@@ -1834,8 +1833,6 @@ function InventoryService.addItemsToCustomInventory(id, items, charid)
 			end
 		end
 	end
-	table.wipe(newTable)
-	table.wipe(resulItems)
 end
 
 function InventoryService.addWeaponsToCustomInventory(id, weapons, charid)
@@ -2005,6 +2002,7 @@ function InventoryService.updateItemInCustomInventory(invId, item_crafted_id, me
 	end
 
 	DBService.updateAsync("UPDATE character_inventories SET amount = @amount WHERE item_crafted_id = @item_crafted_id AND inventory_type = @inventory_type", { amount = itemAmount, item_crafted_id = item_crafted_id, inventory_type = invId })
+
 
 	if metadata then
 		DBService.updateAsync("UPDATE items_crafted SET metadata = @metadata WHERE id = @id", { metadata = metadata, id = item_crafted_id })
