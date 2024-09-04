@@ -1913,3 +1913,34 @@ function InventoryAPI.removeWeaponFromCustomInventory(id, weapon_name, callback)
 end
 
 exports("removeWeaponFromCustomInventory", InventoryAPI.removeWeaponFromCustomInventory)
+
+
+-- get all items from custom inventory
+---@param id string inventory id
+---@param callback fun(items: table)? async or sync callback
+---@return table | nil
+function InventoryAPI.getCustomInventoryItems(id, callback)
+	if not CustomInventoryInfos[id] then
+		return respond(callback, nil)
+	end
+
+	local items = InventoryService.getAllItemsFromCustomInventory(id)
+	return respond(callback, items)
+end
+
+exports("getCustomInventoryItems", InventoryAPI.getCustomInventoryItems)
+
+-- get all weapons from custom inventory
+---@param id string inventory id
+---@param callback fun(weapons: table)? async or sync callback
+---@return table | nil
+function InventoryAPI.getCustomInventoryWeapons(id, callback)
+	if not CustomInventoryInfos[id] then
+		return respond(callback, nil)
+	end
+
+	local weapons = InventoryService.getAllWeaponsFromCustomInventory(id)
+	return respond(callback, weapons)
+end
+
+exports("getCustomInventoryWeapons", InventoryAPI.getCustomInventoryWeapons)

@@ -1920,3 +1920,42 @@ function InventoryService.removeWeaponFromCustomInventory(invId, weapon_name)
 	end
 	return true
 end
+
+function InventoryService.getAllItemsFromCustomInventory(invId)
+	local result = DBService.queryAwait("SELECT item_name, amount, item_crafted_id FROM character_inventories WHERE inventory_type = @inventory_type", { inventory_type = invId })
+	local items = {}
+	for _, value in ipairs(result) do
+		local item = ServerItems[value.item_name]
+		if item then
+			local itemMetadata = {}
+			local result1 = DBService.queryAwait("SELECT metadata FROM items_crafted WHERE id =@id", { id = value.item_crafted_id })
+			if result1[1] then
+				itemMetadata = result1[1].metadata and json.decode(result1[1].metadata) or {}
+			end
+			items[#items + 1] = {
+				name = value.item_name,
+				amount = value.amount,
+				metadata = itemMetadata,
+				id = value.item_crafted_id
+			}
+		end
+	end
+	return items
+end
+
+
+function InventoryService.getAllWeaponsFromCustomInventory(invId)
+	local result = DBService.queryAwait("SELECT id, name, serial_number, label, custom_label, custom_desc FROM loadout WHERE curr_inv = @invId", { invId = invId })
+	local weapons = {}
+	for _, value in ipairs(result) do
+		weapons[#weapons + 1] = {
+			name = value.name,
+			serial_number = value.serial_number or "",
+			label = value.label,
+			custom_label = value.custom_label or "",
+			custom_desc = value.custom_desc or "",
+			id = value.id
+		}
+	end
+	return weapons
+end
