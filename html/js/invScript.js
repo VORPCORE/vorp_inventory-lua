@@ -289,7 +289,7 @@ function inventorySetup(items) {
 
 
     $.each(items, function (index, item) {
-        if (!item) {
+        if (item) {
             var count = item.count;
             var limit = item.limit;
             const group = item.type != "item_weapon" ? !item.group ? 1 : item.group : 5;
