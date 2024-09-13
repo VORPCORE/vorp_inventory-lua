@@ -67,6 +67,7 @@ TranslationInv.Langs = {
         gaveMoney                 = "Gave money",
         withid                    = " with the weapon ID: ",
         serialnumber              = "Serial Number: ",
+        Blacklisteditem        = "you can't place this item in this Inventory ",
         labels                    = {
             weight = "Weight ",
             serial = "Serial no ",
@@ -164,6 +165,8 @@ TranslationInv.Langs = {
         gave                      = "Deu Dinheiro",
         withid                    = " com o ID da arma: ",
         serialnumber              = "Número de série: ",
+        Blacklisteditem        = "you can't place this item in this Inventory ",
+
         labels                    = {
             weight = "Peso ",
             serial = "Número de Série ",
@@ -267,6 +270,8 @@ TranslationInv.Langs = {
         gaveMoney                 = "Deu dinheiro",
         withid                    = " com o ID da arma: ",
         serialnumber              = "Número de série: ",
+        Blacklisteditem        = "you can't place this item in this Inventory ",
+
         labels                    = {
             weight = "Peso ",
             serial = "Número de Série ",
@@ -365,6 +370,8 @@ TranslationInv.Langs = {
         gave                      = "Gave money",
         withid                    = " avec l'ID de l'arme: ",
         serialnumber              = "Numéro de série: ",
+        Blacklisteditem        = "you can't place this item in this Inventory ",
+
         labels                    = {
             weight = "Poids ",
             serial = "Numéro de série ",
@@ -461,6 +468,8 @@ TranslationInv.Langs = {
         gave                      = "Gave money",
         withid                    = " mit der Waffen ID: ",
         serialnumber              = "Seriennummer: ",
+        Blacklisteditem        = "you can't place this item in this Inventory ",
+
         labels                    = {
             weight = "Gewicht ",
             serial = "Seriennummer ",
@@ -560,6 +569,8 @@ TranslationInv.Langs = {
         gave                      = "Gave money",
         withid                    = " con el ID de arma: ",
         serialnumber              = "Número de serie: ",
+        Blacklisteditem        = "you can't place this item in this Inventory ",
+
         labels                    = {
             weight = "Peso ",
             serial = "Número de serie ",
@@ -657,6 +668,8 @@ TranslationInv.Langs = {
         transfered                = " ha trasferito ",
         withid                    = " con ID arma: ",
         serialnumber              = "Numero di serie: ",
+        Blacklisteditem        = "you can't place this item in this Inventory ",
+
         labels                    = {
             weight = "Peso ",
             serial = "Numero seriale ",
@@ -758,6 +771,8 @@ TranslationInv.Langs = {
         gave                      = "Gave money",
         withid                    = " met wapen ID: ",
         serialnumber              = "Serienummer: ",
+        Blacklisteditem        = "you can't place this item in this Inventory ",
+
         labels                    = {
             weight = "Gewicht ",
             serial = "Serienummer ",
@@ -855,6 +870,8 @@ TranslationInv.Langs = {
         gave                      = "Gave money",
         withid                    = " med våpen ID: ",
         serialnumber              = "Serienummer: ",
+        Blacklisteditem        = "you can't place this item in this Inventory ",
+
         labels                    = {
             weight = "Vekt ",
             serial = "Serienummer ",
@@ -950,6 +967,8 @@ TranslationInv.Langs = {
         gave                      = "Gave money",
         withid                    = " with weapon ID: ",
         serialnumber              = "Seri numarası: ",
+        Blacklisteditem        = "you can't place this item in this Inventory ",
+
         labels                    = {
             weight = "Ağırlık ",
             serial = "Seri numarası ",
@@ -1048,6 +1067,8 @@ TranslationInv.Langs = {
         gaveMoney                 = "Ai dat bani",
         withid                    = " cu ID-ul armei: ",
         serialnumber              = "Numar de serie: ",
+        Blacklisteditem        = "you can't place this item in this Inventory ",
+
         labels                    = {
             weight = "Greutate ",
             serial = "Numar de serie ",

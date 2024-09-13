@@ -1,6 +1,6 @@
 local Core       = exports.vorp_core:GetCore()
 local itemBlacklist = nil
-
+local T          = TranslationInv.Langs[Lang]
 RegisterNetEvent('syn:SendBlacklist', function(blacklist)
     itemBlacklist = blacklist
 end)
@@ -28,7 +28,7 @@ end
 
 function NUIService.NUIMoveToClan(obj)
     if itemBlacklist and isBlacklisted(itemBlacklist, obj.item.name) then
-        Core.NotifyRightTip("You can't move this item to the house.", 4000)
+        Core.NotifyRightTip( T.Blacklisteditem, 4000)
         return 
     end
     TriggerServerEvent("syn_clan:MoveToClan", json.encode(obj))
@@ -57,7 +57,7 @@ end
 
 function NUIService.NUIMoveToContainer(obj)
     if itemBlacklist and isBlacklisted(itemBlacklist, obj.item.name) then
-        Core.NotifyRightTip("You can't move this item to the house.", 4000)
+        Core.NotifyRightTip(T.Blacklisteditem, 4000)
         return 
     end
     TriggerServerEvent("syn_Container:MoveToContainer", json.encode(obj))
@@ -88,7 +88,7 @@ end
 
 function NUIService.NUIMoveToHorse(obj)
     if itemBlacklist and isBlacklisted(itemBlacklist, obj.item.name) then
-        Core.NotifyRightTip("You can't move this item to the house.", 4000)
+        Core.NotifyRightTip(T.Blacklisteditem, 4000)
         return 
     end
     TriggerServerEvent("vorp_stables:MoveToHorse", json.encode(obj))
@@ -104,7 +104,7 @@ end
 
 function NUIService.NUIMoveToStore(obj)
     if itemBlacklist and isBlacklisted(itemBlacklist, obj.item.name) then
-        Core.NotifyRightTip("You can't move this item to the house.", 4000)
+        Core.NotifyRightTip(T.Blacklisteditem, 4000)
         return 
     end
     TriggerServerEvent("syn_store:MoveToStore", json.encode(obj))
@@ -181,7 +181,7 @@ end
 
 function NUIService.NUIMoveToCart(obj)
     if itemBlacklist and isBlacklisted(itemBlacklist, obj.item.name) then
-        Core.NotifyRightTip("You can't move this item to the house.", 4000)
+        Core.NotifyRightTip(T.Blacklisteditem, 4000)
         return 
     end
     TriggerServerEvent("vorp_stables:MoveToCart", json.encode(obj))
@@ -211,7 +211,7 @@ end
 
 function NUIService.NUIMoveToHouse(obj)
     if itemBlacklist and isBlacklisted(itemBlacklist, obj.item.name) then
-        Core.NotifyRightTip("You can't move this item to the house.", 4000)
+        Core.NotifyRightTip(T.Blacklisteditem, 4000)
         return 
     end
     TriggerServerEvent("vorp_housing:MoveToHouse", json.encode(obj))
@@ -241,7 +241,7 @@ end
 
 function NUIService.NUIMoveToHideout(obj)
     if itemBlacklist and isBlacklisted(itemBlacklist, obj.item.name) then
-        Core.NotifyRightTip("You can't move this item to the house.", 4000)
+        Core.NotifyRightTip(T.Blacklisteditem, 4000)
         return 
     end
     TriggerServerEvent("syn_underground:MoveToHideout", json.encode(obj))
@@ -271,7 +271,7 @@ end
 
 function NUIService.NUIMoveToBank(obj)
     if itemBlacklist and isBlacklisted(itemBlacklist, obj.item.name) then
-        Core.NotifyRightTip("You can't move this item to the house.", 4000)
+        Core.NotifyRightTip(T.Blacklisteditem, 4000)
         return 
     end
     TriggerServerEvent("vorp_bank:MoveToBank", json.encode(obj))
