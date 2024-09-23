@@ -299,7 +299,7 @@ function initSecondaryInventoryHandlers() {
     });
 }
 
-async function secondInventorySetup(items, info) {
+function secondInventorySetup(items, info) {
     $("#inventoryElement").html("");
     $("#secondInventoryElement").html("").data("info", info);
 
@@ -320,8 +320,7 @@ async function secondInventorySetup(items, info) {
             const groupImg = groupKey ? window.Actions[groupKey].img : 'satchel_nav_all.png';
             const tooltipContent = group > 1 ? `<img src="img/itemtypes/${groupImg}"> ${weight + degradation + custom}` : `${weight + degradation + custom}`;
             const image = item.metadata?.image ? item.metadata.image : item.name ? item.name : "default";
-            const url = await getUrlForImage(image);
-
+            const url = imageCache[image]
             $("#secondInventoryElement").append(` <div data-label='${item.label}' data-group ='${group}' style='background-image: ${url} background-size: 4.5vw 7.7vh; background-repeat: no-repeat; background-position: center;' id="item-${index}"  class='item' class='item' data-tooltip='${tooltipContent}'> ${count > 0 ? `<div class='count'>${count}</div>` : ``}<div class='text'></div></div> `);
         } else {
             const info = item.serial_number ? "<br>" + LANGUAGE.labels.ammo + item.count + "<br>" + LANGUAGE.labels.serial + item.serial_number : "";

@@ -650,3 +650,8 @@ end
 function NUIService.getActionsConfig(obj, cb)
 	cb(Actions)
 end
+
+function NUIService.CacheImages(data)
+	local unpack = msgpack.unpack(data)
+	SendNUIMessage({ action = "cacheImages", info = unpack })
+end
