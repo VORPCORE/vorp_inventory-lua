@@ -1398,9 +1398,11 @@ end
 
 function InventoryService.MoveToCustom(obj)
 	local _source = source
+
 	local data = json.decode(obj)
-	local invId = tostring(data.id)
+	local invId <const> = tostring(data.id)
 	if not CustomInventoryInfos[invId] then return end
+
 	local item = data.item
 	local amount = tonumber(data.number)
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
@@ -1423,7 +1425,7 @@ function InventoryService.MoveToCustom(obj)
 		return Core.NotifyObjective(_source, "Item is blackListed", 5000)
 	end
 
-	if not CanMove or not CanMove1 then -- either job or char id
+	if not CanMove and not CanMove1 then -- either job or char id
 		return Core.NotifyObjective(_source, "You dont have permision to move into the storage", 5000)
 	end
 
@@ -1479,9 +1481,11 @@ end
 
 function InventoryService.TakeFromCustom(obj)
 	local _source = source
+
 	local data = json.decode(obj)
-	local invId = tostring(data.id)
+	local invId <const> = tostring(data.id)
 	if not CustomInventoryInfos[invId] then return end
+
 	local item = data.item
 	local amount = tonumber(data.number)
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
@@ -1494,7 +1498,7 @@ function InventoryService.TakeFromCustom(obj)
 	local CanMove = InventoryService.DoesHavePermission(invId, job, grade, Table)
 	local CanMove1 = InventoryService.DoesCharIdHavePermission(invId, sourceCharIdentifier, Table1)
 
-	if not CanMove or not CanMove1 then
+	if not CanMove and not CanMove1 then
 		return Core.NotifyObjective(_source, "you dont have permmissions to take from this storage", 5000) -- add your own notifications
 	end
 
