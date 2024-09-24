@@ -439,12 +439,14 @@ local function loadItems()
 			table.insert(items, item)
 		end
 	elseif StoreSynMenu then
+
 		for _, item in pairs(UserInventory) do
 			if item.metadata ~= nil and item.metadata.description ~= nil and item.metadata.orgdescription ~= nil then
 				item.metadata.description = item.metadata.orgdescription
 				item.metadata.orgdescription = nil
 			end
 		end
+		
 		if GenSynInfo.buyitems and next(GenSynInfo.buyitems) then
 			local buyitems = GenSynInfo.buyitems
 			for _, item in pairs(UserInventory) do
