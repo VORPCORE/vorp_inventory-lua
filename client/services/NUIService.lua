@@ -37,10 +37,9 @@ function NUIService.ReloadInventory(inventory)
 	for _, item in pairs(payload.itemList) do
 		if item.type == "item_weapon" then
 			item.label = item.custom_label or Utils.GetWeaponDefaultLabel(item.name)
-			if item.custom_desc then
+
+			if item.desc and item.custom_desc then
 				item.desc = item.custom_desc
-			else
-				item.desc = Utils.GetWeaponDefaultDesc(item.name)
 			end
 
 			if not item.desc then
@@ -48,6 +47,7 @@ function NUIService.ReloadInventory(inventory)
 			end
 		end
 	end
+
 	SendNUIMessage(payload)
 	Wait(500)
 	NUIService.LoadInv()
@@ -439,14 +439,13 @@ local function loadItems()
 			table.insert(items, item)
 		end
 	elseif StoreSynMenu then
-
 		for _, item in pairs(UserInventory) do
 			if item.metadata ~= nil and item.metadata.description ~= nil and item.metadata.orgdescription ~= nil then
 				item.metadata.description = item.metadata.orgdescription
 				item.metadata.orgdescription = nil
 			end
 		end
-		
+
 		if GenSynInfo.buyitems and next(GenSynInfo.buyitems) then
 			local buyitems = GenSynInfo.buyitems
 			for _, item in pairs(UserInventory) do
