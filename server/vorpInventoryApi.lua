@@ -160,11 +160,22 @@ exports('vorp_inventoryApi', function()
     end
 
     INV.addItem = function(source, itemName, qty, metadata)
+    -- Check Inventory Limit
+    local canCarryLimit  = INV.canCarryItem(source, itemName, qty)
+        if not canCarryLimit then
+            local T    = TranslationInv.Langs[Lang]
+            local Core = exports.vorp_core:GetCore()
+            Core.NotifyRightTip(source, T.fullInventory, 2000)
+            return
+        end
+
+    if canCarryLimit == true then
         local result_promise = promise.new()
         TriggerEvent("vorpCore:addItem", source, tostring(itemName), tonumber(qty), metadata, function(res)
             result_promise:resolve(res)
         end)
         return Citizen.Await(result_promise)
+        end    
     end
 
     INV.subItem = function(source, itemName, qty, metadata)
