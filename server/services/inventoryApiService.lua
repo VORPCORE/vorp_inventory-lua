@@ -1743,7 +1743,7 @@ function InventoryAPI.openPlayerInventory(data, callback)
 	local allowItems, cooldownItems = HandleLimits("items")
 
 	if cooldownWeapons and cooldownItems then
-		Core.NotifyObjective(source, "You can't open the inventory due to cooldown on both weapons and items.", 5000)
+		Core.NotifyObjective(source, T.BothonCool , 5000)
 		return respond(callback, false)
 	end
 

@@ -13,7 +13,7 @@ ItemUids = {}
 function InventoryService.CheckNewPlayer(_source, charid)
 	if Config.NewPlayers then
 		if SharedUtils.IsValueInArray(charid, newchar) then
-			Core.NotifyRightTip(_source, "in cool down", 5000)
+			Core.NotifyRightTip(_source,T.ToNew, 5000)
 			SvUtils.Trem(_source)
 			return false
 		end
@@ -792,7 +792,7 @@ function InventoryService.giveWeapon2(player, weaponId, target)
 	end
 
 	if not canCarryWeapons() then
-		return Core.NotifyRightTip(_source, "player can carry more weapons", 2000)
+		return Core.NotifyRightTip(_source, T.cancarryWeapons, 2000)
 	end
 
 
@@ -815,7 +815,7 @@ function InventoryService.giveWeapon2(player, weaponId, target)
 
 
 	if not serialNumber or serialNumber == "" then
-		serialNumber = "Serial Number not set"
+		serialNumber = T.NoSerial
 	end
 	local title = T.WebHookLang.gavewep
 	local description = "**" .. T.WebHookLang.charname .. ":** `" .. charname2 .. "`\n**" .. T.WebHookLang.Steamname .. "** `" .. steamname2 .. "` \n**" .. T.WebHookLang.give .. "**  **" .. 1 .. "** \n**" .. T.WebHookLang.Weapontype .. ":** `" .. weaponName .. "` \n**" .. T.WebHookLang.Desc .. "** `" .. (desc or "") .. "`\n **" .. T.WebHookLang.serialnumber .. "** `" .. serialNumber .. "`\n **" .. T.to .. ":** ` " .. charname .. "` \n**" .. T.WebHookLang.Steamname .. "** ` " .. steamname .. "` "
@@ -1405,7 +1405,6 @@ end
 
 function InventoryService.MoveToCustom(obj)
 	local _source = source
-
 	local data = json.decode(obj)
 	local invId <const> = tostring(data.id)
 	if not CustomInventoryInfos[invId] then return end
@@ -1429,21 +1428,20 @@ function InventoryService.MoveToCustom(obj)
 	end
 
 	if not IsBlackListed then
-		return Core.NotifyObjective(_source, "Item is blackListed", 5000)
+		return Core.NotifyObjective(_source, T.itemBlackListed, 5000)
 	end
 
 	if not CanMove and not CanMove1 then -- either job or char id
-		return Core.NotifyObjective(_source, "You dont have permision to move into the storage", 5000)
+		return Core.NotifyObjective(_source, T.noPermissionStorage, 5000)
 	end
-
 
 	if item.type == "item_weapon" then
 		if not CustomInventoryInfos[invId]:doesAcceptWeapons() then
-			return Core.NotifyRightTip(_source, "This storage does not accept weapons", 2000)
+			return Core.NotifyRightTip(_source, T.storageNoWeapons, 2000)
 		end
 
 		if not InventoryService.canStoreWeapon(sourceIdentifier, sourceCharIdentifier, invId, item.name, amount) then
-			return Core.NotifyRightTip(_source, T.fullInventory, 2000)
+			return Core.NotifyRightTip(_source, T.inventoryFull, 2000)
 		end
 
 		local query = "UPDATE loadout SET identifier = '',curr_inv = @invId WHERE charidentifier = @charid AND id = @weaponId"
@@ -1455,7 +1453,7 @@ function InventoryService.MoveToCustom(obj)
 		TriggerClientEvent("vorpCoreClient:subWeapon", _source, item.id)
 		InventoryService.reloadInventory(_source, invId)
 		InventoryService.DiscordLogs(invId, item.name, amount, sourceName, "Move")
-		local text = "you have moved to storage"
+		local text = T.movedToStorage
 
 		if string.lower(item.name) == "weapon_revolver_lemat" then
 			Icon = "weapon_revolver_doubleaction" -- theres no revolver lemat texture
@@ -1465,7 +1463,7 @@ function InventoryService.MoveToCustom(obj)
 		Core.NotifyAvanced(_source, text, "inventory_items", Icon, "COLOR_PURE_WHITE", 4000)
 	else
 		if item.count and amount and item.count < amount then
-			return print("Error: Amount is greater than item count")
+			return print(T.itemExceedsLimit)
 		end
 		local result, message = InventoryService.canStoreItem(sourceIdentifier, sourceCharIdentifier, invId, item.name, amount)
 		if not result then
@@ -1474,12 +1472,12 @@ function InventoryService.MoveToCustom(obj)
 
 		InventoryService.addItem(_source, invId, item.name, amount, item.metadata, function(itemAdded)
 			if not itemAdded then
-				return print("Error: Could not add item to inventory")
+				return print(T.cantAddItem)
 			end
 
 			InventoryService.subItem(_source, "default", item.id, amount)
 			TriggerClientEvent("vorpInventory:removeItem", _source, item.name, item.id, amount)
-			Core.NotifyRightTip(_source, "you have Moved " .. amount .. " " .. item.label .. " to storage", 2000)
+			Core.NotifyRightTip(_source, T.movedToStorage .. " " .. amount .. " " .. item.label, 2000)
 			InventoryService.reloadInventory(_source, invId)
 			InventoryService.DiscordLogs(invId, item.name, amount, sourceName, "Move")
 		end)
@@ -1506,7 +1504,7 @@ function InventoryService.TakeFromCustom(obj)
 	local CanMove1 = InventoryService.DoesCharIdHavePermission(invId, sourceCharIdentifier, Table1)
 
 	if not CanMove and not CanMove1 then
-		return Core.NotifyObjective(_source, "you dont have permmissions to take from this storage", 5000) -- add your own notifications
+		return Core.NotifyObjective(_source, T.noPermissionTake, 5000)
 	end
 
 	if item.type == "item_weapon" then
@@ -1517,7 +1515,7 @@ function InventoryService.TakeFromCustom(obj)
 		end
 
 		local query = "UPDATE loadout SET curr_inv = 'default', charidentifier = @charid, identifier = @identifier WHERE id = @weaponId"
-		local params = { identifier = sourceIdentifier, weaponId = item.id, charid = sourceCharIdentifier, }
+		local params = { identifier = sourceIdentifier, weaponId = item.id, charid = sourceCharIdentifier }
 		DBService.updateAsync(query, params, function(r) end)
 		UsersWeapons[invId][item.id]:setCurrInv("default")
 		UsersWeapons.default[item.id] = UsersWeapons[invId][item.id]
@@ -1532,10 +1530,11 @@ function InventoryService.TakeFromCustom(obj)
 		local custom = weapon:getCustomLabel()
 		local customDesc = weapon:getCustomDesc()
 		local weight = weapon:getWeight()
+
 		TriggerClientEvent("vorpInventory:receiveWeapon", _source, item.id, sourceIdentifier, name, ammo, label, serial, custom, _source, customDesc, weight)
 		InventoryService.reloadInventory(_source, invId)
 		InventoryService.DiscordLogs(invId, item.name, amount, sourceName, "Take")
-		local text = " you have Taken From storage "
+		local text = T.takenFromStorage
 
 		if string.lower(item.name) == "weapon_revolver_lemat" then
 			Icon = "weapon_revolver_doubleaction" -- theres no revolver lemat texture
@@ -1546,29 +1545,28 @@ function InventoryService.TakeFromCustom(obj)
 		Core.NotifyAvanced(_source, text, "inventory_items", Icon, "COLOR_PURE_WHITE", 4000)
 	else
 		if item.count and amount > item.count then
-			return print("Error: Amount is greater than item count")
+			return print(T.itemExceedsLimit)
 		end
 
 		local canCarryItem = InventoryAPI.canCarryItem(_source, item.name, amount)
-
 		if not canCarryItem then
-			return Core.NotifyRightTip(_source, "Cant carry more of this item stack limit achieved or inv is full", 2000)
+			return Core.NotifyRightTip(_source, T.cantCarryItemStack, 2000)
 		end
 
 		InventoryService.addItem(_source, "default", item.name, amount, item.metadata, function(itemAdded)
 			if not itemAdded then
-				return print("Error: Could not add item to inventory")
+				return print(T.cantAddItem)
 			end
-			local result = InventoryService.subItem(_source, invId, item.id, amount)
 
+			local result = InventoryService.subItem(_source, invId, item.id, amount)
 			if not result then
-				return print("Error: Could not remove item from inventory")
+				return print(T.cantRemoveItem)
 			end
 
 			TriggerClientEvent("vorpInventory:receiveItem", _source, item.name, itemAdded:getId(), amount, itemAdded:getMetadata())
 			InventoryService.reloadInventory(_source, invId)
 			InventoryService.DiscordLogs(invId, item.name, amount, sourceName, "Take")
-			Core.NotifyRightTip(_source, "you have Taken " .. amount .. " " .. item.label .. " from storage ", 2000)
+			Core.NotifyRightTip(_source, T.takenFromStorage .. " " .. amount .. " " .. item.label, 2000)
 		end)
 	end
 end
@@ -1578,7 +1576,7 @@ local function HandleLimits(item, amount, target, _source, messages)
 	if PlayerItemsLimit[target] and PlayerItemsLimit[target][item.type] then
 		if PlayerItemsLimit[target][item.type].limit >= amount then
 			if PlayerItemsLimit[target][item.type].limit - amount <= 0 then
-				Core.NotifyObjective(_source, "You're about to reach your limit for " .. label .. ".", 2000)
+				Core.NotifyObjective(_source, T.limitWarning .. label .. ".", 2000)
 				if PlayerItemsLimit[target][item.type].timeout and not CoolDownStarted[_source][item.type] then
 					CoolDownStarted[_source][item.type] = os.time() + PlayerItemsLimit[target][item.type].timeout
 				end
@@ -1610,11 +1608,10 @@ function InventoryService.MoveToPlayer(obj)
 	local invId = "default"
 	local target = data.info.target
 	local messages = {
-		weapons = "You cannot give this amount of weapons to this player. Limit exceeded.",
-		items = "You cannot give this amount of items to this player. Limit exceeded.",
-		cooldown = "In cooldown, Player cant accept more "
+		weapons = T.weaponsLimitExceeded,
+		items = T.itemsLimitExceeded,
+		cooldown = T.cooldownMessage
 	}
-
 
 	if not CanProceed(item, amount, sourceCharacter.identifier, sourceName) then
 		return
@@ -1623,7 +1620,7 @@ function InventoryService.MoveToPlayer(obj)
 	local IsBlackListed = PlayerBlackListedItems[string.lower(item.name)]
 
 	if IsBlackListed then
-		Core.NotifyObjective(_source, "blackListed", 5000) -- add your own notifications
+		Core.NotifyObjective(_source, T.blackListedMessage, 5000)
 		return
 	end
 
@@ -1641,7 +1638,7 @@ function InventoryService.MoveToPlayer(obj)
 					end
 				end)
 			else
-				return Core.NotifyObjective(_source, "Can't cary more weapons", 2000)
+				return Core.NotifyObjective(_source, T.cantweapons, 2000)
 			end
 		end, item.name)
 	else
@@ -1651,11 +1648,11 @@ function InventoryService.MoveToPlayer(obj)
 
 		local res = InventoryAPI.canCarryItem(target, item.name, amount)
 		if not res then
-			return Core.NotifyObjective(_source, "Cant carry more of this item", 2000)
+			return Core.NotifyObjective(_source, T.cantCarryItemStack, 2000)
 		end
 
 		if amount > item.count then
-			return Core.NotifyObjective(_source, " dont have that amount of items", 2000)
+			return Core.NotifyObjective(_source, T.notEnoughItems, 2000)
 		end
 
 		InventoryAPI.addItem(target, item.name, amount, item.metadata, function(res)
@@ -1665,8 +1662,8 @@ function InventoryService.MoveToPlayer(obj)
 						SetTimeout(400, function()
 							InventoryService.reloadInventory(target, "default", "player", _source)
 							InventoryService.DiscordLogs(invId, item.name, amount, sourceName, "Move")
-							Core.NotifyRightTip(_source, "you have Moved" .. amount .. " " .. item.label .. " to player", 2000)
-							Core.NotifyRightTip(target, "Item" .. item.label .. " was given to you", 2000)
+							Core.NotifyRightTip(_source, T.movedToPlayer .. amount .. " " .. item.label, 2000)
+							Core.NotifyRightTip(target, T.itemGivenToPlayer .. " " .. item.label, 2000)
 						end)
 					end
 				end, true)
@@ -1683,16 +1680,16 @@ function InventoryService.TakeFromPlayer(obj)
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local sourceName = sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname
 	local invId = "default"
-	local target = data.info.target -- needs to remove from this target the items that are taken to source
+	local target = data.info.target
 	local IsBlackListed = PlayerBlackListedItems[string.lower(item.name)]
 	local messages = {
-		weapons = "You cannot remove this amount of weapons from this player. Limit exceeded.",
-		items = "You cannot remove this amount of items from this player. Limit exceeded.",
-		cooldown = "In cooldown, Player cant accept more "
+		weapons = T.weaponsLimitExceeded,
+		items = T.itemsLimitExceeded,
+		cooldown = T.cooldownMessage
 	}
 
 	if IsBlackListed then
-		Core.NotifyObjective(_source, "BlackListed", 5000) -- add your own notifications
+		Core.NotifyObjective(_source, T.blackListedMessage, 5000)
 		return
 	end
 
@@ -1710,17 +1707,17 @@ function InventoryService.TakeFromPlayer(obj)
 					end
 				end)
 			else
-				Core.NotifyObjective(_source, "You Can't cary more weapons", 2000)
+				Core.NotifyObjective(_source, T.cantweapons, 2000)
 			end
 		end, item.name)
 	else
 		local res = InventoryAPI.canCarryItem(_source, item.name, amount)
 		if not res then
-			return Core.NotifyObjective(_source, "Cant carry more of this item", 2000)
+			return Core.NotifyObjective(_source, T.cantCarryItemStack, 2000)
 		end
 
 		if amount > item.count then
-			return Core.NotifyObjective(_source, "You dont have that amount of items", 2000)
+			return Core.NotifyObjective(_source, T.notEnoughItems, 2000)
 		end
 
 		InventoryAPI.addItem(_source, item.name, amount, item.metadata, function(res)
@@ -1729,8 +1726,8 @@ function InventoryService.TakeFromPlayer(obj)
 					if result then
 						InventoryService.reloadInventory(target, "default", "player", source)
 						InventoryService.DiscordLogs(invId, item.name, amount, sourceName, "Take")
-						Core.NotifyRightTip(_source, "you have Taken " .. amount .. " " .. item.label .. " from player", 2000)
-						Core.NotifyRightTip(target, "Item" .. item.label .. " was taken from you", 2000)
+						Core.NotifyRightTip(_source, T.takenFromPlayer .. " " .. amount .. " " .. item.label, 2000)
+						Core.NotifyRightTip(target, T.itemsTakenFromPlayer .. " " .. item.label, 2000)
 					end
 				end, true)
 			end
