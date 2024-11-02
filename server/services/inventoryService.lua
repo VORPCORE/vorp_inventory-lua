@@ -442,7 +442,7 @@ function InventoryService.onPickup(data)
 		end
 
 		InventoryService.addItem(_source, "default", pickup.name, pickup.amount, pickup.metadata, function(item)
-			if item ~= nil then
+			if item ~= nil and ItemPickUps[uid] then
 				local dataItem = { name = pickup.name, obj = ItemPickUps[uid].obj, amount = pickup.amount, metadata = pickup.metadata, position = ItemPickUps[uid].coords, id = ItemPickUps[uid].id }
 				ItemPickUps[uid] = nil
 				ItemUids[uid] = nil
