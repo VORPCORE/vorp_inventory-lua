@@ -970,10 +970,8 @@ function InventoryAPI.canCarryAmountWeapons(player, amount, cb, weaponName)
 		return respond(cb, false)
 	end
 
-	if weaponName then
-		if SharedUtils.IsValueInArray(weaponName:upper(), Config.notweapons) then
-			return respond(cb, true)
-		end
+	if weaponName and Config.notweapons[weaponName:upper()] then
+		return respond(cb, true)
 	end
 
 	if Config.JobsAllowed[job] then
@@ -1257,10 +1255,8 @@ function InventoryAPI.giveWeapon(player, weaponId, target, cb)
 	end
 
 	if DefaultAmount ~= 0 then
-		if weaponName then
-			if SharedUtils.IsValueInArray(weaponName:upper(), Config.notweapons) then
-				notListed = true
-			end
+		if weaponName and Config.notweapons[weaponName:upper()] then
+			notListed = true
 		end
 
 		if not notListed then
@@ -1357,7 +1353,7 @@ function InventoryAPI.getUserTotalCountWeapons(identifier, charId, checkWeight)
 
 		if owner_identifier == identifier and owner_charid == charId then
 			local weaponName = weapon:getName()
-			if not SharedUtils.IsValueInArray(weaponName:upper(), Config.notweapons) or checkWeight then
+			if weaponName and not Config.notweapons[weaponName:upper()] or checkWeight then
 				local count = 0
 				if checkWeight then
 					count = weapon:getWeight()

@@ -213,12 +213,7 @@ end
 ---@param name string weapon name
 ---@return boolean
 function SvUtils.filterWeaponsSerialNumber(name)
-    for _, weapon in pairs(Config.noSerialNumber) do
-        if weapon == name then
-            return false
-        end
-    end
-    return true
+    return Config.noSerialNumber[name] and false or true
 end
 
 --- generate a unique random id

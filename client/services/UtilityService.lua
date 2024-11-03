@@ -188,10 +188,5 @@ function Utils.GetLabel(hash, id)
 end
 
 function Utils.filterWeaponsSerialNumber(name)
-	for _, weapon in ipairs(Config.noSerialNumber) do
-		if weapon == name then
-			return false
-		end
-	end
-	return true
+	return Config.noSerialNumber[name] and false or true
 end

@@ -475,10 +475,9 @@ function InventoryService.onPickup(data)
 			end
 
 			if DefaultAmount ~= 0 then
-				if weapon:getName() then
-					if SharedUtils.IsValueInArray(string.upper(weapon:getName()), Config.notweapons) then
-						notListed = true
-					end
+				local weaponName = weapon:getName()
+				if weaponName and Config.notweapons[weaponName:upper()] then
+					notListed = true
 				end
 
 				if not notListed then
@@ -492,7 +491,7 @@ function InventoryService.onPickup(data)
 					local weaponObj = ItemPickUps[uid].obj
 
 					weapon:setDropped(0)
-					local dataweapon = { name = weapon:getName(), obj = weaponObj, amount = pickup.amount, metadata = {}, weaponId = weaponId, position = ItemPickUps[uid].coords, custom_label = weapon:getCustomLabel(), serial_number = serialNumber, custom_desc = weaponCustomDesc, id = nil }
+					local dataweapon = { name = weaponName, obj = weaponObj, amount = pickup.amount, metadata = {}, weaponId = weaponId, position = ItemPickUps[uid].coords, custom_label = weapon:getCustomLabel(), serial_number = serialNumber, custom_desc = weaponCustomDesc, id = nil }
 					ItemPickUps[uid] = nil
 					if weaponCustomDesc == nil then
 						weaponCustomDesc = "Custom Description not set"
@@ -502,7 +501,7 @@ function InventoryService.onPickup(data)
 					end
 					local charname, scourceidentifier, steamname = getSourceInfo(_source)
 					local title = T.weppickup
-					local description = "**" .. T.WebHookLang.Weapontype .. ":** `" .. weapon:getName() .. "`\n**" .. T.WebHookLang.charname .. ":** `" .. charname .. "`\n**" .. T.WebHookLang.serialnumber .. "** `" .. serialNumber .. "`\n **" .. T.WebHookLang.Desc .. "** `" .. weaponCustomDesc .. "` \n **" .. T.WebHookLang.Steamname .. "** `" .. steamname .. "`"
+					local description = "**" .. T.WebHookLang.Weapontype .. ":** `" .. weaponName .. "`\n**" .. T.WebHookLang.charname .. ":** `" .. charname .. "`\n**" .. T.WebHookLang.serialnumber .. "** `" .. serialNumber .. "`\n **" .. T.WebHookLang.Desc .. "** `" .. weaponCustomDesc .. "` \n **" .. T.WebHookLang.Steamname .. "** `" .. steamname .. "`"
 					local info = { source = _source, name = Logs.WebHook.webhookname, title = title, description = description, webhook = Logs.WebHook.webhook, color = Logs.WebHook.colorweppickupd }
 					TriggerClientEvent("vorpInventory:sharePickupClient", -1, dataweapon, 2)
 					TriggerClientEvent("vorpInventory:removePickupClient", -1, weaponObj)
@@ -766,10 +765,8 @@ function InventoryService.giveWeapon2(player, weaponId, target)
 	end
 
 	if DefaultAmount ~= 0 then
-		if weaponName then
-			if SharedUtils.IsValueInArray(string.upper(weaponName), Config.notweapons) then
-				notListed = true
-			end
+		if weaponName and Config.notweapons[weaponName:upper()] then
+			notListed = true
 		end
 
 		if not notListed then
