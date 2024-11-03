@@ -937,13 +937,13 @@ function InventoryAPI.canCarryAmountWeapons(player, amount, cb, weaponName)
 
 	local function getWeaponNameFromHash()
 		if weaponName and type(weaponName) == "number" then
-			for _, value in ipairs(SharedData.Weapons) do
+			for _, value in pairs(SharedData.Weapons) do
 				if joaat(value.HashName) == weaponName then
 					return value.HashName
 				end
 			end
 		end
-		return weaponName
+		return SharedData.Weapons[weaponName] and weaponName or nil
 	end
 
 	weaponName = getWeaponNameFromHash()
