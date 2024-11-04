@@ -24,14 +24,18 @@ exports('GetWeaponsDefaultData', function(request)
     return Utils.GetWeaponsDefaultData(request)
 end)
 
-exports('GetItem', function(name)
-    return Utils.GetItem(name)
-end)
-
 exports('GetWeaponAmmoTypes', function(group)
     return SharedData.AmmoTypes[group]
 end)
 
 exports('GetAmmoLabel', function(ammo)
     return Utils.GetAmmoLabels(ammo)
+end)
+
+exports('GetInventoryItem', function(name)
+    return Utils.GetItem(name)
+end)
+
+exports('GetInventoryItems', function()
+    return Utils.GetInventoryItems()
 end)

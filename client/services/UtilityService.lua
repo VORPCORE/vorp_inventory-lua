@@ -131,7 +131,7 @@ function Utils.GetAmmoLabel(ammo)
 	end
 end
 
-function Utils.GetItem(name)
+function Utils.GetInventoryItem(name)
 	if not UserInventory or not name then
 		return false
 	end
@@ -142,12 +142,34 @@ function Utils.GetItem(name)
 				label = item:getLabel(),
 				count = item:getCount(),
 				limit = item:getLimit(),
-				weight = item:getWeight()
+				weight = item:getWeight(),
+				metadata = item:getMetadata(),
+				name = item:getName(),
+				desc = item:getDesc(),
 			}
 		end
 	end
 
 	return false
+end
+
+function Utils.GetInventoryItems()
+	if not UserInventory then
+		return false
+	end
+	local items = {}
+	for _, item in pairs(UserInventory) do
+		table.insert(items, {
+			label = item:getLabel(),
+			count = item:getCount(),
+			limit = item:getLimit(),
+			weight = item:getWeight(),
+			metadata = item:getMetadata(),
+			name = item:getName(),
+			desc = item:getDesc(),
+		})
+	end
+	return items
 end
 
 function Utils.TableRemoveByKey(table, key)
