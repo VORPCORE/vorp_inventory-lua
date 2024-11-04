@@ -9,7 +9,6 @@ GoldPickUps      = {}
 math.randomseed(GetGameTimer())
 ItemUids = {}
 
-
 function InventoryService.CheckNewPlayer(_source, charid)
 	if not Config.NewPlayers then return true end
 
@@ -821,10 +820,7 @@ function InventoryService.GiveItem(itemId, amount, target)
 	local _target = target
 	local user = Core.getUser(_source)
 	local user1 = Core.getUser(_target)
-
-	if not user or not user1 then
-		return
-	end
+	if not user or not user1 then return end
 
 	local character = user.getUsedCharacter
 	local targetCharacter = user1.getUsedCharacter
@@ -985,7 +981,6 @@ end
 
 Core.Callback.Register("vorpinventory:getammoinfo", function(source, cb)
 	if not AmmoData[source] then
-		print("AmmoData not found")
 		return cb(false)
 	end
 
