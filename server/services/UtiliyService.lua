@@ -201,7 +201,7 @@ end
 ---@param name string weapon name
 ---@return string
 function SvUtils.GenerateWeaponLabel(name)
-    return SharedData.Weapons[name] and name or ""
+    return SharedData.Weapons[name] and SharedData.Weapons[name].Name or ""
 end
 
 --- filter weapons that should not have a serial number
