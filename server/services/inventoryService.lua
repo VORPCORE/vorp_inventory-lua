@@ -13,7 +13,7 @@ ItemUids = {}
 function InventoryService.CheckNewPlayer(_source, charid)
 	if Config.NewPlayers then
 		if SharedUtils.IsValueInArray(charid, newchar) then
-			Core.NotifyRightTip(_source,T.ToNew, 5000)
+			Core.NotifyRightTip(_source, T.ToNew, 5000)
 			SvUtils.Trem(_source)
 			return false
 		end
@@ -1739,51 +1739,55 @@ function InventoryService.addItemsToCustomInventory(id, items, charid)
 	if not result[1] then
 		for _, value in ipairs(items) do
 			local item = ServerItems[value.name]
-			DBService.CreateItem(charid, item:getId(), value.amount, (value.metadata or {}), value.name, function()
-			end, id)
+			if item and value.amount > 0 then
+				DBService.CreateItem(charid, item:getId(), value.amount, (value.metadata or {}), value.name, function()
+				end, id)
+			end
 		end
 	else
 		for _, value in ipairs(items) do
 			local item = ServerItems[value.name]
-			local itemMetadata = value.metadata or {}
-			local result1 = DBService.queryAwait("SELECT amount, item_crafted_id FROM character_inventories WHERE item_name =@itemname AND inventory_type = @inventory_type", { itemname = value.name, inventory_type = id })
+			if item and value.amount > 0 then
+				local itemMetadata = value.metadata or {}
+				local result1 = DBService.queryAwait("SELECT amount, item_crafted_id FROM character_inventories WHERE item_name =@itemname AND inventory_type = @inventory_type", { itemname = value.name, inventory_type = id })
 
-			if not result1[1] then
-				DBService.CreateItem(charid, item:getId(), value.amount, itemMetadata, value.name, function()
-				end, id)
-			else
-				local resulItems = {}
-				for k, v in ipairs(result1) do -- if there is more than one apple we need to check which ones have metadata
-					local result2 = DBService.queryAwait("SELECT metadata FROM items_crafted WHERE id =@id", { id = v.item_crafted_id })
-					local hasMetadata = result2[1] and json.decode(result2[1].metadata) or {}
-					if next(hasMetadata) then
-						resulItems[#resulItems + 1] = v
-					end
-				end
-
-				if #resulItems == 0 then
-					if next(itemMetadata) then
-						DBService.CreateItem(charid, item:getId(), value.amount, itemMetadata, value.name, function()
-						end, id)
-					else
-						DBService.updateAsync("UPDATE character_inventories SET amount = amount + @amount WHERE item_name = @itemname AND inventory_type = @inventory_type", { amount = value.amount, itemname = value.name, inventory_type = id })
-					end
+				if not result1[1] then
+					DBService.CreateItem(charid, item:getId(), value.amount, itemMetadata, value.name, function()
+					end, id)
 				else
-					for _, v in ipairs(resulItems) do
+					local resulItems = {}
+					for k, v in ipairs(result1) do -- if there is more than one apple we need to check which ones have metadata
 						local result2 = DBService.queryAwait("SELECT metadata FROM items_crafted WHERE id =@id", { id = v.item_crafted_id })
-						local metadata = json.decode(result2[1].metadata)
-						local result3 = SharedUtils.Table_equals(metadata, itemMetadata)
-						if result3 then
-							newTable[#newTable + 1] = v
+						local hasMetadata = result2[1] and json.decode(result2[1].metadata) or {}
+						if next(hasMetadata) then
+							resulItems[#resulItems + 1] = v
 						end
 					end
 
-					if #newTable == 0 then -- metadata of any of the items dont match new one so we create new one
-						DBService.CreateItem(charid, item:getId(), value.amount, itemMetadata, value.name, function()
-						end, id)
+					if #resulItems == 0 then
+						if next(itemMetadata) then
+							DBService.CreateItem(charid, item:getId(), value.amount, itemMetadata, value.name, function()
+							end, id)
+						else
+							DBService.updateAsync("UPDATE character_inventories SET amount = amount + @amount WHERE item_name = @itemname AND inventory_type = @inventory_type", { amount = value.amount, itemname = value.name, inventory_type = id })
+						end
 					else
-						-- means we have a match so we update the amount
-						DBService.updateAsync("UPDATE character_inventories SET amount = amount + @amount WHERE item_name = @itemname AND inventory_type = @inventory_type", { amount = value.amount, itemname = value.name, inventory_type = id })
+						for _, v in ipairs(resulItems) do
+							local result2 = DBService.queryAwait("SELECT metadata FROM items_crafted WHERE id =@id", { id = v.item_crafted_id })
+							local metadata = json.decode(result2[1].metadata)
+							local result3 = SharedUtils.Table_equals(metadata, itemMetadata)
+							if result3 then
+								newTable[#newTable + 1] = v
+							end
+						end
+
+						if #newTable == 0 then -- metadata of any of the items dont match new one so we create new one
+							DBService.CreateItem(charid, item:getId(), value.amount, itemMetadata, value.name, function()
+							end, id)
+						else
+							-- means we have a match so we update the amount
+							DBService.updateAsync("UPDATE character_inventories SET amount = amount + @amount WHERE item_name = @itemname AND inventory_type = @inventory_type", { amount = value.amount, itemname = value.name, inventory_type = id })
+						end
 					end
 				end
 			end
@@ -1951,6 +1955,9 @@ function InventoryService.updateItemInCustomInventory(invId, item_crafted_id, me
 
 	local item = result[1]
 	local itemAmount = amount or item.amount
+	if itemAmount <= 0 then
+		return false
+	end
 
 	if metadata and type(metadata) == "table" then
 		metadata = json.encode(metadata)
