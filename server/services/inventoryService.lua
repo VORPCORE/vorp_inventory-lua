@@ -11,21 +11,19 @@ ItemUids = {}
 
 
 function InventoryService.CheckNewPlayer(_source, charid)
-	if Config.NewPlayers then
-		if SharedUtils.IsValueInArray(charid, newchar) then
-			Core.NotifyRightTip(_source, T.ToNew, 5000)
-			SvUtils.Trem(_source)
-			return false
-		end
-	end
-	return true
+	if not Config.NewPlayers then return true end
+
+	if not newchar[charid] then return true end
+
+	Core.NotifyRightTip(_source, T.ToNew, 5000)
+	SvUtils.Trem(_source)
+	return false
 end
 
 local function getSourceInfo(_source)
 	local user = Core.getUser(_source)
-	if not user then
-		return
-	end
+	if not user then return end
+
 	local sourceCharacter = user.getUsedCharacter
 	local charname = sourceCharacter.firstname .. ' ' .. sourceCharacter.lastname
 	local sourceIdentifier = sourceCharacter.charIdentifier
@@ -37,13 +35,10 @@ end
 function InventoryService.UseItem(data)
 	local _source = source
 	local sourceCharacter = Core.getUser(_source)
+	if not sourceCharacter then return end
+
 	local itemId = data.id
 	local itemName = data.item
-
-	if not sourceCharacter then
-		return
-	end
-
 	local identifier = sourceCharacter.getUsedCharacter.identifier
 	local userInventory = UsersInventories.default[identifier]
 
@@ -57,9 +52,7 @@ function InventoryService.UseItem(data)
 	end
 
 	local item = userInventory[itemId]
-	if not item then
-		return
-	end
+	if not item then return end
 
 	local svItem = ServerItems[itemName]
 	local itemArgs = json.decode(json.encode(svItem))
@@ -82,11 +75,11 @@ function InventoryService.DropMoney(amount)
 		SvUtils.ProcessUser(_source)
 		local userCharacter = Core.getUser(_source).getUsedCharacter
 		local userMoney = userCharacter.money
-		local charid = userCharacter.charIdentifier -- new line
+		local charid = userCharacter.charIdentifier
 
 		if not InventoryService.CheckNewPlayer(_source, charid) then
 			return
-		end -- new line
+		end
 
 		if amount <= 0 then
 			Core.NotifyRightTip(_source, T.TryExploits, 3000)
@@ -1085,30 +1078,29 @@ function InventoryService.LoadAllAmmo()
 end
 
 function InventoryService.onNewCharacter(source)
-	Wait(5000)
-	local player = Core.getUser(source)
+	SetTimeout(5000, function()
+		local player <const> = Core.getUser(source)
+		if not player then return end
 
-	for key, value in pairs(Config.startItems) do
-		InventoryAPI.addItem(source, tostring(key), value, {})
-	end
+		for key, value in pairs(Config.startItems) do
+			InventoryAPI.addItem(source, key, value, {})
+		end
 
-	for _, value in ipairs(Config.startWeapons) do
-		InventoryAPI.registerWeapon(source, value, {}, {}, {})
-	end
+		for _, value in ipairs(Config.startWeapons) do
+			InventoryAPI.registerWeapon(source, value, {}, {}, {})
+		end
 
-	if Config.NewPlayers then
-		CreateThread(function()
-			local Character = player.getUsedCharacter
-			local charid = Character.charIdentifier
-			table.insert(newchar, charid)
-			Wait(timer * 60000) -- waiting time is in minutes so 120 minutes = 2 hours until player can give or drop
-			for k, v in pairs(newchar) do
-				if v == charid then
-					table.remove(newchar, k)
-				end
-			end
+		if not Config.NewPlayers then return end
+
+		local Character = player.getUsedCharacter
+		local charid = Character.charIdentifier
+		if newchar[charid] then return end
+
+		newchar[charid] = source
+		SetTimeout(timer * 60000, function()
+			newchar[charid] = nil
 		end)
-	end
+	end)
 end
 
 function InventoryService.reloadInventory(player, id, type, source)
