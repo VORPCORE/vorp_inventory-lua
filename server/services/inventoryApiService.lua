@@ -1101,12 +1101,7 @@ function InventoryAPI.registerWeapon(_target, wepname, ammos, components, comps,
 		return respond(cb, nil)
 	end
 
-	local function isWeaponInConfig()
-		if SharedData.Weapons[wepname:upper()] then return true end
-		return false
-	end
-
-	if not isWeaponInConfig() then
+	if not SharedData.Weapons[wepname:upper()] then
 		return respond(cb, nil)
 	end
 
