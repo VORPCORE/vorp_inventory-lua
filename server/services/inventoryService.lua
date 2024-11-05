@@ -1868,6 +1868,7 @@ end
 function InventoryService.getAllItemsFromCustomInventory(invId)
 	local result = DBService.queryAwait("SELECT item_name, amount, item_crafted_id FROM character_inventories WHERE inventory_type = @inventory_type", { inventory_type = invId })
 	local items = {}
+	local itemsMap = {}
 	for _, value in ipairs(result) do
 		local item = ServerItems[value.item_name]
 		if item then
@@ -1876,12 +1877,25 @@ function InventoryService.getAllItemsFromCustomInventory(invId)
 			if result1[1] then
 				itemMetadata = result1[1].metadata and json.decode(result1[1].metadata) or {}
 			end
-			items[#items + 1] = {
-				name = value.item_name,
-				amount = value.amount,
-				metadata = itemMetadata,
-				id = value.item_crafted_id
-			}
+
+			if next(itemMetadata) then
+				items[#items + 1] = {
+					name = value.item_name,
+					amount = value.amount,
+					metadata = itemMetadata,
+				}
+			else
+				if itemsMap[value.item_name] then
+					itemsMap[value.item_name].amount = itemsMap[value.item_name].amount + value.amount
+				else
+					itemsMap[value.item_name] = {
+						name = value.item_name,
+						amount = value.amount,
+						metadata = itemMetadata,
+					}
+					items[#items + 1] = itemsMap[value.item_name]
+				end
+			end
 		end
 	end
 	return items
