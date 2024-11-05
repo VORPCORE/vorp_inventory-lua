@@ -1451,7 +1451,7 @@ exports("AddCharIdPermissionTakeFromCustom", InventoryAPI.AddCharIdPermissionTak
 ---@param id string inventory id
 ---@param name string item or weapon name
 function InventoryAPI.BlackListCustom(id, name)
-	if not CustomInventoryInfos[id] then
+	if not CustomInventoryInfos[id] or not name then
 		return
 	end
 
@@ -1467,6 +1467,7 @@ function InventoryAPI.removeInventory(id)
 	if not CustomInventoryInfos[id] then
 		return
 	end
+
 	CustomInventoryInfos[id]:removeCustomInventory()
 end
 
@@ -1730,7 +1731,7 @@ function InventoryAPI.openPlayerInventory(data, callback)
 	local allowItems, cooldownItems = HandleLimits("items")
 
 	if cooldownWeapons and cooldownItems then
-		Core.NotifyObjective(source, T.BothonCool , 5000)
+		Core.NotifyObjective(source, T.BothonCool, 5000)
 		return respond(callback, false)
 	end
 
