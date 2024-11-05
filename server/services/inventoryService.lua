@@ -1917,7 +1917,8 @@ function InventoryService.getAllWeaponsFromCustomInventory(invId)
 	return weapons
 end
 
-function InventoryService.removeItemsByIdFromCustomInventory(invId, item_crafted_id, amount)
+-- this doesnt work because of how items are stored, they dont update
+--[[ function InventoryService.removeItemsByIdFromCustomInventory(invId, item_crafted_id, amount)
 	local result = DBService.queryAwait("SELECT item_name, amount FROM character_inventories WHERE item_crafted_id = @item_crafted_id AND inventory_type = @inventory_type", { item_crafted_id = item_crafted_id, inventory_type = invId })
 	if not result[1] then
 		return false
@@ -1933,7 +1934,7 @@ function InventoryService.removeItemsByIdFromCustomInventory(invId, item_crafted
 	end
 
 	return true
-end
+end ]]
 
 function InventoryService.removeWeaponsByIdFromCustomInventory(invId, weaponId)
 	local result = DBService.queryAwait("SELECT id FROM loadout WHERE id = @id AND curr_inv = @invId", { id = weaponId, invId = invId })
