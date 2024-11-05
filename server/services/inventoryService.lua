@@ -1826,27 +1826,40 @@ function InventoryService.addWeaponsToCustomInventory(id, weapons, charid)
 	end
 end
 
+--todo allow metadata to be passed
 function InventoryService.removeItemFromCustomInventory(invId, item_name, amount)
-	local result = DBService.queryAwait("SELECT amount, item_crafted_id FROM character_inventories WHERE item_name =@itemname AND inventory_type = @inventory_type", { itemname = item_name, inventory_type = invId })
+	local result = DBService.queryAwait("SELECT amount, item_crafted_id FROM character_inventories WHERE item_name = @itemname AND inventory_type = @inventory_type ORDER BY amount DESC",
+		{ itemname = item_name, inventory_type = invId })
 	if not result[1] then
 		return false
 	end
 
-	local item = result[1]
-	local item_crafted_id = item.item_crafted_id
-	local itemAmount = item.amount
-	if itemAmount < amount then
+	local remainingAmount = amount
+	local totalAvailable = 0
+
+	for _, item in ipairs(result) do
+		totalAvailable = totalAvailable + item.amount
+	end
+
+	if totalAvailable < amount then
 		return false
 	end
 
-	if amount <= itemAmount then
-		-- if its less than what we have or equals then we update its count
-		if amount == itemAmount then
-			DBService.updateAsync("DELETE FROM character_inventories WHERE item_name = @itemname AND inventory_type = @inventory_type", { itemname = item_name, inventory_type = invId })
-			DBService.updateAsync("DELETE FROM items_crafted WHERE id = @id", { id = item_crafted_id })
-		else
-			DBService.updateAsync("UPDATE character_inventories SET amount = amount - @amount WHERE item_name = @itemname AND inventory_type = @inventory_type", { amount = amount, itemname = item_name, inventory_type = invId })
+	for _, item in ipairs(result) do
+		if remainingAmount <= 0 then
+			break
 		end
+
+		local amountToRemove = math.min(remainingAmount, item.amount)
+
+		if amountToRemove >= item.amount then
+			DBService.updateAsync("DELETE FROM character_inventories WHERE item_crafted_id = @id AND inventory_type = @inventory_type", { id = item.item_crafted_id, inventory_type = invId })
+			DBService.updateAsync("DELETE FROM items_crafted WHERE id = @id", { id = item.item_crafted_id })
+		else
+			DBService.updateAsync("UPDATE character_inventories SET amount = amount - @amount WHERE item_crafted_id = @id AND inventory_type = @inventory_type", { amount = amountToRemove, id = item.item_crafted_id, inventory_type = invId })
+		end
+
+		remainingAmount = remainingAmount - amountToRemove
 	end
 	return true
 end
