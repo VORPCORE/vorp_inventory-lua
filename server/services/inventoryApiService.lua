@@ -1933,28 +1933,6 @@ end
 
 exports("getCustomInventoryWeapons", InventoryAPI.getCustomInventoryWeapons)
 
-
--- remove/update item/amount  from custom inventory by item id
----@param id string inventory id
----@param item_id number item id
----@param amount number amount to remove
----@param callback fun(success: boolean)? async or sync callback
----@return boolean
-function InventoryAPI.removeItemByIdFromCustomInventory(id, item_id, amount, callback)
-	if not CustomInventoryInfos[id] then
-		return respond(callback, false)
-	end
-
-	if InventoryService.removeItemsByIdFromCustomInventory(id, item_id, amount) then
-		return respond(callback, true)
-	end
-
-	return respond(callback, false)
-end
-
-exports("removeCustomInventoryItemById", InventoryAPI.removeItemByIdFromCustomInventory)
-
-
 -- remove weapon from custom inventory by weapon id
 ---@param id string inventory id
 ---@param weapon_id number weapon id

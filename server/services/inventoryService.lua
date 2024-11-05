@@ -1917,25 +1917,6 @@ function InventoryService.getAllWeaponsFromCustomInventory(invId)
 	return weapons
 end
 
--- this doesnt work because of how items are stored, they dont update
---[[ function InventoryService.removeItemsByIdFromCustomInventory(invId, item_crafted_id, amount)
-	local result = DBService.queryAwait("SELECT item_name, amount FROM character_inventories WHERE item_crafted_id = @item_crafted_id AND inventory_type = @inventory_type", { item_crafted_id = item_crafted_id, inventory_type = invId })
-	if not result[1] then
-		return false
-	end
-
-	local item = result[1]
-	local itemAmount = item.amount
-	if amount >= itemAmount then
-		DBService.updateAsync("DELETE FROM character_inventories WHERE item_crafted_id = @item_crafted_id AND inventory_type = @inventory_type", { item_crafted_id = item_crafted_id, inventory_type = invId })
-		DBService.updateAsync("DELETE FROM items_crafted WHERE id = @id", { id = item_crafted_id })
-	else
-		DBService.updateAsync("UPDATE character_inventories SET amount = amount - @amount WHERE item_crafted_id = @item_crafted_id AND inventory_type = @inventory_type", { amount = amount, item_crafted_id = item_crafted_id, inventory_type = invId })
-	end
-
-	return true
-end ]]
-
 function InventoryService.removeWeaponsByIdFromCustomInventory(invId, weaponId)
 	local result = DBService.queryAwait("SELECT id FROM loadout WHERE id = @id AND curr_inv = @invId", { id = weaponId, invId = invId })
 	if not result[1] then
