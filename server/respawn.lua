@@ -7,7 +7,7 @@ RegisterNetEvent("vorp:PlayerForceRespawn", function()
     local user <const> = Core.getUser(_source)
     if not user then return end
 
-    local character <const> = user.getUsedCharacter()
+    local character <const> = user.getUsedCharacter
     local job <const> = character.job
     local isdead <const> = character.isdead
 
