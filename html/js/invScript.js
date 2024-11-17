@@ -406,8 +406,12 @@ function addData(index, item) {
     }
 
     $("#item-" + index).hover(
-        function () {
-            OverSetTitle(item.label);
+		function () {
+            if (!!item.metadata && !!item.metadata.label) {
+                OverSetTitle(item.metadata.label);
+            } else {
+                OverSetTitle(item.label);
+            }
         },
         function () {
             OverSetTitle(" ");

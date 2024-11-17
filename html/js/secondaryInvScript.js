@@ -304,8 +304,12 @@ function addDataToCustomInv(item, index) {
     $("#item-" + index).data("inventory", "second");
 
     $("#item-" + index).hover(
-        function () {
-            OverSetTitleSecond(item.label);
+		function () {
+            if (!!item.metadata && !!item.metadata.label) {
+                OverSetTitleSecond(item.metadata.label);
+            } else {
+                OverSetTitleSecond(item.label);
+            }
         },
         function () {
             OverSetTitleSecond(" ");
