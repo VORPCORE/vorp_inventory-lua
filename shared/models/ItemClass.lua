@@ -71,6 +71,7 @@ function Item:setLabel(label)
 end
 
 function Item:getLabel()
+	if self.metadata.label then return self.metadata.label end
 	return self.label
 end
 
