@@ -2,19 +2,19 @@
 DBService = {}
 
 function DBService.GetSharedInventory(inventoryId, cb)
-    local result = MySQL.query.await("SELECT ci.character_id, ic.id, i.item, ci.amount, ic.metadata, ci.created_at FROM items_crafted ic\
+    MySQL.query("SELECT ci.character_id, ic.id, i.item, ci.amount, ic.metadata, ci.created_at FROM items_crafted ic\
 		LEFT JOIN character_inventories ci on ic.id = ci.item_crafted_id\
-		LEFT JOIN items i on ic.item_id = i.id WHERE ci.inventory_type = @invType;", { invType = inventoryId })
-
-    cb(result or {})
+		LEFT JOIN items i on ic.item_id = i.id WHERE ci.inventory_type = @invType;", { invType = inventoryId }, function(result)
+        cb(result or {})
+    end)
 end
 
 function DBService.GetInventory(charIdentifier, inventoryId, cb)
-    local result = MySQL.query.await("SELECT ic.id, i.item, ci.amount, ic.metadata, ci.created_at, ci.character_id FROM items_crafted ic\
+    MySQL.query("SELECT ic.id, i.item, ci.amount, ic.metadata, ci.created_at, ci.character_id FROM items_crafted ic\
 		LEFT JOIN character_inventories ci on ic.id = ci.item_crafted_id\
-		LEFT JOIN items i on ic.item_id = i.id WHERE ci.inventory_type = @invType AND ci.character_id = @charid;", { invType = inventoryId, charid = charIdentifier })
-
-    cb(result or {})
+		LEFT JOIN items i on ic.item_id = i.id WHERE ci.inventory_type = @invType AND ci.character_id = @charid;", { invType = inventoryId, charid = charIdentifier }, function(result)
+        cb(result or {})
+    end)
 end
 
 function DBService.SetItemAmount(sourceCharIdentifier, itemCraftedId, amount)
