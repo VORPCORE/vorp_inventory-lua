@@ -432,7 +432,10 @@ function loadInventoryItems(item, index, group, count, limit) {
     if (item.type != "item_weapon") {
         const custom = item.metadata?.tooltip ? "<br>" + item.metadata.tooltip : "";
         const degradation = item.degradation ? `<br>${LANGUAGE.labels.decay}<span style="color: ${getColorForDegradation(item.degradation)}">${item.degradation}%</span>` : "";
-        const weight = item.weight ? "<br>" + LANGUAGE.labels.weight + (item.weight * count).toFixed(2) + " " + Config.WeightMeasure : "<br>" + LANGUAGE.labels.weight + (count / 4).toFixed(2) + " " + Config.WeightMeasure;
+        const weight = item?.weight != null
+            ? `<br>${LANGUAGE.labels?.weight || "Weight"} ${(item.weight * count).toFixed(2)} ${Config.WeightMeasure || "kg"}`
+            : `<br>${LANGUAGE.labels?.weight || "Weight"} ${(count / 4).toFixed(2)} ${Config.WeightMeasure || "kg"}`;
+
         const groupKey = getGroupKey(group);
         const groupImg = groupKey ? window.Actions[groupKey].img : 'satchel_nav_all.png';
         const tooltipContent = group > 1 ? `<img src="img/itemtypes/${groupImg}"> ${LANGUAGE.labels.limit + limit + custom + weight + degradation}` : `${LANGUAGE.labels.limit} ${limit}${custom}${weight}${degradation}`;
