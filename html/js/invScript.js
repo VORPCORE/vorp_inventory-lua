@@ -438,7 +438,7 @@ function loadInventoryItems(item, index, group, count, limit) {
 
         const groupKey = getGroupKey(group);
         const groupImg = groupKey ? window.Actions[groupKey].img : 'satchel_nav_all.png';
-        const tooltipContent = group > 1 ? `<img src="img/itemtypes/${groupImg}"> ${LANGUAGE.labels.limit + limit + custom + weight + degradation}` : `${LANGUAGE.labels.limit} ${limit}${custom}${weight}${degradation}`;
+        const tooltipContent = group > 1 ? `<img src="img/itemtypes/${groupImg}"> ${LANGUAGE.labels.limit + limit + weight + degradation + custom}` : `${LANGUAGE.labels.limit} ${limit}${weight}${degradation}${custom}`;
         const image = item.metadata?.image ? item.metadata.image : item.name ? item.name : "default";
         const url = imageCache[image]
 
