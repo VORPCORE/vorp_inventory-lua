@@ -2,23 +2,23 @@ Lang = "English"
 
 Config = {
 	-- ======================= DEVELOPMENT ============================== --
-	Debug                    = false,   -- If your server is live set this to false.  to true only if you are testing things
+	Debug                    = false, -- If your server is live set this to false.  to true only if you are testing things
 
 	InventoryOrder           = "items", -- Items or weapons what should should first in inventory
 
-	DevMode                  = false,   -- If your server is live set this to false.  to true only if you are testing things (auto load inventory when script restart and before character selection. Alos add /getInv command)
+	DevMode                  = true, -- If your server is live set this to false.  to true only if you are testing things (auto load inventory when script restart and before character selection. Alos add /getInv command)
 	dbupdater                = true,
 	-- ======================= CONFIGURATION ============================= --
 	ShowCharacterNameOnGive  = false, -- When giving an item, show the character name of nearby players instead of their player ID. if set to false, show the player ID
 
-	DoubleClickToUse         = true,  -- If toggled to false, items in inventory will right click then left click "use"
+	DoubleClickToUse         = true, -- If toggled to false, items in inventory will right click then left click "use"
 
 	NewPlayers               = false, -- If you dont want new players to give money or items then set to true. this can avoid cheaters giving stuff on first join
 
-	CoolDownNewPlayer        = 120,   -- In seconds how long they have to wait before they can give items or money
+	CoolDownNewPlayer        = 120, -- In seconds how long they have to wait before they can give items or money
 
 	-- GOLD ITEM LIKE DOLLARS
-	UseRolItem               = false,   -- To show rol in inventory
+	UseRolItem               = false, -- To show rol in inventory
 
 	UseGoldItem              = false,
 
@@ -35,8 +35,8 @@ Config = {
 	DisableDeathInventory    = true,    -- Prevent the ability to access inventory while dead
 
 	OpenKey                  = 0xC1989F95, -- I
-	UseFilter                = true,       -- If true then will use the filter opening inventory
-	Filter					 = "OJDominoBlur",
+	UseFilter                = true,    -- If true then will use the filter opening inventory
+	Filter                   = "OJDominoBlur",
 
 	PickupKey                = 0xF84FA74F, -- RMB mouse PROMPT PICKUP
 
@@ -152,5 +152,35 @@ Config = {
 		WEAPON_BOW_IMPROVED = true,
 		WEAPON_LASSO = true,
 		WEAPON_LASSO_REINFORCED = true,
+
+	},
+
+	weaponAdjustments        = {
+		WEAPON_MELEE_KNIFE = 90.0,
+		WEAPON_BOW = 90.0,
+		WEAPON_BOW_IMPROVED = 90.0,
+		WEAPON_MELEE_KNIFE_RUSTIC = 90.0,
+		WEAPON_MELEE_KNIFE_HORROR = 90.0,
+		WEAPON_MELEE_KNIFE_CIVIL_WAR = 90.0,
+		WEAPON_MELEE_KNIFE_JAWBONE = 90.0,
+		WEAPON_MELEE_KNIFE_MINER = 90.0,
+		WEAPON_MELEE_KNIFE_VAMPIRE = 90.0,
+		WEAPON_MELEE_HATCHET = 90.0,
+		WEAPON_MELEE_HATCHET_HUNTER = 90.0,
+		WEAPON_MELEE_HATCHET_DOUBLE_BIT = 90.0,
+		WEAPON_MELEE_MACHETE_COLLECTOR = 90.0,
+		WEAPON_MELEE_MACHETE = 90.0,
+		WEAPON_MELEE_CLEAVER = 90.0,
+		WEAPON_MELEE_HAMMER = 90.0,
+		WEAPON_FISHINGROD = 90.0,
+	},
+
+	-- if you dropped items to be other than a box add the item name and the object you want below
+	spawnableProps           = {
+		default_box = "p_cottonbox01x", -- default when object is not found will always spawn this object for wepon or items
+		money_bag = "p_moneybag02x", -- prop for the money pickup
+		gold_bag = "s_pickup_goldbar01x", -- prop for the gold pickup
+		-- add more here
+		p_ambpack01x = "p_ambpack01x",
 	}
 }
