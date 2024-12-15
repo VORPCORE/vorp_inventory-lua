@@ -423,6 +423,14 @@ function addData(index, item) {
 
 }
 
+function getItemDegradationPercentage(item) {
+    const now = TIME_NOW
+    const maxDegradeSeconds = item.maxDegradation * 60;
+    const elapsedSeconds = now - item.degradation;
+    const degradationPercentage = Math.max(0, ((maxDegradeSeconds - elapsedSeconds) / maxDegradeSeconds) * 100);
+    return degradationPercentage;
+}
+
 /**
  * Get the degradation percentage 
  * @param {Object} item - The item object
@@ -431,10 +439,7 @@ function addData(index, item) {
 function getDegradationMain(item) {
 
     if (item.type === "item_weapon" || item.maxDegradation === 0 || item.degradation === undefined || item.degradation === null || TIME_NOW === undefined) return "";
-    const now = TIME_NOW
-    const maxDegradeSeconds = item.maxDegradation * 60;
-    const elapsedSeconds = now - item.degradation;
-    const degradationPercentage = Math.max(0, ((maxDegradeSeconds - elapsedSeconds) / maxDegradeSeconds) * 100);
+    const degradationPercentage = getItemDegradationPercentage(item);
     const color = getColorForDegradation(degradationPercentage);
 
     return `<br>${LANGUAGE.labels.decay}<span style="color: ${color}">${degradationPercentage.toFixed(0)}%</span>`;
@@ -457,8 +462,9 @@ function loadInventoryItems(item, index, group, count, limit) {
     const itemWeight = getItemWeight(weight, count);
     const groupKey = getGroupKey(group);
     const { tooltipContent, url } = getItemTooltipContent(image, groupKey, group, limit, itemWeight, degradation, tooltipData);
+    const imageOpacity = getItemDegradationPercentage(item) === 0 ? 0.5 : 1;
 
-    $("#inventoryElement").append(`<div data-group='${group}' data-label='${label}' style='background-image: ${url} background-size: 4.5vw 7.7vh; background-repeat: no-repeat; background-position: center;' id='item-${index}' class='item' data-tooltip='${tooltipContent}'> 
+    $("#inventoryElement").append(`<div data-group='${group}' data-label='${label}' style='background-image: ${url} background-size: 4.5vw 7.7vh; background-repeat: no-repeat; background-position: center; opacity: ${imageOpacity};' id='item-${index}' class='item' data-tooltip='${tooltipContent}'> 
         <div class='count'>
             <span style='color:Black'>${count}</span>
         </div>
