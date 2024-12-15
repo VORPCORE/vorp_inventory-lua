@@ -62,6 +62,14 @@ function InventoryService.UseItem(data)
 	itemArgs.maxDegradation = item:getMaxDegradation()
 	itemArgs.percentage = item:getCurrentPercentage()
 	local arguments <const> = { source = _source, item = itemArgs }
+	--handle degradation items
+	if itemArgs.maxDegradation ~= 0 then
+		local isExpired =  item:isItemExpired()
+		if isExpired then
+			Core.NotifyRightTip(_source, "Item is expired cant use it", 3000)
+			return
+		end
+	end
 
 	TriggerEvent("vorp_inventory:Server:OnItemUse", arguments)
 
