@@ -1,5 +1,14 @@
-local T              = TranslationInv.Langs[Lang]
-local Core           = exports.vorp_core:GetCore()
+local T    = TranslationInv.Langs[Lang]
+local Core = exports.vorp_core:GetCore()
+
+--used to sync time to the clients
+CreateThread(function()
+	while true do
+		Wait(1000)
+		GlobalState.TimeNow = os.time()
+	end
+end)
+
 
 ---@class InventoryAPI
 InventoryAPI         = {}
@@ -83,6 +92,7 @@ function InventoryAPI.canCarryAmountItem(player, amount, cb)
 	return respond(cb, cancarryammount())
 end
 
+---@deprecated
 exports("canCarryItems", InventoryAPI.canCarryAmountItem)
 
 ---check limit of item
@@ -132,11 +142,10 @@ end
 exports("canCarryItem", InventoryAPI.canCarryItem)
 
 ---get player inventory
----@param player number source
+---@param source number source
 ---@param cb fun(items: table)? async or sync callback
-function InventoryAPI.getInventory(player, cb)
-	local _source = player
-	local sourceCharacter = Core.getUser(_source)
+function InventoryAPI.getInventory(source, cb)
+	local sourceCharacter = Core.getUser(source)
 	if not sourceCharacter then
 		return respond(cb, nil)
 	end
@@ -148,17 +157,25 @@ function InventoryAPI.getInventory(player, cb)
 		local playerItems = {}
 
 		for _, item in pairs(userInventory) do
+			-- for existing scripts we need to check if labels and descriptions exist in metadata to avoid showing the default ones
+			local label = item.metadata?.label or item:getLabel()
+			local desc = item.metadata?.description or item:getDesc()
+			local weight = item.metadata?.weight or item:getWeight()
+
 			local newItem = {
 				id = item:getId(),
-				label = item:getLabel(),
+				label = label,
 				name = item:getName(),
-				metadata = item:getMetadata(),
+				desc = desc,       -- new
+				metadata = item:getMetadata(), -- this contains label descriptions image weight tooltip as reserved keys
 				type = item:getType(),
 				count = item:getCount(),
 				limit = item:getLimit(),
 				canUse = item:getCanUse(),
 				group = item:getGroup(),
-				weight = item:getWeight()
+				weight = weight,
+				degradation = item:getDegradation(),
+				maxDegradation = item:getMaxDegradation()
 			}
 			table.insert(playerItems, newItem)
 		end
@@ -356,14 +373,14 @@ end
 
 exports("getItemMatchingMetadata", InventoryAPI.getItemMatchingMetadata)
 
----add item to player
+--- used through exports and by openplayerinventory to take or move
 ---@param player number source
 ---@param name string item name
 ---@param amount number
 ---@param metadata table metadata
 ---@param allow boolean? allow to detect item creation false means allow true meand dont allow
 ---@param cb fun(success: boolean)? async or sync callback
-function InventoryAPI.addItem(player, name, amount, metadata, cb, allow)
+function InventoryAPI.addItem(player, name, amount, metadata, cb, allow, degradation)
 	local _source = player
 	local svItem = ServerItems[name]
 
@@ -395,37 +412,67 @@ function InventoryAPI.addItem(player, name, amount, metadata, cb, allow)
 		return respond(cb, false)
 	end
 
+	local function createItem()
+		local isDegradable = svItem:getMaxDegradation() ~= 0
+		local isExpired = 0
+		if degradation and isDegradable and degradation > 0 then
+			-- code for move to player and take from player
+			isExpired = degradation >= os.time() and 0 or degradation
+		end
+
+		DBService.CreateItem(charIdentifier, svItem:getId(), amount, metadata, name, isExpired, function(craftedItem)
+			local item = Item:New({
+				id = craftedItem.id,
+				count = amount,
+				limit = svItem:getLimit(),
+				label = svItem:getLabel(),
+				metadata = SharedUtils.MergeTables(svItem:getMetadata(), metadata),
+				name = name,
+				type = svItem:getType(),
+				canUse = true,
+				canRemove = svItem:getCanRemove(),
+				owner = charIdentifier,
+				desc = svItem:getDesc(),
+				group = svItem:getGroup(),
+				weight = svItem:getWeight(),
+				maxDegradation = svItem:getMaxDegradation()
+			})
+
+			if isDegradable and not degradation then
+				-- for new items
+				item.degradation = os.time()
+				item.percentage = 100
+				DBService.queryAwait('UPDATE character_inventories SET degradation = @degradation, percentage = @percentage WHERE item_crafted_id = @id', { degradation = os.time(), percentage = 100, id = craftedItem.id })
+			end
+
+			userInventory[craftedItem.id] = item
+
+			TriggerClientEvent("vorpCoreClient:addItem", _source, item)
+
+			if not allow then
+				TriggerEvent("vorp_inventory:Server:OnItemCreated", item, _source)
+			end
+		end, "default")
+		return true
+	end
+
 	metadata = SharedUtils.MergeTables(svItem.metadata, metadata or {})
+
 	local item = SvUtils.FindItemByNameAndMetadata("default", identifier, name, metadata)
+
+	-- items that cant degrade we add ammount and items that exist
 	if item then
-		item:addCount(amount)
-		DBService.SetItemAmount(charIdentifier, item:getId(), item:getCount())
-		TriggerClientEvent("vorpCoreClient:addItem", _source, item)
+		if item:getMaxDegradation() == 0 then
+			item:addCount(amount)
+			DBService.SetItemAmount(charIdentifier, item:getId(), item:getCount())
+			TriggerClientEvent("vorpCoreClient:addItem", _source, item)
+			return respond(cb, true)
+		end
+		createItem()
 		return respond(cb, true)
 	end
 
-	DBService.CreateItem(charIdentifier, svItem:getId(), amount, metadata, name, function(craftedItem)
-		item = Item:New({
-			id = craftedItem.id,
-			count = amount,
-			limit = svItem:getLimit(),
-			label = svItem:getLabel(),
-			metadata = SharedUtils.MergeTables(svItem:getMetadata(), metadata),
-			name = name,
-			type = svItem:getType(),
-			canUse = true,
-			canRemove = svItem:getCanRemove(),
-			owner = charIdentifier,
-			desc = svItem:getDesc(),
-			group = svItem:getGroup(),
-			weight = svItem:getWeight()
-		})
-		userInventory[craftedItem.id] = item
-		TriggerClientEvent("vorpCoreClient:addItem", _source, item)
-		if not allow then
-			TriggerEvent("vorp_inventory:Server:OnItemCreated", item, _source)
-		end
-	end)
+	createItem()
 
 	return respond(cb, true)
 end
@@ -453,9 +500,13 @@ function InventoryAPI.getItemByMainId(player, mainid, cb)
 		local itemRequested = {}
 		for _, item in pairs(userInventory) do
 			if mainid == item:getId() then
+				-- for existing scripts we need to check if labels and descriptions exist in metadata to avoid showing the default ones
+				local label = item.metadata?.label or item:getLabel()
+				local desc = item.metadata?.description or item:getDesc()
+				local weight = item.metadata?.weight or item:getWeight()
 				itemRequested = {
 					id = item:getId(),
-					label = item:getLabel(),
+					label = label,
 					name = item:getName(),
 					metadata = item:getMetadata(),
 					type = item:getType(),
@@ -463,7 +514,8 @@ function InventoryAPI.getItemByMainId(player, mainid, cb)
 					limit = item:getLimit(),
 					canUse = item:getCanUse(),
 					group = item:getGroup(),
-					weight = item:getWeight()
+					weight = weight,
+					desc = desc -- new
 				}
 				return respond(cb, itemRequested)
 			end
@@ -593,7 +645,7 @@ exports("subItem", InventoryAPI.subItem)
 ---@param player number source
 ---@param itemId number item id
 ---@param metadata table metadata
----@param amount number amount
+---@param amount number? amount
 ---@param cb fun(success: boolean)? async or sync callback
 ---@return boolean
 function InventoryAPI.setItemMetadata(player, itemId, metadata, amount, cb)
@@ -619,18 +671,25 @@ function InventoryAPI.setItemMetadata(player, itemId, metadata, amount, cb)
 		return respond(cb, false)
 	end
 
+	local svItem = ServerItems[item.name]
+	if not svItem then
+		return respond(cb, false)
+	end
+
 	local count = item:getCount()
 
 	if amountRemove >= count then
 		DBService.SetItemMetadata(charId, item.id, metadata)
 		item:setMetadata(metadata)
 		TriggerClientEvent("vorpCoreClient:SetItemMetadata", _source, itemId, metadata)
+		--!might need to look here if degradation exists ?
 	else
 		item:quitCount(amountRemove)
 		DBService.SetItemAmount(charId, item.id, item:getCount())
 		TriggerClientEvent("vorpCoreClient:subItem", _source, item:getId(), item:getCount())
-		DBService.CreateItem(charId, ServerItems[item.name].id, amountRemove, metadata, item:getName(), function(craftedItem)
-			item = Item:New(
+
+		DBService.CreateItem(charId, ServerItems[item.name].id, amountRemove, metadata, item:getName(), os.time(), function(craftedItem)
+			local item = Item:New(
 				{
 					id = craftedItem.id,
 					count = amount or 1,
@@ -644,8 +703,16 @@ function InventoryAPI.setItemMetadata(player, itemId, metadata, amount, cb)
 					owner = charId,
 					desc = item:getDesc(),
 					group = item:getGroup(),
-					weight = item:getWeight()
+					weight = item:getWeight(),
+					maxDegradation = svItem:getMaxDegradation()
 				})
+
+			if svItem:getMaxDegradation() ~= 0 then
+				item.degradation = os.time()
+				item.percentage = 100
+				DBService.queryAwait('UPDATE character_inventories SET degradation = @degradation, percentage = @percentage WHERE item_crafted_id = @id', { degradation = os.time(), percentage = 100, id = craftedItem.id })
+			end
+
 			userInventory[craftedItem.id] = item
 			TriggerClientEvent("vorpCoreClient:addItem", _source, item)
 		end)
@@ -680,12 +747,20 @@ function InventoryAPI.getItem(player, itemName, cb, metadata)
 	end
 
 	metadata = SharedUtils.MergeTables(svItem.metadata or {}, metadata or {})
-	local item = SvUtils.FindItemByNameAndMetadata("default", identifier, itemName, metadata) or
-		SvUtils.FindItemByNameAndMetadata("default", identifier, itemName, nil)
+	local item = SvUtils.FindItemByNameAndMetadata("default", identifier, itemName, metadata) or SvUtils.FindItemByNameAndMetadata("default", identifier, itemName, nil)
 
 	if not item then
 		return respond(cb, nil)
 	end
+
+	-- modify item metadata to avoid showing the default ones
+	local label = item.metadata?.label or item:getLabel()
+	local desc = item.metadata?.description or item:getDesc()
+	local weight = item.metadata?.weight or item:getWeight()
+
+	item.label = label
+	item.desc = desc
+	item.weight = weight
 
 	return respond(cb, item)
 end
@@ -1542,10 +1617,10 @@ end
 exports("setCustomInventoryWeaponLimit", InventoryAPI.setCustomInventoryWeaponLimit)
 
 --- open inventory
----@param player number player
+---@param source number player
 ---@param id string? inventory id
-function InventoryAPI.openInventory(player, id)
-	local _source = player
+function InventoryAPI.openInventory(source, id)
+	local _source = source
 
 	if not id then
 		return TriggerClientEvent("vorp_inventory:OpenInv", _source)
@@ -1572,8 +1647,9 @@ function InventoryAPI.openInventory(player, id)
 	local function createCharacterInventoryFromDB(inventory)
 		local characterInventory = {}
 		for _, item in pairs(inventory) do
-			if ServerItems[item.item] then
-				local dbItem = ServerItems[item.item]
+			local dbItem = ServerItems[item.item]
+			if dbItem then
+				-- Build character inventory
 				characterInventory[item.id] = Item:New({
 					count = tonumber(item.amount),
 					id = item.id,
@@ -1588,12 +1664,16 @@ function InventoryAPI.openInventory(player, id)
 					owner = item.character_id,
 					desc = dbItem.desc,
 					group = dbItem.group,
-					weight = dbItem.weight
+					weight = dbItem.weight,
+					degradation = item.degradation,
+					maxDegradation = dbItem.maxDegradation,
+					percentage = item.percentage
 				})
 			end
 		end
 		return characterInventory
 	end
+
 
 	local function triggerAndReloadInventory()
 		TriggerClientEvent("vorp_inventory:OpenCustomInv", _source, CustomInventoryInfos[id]:getName(), id, capacity, weight)
