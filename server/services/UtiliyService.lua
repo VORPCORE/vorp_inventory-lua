@@ -208,7 +208,7 @@ end
 ---@param name string weapon name
 ---@return boolean
 function SvUtils.filterWeaponsSerialNumber(name)
-    return Config.noSerialNumber[name] and false or true
+    return Config.noSerialNumber[name]
 end
 
 --- generate a unique random id
@@ -222,7 +222,7 @@ end
 --- generate a unique serial number
 ---@return string
 function SvUtils.GenerateSerialNumber(name)
-    if not SvUtils.filterWeaponsSerialNumber(name) then
+    if SvUtils.filterWeaponsSerialNumber(name) then
         return ""
     end
     local timeStamp = os.time()
