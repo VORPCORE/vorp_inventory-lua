@@ -155,6 +155,7 @@ Config = {
 
 	},
 
+	-- for dropped weapons , some will spawn standing so we modify their rotation
 	weaponAdjustments        = {
 		WEAPON_MELEE_KNIFE = 90.0,
 		WEAPON_BOW = 90.0,
@@ -173,14 +174,15 @@ Config = {
 		WEAPON_MELEE_CLEAVER = 90.0,
 		WEAPON_MELEE_HAMMER = 90.0,
 		WEAPON_FISHINGROD = 90.0,
+		-- add here if more need to change rotation
 	},
 
-	-- if you dropped items to be other than a box add the item name and the object you want below
+	-- dropp items can have a diferent model added them here item name and object
 	spawnableProps           = {
-		default_box = "p_cottonbox01x", -- default when object is not found will always spawn this object for wepon or items
+		default_box = "p_cottonbox01x", -- default when object is not found will always spawn this object for weapon or items
 		money_bag = "p_moneybag02x", -- prop for the money pickup
 		gold_bag = "s_pickup_goldbar01x", -- prop for the gold pickup
 		-- add more here
-		p_ambpack01x = "p_ambpack01x",
+
 	}
 }
