@@ -58,13 +58,11 @@ function InventoryService.UseItem(data)
 	local itemArgs <const> = json.decode(json.encode(svItem))
 	itemArgs.metadata = item:getMetadata()
 	itemArgs.mainid = itemId
-	itemArgs.degradation = item:getDegradation()
-	itemArgs.maxDegradation = item:getMaxDegradation()
 	itemArgs.percentage = item:getCurrentPercentage()
 	local arguments <const> = { source = _source, item = itemArgs }
 	--handle degradation items
 	if itemArgs.maxDegradation ~= 0 then
-		local isExpired =  item:isItemExpired()
+		local isExpired = item:isItemExpired()
 		if isExpired then
 			Core.NotifyRightTip(_source, "Item is expired cant use it", 3000)
 			return
