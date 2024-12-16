@@ -158,24 +158,19 @@ function InventoryAPI.getInventory(source, cb)
 
 		for _, item in pairs(userInventory) do
 			-- for existing scripts we need to check if labels and descriptions exist in metadata to avoid showing the default ones
-			local label = item.metadata?.label or item:getLabel()
-			local desc = item.metadata?.description or item:getDesc()
-			local weight = item.metadata?.weight or item:getWeight()
-
 			local newItem = {
 				id = item:getId(),
-				label = label,
+				label = item.metadata?.label or item:getLabel(),
 				name = item:getName(),
-				desc = desc,       -- new
+				desc = item.metadata?.description or item:getDesc(),
 				metadata = item:getMetadata(), -- this contains label descriptions image weight tooltip as reserved keys
 				type = item:getType(),
 				count = item:getCount(),
 				limit = item:getLimit(),
 				canUse = item:getCanUse(),
 				group = item:getGroup(),
-				weight = weight,
-				degradation = item:getDegradation(),
-				maxDegradation = item:getMaxDegradation()
+				weight = item.metadata?.weight or item:getWeight(),
+				percentage = item:getCurrentPercentage()
 			}
 			table.insert(playerItems, newItem)
 		end
@@ -501,12 +496,9 @@ function InventoryAPI.getItemByMainId(player, mainid, cb)
 		for _, item in pairs(userInventory) do
 			if mainid == item:getId() then
 				-- for existing scripts we need to check if labels and descriptions exist in metadata to avoid showing the default ones
-				local label = item.metadata?.label or item:getLabel()
-				local desc = item.metadata?.description or item:getDesc()
-				local weight = item.metadata?.weight or item:getWeight()
 				itemRequested = {
 					id = item:getId(),
-					label = label,
+					label = item.metadata?.label or item:getLabel(),
 					name = item:getName(),
 					metadata = item:getMetadata(),
 					type = item:getType(),
@@ -514,8 +506,9 @@ function InventoryAPI.getItemByMainId(player, mainid, cb)
 					limit = item:getLimit(),
 					canUse = item:getCanUse(),
 					group = item:getGroup(),
-					weight = weight,
-					desc = desc -- new
+					weight = item.metadata?.weight or item:getWeight(),
+					desc = item.metadata?.description or item:getDesc(),
+					percentage = item:getCurrentPercentage()
 				}
 				return respond(cb, itemRequested)
 			end
