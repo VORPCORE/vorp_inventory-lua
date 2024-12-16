@@ -54,8 +54,8 @@ function InventoryService.UseItem(data)
 	local item = userInventory[itemId]
 	if not item then return end
 
-	local svItem <const> = ServerItems[itemName]
-	local itemArgs <const> = json.decode(json.encode(svItem))
+
+	local itemArgs <const> = ServerItems[itemName]
 	itemArgs.metadata = item:getMetadata()
 	itemArgs.mainid = itemId
 	itemArgs.percentage = item:getCurrentPercentage()
@@ -64,7 +64,12 @@ function InventoryService.UseItem(data)
 	if itemArgs.maxDegradation ~= 0 then
 		local isExpired = item:isItemExpired()
 		if isExpired then
-			Core.NotifyRightTip(_source, "Item is expired cant use it", 3000)
+			local text = "Item is expired and can't be used"
+			if Config.DeleteItemOnUseWhenExpired then
+				InventoryAPI.subItem(_source, item:getName(), 1, item:getMetadata())
+				text = "Item is expired and can't be used, item was removed from your inventory"
+			end
+			Core.NotifyRightTip(_source, text, 3000)
 			return
 		end
 	end
