@@ -25,7 +25,7 @@
 - Usable items double click or right click
 - KLS.
 - Metadata for items
-    - Changing item label and weight with metadata
+    - Changing item label, weight, description and image with metadata
 - Storage/Stashes API
 - On respawn clear weapons items money ammo
 - Jobs can hold more weapons
