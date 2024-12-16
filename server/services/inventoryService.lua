@@ -468,7 +468,7 @@ function InventoryService.onPickup(data)
 				ItemPickUps[uid] = nil
 				ItemUids[uid] = nil
 
-				TriggerClientEvent("vorpInventory:sharePickupClient", -1, data.obj, 2)
+				TriggerClientEvent("vorpInventory:sharePickupClient", -1, data, 2)
 				TriggerClientEvent("vorpInventory:receiveItem", _source, pickup.name, item:getId(), pickup.amount, pickup.metadata, item.degradation, item.percentage)
 				TriggerClientEvent("vorpInventory:playerAnim", _source, uid)
 
