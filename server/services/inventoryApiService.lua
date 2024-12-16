@@ -754,13 +754,10 @@ function InventoryAPI.getItem(player, itemName, cb, metadata)
 	end
 
 	-- modify item metadata to avoid showing the default ones
-	local label = item.metadata?.label or item:getLabel()
-	local desc = item.metadata?.description or item:getDesc()
-	local weight = item.metadata?.weight or item:getWeight()
-
-	item.label = label
-	item.desc = desc
-	item.weight = weight
+	item.label = item.metadata?.label or item:getLabel()
+	item.desc = item.metadata?.description or item:getDesc()
+	item.weight = item.metadata?.weight or item:getWeight()
+	item.percentage = item:getCurrentPercentage()
 
 	return respond(cb, item)
 end
