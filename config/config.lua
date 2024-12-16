@@ -6,7 +6,7 @@ Config = {
 
 	InventoryOrder             = "items", -- Items or weapons what should should first in inventory
 
-	DevMode                    = true, -- If your server is live set this to false.  to true only if you are testing things (auto load inventory when script restart and before character selection. Alos add /getInv command)
+	DevMode                    = false, -- If your server is live set this to false.  to true only if you are testing things (auto load inventory when script restart and before character selection. Alos add /getInv command)
 
 	dbupdater                  = true,
 	-- ======================= CONFIGURATION ============================= --
