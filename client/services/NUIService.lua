@@ -161,12 +161,14 @@ function NUIService.NUIGetNearPlayers(obj)
 
 	local playerIds = {}
 	for _, player in ipairs(nearestPlayers) do
-		local playerId = GetPlayerServerId(player)
-		if Config.ShowCharacterNameOnGive then
-			local name = LocalPlayer.state.Character.FirstName .. " " .. LocalPlayer.state.Character.LastName
-			playerIds[#playerIds + 1] = { label = name, player = playerId }
-		else
-			playerIds[#playerIds + 1] = { label = playerId, player = playerId }
+		if player ~= PlayerId() then
+			local playerId = GetPlayerServerId(player)
+			if Config.ShowCharacterNameOnGive then
+				local name = LocalPlayer.state.Character.FirstName .. " " .. LocalPlayer.state.Character.LastName
+				playerIds[#playerIds + 1] = { label = name, player = playerId }
+			else
+				playerIds[#playerIds + 1] = { label = playerId, player = playerId }
+			end
 		end
 	end
 	if #playerIds > 0 then
