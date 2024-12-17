@@ -54,14 +54,16 @@ function Item:setDegradation(degradation)
 end
 
 function Item:getElapsedTime(maxDegradation, percentage)
-	if maxDegradation and percentage then
+	local isDegradable = maxDegradation and maxDegradation > 0
+	if isDegradable and percentage then
 		local maxDegradeSeconds = maxDegradation * 60
 		local remaining_percent = percentage
 		local degradation_elapsed = maxDegradeSeconds * (1 - remaining_percent / 100)
 		return degradation_elapsed
 	end
 
-	if self.maxDegradation and self.percentage then
+	isDegradable = self.maxDegradation and self.maxDegradation > 0
+	if isDegradable and self.percentage then
 		local maxDegradeSeconds = self.maxDegradation * 60
 		local remaining_percent = self.percentage
 		local degradation_elapsed = maxDegradeSeconds * (1 - remaining_percent / 100)
@@ -72,7 +74,8 @@ function Item:getElapsedTime(maxDegradation, percentage)
 end
 
 function Item:getPercentage(maxDegradation, degradation)
-	if maxDegradation and degradation then
+	local isDegradable = maxDegradation and maxDegradation > 0
+	if isDegradable and degradation then
 		local elapsedSeconds = os.time() - degradation
 		local maxDegradeSeconds = maxDegradation * 60
 		local percentage = math.max(0, ((maxDegradeSeconds - elapsedSeconds) / maxDegradeSeconds) * 100)
@@ -80,7 +83,8 @@ function Item:getPercentage(maxDegradation, degradation)
 		return percentage
 	end
 
-	if self.maxDegradation and self.degradation then
+	isDegradable = self.maxDegradation and self.maxDegradation > 0
+	if isDegradable and self.degradation then
 		local elapsedSeconds = os.time() - self.degradation
 		local maxDegradeSeconds = self.maxDegradation * 60
 		local percentage = math.max(0, ((maxDegradeSeconds - elapsedSeconds) / maxDegradeSeconds) * 100)
@@ -104,7 +108,8 @@ function Item:getCurrentPercentage()
 end
 
 function Item:isItemExpired(degradation, maxDegradation)
-	if degradation and maxDegradation then
+	local isDegradable = maxDegradation and maxDegradation > 0
+	if isDegradable and degradation then
 		if not degradation or degradation <= 0 then
 			return true
 		end
@@ -114,7 +119,8 @@ function Item:isItemExpired(degradation, maxDegradation)
 		return elapsedSeconds >= maxDegradeSeconds
 	end
 
-	if self.degradation and self.maxDegradation then
+	isDegradable = self.maxDegradation and self.maxDegradation > 0
+	if isDegradable and self.degradation then
 		if self.degradation <= 0 then
 			return true
 		end
