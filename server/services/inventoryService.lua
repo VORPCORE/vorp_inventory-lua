@@ -42,8 +42,8 @@ function InventoryService.UseItem(data)
 	local identifier <const> = sourceCharacter.getUsedCharacter.identifier
 	local userInventory <const> = UsersInventories.default[identifier]
 
-
-	if not SvUtils.DoesItemExist(itemName, "UseItem") then
+	local svItem = SvUtils.DoesItemExist(itemName, "UseItem")
+	if not svItem then
 		return
 	end
 
@@ -55,10 +55,10 @@ function InventoryService.UseItem(data)
 	if not item then return end
 
 
-	local itemArgs <const> = ServerItems[itemName]
+	local itemArgs <const> = svItem
 	itemArgs.metadata = item:getMetadata()
 	itemArgs.mainid = itemId
-	itemArgs.percentage = item:getCurrentPercentage()
+	itemArgs.percentage = item:getPercentage()
 	local arguments <const> = { source = _source, item = itemArgs }
 	--handle degradation items
 	if itemArgs.maxDegradation ~= 0 then
@@ -253,7 +253,9 @@ function InventoryService.subItem(source, invId, itemId, amount)
 	if not userInventory[itemId] then return false end
 
 	local item <const> = userInventory[itemId]
-	if not item then return false end
+	if not item then
+		return false
+	end
 
 	if amount <= item:getCount() then
 		item:quitCount(amount)
@@ -290,9 +292,9 @@ function InventoryService.addItem(source, invId, name, amount, metadata, data, c
 	local sourceCharacter <const> = user.getUsedCharacter
 	local identifier <const> = sourceCharacter.identifier
 	local charIdentifier <const> = sourceCharacter.charIdentifier
-	local svItem <const> = ServerItems[name]
+	local svItem <const> = SvUtils.DoesItemExist(name, "addItem")
 
-	if not SvUtils.DoesItemExist(name, "addItem") then
+	if not svItem then
 		return cb(nil)
 	end
 
@@ -385,7 +387,7 @@ function InventoryService.addItem(source, invId, name, amount, metadata, data, c
 				DBService.SetItemAmount(item:getOwner(), item:getId(), item:getCount())
 				return cb(item)
 			else
-				if item:getCurrentPercentage() == data.percentage and item:getDegradation() == data.degradation then
+				if item:getPercentage() == data.percentage and item:getDegradation() == data.degradation then
 					item:addCount(amount, CustomInventoryInfos[invId].ignoreItemStackLimit)
 					DBService.SetItemAmount(item:getOwner(), item:getId(), item:getCount())
 					return cb(item)
@@ -963,7 +965,7 @@ function InventoryService.GiveItem(itemId, amount, target)
 			updateClient(targetItem)
 		else
 			-- needs check hereif they match
-			if targetItem:getCurrentPercentage() == item:getPercentage() and targetItem:getDegradation() == item:getDegradation() then
+			if targetItem:getPercentage() == item:getPercentage() and targetItem:getDegradation() == item:getDegradation() then
 				targetItem:addCount(amount)
 				DBService.SetItemAmount(targetCharId, targetItem:getId(), targetItem:getCount())
 				updateClient(targetItem)
@@ -1631,7 +1633,7 @@ function InventoryService.TakeFromCustom(obj)
 				return print(T.cantRemoveItem)
 			end
 
-			TriggerClientEvent("vorpInventory:receiveItem", _source, item.name, itemAdded:getId(), amount, itemAdded:getMetadata(), itemAdded:getDegradation(), itemAdded:getCurrentPercentage())
+			TriggerClientEvent("vorpInventory:receiveItem", _source, item.name, itemAdded:getId(), amount, itemAdded:getMetadata(), itemAdded:getDegradation(), itemAdded:getPercentage())
 			InventoryService.reloadInventory(_source, invId)
 			InventoryService.DiscordLogs(invId, item.name, amount, sourceName, "Take")
 			Core.NotifyRightTip(_source, T.takenFromStorage .. " " .. amount .. " " .. item.label, 2000)
@@ -1963,7 +1965,7 @@ function InventoryService.removeWeaponFromCustomInventory(invId, weapon_name)
 end
 
 function InventoryService.getAllItemsFromCustomInventory(invId)
-	local result = DBService.queryAwait("SELECT item_name, amount, item_crafted_id FROM character_inventories WHERE inventory_type = @inventory_type", { inventory_type = invId })
+	local result = DBService.queryAwait("SELECT item_name, amount, item_crafted_id, percentage FROM character_inventories WHERE inventory_type = @inventory_type", { inventory_type = invId })
 	local items = {}
 	local itemsMap = {}
 	for _, value in ipairs(result) do
@@ -1980,6 +1982,7 @@ function InventoryService.getAllItemsFromCustomInventory(invId)
 					name = value.item_name,
 					amount = value.amount,
 					metadata = itemMetadata,
+					percentage = value.percentage
 				}
 			else
 				if itemsMap[value.item_name] then
@@ -1989,6 +1992,7 @@ function InventoryService.getAllItemsFromCustomInventory(invId)
 						name = value.item_name,
 						amount = value.amount,
 						metadata = itemMetadata,
+						percentage = value.percentage
 					}
 					items[#items + 1] = itemsMap[value.item_name]
 				end
@@ -2069,16 +2073,3 @@ function InventoryService.deleteCustomInventory(invId)
 		UsersWeapons[invId] = nil
 	end
 end
-
---[[ Core.Callback.Register("vorp_inventory:callback:getMainInventory", function(source, callback)
-	local sourceCharacter = Core.getUser(source)
-	local identifier = sourceCharacter.identifier
-	local userInventory = UsersInventories.default[identifier]
-	if not userInventory then
-		userInventory = {}
-		return callback({})
-	end
-	local packed = msgpack.pack(userInventory)
-	callback(packed)
-end)
- ]]
