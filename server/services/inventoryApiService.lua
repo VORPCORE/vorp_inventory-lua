@@ -123,10 +123,10 @@ function InventoryAPI.canCarryItem(target, itemName, amount, cb)
 	end
 
 	local character = user.getUsedCharacter
-	local svItem = ServerItems[itemName]
 	local canCarry = false
 
-	if not SvUtils.DoesItemExist(itemName, "InventoryAPI.canCarryItem") then
+	local svItem = SvUtils.DoesItemExist(itemName, "InventoryAPI.canCarryItem")
+	if not svItem then
 		return respond(cb, false)
 	end
 
@@ -170,7 +170,7 @@ function InventoryAPI.getInventory(source, cb)
 				canUse = item:getCanUse(),
 				group = item:getGroup(),
 				weight = item.metadata?.weight or item:getWeight(),
-				percentage = item:getCurrentPercentage()
+				percentage = item:getPercentage()
 			}
 			table.insert(playerItems, newItem)
 		end
@@ -216,42 +216,50 @@ exports("registerUsableItem", InventoryAPI.registerUsableItem)
 
 
 --- Get item count from player inventory
----@param player number source
+---@param source number source
 ---@param cb fun(count: number | nil)? async or sync callback
 ---@param itemName string item name
----@param metadata table? metadata
----@return number | nil
-function InventoryAPI.getItemCount(player, cb, itemName, metadata)
-	local _source = player
-	local svItem = ServerItems[itemName]
+---@param metadata table | nil? metadata
+---@param excludeExpired boolean? dont include expired items
+---@return number
+function InventoryAPI.getItemCount(source, cb, itemName, metadata, excludeExpired)
+	local _source <const> = source
 
 	if not _source then
 		error("InventoryAPI.getItemCount: specify a source")
 		return respond(cb, 0)
 	end
 
-	if not SvUtils.DoesItemExist(itemName, "getItemCount") then
+	local svItem <const> = SvUtils.DoesItemExist(itemName, "getItemCount")
+	if not svItem then
 		return respond(cb, 0)
 	end
 
-	local User = Core.getUser(_source)
-	if not User then
+	local user <const> = Core.getUser(_source)
+	if not user then
 		return respond(cb, 0)
 	end
 
-	local identifier = User.getUsedCharacter.identifier
-	metadata = SharedUtils.MergeTables(svItem.metadata, metadata or {})
+	local identifier <const> = user.getUsedCharacter.identifier
 
-	local userInventory = UsersInventories.default[identifier]
+
+	local userInventory <const> = UsersInventories.default[identifier]
 	if not userInventory then
 		return respond(cb, 0)
 	end
 
-	local item = SvUtils.FindItemByNameAndMetadata("default", identifier, itemName, metadata) or SvUtils.FindItemByNameAndMetadata("default", identifier, itemName, nil)
+	if metadata then
+		metadata = SharedUtils.MergeTables(svItem.metadata, metadata or {})
+		--if metadata then get only get the item that matches the metadata we are looking for
+		local item <const> = SvUtils.FindItemByNameAndMetadata("default", identifier, itemName, metadata)
+		if item then return respond(cb, item:getCount()) end
+		return respond(cb, 0)
+	end
 
-	local count = item and item:getCount() or 0
+	-- get count of all items with or without metadata but can choose to get expired items
+	local itemTotalCount <const> = SvUtils.GetItemCount("default", identifier, itemName, excludeExpired)
 
-	return respond(cb, count)
+	return respond(cb, itemTotalCount)
 end
 
 exports("getItemCount", InventoryAPI.getItemCount)
@@ -262,10 +270,7 @@ exports("getItemCount", InventoryAPI.getItemCount)
 ---@param cb fun(item: table | nil)? async or sync callback
 ---@return table | nil
 function InventoryAPI.getItemDB(itemName, cb)
-	local svItem = ServerItems[itemName]
-	if not svItem then
-		return respond(cb, nil)
-	end
+	local svItem = SvUtils.DoesItemExist(itemName, "getItemDB")
 	return respond(cb, svItem)
 end
 
@@ -350,9 +355,9 @@ function InventoryAPI.getItemMatchingMetadata(player, itemName, metadata, cb)
 
 	sourceCharacter = sourceCharacter.getUsedCharacter
 	local identifier = sourceCharacter.identifier
-	local svItem = ServerItems[itemName]
 
-	if not SvUtils.DoesItemExist(itemName, "getItemContainingMetadata") then
+	local svItem = SvUtils.DoesItemExist(itemName, "getItemContainingMetadata")
+	if not svItem then
 		return respond(cb, nil)
 	end
 
@@ -369,22 +374,22 @@ end
 exports("getItemMatchingMetadata", InventoryAPI.getItemMatchingMetadata)
 
 --- used through exports and by openplayerinventory to take or move
----@param player number source
+---@param source number source
 ---@param name string item name
 ---@param amount number
 ---@param metadata table metadata
 ---@param allow boolean? allow to detect item creation false means allow true meand dont allow
 ---@param cb fun(success: boolean)? async or sync callback
-function InventoryAPI.addItem(player, name, amount, metadata, cb, allow, degradation)
-	local _source = player
-	local svItem = ServerItems[name]
+function InventoryAPI.addItem(source, name, amount, metadata, cb, allow, degradation)
+	local _source = source
 
 	if not _source then
 		error("InventoryAPI.addItem: specify a source")
 		return respond(cb, false)
 	end
 
-	if not SvUtils.DoesItemExist(name, "addItem") then
+	local svItem = SvUtils.DoesItemExist(name, "addItem")
+	if not svItem then
 		return respond(cb, false)
 	end
 
@@ -508,7 +513,7 @@ function InventoryAPI.getItemByMainId(player, mainid, cb)
 					group = item:getGroup(),
 					weight = item.metadata?.weight or item:getWeight(),
 					desc = item.metadata?.description or item:getDesc(),
-					percentage = item:getCurrentPercentage()
+					percentage = item:getPercentage()
 				}
 				return respond(cb, itemRequested)
 			end
@@ -572,43 +577,69 @@ exports("subItemID", InventoryAPI.subItemID)
 
 
 ---sub item by name
----@param player number source
+---@param source number source
 ---@param name string item name
 ---@param amount number amount to sub
----@param metadata table metadata
+---@param metadata table? metadata
 ---@param cb fun(success: boolean)? async or sync callback
 ---@param allow boolean? allow to detect item removal false means allow true meand dont allow
 ---@return boolean
-function InventoryAPI.subItem(player, name, amount, metadata, cb, allow)
-	local _source = player
+function InventoryAPI.subItem(source, name, amount, metadata, cb, allow)
+	local _source = source
 	local sourceCharacter = Core.getUser(_source)
 
 	if not sourceCharacter then
 		return respond(cb, false)
 	end
 
-	local svItem = ServerItems[name]
-
-	if not SvUtils.DoesItemExist(name, "subItem") then
+	local svItem = SvUtils.DoesItemExist(name, "subItem")
+	if not svItem then
 		return respond(cb, false)
 	end
 
 	sourceCharacter = sourceCharacter.getUsedCharacter
 	local identifier = sourceCharacter.identifier
 
-	metadata = SharedUtils.MergeTables(svItem.metadata, metadata or {})
+	-- get the lowest percentage item if is degradable so it always removes those
+	local function getItemToRemove()
+		local userInventory = CustomInventoryInfos.default.shared and UsersInventories.default or UsersInventories.default[identifier]
+		if not userInventory then
+			return nil
+		end
 
+		local lowestItem = nil
+		local lowestPercentage = 101
 
-	local item = SvUtils.FindItemByNameAndMetadata("default", identifier, name, metadata)
-		or SvUtils.FindItemByName("default", identifier, name)
+		for _, item in pairs(userInventory) do
+			if name == item:getName() then
+				local currentPercentage = item:getPercentage()
+				if currentPercentage <= 0 then return item end
+				if currentPercentage < lowestPercentage then
+					lowestPercentage = currentPercentage
+					lowestItem = item
+				end
+			end
+		end
+
+		return lowestItem
+	end
+
+	local item = getItemToRemove()
+
+	if metadata then
+		metadata = SharedUtils.MergeTables(svItem.metadata, metadata or {})
+		local itemFound = SvUtils.FindItemByNameAndMetadata("default", identifier, name, metadata)
+		if not itemFound then
+			return respond(cb, false)
+		end
+		item = itemFound
+	end
 
 	if not item then
 		return respond(cb, false)
 	end
 
 	local sourceItemCount = item:getCount()
-
-
 	if amount > sourceItemCount then
 		return respond(cb, false)
 	end
@@ -628,7 +659,6 @@ function InventoryAPI.subItem(player, name, amount, metadata, cb, allow)
 		local data = { name = item:getName(), id = item:getId(), metadata = item:getMetadata() }
 		TriggerEvent("vorp_inventory:Server:OnItemRemoved", data, _source)
 	end
-
 	return respond(cb, true)
 end
 
@@ -659,12 +689,11 @@ function InventoryAPI.setItemMetadata(player, itemId, metadata, amount, cb)
 	end
 
 	local item = userInventory[itemId]
-
 	if not item then
 		return respond(cb, false)
 	end
 
-	local svItem = ServerItems[item.name]
+	local svItem = SvUtils.DoesItemExist(item.name, "setItemMetadata")
 	if not svItem then
 		return respond(cb, false)
 	end
@@ -718,46 +747,88 @@ exports("setItemMetadata", InventoryAPI.setItemMetadata)
 
 
 ---get item data
----@param player number source
+---@param source number source
 ---@param itemName string item name
 ---@param cb fun(success: boolean)| nil  async or sync callback
 ---@param metadata table | nil? metadata
+---@param percentage number? item degradation percentage if 0 then gets expired items if 20 etc will get any item above this number
 ---@return  table | nil
-function InventoryAPI.getItem(player, itemName, cb, metadata)
-	local _source = player
-	local sourceCharacter = Core.getUser(_source)
+function InventoryAPI.getItem(source, itemName, cb, metadata, percentage)
+	local _source <const> = source
+	local sourceCharacter <const> = Core.getUser(_source)
 
 	if not sourceCharacter then
 		return respond(cb, nil)
 	end
 
-	sourceCharacter = sourceCharacter.getUsedCharacter
-	local identifier = sourceCharacter.identifier
-	local svItem = ServerItems[itemName]
+	local character <const> = sourceCharacter.getUsedCharacter
+	local identifier <const> = character.identifier
 
-	if not SvUtils.DoesItemExist(itemName, "getItem") then
+	local svItem <const> = SvUtils.DoesItemExist(itemName, "getItem")
+	if not svItem then
 		return respond(cb, nil)
 	end
 
-	metadata = SharedUtils.MergeTables(svItem.metadata or {}, metadata or {})
-	local item = SvUtils.FindItemByNameAndMetadata("default", identifier, itemName, metadata) or SvUtils.FindItemByNameAndMetadata("default", identifier, itemName, nil)
+	local function updateItemValues(item)
+		item.label = item.metadata?.label or item:getLabel()
+		item.desc = item.metadata?.description or item:getDesc()
+		item.weight = item.metadata?.weight or item:getWeight()
+		item.percentage = item:getPercentage()
+		return item
+	end
 
+	local function getItemExpired()
+		percentage = percentage or 0
+		local userInventory <const> = UsersInventories.default[identifier]
+		if not userInventory then return nil end
+		for _, item in pairs(userInventory) do
+			if item:getName() == itemName then
+				local itemPercentage = item:getPercentage()
+				if percentage > 0 then
+					if itemPercentage >= percentage then
+						return item
+					end
+				else
+					if itemPercentage <= 0 then
+						return item
+					end
+				end
+			end
+		end
+		return false
+	end
+
+	-- if metadata is provided we check if it exists if not returns nil, and not any other items, only what we asked for
+	if metadata then
+		metadata = SharedUtils.MergeTables(svItem.metadata or {}, metadata)
+		local item <const> = SvUtils.FindItemByNameAndMetadata("default", identifier, itemName, metadata)
+		if not item then
+			return respond(cb, nil)
+		end
+		return respond(cb, updateItemValues(item))
+	end
+
+	-- return expired or not expired items when specified
+	if percentage ~= nil then
+		local item <const> = getItemExpired()
+		if not item then
+			return respond(cb, nil)
+		end
+		return respond(cb, updateItemValues(item))
+	end
+
+	-- no metadata was specified or getExpired was nil  we get a random item
+	local item <const> = SvUtils.FindItemByName("default", identifier, itemName)
 	if not item then
 		return respond(cb, nil)
 	end
-
-	-- modify item metadata to avoid showing the default ones
-	item.label = item.metadata?.label or item:getLabel()
-	item.desc = item.metadata?.description or item:getDesc()
-	item.weight = item.metadata?.weight or item:getWeight()
-	item.percentage = item:getCurrentPercentage()
-
-	return respond(cb, item)
+	return respond(cb, updateItemValues(item))
 end
 
 exports("getItem", InventoryAPI.getItem)
 
----get User by identifier total count of items or weight
+
+---get total items weight (internal function)
 ---@param identifier string user identifier
 ---@param charid number user charid
 ---@return integer
@@ -1922,7 +1993,6 @@ function InventoryAPI.getCustomInventoryWeaponCount(id, weapon_name)
 		return 0
 	end
 
-	--local result = MySQL.query.await("SELECT COUNT(*) as total_count FROM loadout WHERE curr_inv = @invType AND weapon = @weapon_name", { invType = id, weapon_name = weapon_name })
 	local result = DBService.queryAwait("SELECT COUNT(*) as total_count FROM loadout WHERE curr_inv = @invType AND weapon = @weapon_name", { invType = id, weapon_name = weapon_name })
 	if result[1] and result[1].total_count then
 		return tonumber(result[1].total_count)

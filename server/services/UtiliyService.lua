@@ -3,7 +3,7 @@ local Core           = exports.vorp_core:GetCore()
 ---@class SvUtils @Server Utility Service
 ---@field FindAllWeaponsByName fun(invId: string, name: string): table<number, Weapon>
 ---@field FindAllItemsByName fun(invId: string, identifier: string, name: string): table<number, Item>
----@field FindItemByName fun(invId: string, identifier: string, name: string): Item
+---@field FindItemByName fun(invId: string, identifier: string, name: string): {} | nil
 ---@field FindItemByNameAndMetadata fun(invId: string, identifier: string, name: string, metadata: table): Item
 ---@field FindItemByNameAndContainingMetadata fun(invId: string, identifier: string, name: string, metadata: table): Item
 ---@field ProcessUser fun(id: number)
@@ -42,13 +42,8 @@ end
 ---@param name string
 ---@return table
 function SvUtils.FindAllItemsByName(invId, identifier, name)
-    local userInventory = nil
+    local userInventory = CustomInventoryInfos[invId].shared and UsersInventories[invId] or UsersInventories[invId][identifier]
     local items = {}
-    if CustomInventoryInfos[invId].shared then
-        userInventory = UsersInventories[invId]
-    else
-        userInventory = UsersInventories[invId][identifier]
-    end
 
     if userInventory == nil then
         return items
@@ -67,16 +62,10 @@ end
 ---@param invId string
 ---@param identifier string
 ---@param name string
----@return nil
+---@return {} | nil
 function SvUtils.FindItemByName(invId, identifier, name)
-    local userInventory = nil
-    if CustomInventoryInfos[invId].shared then
-        userInventory = UsersInventories[invId]
-    else
-        userInventory = UsersInventories[invId][identifier]
-    end
-
-    if userInventory == nil then
+    local userInventory = CustomInventoryInfos[invId].shared and UsersInventories[invId] or UsersInventories[invId][identifier]
+    if not userInventory then
         return nil
     end
 
@@ -96,15 +85,9 @@ end
 ---@param metadata table | nil
 ---@return nil
 function SvUtils.FindItemByNameAndMetadata(invId, identifier, name, metadata)
-    local userInventory = nil
+    local userInventory = CustomInventoryInfos[invId].shared and UsersInventories[invId] or UsersInventories[invId][identifier]
 
-    if CustomInventoryInfos[invId].shared then
-        userInventory = UsersInventories[invId]
-    else
-        userInventory = UsersInventories[invId][identifier]
-    end
-
-    if userInventory == nil then
+    if not userInventory then
         return nil
     end
 
@@ -125,6 +108,32 @@ function SvUtils.FindItemByNameAndMetadata(invId, identifier, name, metadata)
     return nil
 end
 
+function SvUtils.GetItemCount(invId, identifier, name, excludeExpired)
+    local userInventory = CustomInventoryInfos[invId].shared and UsersInventories[invId] or UsersInventories[invId][identifier]
+
+    if not userInventory then return 0 end
+
+    if excludeExpired then
+        --get all items that are not expired
+        local count = 0
+        for _, item in pairs(userInventory) do
+            if name == item:getName() and item:getPercentage() ~= 0 then
+                count = count + item:getCount()
+            end
+        end
+        return count
+    end
+    -- all items no matter metadata or expired
+    local count = 0
+    for _, item in pairs(userInventory) do
+        if name == item:getName() then
+            count = count + item:getCount()
+        end
+    end
+
+    return count
+end
+
 --- returns a item that match the name and containing metadata
 ---@param invId string
 ---@param identifier string
@@ -132,15 +141,9 @@ end
 ---@param metadata table | nil
 ---@return nil
 function SvUtils.FindItemByNameAndContainingMetadata(invId, identifier, name, metadata)
-    local userInventory = nil
+    local userInventory = CustomInventoryInfos[invId].shared and UsersInventories[invId] or UsersInventories[invId][identifier]
 
-    if CustomInventoryInfos[invId].shared then
-        userInventory = UsersInventories[invId]
-    else
-        userInventory = UsersInventories[invId][identifier]
-    end
-
-    if userInventory == nil then
+    if not userInventory then
         return nil
     end
 
@@ -188,10 +191,10 @@ end
 --- does item exist in server items table meaning databse
 ---@param itemName string item name
 ---@param api string name
----@return boolean
+---@return boolean | table
 function SvUtils.DoesItemExist(itemName, api)
     if ServerItems[itemName] then
-        return true
+        return ServerItems[itemName]
     end
     print("[^2" .. api .. "7] Item [^3" .. tostring(itemName) .. "^7] does not exist in DB.")
     return false
