@@ -307,7 +307,8 @@ function InventoryService.addItem(source, invId, name, amount, metadata, data, c
 
 	local function createItem()
 		local degrade <const> = svItem:getMaxDegradation()
-		DBService.CreateItem(charIdentifier, svItem:getId(), amount, metadata, name, os.time(), function(craftedItem)
+		local isExpired = degrade ~= 0 and os.time() or nil
+		DBService.CreateItem(charIdentifier, svItem:getId(), amount, metadata, name, isExpired, function(craftedItem)
 			local item <const> = Item:New({
 				id = craftedItem.id,
 				count = amount,
@@ -930,7 +931,8 @@ function InventoryService.GiveItem(itemId, amount, target)
 	end
 
 	local function createItem()
-		DBService.CreateItem(targetCharId, svItem:getId(), amount, item:getMetadata(), itemName, item:getDegradation(), function(craftedItem)
+		local isExpired = svItem:getMaxDegradation() ~= 0 and item:getDegradation() or nil
+		DBService.CreateItem(targetCharId, svItem:getId(), amount, item:getMetadata(), itemName, isExpired, function(craftedItem)
 			local targetItem = Item:New({
 				id = craftedItem.id,
 				count = amount,
@@ -1813,7 +1815,8 @@ function InventoryService.addItemsToCustomInventory(id, items, charid)
 		for _, value in ipairs(items) do
 			local item = ServerItems[value.name]
 			if item and value.amount > 0 then
-				DBService.CreateItem(charid, item:getId(), value.amount, (value.metadata or {}), value.name, item:getDegradation(), function()
+				local isExpired = item:getMaxDegradation() ~= 0 and item:getDegradation() or nil
+				DBService.CreateItem(charid, item:getId(), value.amount, (value.metadata or {}), value.name, isExpired, function()
 				end, id)
 			end
 		end
@@ -1823,9 +1826,9 @@ function InventoryService.addItemsToCustomInventory(id, items, charid)
 			if item and value.amount > 0 then
 				local itemMetadata = value.metadata or {}
 				local result1 = DBService.queryAwait("SELECT amount, item_crafted_id FROM character_inventories WHERE item_name =@itemname AND inventory_type = @inventory_type", { itemname = value.name, inventory_type = id })
-
+				local isExpired = item:getMaxDegradation() ~= 0 and item:getDegradation() or nil
 				if not result1[1] then
-					DBService.CreateItem(charid, item:getId(), value.amount, itemMetadata, value.name, item:getDegradation(), function()
+					DBService.CreateItem(charid, item:getId(), value.amount, itemMetadata, value.name, isExpired, function()
 					end, id)
 				else
 					local resulItems = {}
@@ -1839,7 +1842,7 @@ function InventoryService.addItemsToCustomInventory(id, items, charid)
 
 					if #resulItems == 0 then
 						if next(itemMetadata) then
-							DBService.CreateItem(charid, item:getId(), value.amount, itemMetadata, value.name, item:getDegradation(), function()
+							DBService.CreateItem(charid, item:getId(), value.amount, itemMetadata, value.name, isExpired, function()
 							end, id)
 						else
 							DBService.updateAsync("UPDATE character_inventories SET amount = amount + @amount WHERE item_name = @itemname AND inventory_type = @inventory_type", { amount = value.amount, itemname = value.name, inventory_type = id })
@@ -1855,7 +1858,7 @@ function InventoryService.addItemsToCustomInventory(id, items, charid)
 						end
 
 						if #newTable == 0 then -- metadata of any of the items dont match new one so we create new one
-							DBService.CreateItem(charid, item:getId(), value.amount, itemMetadata, value.name, item:getDegradation(), function()
+							DBService.CreateItem(charid, item:getId(), value.amount, itemMetadata, value.name, isExpired, function()
 							end, id)
 						else
 							-- means we have a match so we update the amount

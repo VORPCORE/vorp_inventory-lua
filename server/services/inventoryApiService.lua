@@ -415,7 +415,7 @@ function InventoryAPI.addItem(source, name, amount, metadata, cb, allow, degrada
 
 	local function createItem()
 		local isDegradable = svItem:getMaxDegradation() ~= 0
-		local isExpired = 0
+		local isExpired = nil -- not degradable items set to nil
 		if degradation and isDegradable and degradation > 0 then
 			-- code for move to player and take from player
 			isExpired = degradation >= os.time() and 0 or degradation
