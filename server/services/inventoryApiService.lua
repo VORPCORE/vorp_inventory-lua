@@ -377,8 +377,9 @@ exports("getItemMatchingMetadata", InventoryAPI.getItemMatchingMetadata)
 ---@param source number source
 ---@param name string item name
 ---@param amount number
----@param metadata table metadata
----@param allow boolean? allow to detect item creation false means allow true meand dont allow
+---@param metadata table? metadata
+---@param allow boolean? allow to detect item creation false means allow true means dont allow
+---@param degradation number? only for internal use
 ---@param cb fun(success: boolean)? async or sync callback
 function InventoryAPI.addItem(source, name, amount, metadata, cb, allow, degradation)
 	local _source = source
