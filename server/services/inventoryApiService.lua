@@ -412,12 +412,12 @@ function InventoryAPI.addItem(source, name, amount, metadata, cb, allow, degrada
 		return respond(cb, false)
 	end
 
-	local metadata_merged = SharedUtils.MergeTables(svItem.metadata, metadata or {})
-	local item = SvUtils.FindItemByNameAndMetadata("default", identifier, name, metadata_merged) -- get item
+	--local metadata_merged = SharedUtils.MergeTables(svItem.metadata, metadata or {})
+	local item = SvUtils.FindItemByNameAndMetadata("default", identifier, name, metadata or {}) -- get item
 	-- items that cant degrade we add ammount and items that exist
 	if item then
-		local result = SharedUtils.Table_equals(item:getMetadata(), metadata) -- does metadata equals
-		local doesMetadataExist = metadata ~= nil                       -- was metadata passed
+		local result = SharedUtils.Table_equals(item:getMetadata(), metadata or {}) -- does metadata equals
+		local doesMetadataExist = metadata ~= nil                             -- was metadata passed
 		local existingMetadata = next(item:getMetadata()) ~= nil
 
 		if item:getMaxDegradation() == 0 then
@@ -461,7 +461,7 @@ function InventoryAPI.addItem(source, name, amount, metadata, cb, allow, degrada
 			count = amount,
 			limit = svItem:getLimit(),
 			label = svItem:getLabel(),
-			metadata = SharedUtils.MergeTables(svItem:getMetadata(), metadata or {}),
+			metadata = metadata or {},
 			name = name,
 			type = svItem:getType(),
 			canUse = true,
@@ -558,25 +558,19 @@ function InventoryAPI.subItemID(player, id, cb, allow)
 	local userInventory = UsersInventories.default[identifier]
 	local item = userInventory[id]
 
-	if not item then
-		return respond(cb, false)
-	end
-
-	local itemid = item:getId()
-	local itemCount = item:getCount()
-
-	if not userInventory or not item or not item:getCount() then
+	if not userInventory or not item then
 		return respond(cb, false)
 	end
 
 	item:quitCount(1)
-	TriggerClientEvent("vorpCoreClient:subItem", _source, itemid, item:getCount())
 
-	if itemCount == 1 then
-		userInventory[itemid] = nil
-		DBService.DeleteItem(charIdentifier, itemid)
+	if item:getCount() == 0 then
+		DBService.DeleteItem(charIdentifier, item:getId())
+		TriggerClientEvent("vorpCoreClient:subItem", _source, item:getId(), 0)
+		userInventory[item:getId()] = nil
 	else
-		DBService.SetItemAmount(charIdentifier, itemid, item:getCount())
+		DBService.SetItemAmount(charIdentifier, item:getId(), item:getCount())
+		TriggerClientEvent("vorpCoreClient:subItem", _source, item:getId(), item:getCount())
 	end
 
 	if not allow then
@@ -719,17 +713,15 @@ function InventoryAPI.setItemMetadata(player, itemId, metadata, amount, cb)
 			itemFound:addCount(amountRemove)
 			DBService.SetItemAmount(charId, itemFound:getId(), itemFound:getCount())
 			TriggerClientEvent("vorpCoreClient:addItem", _source, itemFound)
-			-- if id does not match then its another item without metadata
+
 			if item:getId() ~= itemFound:getId() then
-				if not next(item:getMetadata()) then
-					item:quitCount(amountRemove)
-					if item:getCount() == 0 then
-						userInventory[item:getId()] = nil
-						DBService.DeleteItem(charId, item:getId())
-						TriggerClientEvent("vorpCoreClient:subItem", _source, item:getId(), 0)
-					else
-						DBService.SetItemAmount(charId, item:getId(), item:getCount())
-					end
+				item:quitCount(amountRemove)
+				if item:getCount() == 0 then
+					userInventory[item:getId()] = nil
+					DBService.DeleteItem(charId, item:getId())
+					TriggerClientEvent("vorpCoreClient:subItem", _source, item:getId(), 0)
+				else
+					DBService.SetItemAmount(charId, item:getId(), item:getCount())
 				end
 			end
 		else
