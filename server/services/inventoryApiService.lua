@@ -588,10 +588,11 @@ exports("subItemID", InventoryAPI.subItemID)
 ---@param name string item name
 ---@param amount number amount to sub
 ---@param metadata table? metadata
+---@param excludeExpired boolean? exclude expired items
 ---@param cb fun(success: boolean)? async or sync callback
 ---@param allow boolean? allow to detect item removal false means allow true meand dont allow
 ---@return boolean
-function InventoryAPI.subItem(source, name, amount, metadata, cb, allow)
+function InventoryAPI.subItem(source, name, amount, metadata, excludeExpired, cb, allow)
 	local _source = source
 	local sourceCharacter = Core.getUser(_source)
 
@@ -620,7 +621,8 @@ function InventoryAPI.subItem(source, name, amount, metadata, cb, allow)
 		for _, item in pairs(userInventory) do
 			if name == item:getName() then
 				local currentPercentage = item:getPercentage()
-				if currentPercentage <= 0 then return item end
+				if currentPercentage <= 0 and not excludeExpired then return item end
+				if excludeExpired and currentPercentage <= 0 then continue end
 				if currentPercentage < lowestPercentage then
 					lowestPercentage = currentPercentage
 					lowestItem = item
