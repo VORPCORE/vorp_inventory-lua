@@ -622,12 +622,13 @@ function InventoryAPI.subItem(source, name, amount, metadata, excludeExpired, cb
 			if name == item:getName() then
 				local currentPercentage = item:getPercentage()
 				if currentPercentage <= 0 and not excludeExpired then return item end
-				if excludeExpired and currentPercentage <= 0 then continue end
+				if excludeExpired and currentPercentage <= 0 then goto continue end
 				if currentPercentage < lowestPercentage then
 					lowestPercentage = currentPercentage
 					lowestItem = item
 				end
 			end
+			::continue::
 		end
 
 		return lowestItem
