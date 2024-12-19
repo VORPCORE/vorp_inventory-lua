@@ -608,67 +608,71 @@ function InventoryAPI.subItem(source, name, amount, metadata, excludeExpired, cb
 	sourceCharacter = sourceCharacter.getUsedCharacter
 	local identifier = sourceCharacter.identifier
 
-	-- get the lowest percentage item if is degradable so it always removes those
-	local function getItemToRemove()
+	-- Funktion, um alle relevanten Items zu finden
+	local function getItemsToRemove()
 		local userInventory = CustomInventoryInfos.default.shared and UsersInventories.default or UsersInventories.default[identifier]
 		if not userInventory then
-			return nil
+			return {}
 		end
 
-		local lowestItem = nil
-		local lowestPercentage = 101
+		local itemsToRemove = {}
 
 		for _, item in pairs(userInventory) do
 			if name == item:getName() then
 				local currentPercentage = item:getPercentage()
-				if currentPercentage <= 0 and not excludeExpired then return item end
-				if excludeExpired and currentPercentage <= 0 then goto continue end
-				if currentPercentage < lowestPercentage then
-					lowestPercentage = currentPercentage
-					lowestItem = item
+				if currentPercentage <= 0 and not excludeExpired then
+					table.insert(itemsToRemove, item)
+				elseif excludeExpired and currentPercentage > 0 then
+					table.insert(itemsToRemove, item)
 				end
 			end
-			::continue::
 		end
 
-		return lowestItem
+		return itemsToRemove
 	end
 
-	local item = getItemToRemove()
+	local items = getItemsToRemove()
 
 	if metadata then
 		metadata = SharedUtils.MergeTables(svItem.metadata, metadata or {})
-		local itemFound = SvUtils.FindItemByNameAndMetadata("default", identifier, name, metadata)
-		if not itemFound then
-			return respond(cb, false)
+		items = { SvUtils.FindItemByNameAndMetadata("default", identifier, name, metadata) }
+	end
+
+	if #items == 0 then
+		return respond(cb, false)
+	end
+
+	local totalRemoved = 0
+
+	for _, item in ipairs(items) do
+		local sourceItemCount = item:getCount()
+		local toRemove = math.min(amount - totalRemoved, sourceItemCount)
+		item:quitCount(toRemove)
+		totalRemoved = totalRemoved + toRemove
+
+		TriggerClientEvent("vorpCoreClient:subItem", _source, item:getId(), item:getCount())
+
+		if item:getCount() == 0 then
+			UsersInventories.default[identifier][item:getId()] = nil
+			DBService.DeleteItem(sourceCharacter.charIdentifier, item:getId())
+		else
+			DBService.SetItemAmount(sourceCharacter.charIdentifier, item:getId(), item:getCount())
 		end
-		item = itemFound
+
+		if totalRemoved >= amount then
+			break
+		end
 	end
 
-	if not item then
+	if totalRemoved < amount then
 		return respond(cb, false)
-	end
-
-	local sourceItemCount = item:getCount()
-	if amount > sourceItemCount then
-		return respond(cb, false)
-	end
-
-	item:quitCount(amount)
-	TriggerClientEvent("vorpCoreClient:subItem", _source, item:getId(), item:getCount())
-
-
-	if item:getCount() == 0 then
-		UsersInventories.default[identifier][item:getId()] = nil
-		DBService.DeleteItem(sourceCharacter.charIdentifier, item:getId())
-	else
-		DBService.SetItemAmount(sourceCharacter.charIdentifier, item:getId(), item:getCount())
 	end
 
 	if not allow then
-		local data = { name = item:getName(), id = item:getId(), metadata = item:getMetadata() }
+		local data = { name = name, id = items[1]:getId(), metadata = items[1]:getMetadata() }
 		TriggerEvent("vorp_inventory:Server:OnItemRemoved", data, _source)
 	end
+
 	return respond(cb, true)
 end
 
