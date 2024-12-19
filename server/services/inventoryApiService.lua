@@ -714,10 +714,29 @@ function InventoryAPI.setItemMetadata(player, itemId, metadata, amount, cb)
 	local count = item:getCount()
 
 	if amountRemove >= count then
-		DBService.SetItemMetadata(charId, item.id, metadata)
-		item:setMetadata(metadata)
-		TriggerClientEvent("vorpCoreClient:SetItemMetadata", _source, itemId, metadata)
-		--!might need to look here if degradation exists ?
+		local itemFound = SvUtils.FindItemByNameAndMetadata("default", identifier, item.name, metadata)
+		if itemFound then
+			itemFound:addCount(amountRemove)
+			DBService.SetItemAmount(charId, itemFound:getId(), itemFound:getCount())
+			TriggerClientEvent("vorpCoreClient:addItem", _source, itemFound)
+			-- if id does not match then its another item without metadata
+			if item:getId() ~= itemFound:getId() then
+				if not next(item:getMetadata()) then
+					item:quitCount(amountRemove)
+					if item:getCount() == 0 then
+						userInventory[item:getId()] = nil
+						DBService.DeleteItem(charId, item:getId())
+						TriggerClientEvent("vorpCoreClient:subItem", _source, item:getId(), 0)
+					else
+						DBService.SetItemAmount(charId, item:getId(), item:getCount())
+					end
+				end
+			end
+		else
+			DBService.SetItemMetadata(charId, item.id, metadata)
+			item:setMetadata(metadata)
+			TriggerClientEvent("vorpCoreClient:SetItemMetadata", _source, itemId, metadata)
+		end
 	else
 		item:quitCount(amountRemove)
 		DBService.SetItemAmount(charId, item.id, item:getCount())
