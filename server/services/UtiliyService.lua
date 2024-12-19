@@ -83,7 +83,7 @@ end
 ---@param identifier string
 ---@param name string
 ---@param metadata table | nil
----@return nil
+---@return nil | table
 function SvUtils.FindItemByNameAndMetadata(invId, identifier, name, metadata)
     local userInventory = CustomInventoryInfos[invId].shared and UsersInventories[invId] or UsersInventories[invId][identifier]
 
@@ -105,6 +105,21 @@ function SvUtils.FindItemByNameAndMetadata(invId, identifier, name, metadata)
         end
     end
 
+    return nil
+end
+
+-- get item with no metadata, instead of getting a random item on the function above that may or may not contain metadata
+---@param invId string
+---@param identifier string
+---@param name string
+---@return nil | table
+function SvUtils.GetItemNoMetadata(invId, identifier, name)
+    local userInventory = CustomInventoryInfos[invId].shared and UsersInventories[invId] or UsersInventories[invId][identifier]
+    for _, item in pairs(userInventory) do
+        if name == item:getName() and next(item:getMetadata()) == nil then
+            return item
+        end
+    end
     return nil
 end
 

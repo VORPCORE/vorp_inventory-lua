@@ -377,9 +377,8 @@ exports("getItemMatchingMetadata", InventoryAPI.getItemMatchingMetadata)
 ---@param source number source
 ---@param name string item name
 ---@param amount number
----@param metadata table? metadata
----@param allow boolean? allow to detect item creation false means allow true means dont allow
----@param degradation number? only for internal use
+---@param metadata table metadata
+---@param allow boolean? allow to detect item creation false means allow true meand dont allow
 ---@param cb fun(success: boolean)? async or sync callback
 function InventoryAPI.addItem(source, name, amount, metadata, cb, allow, degradation)
 	local _source = source
@@ -413,69 +412,82 @@ function InventoryAPI.addItem(source, name, amount, metadata, cb, allow, degrada
 		return respond(cb, false)
 	end
 
-	local function createItem()
-		local isDegradable = svItem:getMaxDegradation() ~= 0
-		local isExpired = nil -- not degradable items set to nil
-		if degradation and isDegradable and degradation > 0 then
-			-- code for move to player and take from player
-			isExpired = degradation >= os.time() and 0 or degradation
-		end
-
-		DBService.CreateItem(charIdentifier, svItem:getId(), amount, metadata, name, isExpired, function(craftedItem)
-			local item = Item:New({
-				id = craftedItem.id,
-				count = amount,
-				limit = svItem:getLimit(),
-				label = svItem:getLabel(),
-				metadata = SharedUtils.MergeTables(svItem:getMetadata(), metadata),
-				name = name,
-				type = svItem:getType(),
-				canUse = true,
-				canRemove = svItem:getCanRemove(),
-				owner = charIdentifier,
-				desc = svItem:getDesc(),
-				group = svItem:getGroup(),
-				weight = svItem:getWeight(),
-				maxDegradation = svItem:getMaxDegradation()
-			})
-
-			if isDegradable and not degradation then
-				-- for new items
-				item.degradation = os.time()
-				item.percentage = 100
-				DBService.queryAwait('UPDATE character_inventories SET degradation = @degradation, percentage = @percentage WHERE item_crafted_id = @id', { degradation = os.time(), percentage = 100, id = craftedItem.id })
-			end
-
-			userInventory[craftedItem.id] = item
-
-			TriggerClientEvent("vorpCoreClient:addItem", _source, item)
-
-			if not allow then
-				TriggerEvent("vorp_inventory:Server:OnItemCreated", item, _source)
-			end
-		end, "default")
-		return true
-	end
-
-	metadata = SharedUtils.MergeTables(svItem.metadata, metadata or {})
-
-	local item = SvUtils.FindItemByNameAndMetadata("default", identifier, name, metadata)
-
+	local metadata_merged = SharedUtils.MergeTables(svItem.metadata, metadata or {})
+	local item = SvUtils.FindItemByNameAndMetadata("default", identifier, name, metadata_merged) -- get item
 	-- items that cant degrade we add ammount and items that exist
 	if item then
+		local result = SharedUtils.Table_equals(item:getMetadata(), metadata) -- does metadata equals
+		local doesMetadataExist = metadata ~= nil                       -- was metadata passed
+		local existingMetadata = next(item:getMetadata()) ~= nil
+
 		if item:getMaxDegradation() == 0 then
-			item:addCount(amount)
-			DBService.SetItemAmount(charIdentifier, item:getId(), item:getCount())
-			TriggerClientEvent("vorpCoreClient:addItem", _source, item)
-			return respond(cb, true)
+			-- if metadata equals and metadata was passed then add count to same stack
+			if result and doesMetadataExist then
+				item:addCount(amount)
+				DBService.SetItemAmount(charIdentifier, item:getId(), item:getCount())
+				TriggerClientEvent("vorpCoreClient:addItem", _source, item)
+				return respond(cb, true)
+			end
+
+			-- if item does not contain metadata and metadata was not passed then add amount
+			if not doesMetadataExist and not existingMetadata then
+				-- item exists and does no t contain metdata or was passed as nil
+				item:addCount(amount)
+				DBService.SetItemAmount(charIdentifier, item:getId(), item:getCount())
+				TriggerClientEvent("vorpCoreClient:addItem", _source, item)
+				return respond(cb, true)
+			end
+
+			-- we need to get an item that does not have a metadata here other wise it will create a new one because the loop could return one with metadata that does not match
+			local itemNoMetadata = SvUtils.GetItemNoMetadata("default", identifier, name)
+			if itemNoMetadata then
+				itemNoMetadata:addCount(amount)
+				DBService.SetItemAmount(charIdentifier, itemNoMetadata:getId(), itemNoMetadata:getCount())
+				TriggerClientEvent("vorpCoreClient:addItem", _source, itemNoMetadata)
+				return respond(cb, true)
+			end
 		end
-		createItem()
-		return respond(cb, true)
 	end
 
-	createItem()
+	local isDegradable = svItem:getMaxDegradation() ~= 0
+	local isExpired = nil
+	if degradation and isDegradable and degradation > 0 then
+		isExpired = degradation >= os.time() and 0 or degradation
+	end
 
-	return respond(cb, true)
+	DBService.CreateItem(charIdentifier, svItem:getId(), amount, metadata or {}, name, isExpired, function(craftedItem)
+		local item = Item:New({
+			id = craftedItem.id,
+			count = amount,
+			limit = svItem:getLimit(),
+			label = svItem:getLabel(),
+			metadata = SharedUtils.MergeTables(svItem:getMetadata(), metadata or {}),
+			name = name,
+			type = svItem:getType(),
+			canUse = true,
+			canRemove = svItem:getCanRemove(),
+			owner = charIdentifier,
+			desc = svItem:getDesc(),
+			group = svItem:getGroup(),
+			weight = svItem:getWeight(),
+			maxDegradation = svItem:getMaxDegradation()
+		})
+
+		if isDegradable and not degradation then
+			item.degradation = os.time()
+			item.percentage = 100
+			DBService.queryAwait('UPDATE character_inventories SET degradation = @degradation, percentage = @percentage WHERE item_crafted_id = @id', { degradation = os.time(), percentage = 100, id = craftedItem.id })
+		end
+
+		userInventory[craftedItem.id] = item
+		TriggerClientEvent("vorpCoreClient:addItem", _source, item)
+
+		if not allow then
+			TriggerEvent("vorp_inventory:Server:OnItemCreated", item, _source)
+		end
+
+		return respond(cb, true)
+	end, "default")
 end
 
 exports("addItem", InventoryAPI.addItem)
@@ -556,8 +568,8 @@ function InventoryAPI.subItemID(player, id, cb, allow)
 	if not userInventory or not item or not item:getCount() then
 		return respond(cb, false)
 	end
-	item:quitCount(1)
 
+	item:quitCount(1)
 	TriggerClientEvent("vorpCoreClient:subItem", _source, itemid, item:getCount())
 
 	if itemCount == 1 then
@@ -710,8 +722,8 @@ function InventoryAPI.setItemMetadata(player, itemId, metadata, amount, cb)
 		item:quitCount(amountRemove)
 		DBService.SetItemAmount(charId, item.id, item:getCount())
 		TriggerClientEvent("vorpCoreClient:subItem", _source, item:getId(), item:getCount())
-
-		DBService.CreateItem(charId, ServerItems[item.name].id, amountRemove, metadata, item:getName(), os.time(), function(craftedItem)
+		local isExpired = svItem:getMaxDegradation() ~= 0 and os.time() or nil
+		DBService.CreateItem(charId, ServerItems[item.name].id, amountRemove, metadata, item:getName(), isExpired, function(craftedItem)
 			local item = Item:New(
 				{
 					id = craftedItem.id,
