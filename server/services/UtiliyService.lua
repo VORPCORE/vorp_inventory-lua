@@ -142,7 +142,7 @@ function SvUtils.GetItemCount(invId, identifier, name, percentage)
             end
         end
 
-        if name == item:getName() and expiredPercentage and not next(item:getMetadata()) then
+        if name == item:getName() and expiredPercentage then
             count = count + item:getCount()
         end
     end
