@@ -92,7 +92,7 @@ function Item:getPercentage(maxDegradation, degradation)
 		return self.percentage
 	end
 
-	return 0
+	return 100
 end
 
 function Item:getMaxDegradation()
