@@ -170,7 +170,8 @@ function InventoryAPI.getInventory(source, cb)
 				canUse = item:getCanUse(),
 				group = item:getGroup(),
 				weight = item.metadata?.weight or item:getWeight(),
-				percentage = item:getPercentage()
+				percentage = item:getPercentage(),
+				maxDegradation = item:getMaxDegradation(),
 			}
 			table.insert(playerItems, newItem)
 		end
@@ -531,7 +532,8 @@ function InventoryAPI.getItemByMainId(player, mainid, cb)
 					group = item:getGroup(),
 					weight = item.metadata?.weight or item:getWeight(),
 					desc = item.metadata?.description or item:getDesc(),
-					percentage = item:getPercentage()
+					percentage = item:getPercentage(),
+					maxDegradation = item:getMaxDegradation()
 				}
 				return respond(cb, itemRequested)
 			end
@@ -598,8 +600,8 @@ exports("subItemById", InventoryAPI.subItemID)
 ---@param amount number
 ---@param metadata table? metadata
 ---@param cb fun(success: boolean)? async or sync callback
----@param allow boolean? allow to detect item removal false means allow true meand dont allow
----@param percentage number? if 0 then it will delete expired items or will delete item at a desired percentage if nil then it will delete any item
+---@param allow boolean? allow to detect item removal false means allow true means dont allow
+---@param percentage number? if 0 then it will delete expired items or will delete item at a desired percentage or above, if nil then it will delete any item with or without metadata or not normal item or not
 ---@return boolean
 function InventoryAPI.subItem(source, name, amount, metadata, cb, allow, percentage)
 	local _source <const> = source
