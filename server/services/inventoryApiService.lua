@@ -251,13 +251,13 @@ function InventoryAPI.getItemCount(source, cb, itemName, metadata, percentage)
 
 	if metadata then
 		metadata = SharedUtils.MergeTables(svItem.metadata, metadata or {})
-		--if metadata then get only get the item that matches the metadata we are looking for
+		--if metadata then get only the item that matches the metadata we are looking for
 		local item <const> = SvUtils.FindItemByNameAndMetadata("default", identifier, itemName, metadata)
 		if item then return respond(cb, item:getCount()) end
 		return respond(cb, 0)
 	end
 
-	-- get count of all items with or without metadata but can choose to get expired items
+	-- get count of all items without metadata but can choose to get expired items, by default will only get normal items
 	local itemTotalCount <const> = SvUtils.GetItemCount("default", identifier, itemName, percentage)
 
 	return respond(cb, itemTotalCount)
@@ -667,8 +667,11 @@ function InventoryAPI.subItem(source, name, amount, metadata, cb, allow, percent
 					end
 				end
 			else
-				-- all items
-				table.insert(sortedItems, item)
+				-- only items with no decay should be added, currently there was no way to normal items, if you want to use decay you must pass the argument since its new and optional
+				if not item:getMaxDegradation() == 0 then
+					-- this works in conjunction with getItemCount that will only get items without decay, decay is optional
+					table.insert(sortedItems, item)
+				end
 			end
 		end
 	end
