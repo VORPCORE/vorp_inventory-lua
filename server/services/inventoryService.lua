@@ -43,27 +43,34 @@ function InventoryService.UseItem(data)
 	local userInventory <const> = UsersInventories.default[identifier]
 
 	local svItem = SvUtils.DoesItemExist(itemName, "UseItem")
-	if not svItem then
-		return
-	end
-
-	if not UsableItemsFunctions[itemName] then
-		return
-	end
+	if not svItem then return end
 
 	local item = userInventory[itemId]
-	if not item then return end
+	if not item or not UsableItemsFunctions[itemName] then return end
 
+	local arguments <const> = {
+		source = _source,
+		item = {
+			---@deprecated -- same as item.id
+			mainid = itemId,
+			---
+			metadata = item:getMetadata(),
+			percentage = item:getPercentage(),
+			isDegradable = item:getMaxDegradation() ~= 0,
+			id = item:getId(),
+			count = item:getCount(),
+			label = item.metadata?.label or item:getLabel(),
+			name = item:getName(),
+			desc = item.metadata?.description or item:getDesc(),
+			type = item:getType(),
+			limit = item:getLimit(),
+			group = item:getGroup(),
+			weight = item.metadata?.weight or item:getWeight()
+		}
+	}
 
-	local itemArgs <const> = svItem
-	itemArgs.metadata = item:getMetadata()
-	itemArgs.mainid = itemId
-	itemArgs.percentage = item:getPercentage()
-	itemArgs.isDegradable = item:getMaxDegradation() ~= 0
-
-	local arguments <const> = { source = _source, item = itemArgs }
 	-- if its an item that can degrade then check if its expired
-	if itemArgs.isDegradable then
+	if arguments.item.isDegradable then
 		local isExpired = item:isItemExpired()
 		if isExpired then
 			local text = "Item is expired and can't be used"
