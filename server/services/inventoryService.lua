@@ -63,12 +63,12 @@ function InventoryService.UseItem(data)
 
 	local arguments <const> = { source = _source, item = itemArgs }
 	-- if its an item that can degrade then check if its expired
-	if itemArgs.decay then
+	if itemArgs.isDegradable then
 		local isExpired = item:isItemExpired()
 		if isExpired then
 			local text = "Item is expired and can't be used"
 			if Config.DeleteItemOnUseWhenExpired then
-				InventoryAPI.subItem(_source, item:getName(), 1, item:getMetadata())
+				InventoryAPI.subItemID(_source, item:getId())
 				text = "Item is expired and can't be used, item was removed from your inventory"
 			end
 			Core.NotifyRightTip(_source, text, 3000)
