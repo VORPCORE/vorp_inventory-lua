@@ -514,33 +514,28 @@ function InventoryAPI.getItemByMainId(player, mainid, cb)
 	sourceCharacter = sourceCharacter.getUsedCharacter
 	local identifier = sourceCharacter.identifier
 	local userInventory = UsersInventories.default[identifier]
+	if not userInventory then return respond(cb, nil) end
 
-	if userInventory then
-		local itemRequested = {}
-		for _, item in pairs(userInventory) do
-			if mainid == item:getId() then
-				-- for existing scripts we need to check if labels and descriptions exist in metadata to avoid showing the default ones
-				itemRequested = {
-					id = item:getId(),
-					label = item.metadata?.label or item:getLabel(),
-					name = item:getName(),
-					metadata = item:getMetadata(),
-					type = item:getType(),
-					count = item:getCount(),
-					limit = item:getLimit(),
-					canUse = item:getCanUse(),
-					group = item:getGroup(),
-					weight = item.metadata?.weight or item:getWeight(),
-					desc = item.metadata?.description or item:getDesc(),
-					percentage = item:getPercentage(),
-					isDegradable = item:getMaxDegradation() ~= 0
-				}
-				return respond(cb, itemRequested)
-			end
-		end
-	end
+	local itemRequested = {}
+	local item = userInventory[mainid]
+	if not item then return respond(cb, nil) end
 
-	return respond(cb, nil)
+	-- needs to be like this so we dont inject them to the player inventory
+	itemRequested.id = item:getId()
+	itemRequested.label = item.metadata?.label or item:getLabel()
+	itemRequested.name = item:getName()
+	itemRequested.metadata = item:getMetadata()
+	itemRequested.type = item:getType()
+	itemRequested.count = item:getCount()
+	itemRequested.limit = item:getLimit()
+	itemRequested.canUse = item:getCanUse()
+	itemRequested.group = item:getGroup()
+	itemRequested.weight = item.metadata?.weight or item:getWeight()
+	itemRequested.desc = item.metadata?.description or item:getDesc()
+	itemRequested.percentage = item:getPercentage()
+	itemRequested.isDegradable = item:getMaxDegradation() ~= 0
+
+	return respond(cb, itemRequested)
 end
 
 exports("getItemByMainId", InventoryAPI.getItemByMainId)
