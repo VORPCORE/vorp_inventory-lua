@@ -68,7 +68,7 @@ function InventoryService.UseItem(data)
 		if isExpired then
 			local text = "Item is expired and can't be used"
 			if Config.DeleteItemOnUseWhenExpired then
-				InventoryAPI.subItemID(_source, item:getId())
+				InventoryAPI.subItemID(_source, itemId)
 				text = "Item is expired and can't be used, item was removed from your inventory"
 			end
 			Core.NotifyRightTip(_source, text, 3000)

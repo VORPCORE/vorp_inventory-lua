@@ -121,9 +121,10 @@ function Item:isItemExpired(degradation, maxDegradation)
 			return true
 		end
 
-		local maxDegradeSeconds = maxDegradation * 60
-		local elapsedSeconds = os.time() - degradation
-		return elapsedSeconds >= maxDegradeSeconds
+		local percentage = self:getPercentage(maxDegradation, degradation)
+		if percentage == 0 then return true end
+
+		return false
 	end
 
 	if self.degradation then
@@ -131,9 +132,8 @@ function Item:isItemExpired(degradation, maxDegradation)
 			return true
 		end
 
-		local maxDegradeSeconds = self.maxDegradation * 60
-		local elapsedSeconds = os.time() - self.degradation
-		return elapsedSeconds >= maxDegradeSeconds
+		local percentage = self:getPercentage()
+		if percentage == 0 then return true end
 	end
 
 	return false
