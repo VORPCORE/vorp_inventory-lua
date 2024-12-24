@@ -171,7 +171,7 @@ function InventoryAPI.getInventory(source, cb)
 				group = item:getGroup(),
 				weight = item.metadata?.weight or item:getWeight(),
 				percentage = item:getPercentage(),
-				maxDegradation = item:getMaxDegradation(),
+				isDegradable = item:getMaxDegradation() ~= 0
 			}
 			table.insert(playerItems, newItem)
 		end
@@ -533,7 +533,7 @@ function InventoryAPI.getItemByMainId(player, mainid, cb)
 					weight = item.metadata?.weight or item:getWeight(),
 					desc = item.metadata?.description or item:getDesc(),
 					percentage = item:getPercentage(),
-					maxDegradation = item:getMaxDegradation()
+					isDegradable = item:getMaxDegradation() ~= 0
 				}
 				return respond(cb, itemRequested)
 			end
@@ -815,23 +815,22 @@ function InventoryAPI.setItemMetadata(player, itemId, metadata, amount, cb)
 		TriggerClientEvent("vorpCoreClient:subItem", _source, item:getId(), item:getCount())
 		local isExpired = svItem:getMaxDegradation() ~= 0 and os.time() or nil
 		DBService.CreateItem(charId, ServerItems[item.name].id, amountRemove, metadata, item:getName(), isExpired, function(craftedItem)
-			local item = Item:New(
-				{
-					id = craftedItem.id,
-					count = amount or 1,
-					limit = item:getLimit(),
-					label = item:getLabel(),
-					metadata = SharedUtils.MergeTables(item:getMetadata(), metadata),
-					name = item:getName(),
-					type = item:getType(),
-					canUse = true,
-					canRemove = item:getCanRemove(),
-					owner = charId,
-					desc = item:getDesc(),
-					group = item:getGroup(),
-					weight = item:getWeight(),
-					maxDegradation = svItem:getMaxDegradation()
-				})
+			local item = Item:New({
+				id = craftedItem.id,
+				count = amount or 1,
+				limit = item:getLimit(),
+				label = item:getLabel(),
+				metadata = SharedUtils.MergeTables(item:getMetadata(), metadata),
+				name = item:getName(),
+				type = item:getType(),
+				canUse = true,
+				canRemove = item:getCanRemove(),
+				owner = charId,
+				desc = item:getDesc(),
+				group = item:getGroup(),
+				weight = item:getWeight(),
+				maxDegradation = svItem:getMaxDegradation()
+			})
 
 			if svItem:getMaxDegradation() ~= 0 then
 				item.degradation = os.time()
@@ -878,6 +877,7 @@ function InventoryAPI.getItem(source, itemName, cb, metadata, percentage)
 		item.desc = item.metadata?.description or item:getDesc()
 		item.weight = item.metadata?.weight or item:getWeight()
 		item.percentage = item:getPercentage()
+		item.isDegradable = item:getMaxDegradation() ~= 0
 		return item
 	end
 

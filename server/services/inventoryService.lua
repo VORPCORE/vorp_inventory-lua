@@ -59,7 +59,7 @@ function InventoryService.UseItem(data)
 	itemArgs.metadata = item:getMetadata()
 	itemArgs.mainid = itemId
 	itemArgs.percentage = item:getPercentage()
-	itemArgs.maxDegradation = item:getMaxDegradation() ~= 0
+	itemArgs.isDegradable = item:getMaxDegradation() ~= 0
 
 	local arguments <const> = { source = _source, item = itemArgs }
 	-- if its an item that can degrade then check if its expired
