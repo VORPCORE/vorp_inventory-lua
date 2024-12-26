@@ -75,7 +75,7 @@ function InventoryService.UseItem(data)
 		if isExpired then
 			local text = "Item is expired and can't be used"
 			if Config.DeleteItemOnUseWhenExpired then
-				InventoryAPI.subItemID(_source, itemId)
+				InventoryAPI.subItemID(_source, item:getId())
 				text = "Item is expired and can't be used, item was removed from your inventory"
 			end
 			Core.NotifyRightTip(_source, text, 3000)
@@ -713,7 +713,7 @@ function InventoryService.shareMoneyPickupServer(data)
 	}
 end
 
-function InventoryService.shareGoldPickupServer(obj, amount, position)
+function InventoryService.shareGoldPickupServer(data)
 	local _source = source
 	local user = Core.getUser(_source)
 	if not user then return end
@@ -721,15 +721,22 @@ function InventoryService.shareGoldPickupServer(obj, amount, position)
 	local Character = user.getUsedCharacter
 	local charname, _, steamname = getSourceInfo(_source)
 	local title = T.WebHookLang.pickedgold
-	local description = "**" .. T.WebHookLang.gold .. ":** `" .. amount .. "` \n**" .. T.WebHookLang.charname .. ":** `" .. charname .. "`\n**" .. T.WebHookLang.Steamname .. "** `" .. steamname .. "`\n"
+	local description = "**" .. T.WebHookLang.gold .. ":** `" .. data.amount .. "` \n**" .. T.WebHookLang.charname .. ":** `" .. charname .. "`\n**" .. T.WebHookLang.Steamname .. "** `" .. steamname .. "`\n"
 	local info = { source = _source, name = Logs.WebHook.webhookname, title = title, description = description, webhook = Logs.WebHook.webhook, color = Logs.WebHook.colorpickedgold }
 
-	Character.removeCurrency(1, amount)
+	Character.removeCurrency(1, data.amount)
 
-	TriggerClientEvent("vorpInventory:shareGoldPickupClient", -1, obj, amount, position, 1)
+	TriggerClientEvent("vorpInventory:shareGoldPickupClient", -1, data.handle, data.amount, data.position, 1)
 	SvUtils.SendDiscordWebhook(info)
 	local uid = SvUtils.GenerateUniqueID()
-	GoldPickUps[uid] = { name = T.inventorygoldlabel, obj = obj, amount = amount, inRange = false, coords = position, uuid = uid }
+	GoldPickUps[uid] = {
+		name = T.inventorygoldlabel,
+		obj = data.handle,
+		amount = data.amount,
+		inRange = false,
+		coords = data.position,
+		uuid = uid
+	}
 end
 
 function InventoryService.DropWeapon(weaponId)
