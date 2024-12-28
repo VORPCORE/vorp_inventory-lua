@@ -257,7 +257,8 @@ function InventoryAPI.getItemCount(source, cb, itemName, metadata, percentage)
 		return respond(cb, 0)
 	end
 
-	-- get count of all items without metadata but can choose to get expired items, by default will only get normal items
+	-- get count of all items but can choose to get expired items, by default will only get normal items
+	-- it will also return items with metadata because people use this export to get them when it doesnt even make sense they are unique items
 	local itemTotalCount <const> = SvUtils.GetItemCount("default", identifier, itemName, percentage)
 
 	return respond(cb, itemTotalCount)
@@ -646,8 +647,8 @@ function InventoryAPI.subItem(source, name, amount, metadata, cb, allow, percent
 	--* items with no metadata
 	local sortedItems = {}
 	for _, item in pairs(userInventory) do
-		-- dont allow metadata items because metadata was not passed that means we are not looking for these to delete
-		if name == item:getName() and not next(item:getMetadata()) then
+		-- allow items with metadata so we dont break existing scripts because people are using this export to delete random items instead of specific items
+		if name == item:getName() then
 			-- decide which items to get
 			if percentage then
 				if percentage > 0 then
