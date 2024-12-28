@@ -663,11 +663,11 @@ function InventoryAPI.subItem(source, name, amount, metadata, cb, allow, percent
 					end
 				end
 			else
-				-- only items with no decay should be added, currently there was no way to normal items, if you want to use decay you must pass the argument since its new and optional
-				if item:getMaxDegradation() == 0 then
-					-- this works in conjunction with getItemCount that will only get items without decay, decay is optional
-					table.insert(sortedItems, item)
-				end
+				-- only items with no decay should be added, currently there was no way to get normal items, if you want to use decay you must pass the argument since its new and optional
+				--if item:getMaxDegradation() == 0 then -- canno use this because people are using this export to delete random items instead of specific items
+				-- this works in conjunction with getItemCount that will only get items without decay, decay is optional
+				table.insert(sortedItems, item)
+				--end
 			end
 		end
 	end
