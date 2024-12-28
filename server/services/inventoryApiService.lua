@@ -216,7 +216,7 @@ end
 exports("registerUsableItem", InventoryAPI.registerUsableItem)
 
 
---- Get item count from player inventory
+--- THIS EXPORT SHOULD ONLY BE USED FOR NORMAL ITEMS NOTHING ELSE for items with decay and metadata use the getUserInventoryItems they are unique items
 ---@param source number source
 ---@param cb fun(count: number | nil)? async or sync callback
 ---@param itemName string item name

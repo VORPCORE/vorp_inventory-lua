@@ -145,9 +145,8 @@ function SvUtils.GetItemCount(invId, identifier, name, percentage)
                 count = count + item:getCount()
             end
         else
-            -- normal items with no decay or metadata
-            --if you want to detect items with decay then pass the argument decay system is new and optional
-            if name == item:getName() and item:getMaxDegradation() == 0 then
+            -- detect any items because if we change this it breaks other scripts that are using it wrong
+            if name == item:getName() then
                 -- by not allowing decay items in here we are getting the count of only normal items
                 -- in conjunction with subItem that will only delete items that dont have decay if decay detection is not passed this allows to function normal as before
                 count = count + item:getCount()
