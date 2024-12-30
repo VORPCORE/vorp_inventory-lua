@@ -343,7 +343,7 @@ function loadCustomInventoryItemsWeapons(item, index, group) {
     if (item.type != "item_weapon") return;
 
     const info = item.serial_number ? "<br>" + LANGUAGE.labels.ammo + item.count + "<br>" + LANGUAGE.labels.serial + item.serial_number : "";
-    const weight = item.weight ? LANGUAGE.labels.weight + (item.weight * item.count).toFixed(2) + " " + Config.WeightMeasure : LANGUAGE.labels.weight + (item.count / 4).toFixed(2) + " " + Config.WeightMeasure;
+    const weight = getItemWeight(item.weight, item.count);
     const url = imageCache[item.name]
 
     $("#secondInventoryElement").append(`<div data-label='${item.label}' data-group ='${group}'
