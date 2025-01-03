@@ -424,6 +424,7 @@ function addData(index, item) {
 }
 
 function getItemDegradationPercentage(item) {
+    if (item.maxDegradation === 0) return 1;
     const now = TIME_NOW
     const maxDegradeSeconds = item.maxDegradation * 60;
     const elapsedSeconds = now - item.degradation;
