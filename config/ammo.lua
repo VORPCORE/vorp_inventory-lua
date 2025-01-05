@@ -51,7 +51,6 @@ SharedData.MaxAmmo    = {
     AMMO_HATCHET_VIKING = 10,
     AMMO_HATCHET = 10,
     AMMO_MOONSHINEJUG_MP = 100,
-    -- AMMO_MOONSHINEJUG = 100,
 }
 
 -- you can change this to your language
@@ -108,7 +107,6 @@ SharedData.AmmoLabels = {
     AMMO_HATCHET_VIKING = "Hachet Viking",
     AMMO_HATCHET = "Hatchet ammo",
     AMMO_MOONSHINEJUG_MP = "Moonshine Liters",
-    AMMO_MOONSHINEJUG = "Petrol Liters",
 }
 
 -- dont touch this
@@ -192,6 +190,5 @@ SharedData.AmmoTypes  = {
     -- [`GROUP_HELD`] = {}, -- for weapon kits like lanter binoculars
     [`GROUP_PETROLCAN`] = {
         AMMO_MOONSHINEJUG_MP = "AMMO_MOONSHINEJUG_MP",
-        -- AMMO_MOONSHINEJUG = "AMMO_MOONSHINEJUG",
     },
 }
