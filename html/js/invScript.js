@@ -480,10 +480,10 @@ function loadInventoryItems(item, index, group, count, limit) {
  * @param {number} group - The group of the item
  * @param {number} count - The count of the item
  */
-function loadInventoryWeapons(item, index, group, count) {
+function loadInventoryWeapons(item, index, group) {
     if (item.type != "item_weapon") return;
 
-    const weight = getItemWeight(item.weight, count);
+    const weight = getItemWeight(item.weight, 1);
     const info = item.serial_number ? "<br>" + LANGUAGE.labels.ammo + item.count + "<br>" + LANGUAGE.labels.serial + item.serial_number : "";
     const url = imageCache[item.name]
     const label = item.custom_label ? item.custom_label : item.label;
@@ -541,7 +541,7 @@ function inventorySetup(items) {
                 const group = item.type != "item_weapon" ? !item.group ? 1 : item.group : 5;
 
                 loadInventoryItems(item, index, group, count, limit);
-                loadInventoryWeapons(item, index, group, count);
+                loadInventoryWeapons(item, index, group);
                 addData(index, item);
             }
         };

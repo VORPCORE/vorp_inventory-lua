@@ -331,7 +331,7 @@ function loadCustomInventoryItems(item, index, group, count, limit) {
     if (item.type === "item_weapon") return;
 
     const { tooltipData, degradation, image, label, weight } = getItemMetadataInfo(item, true);
-    const itemWeight = getItemWeight(weight, count);
+    const itemWeight = getItemWeight(weight, 1);
     const groupKey = getGroupKey(group);
     const { tooltipContent, url } = getItemTooltipContent(image, groupKey, group, limit, itemWeight, degradation, tooltipData);
 
