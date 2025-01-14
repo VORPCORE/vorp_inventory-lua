@@ -592,7 +592,7 @@ function InventoryService.onPickupGold(data)
 		SvUtils.ProcessUser(_source)
 
 		local goldAmount = data.amount
-		TriggerClientEvent("vorpInventory:shareGoldPickupClient", -1, data.obj, goldAmount, data.coords,data.uuid, 2)
+		TriggerClientEvent("vorpInventory:shareGoldPickupClient", -1, data.obj, goldAmount, data.coords, data.uuid, 2)
 		TriggerClientEvent("vorpInventory:playerAnim", _source, data.obj)
 
 		local character = Core.getUser(_source).getUsedCharacter
@@ -726,10 +726,9 @@ function InventoryService.shareGoldPickupServer(data)
 	local info = { source = _source, name = Logs.WebHook.webhookname, title = title, description = description, webhook = Logs.WebHook.webhook, color = Logs.WebHook.colorpickedgold }
 
 	Character.removeCurrency(1, data.amount)
-
-	TriggerClientEvent("vorpInventory:shareGoldPickupClient", -1, data.handle, data.amount, data.position, 1)
-	SvUtils.SendDiscordWebhook(info)
 	local uid = SvUtils.GenerateUniqueID()
+	TriggerClientEvent("vorpInventory:shareGoldPickupClient", -1, data.handle, data.amount, data.position, uid, 1)
+	SvUtils.SendDiscordWebhook(info)
 	GoldPickUps[uid] = {
 		name = T.inventorygoldlabel,
 		obj = data.handle,
