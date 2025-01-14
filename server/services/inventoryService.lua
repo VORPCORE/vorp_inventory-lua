@@ -590,8 +590,9 @@ function InventoryService.onPickupGold(data)
 
 	if not SvUtils.InProcessing(_source) then
 		SvUtils.ProcessUser(_source)
+
 		local goldAmount = data.amount
-		TriggerClientEvent("vorpInventory:shareGoldPickupClient", -1, data.obj, goldAmount, data.coords, 2)
+		TriggerClientEvent("vorpInventory:shareGoldPickupClient", -1, data.obj, goldAmount, data.coords,data.uuid, 2)
 		TriggerClientEvent("vorpInventory:playerAnim", _source, data.obj)
 
 		local character = Core.getUser(_source).getUsedCharacter
