@@ -424,7 +424,7 @@ function InventoryService.addWeapon(source, weaponId)
 	local weaponname <const> = userWeapons[weaponId]:getName()
 	local ammo <const> = { ["nothing"] = 0 }
 	local components <const> = { ["nothing"] = 0 }
-	InventoryAPI.registerWeapon(_source, weaponname, ammo, components, weaponcomps)
+	InventoryAPI.registerWeapon(_source, weaponname, ammo, components, weaponcomps, nil, weaponId)
 	InventoryAPI.deleteWeapon(_source, weaponId)
 end
 
