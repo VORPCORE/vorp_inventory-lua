@@ -596,7 +596,12 @@ function InventoryService.onPickupGold(data)
 		TriggerClientEvent("vorpInventory:playerAnim", _source, data.obj)
 
 		local character = Core.getUser(_source).getUsedCharacter
+		local charname, _, steamname = getSourceInfo(_source)
+		local title = T.WebHookLang.pickedgold
+		local description = "**" .. T.WebHookLang.gold .. ":** `" .. data.amount .. "` \n**" .. T.WebHookLang.charname .. ":** `" .. charname .. "`\n**" .. T.WebHookLang.Steamname .. "** `" .. steamname .. "`\n"
+		local info = { source = _source, name = Logs.WebHook.webhookname, title = title, description = description, webhook = Logs.WebHook.webhook, color = Logs.WebHook.colorpickedgold }
 		character.addCurrency(1, goldAmount)
+		SvUtils.SendDiscordWebhook(info)
 		GoldPickUps[data.uuid] = nil
 		SvUtils.Trem(_source, false)
 	end
@@ -720,15 +725,10 @@ function InventoryService.shareGoldPickupServer(data)
 	if not user then return end
 
 	local Character = user.getUsedCharacter
-	local charname, _, steamname = getSourceInfo(_source)
-	local title = T.WebHookLang.pickedgold
-	local description = "**" .. T.WebHookLang.gold .. ":** `" .. data.amount .. "` \n**" .. T.WebHookLang.charname .. ":** `" .. charname .. "`\n**" .. T.WebHookLang.Steamname .. "** `" .. steamname .. "`\n"
-	local info = { source = _source, name = Logs.WebHook.webhookname, title = title, description = description, webhook = Logs.WebHook.webhook, color = Logs.WebHook.colorpickedgold }
-
 	Character.removeCurrency(1, data.amount)
 	local uid = SvUtils.GenerateUniqueID()
 	TriggerClientEvent("vorpInventory:shareGoldPickupClient", -1, data.handle, data.amount, data.position, uid, 1)
-	SvUtils.SendDiscordWebhook(info)
+
 	GoldPickUps[uid] = {
 		name = T.inventorygoldlabel,
 		obj = data.handle,
