@@ -2000,6 +2000,7 @@ function InventoryService.getAllItemsFromCustomInventory(invId)
 
 			if next(itemMetadata) then
 				items[#items + 1] = {
+					crafted_id = value.item_crafted_id,
 					name = value.item_name,
 					amount = value.amount,
 					metadata = itemMetadata,
@@ -2010,6 +2011,7 @@ function InventoryService.getAllItemsFromCustomInventory(invId)
 					itemsMap[value.item_name].amount = itemsMap[value.item_name].amount + value.amount
 				else
 					itemsMap[value.item_name] = {
+						crafted_id = value.item_crafted_id,
 						name = value.item_name,
 						amount = value.amount,
 						metadata = itemMetadata,
