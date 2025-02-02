@@ -184,7 +184,6 @@ exports("getUserInventoryItems", InventoryAPI.getInventory)
 --- register usable item
 ---@param name string item name
 ---@param cb function callback
----@param resource string resource name registering the item just for debug purposes
 function InventoryAPI.registerUsableItem(name, cb, resource)
 	if Config.Debug then
 		SetTimeout(9000, function()
@@ -199,16 +198,16 @@ function InventoryAPI.registerUsableItem(name, cb, resource)
 	-- this is just to help users see whats wrong with their items and to fix them
 	SetTimeout(20000, function()
 		if not ServerItems[name] then
-			print("^3Warning^7: item ", name, " was added as usabled but ^1 does not exist in database ^7", resource or "unknown")
+			print("^3Warning^7: item ", name, " was added as usabled but ^1 does not exist in database ^7", resource or "")
 		end
 
 		if ServerItems[name] and not ServerItems[name].canUse then
-			print("^3Warning^7: item", name, " is not usable in database , ^1 you need to set usable to 1 in database ^7", resource or "unknown")
+			print("^3Warning^7: item", name, " is not usable in database , ^1 you need to set usable to 1 in database ^7", resource or "")
 		end
 	end)
 
 	if UsableItemsFunctions[name] then
-		print("^3Warning^7: item ", name, " is already registered, ^1 cant register the same item twice ^7", resource or "unknown")
+		print("^3Warning^7: item ", name, " is already registered, ^1 cant register the same item twice ^7", resource or "")
 		print("^5Info:^7 if you restarting a script this is normal and you can ignore it!.^7")
 	end
 	UsableItemsFunctions[name] = cb
