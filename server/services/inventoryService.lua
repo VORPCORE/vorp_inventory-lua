@@ -53,6 +53,7 @@ function InventoryService.UseItem(data)
 		item = {
 			---@deprecated -- same as item.id
 			mainid = itemId,
+			item = item:getName(), -- for backwards compat
 			---
 			metadata = item:getMetadata(),
 			percentage = item:getPercentage(),
