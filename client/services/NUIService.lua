@@ -54,7 +54,11 @@ function NUIService.ReloadInventory(inventory, packed)
 		else
 			-- for syn scripts where description wasnt saved
 			if not item.desc then
-				item.desc = ClientItems[item.name].desc
+				if not ClientItems[item.name] then
+					print("Item,", item.name, " no longer exist did you delete from database? or name was modified?")
+				else
+					item.desc = ClientItems[item.name].desc
+				end
 			end
 		end
 	end
