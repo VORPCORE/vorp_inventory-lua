@@ -278,20 +278,11 @@ function NUIService.NUIDropItem(obj)
 		if type == "item_standard" then
 			if aux.number ~= nil and aux.number ~= '' then
 				local item = UserInventory[itemId]
-				if not item then
-					return
-				end
+				if not item then return end
 
-				if qty <= 0 or qty > item:getCount() then
-					return
-				end
+				if qty <= 0 or qty > item:getCount() then return end
 
 				TriggerServerEvent("vorpinventory:serverDropItem", itemName, itemId, qty, metadata, degradation)
-
-				item:quitCount(qty)
-				if item:getCount() == 0 then
-					UserInventory[itemId] = nil
-				end
 			end
 		end
 
