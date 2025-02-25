@@ -1477,7 +1477,8 @@ function InventoryService.DiscordLogs(inventory, itemName, amount, playerName, t
 	local webhook = CustomInventoryInfos[inventory]
 
 	if webhook then
-		webhook = webhook:getWebhook()
+		local wh = webhook:getWebhook()
+		webhook = (wh and wh ~= "") and wh or false
 	end
 
 	if type == "Move" then
