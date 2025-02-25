@@ -1474,7 +1474,14 @@ function InventoryService.DiscordLogs(inventory, itemName, amount, playerName, t
 	local footerlogo = Logs.WebHook.cusfooterlogo
 	local avatar = Logs.WebHook.cusavatar
 	local names = Logs.WebHook.cuswebhookname
-	local webhook = CustomInventoryInfos[inventory]:getWebhook()
+	local webhook = CustomInventoryInfos[inventory]
+
+	if not webhook then
+		webhook = type == "Move" and Logs.WebHook.CustomInventoryMoveTo or Logs.WebHook.CustomInventoryTakeFrom
+	else
+		webhook = webhook:getWebhook()
+	end
+
 	if type == "Move" then
 		webhook = webhook or Logs.WebHook.CustomInventoryMoveTo
 		local description = "**Player:**`" .. playerName .. "`\n **Moved to:** `" .. inventory .. "` \n**Weapon** `" .. itemName .. "`\n **Count:** `" .. amount .. "`"
