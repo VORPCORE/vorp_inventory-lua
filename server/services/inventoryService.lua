@@ -632,7 +632,7 @@ function InventoryService.sharePickupServerWeapon(data)
 	local _source = source
 	local weapon = UsersWeapons.default[data.weaponId]
 
-	if not weapon and data.weaponId > 1 then
+	if not weapon then
 		return
 	end
 
