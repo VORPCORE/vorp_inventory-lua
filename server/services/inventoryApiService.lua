@@ -757,7 +757,7 @@ function InventoryAPI.subItem(source, name, amount, metadata, cb, allow, percent
 
 		if not allow then
 			-- allow other scripts to detect the item removal and its amount, (count) was added, but id and metadata was removed because there could be multiple stacks with the same name with diferent metadata so we cant send these
-			local data <const> = { name = svItem:getName(), count = amount }
+			local data <const> = { name = name, count = amount }
 			TriggerEvent("vorp_inventory:Server:OnItemRemoved", data, _source)
 		end
 	end
