@@ -791,7 +791,7 @@ function InventoryService.DropItem(itemName, itemId, amount, metadata, degradati
 	if not Config.DeleteOnlyDontDrop then
 		TriggerClientEvent("vorpInventory:createPickup", _source, itemName, amount, metadata, 1, itemId, degradation)
 	else
-		InventoryService.subItem(_source, "default", itemId, amount)
+		InventoryAPI.subItemID(_source,itemId, nil,false, amount)
 	end
 	SvUtils.Trem(_source)
 end
