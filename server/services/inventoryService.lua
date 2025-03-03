@@ -259,9 +259,9 @@ function InventoryService.subItem(source, invId, itemId, amount)
 	local identifier <const> = sourceCharacter.identifier
 	local userInventory <const> = CustomInventoryInfos[invId].shared and UsersInventories[invId] or UsersInventories[invId][identifier]
 
-	if not userInventory then return false end
-
-	if not userInventory[itemId] then return false end
+	if not userInventory then
+		return false
+	end
 
 	local item <const> = userInventory[itemId]
 	if not item then
