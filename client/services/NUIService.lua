@@ -122,7 +122,7 @@ function NUIService.NUITakeFromPlayer(obj)
 end
 
 function NUIService.TransferLimitExceeded(maxValue)
-    local message = string.format(T.MaxItemtrasfer, maxValue.max)
+    local message = string.format(T.MaxItemTransfer, maxValue.max)
     Core.NotifyRightTip(message, 4000)
 end
 
