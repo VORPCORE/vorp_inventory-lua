@@ -1922,6 +1922,7 @@ function InventoryService.addWeaponsToCustomInventory(id, weapons, charid)
 		local serial_number = value.serial_number or SvUtils.GenerateSerialNumber(value.name)
 		local custom_label = value.custom_label or SvUtils.GenerateWeaponLabel(value.name)
 		local weight = SvUtils.GetWeaponWeight(value.name)
+		local components = value.components and next(value.components) and value.components or {}
 		local params = {
 			curr_inv = id,
 			charidentifier = charid,
@@ -1929,16 +1930,18 @@ function InventoryService.addWeaponsToCustomInventory(id, weapons, charid)
 			serial_number = serial_number,
 			label = label,
 			custom_label = custom_label,
-			custom_desc = value.custom_desc or nil
+			custom_desc = value.custom_desc or nil,
+			comps = components
 		}
 
-		DBService.insertAsync("INSERT INTO loadout (identifier, curr_inv, charidentifier, name,serial_number,label,custom_label,custom_desc) VALUES ('', @curr_inv, @charidentifier, @name, @serial_number, @label, @custom_label, @custom_desc)", params, function(result)
+		DBService.insertAsync("INSERT INTO loadout (identifier, curr_inv, charidentifier, name,serial_number,label,custom_label,custom_desc,comps) VALUES ('', @curr_inv, @charidentifier, @name, @serial_number, @label, @custom_label, @custom_desc, @comps)", params, function(result)
 			local weaponId = result
 			local newWeapon = Weapon:New({
 				id = weaponId,
 				propietary = "",
 				name = value.name,
 				ammo = {},
+				comps = components,
 				used = false,
 				used2 = false,
 				charId = charid,
