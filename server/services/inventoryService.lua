@@ -1931,7 +1931,7 @@ function InventoryService.addWeaponsToCustomInventory(id, weapons, charid)
 			label = label,
 			custom_label = custom_label,
 			custom_desc = value.custom_desc or nil,
-			comps = components
+			comps = json.encode(components)
 		}
 
 		DBService.insertAsync("INSERT INTO loadout (identifier, curr_inv, charidentifier, name,serial_number,label,custom_label,custom_desc,comps) VALUES ('', @curr_inv, @charidentifier, @name, @serial_number, @label, @custom_label, @custom_desc, @comps)", params, function(result)
