@@ -1678,12 +1678,11 @@ exports("AddPermissionTakeFromCustom", InventoryAPI.AddPermissionTakeFromCustom)
 ---@param charid string charid
 ---@param state boolean | nil
 function InventoryAPI.AddCharIdPermissionMoveToCustom(id, charid, state)
-	if canContinue(id, false, false, charid) then
+	if not canContinue(id, false, false, charid) then
 		return
 	end
 
-	local data = { name = charid, state = state }
-	CustomInventoryInfos[id]:AddCharIdPermissionMoveTo(data)
+	CustomInventoryInfos[id]:AddCharIdPermissionMoveTo(charid, state)
 end
 
 exports("AddCharIdPermissionMoveToCustom", InventoryAPI.AddCharIdPermissionMoveToCustom)
@@ -1693,12 +1692,11 @@ exports("AddCharIdPermissionMoveToCustom", InventoryAPI.AddCharIdPermissionMoveT
 ---@param charid string charid
 ---@param state boolean | nil
 function InventoryAPI.AddCharIdPermissionTakeFromCustom(id, charid, state)
-	if canContinue(id, false, false, charid) then
+	if not canContinue(id, false, false, charid) then
 		return
 	end
 
-	local data = { charid = charid, state = state }
-	CustomInventoryInfos[id]:AddCharIdPermissionTakeFrom(data)
+	CustomInventoryInfos[id]:AddCharIdPermissionTakeFrom(charid, state)
 end
 
 exports("AddCharIdPermissionTakeFromCustom", InventoryAPI.AddCharIdPermissionTakeFromCustom)
