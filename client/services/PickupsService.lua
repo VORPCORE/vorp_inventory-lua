@@ -138,7 +138,7 @@ function PickupsService.sharePickupClient(data, value)
 
 		if data.type == "item_standard" then
 			local item <const> = UserInventory[data.id]
-			if not item then
+			if item then
 				item:quitCount(data.amount)
 				if item:getCount() == 0 then
 					UserInventory[data.id] = nil
