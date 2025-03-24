@@ -98,7 +98,7 @@ function InventoryService.DropMoney(amount)
 	local _source <const> = source
 
 	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
-		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+		return Core.NotifyRightTip(_source, T, 5000)
 	end
 
 	Cooldowns[_source] = os.time() + 1
@@ -135,7 +135,7 @@ function InventoryService.giveMoneyToPlayer(target, amount)
 	local _source <const> = source
 
 	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
-		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+		return Core.NotifyRightTip(_source, T.cooldownMessage, 5000)
 	end
 
 	Cooldowns[_source] = os.time() + 1
@@ -185,7 +185,7 @@ function InventoryService.DropGold(amount)
 	local _source <const> = source
 
 	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
-		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+		return Core.NotifyRightTip(_source, T.cooldownMessage, 5000)
 	end
 
 	Cooldowns[_source] = os.time() + 1
@@ -221,7 +221,7 @@ function InventoryService.giveGoldToPlayer(target, amount)
 	local _source <const> = source
 
 	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
-		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+		return Core.NotifyRightTip(_source, T.cooldownMessage, 5000)
 	end
 
 	Cooldowns[_source] = os.time() + 1
@@ -279,7 +279,7 @@ function InventoryService.subItem(source, invId, itemId, amount)
 	local _source <const> = source
 
 	if Cooldowns and Cooldowns[_source] and Cooldowns[_source] > os.time() then
-		Core.NotifyRightTip(_source, T.cooldown, 5000)
+		Core.NotifyRightTip(_source, T.cooldownMessage, 5000)
 		return false
 	end
 
@@ -332,7 +332,7 @@ function InventoryService.addItem(source, invId, name, amount, metadata, data, c
 	local _source <const> = source
 
 	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
-		Core.NotifyRightTip(_source, T.cooldown, 5000)
+		Core.NotifyRightTip(_source, T.cooldownMessage, 5000)
 		return cb(nil)
 	end
 
@@ -491,7 +491,7 @@ end
 function InventoryService.onPickup(data)
 	local _source <const> = source
 	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
-		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+		return Core.NotifyRightTip(_source, T.cooldownMessage, 5000)
 	end
 
 	Cooldowns[_source] = os.time() + 1
@@ -610,7 +610,7 @@ function InventoryService.onPickupMoney(data)
 	local _source = source
 
 	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
-		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+		return Core.NotifyRightTip(_source, T.cooldownMessage, 5000)
 	end
 
 	Cooldowns[_source] = os.time() + 1
@@ -643,7 +643,7 @@ function InventoryService.onPickupGold(data)
 	local _source = source
 
 	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
-		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+		return Core.NotifyRightTip(_source, T.cooldownMessage, 5000)
 	end
 
 	Cooldowns[_source] = os.time() + 1
@@ -693,7 +693,7 @@ function InventoryService.sharePickupServerWeapon(data)
 	local _source = source
 
 	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
-		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+		return Core.NotifyRightTip(_source, T.cooldownMessage, 5000)
 	end
 
 	Cooldowns[_source] = os.time() + 1
@@ -740,7 +740,7 @@ function InventoryService.sharePickupServerItem(data)
 	local _source = source
 
 	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
-		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+		return Core.NotifyRightTip(_source, T.cooldownMessage, 5000)
 	end
 
 	Cooldowns[_source] = os.time() + 1
@@ -781,7 +781,7 @@ function InventoryService.shareMoneyPickupServer(data)
 	local _source = source
 
 	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
-		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+		return Core.NotifyRightTip(_source, T.cooldownMessage, 5000)
 	end
 
 	Cooldowns[_source] = os.time() + 1
@@ -814,7 +814,7 @@ function InventoryService.shareGoldPickupServer(data)
 	local _source = source
 
 	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
-		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+		return Core.NotifyRightTip(_source, T.cooldownMessage, 5000)
 	end
 
 	Cooldowns[_source] = os.time() + 1
@@ -844,7 +844,7 @@ function InventoryService.DropWeapon(weaponId)
 	local _source = source
 
 	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
-		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+		return Core.NotifyRightTip(_source, T.cooldownMessage, 5000)
 	end
 
 	Cooldowns[_source] = os.time() + 1
@@ -870,7 +870,7 @@ function InventoryService.DropItem(itemName, itemId, amount, metadata, degradati
 	local _source <const> = source
 
 	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
-		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+		return Core.NotifyRightTip(_source, T.cooldownMessage, 5000)
 	end
 
 	Cooldowns[_source] = os.time() + 1
@@ -905,7 +905,7 @@ function InventoryService.GiveWeapon(weaponId, target)
 	local _source = source
 
 	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
-		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+		return Core.NotifyRightTip(_source, T.cooldownMessage, 5000)
 	end
 
 	Cooldowns[_source] = os.time() + 1
@@ -934,7 +934,7 @@ function InventoryService.giveWeapon2(player, weaponId, target)
 	local _source = player
 
 	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
-		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+		return Core.NotifyRightTip(_source, T.cooldownMessage, 5000)
 	end
 
 	Cooldowns[_source] = os.time() + 1
@@ -1026,7 +1026,7 @@ function InventoryService.GiveItem(itemId, amount, target)
 	local _source = source
 
 	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
-		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+		return Core.NotifyRightTip(_source, T.cooldownMessage, 5000)
 	end
 
 	Cooldowns[_source] = os.time() + 1
@@ -1273,7 +1273,7 @@ function InventoryService.serverGiveAmmo(ammotype, amount, target, maxcount)
 	local _source = source
 
 	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
-		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+		return Core.NotifyRightTip(_source, T.cooldownMessage, 5000)
 	end
 
 	Cooldowns[_source] = os.time() + 1
@@ -1655,7 +1655,7 @@ function InventoryService.MoveToCustom(obj)
 	local _source = source
 
 	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
-		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+		return Core.NotifyRightTip(_source, T.cooldownMessage, 5000)
 	end
 
 	Cooldowns[_source] = os.time() + 1
@@ -1744,7 +1744,7 @@ function InventoryService.TakeFromCustom(obj)
 	local _source = source
 
 	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
-		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+		return Core.NotifyRightTip(_source, T.cooldownMessage, 5000)
 	end
 
 	Cooldowns[_source] = os.time() + 1
@@ -1864,7 +1864,7 @@ function InventoryService.MoveToPlayer(obj)
 	local _source = source
 
 	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
-		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+		return Core.NotifyRightTip(_source, T.cooldownMessage, 5000)
 	end
 
 	Cooldowns[_source] = os.time() + 1
@@ -1879,7 +1879,7 @@ function InventoryService.MoveToPlayer(obj)
 	local messages = {
 		weapons = T.weaponsLimitExceeded,
 		items = T.itemsLimitExceeded,
-		cooldown = T.cooldownMessage
+		cooldown = T.cooldownMessageMessage
 	}
 
 	if not CanProceed(item, amount, sourceCharacter.identifier, sourceName) then
@@ -1945,7 +1945,7 @@ function InventoryService.TakeFromPlayer(obj)
 	local _source = source
 
 	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
-		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+		return Core.NotifyRightTip(_source, T.cooldownMessage, 5000)
 	end
 
 	Cooldowns[_source] = os.time() + 1
@@ -1961,7 +1961,7 @@ function InventoryService.TakeFromPlayer(obj)
 	local messages = {
 		weapons = T.weaponsLimitExceeded,
 		items = T.itemsLimitExceeded,
-		cooldown = T.cooldownMessage
+		cooldown = T.cooldownMessageMessage
 	}
 
 	if IsBlackListed then
