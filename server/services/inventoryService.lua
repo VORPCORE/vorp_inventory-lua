@@ -8,6 +8,7 @@ ItemPickUps      = {}
 MoneyPickUps     = {}
 GoldPickUps      = {}
 ItemUids         = {}
+Cooldowns 	     = {}
 
 
 function InventoryService.CheckNewPlayer(_source, charid)
@@ -96,6 +97,12 @@ end
 function InventoryService.DropMoney(amount)
 	local _source <const> = source
 
+	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
+		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+	end
+
+	Cooldowns[_source] = os.time() + 1
+
 	local user <const> = Core.getUser(_source)
 	if not user then return end
 
@@ -126,6 +133,13 @@ end
 
 function InventoryService.giveMoneyToPlayer(target, amount)
 	local _source <const> = source
+
+	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
+		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+	end
+
+	Cooldowns[_source] = os.time() + 1
+
 	local _target <const> = target
 	local user <const> = Core.getUser(_source)
 	local targetUser <const> = Core.getUser(_target)
@@ -170,6 +184,12 @@ end
 function InventoryService.DropGold(amount)
 	local _source <const> = source
 
+	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
+		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+	end
+
+	Cooldowns[_source] = os.time() + 1
+
 	local user <const> = Core.getUser(_source)
 	if not user then return end
 
@@ -199,6 +219,12 @@ end
 
 function InventoryService.giveGoldToPlayer(target, amount)
 	local _source <const> = source
+
+	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
+		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+	end
+
+	Cooldowns[_source] = os.time() + 1
 
 	local user <const> = Core.getUser(_source)
 	local targetUser <const> = Core.getUser(target)
@@ -252,6 +278,13 @@ end
 function InventoryService.subItem(source, invId, itemId, amount)
 	local _source <const> = source
 
+	if Cooldowns and Cooldowns[_source] and Cooldowns[_source] > os.time() then
+		Core.NotifyRightTip(_source, T.cooldown, 5000)
+		return false
+	end
+
+	Cooldowns[_source] = os.time() + 1
+
 	local user <const> = Core.getUser(_source)
 	if not user then return end
 
@@ -297,6 +330,14 @@ end
 ---@return boolean | {}
 function InventoryService.addItem(source, invId, name, amount, metadata, data, cb)
 	local _source <const> = source
+
+	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
+		Core.NotifyRightTip(_source, T.cooldown, 5000)
+		return cb(nil)
+	end
+
+	Cooldowns[_source] = os.time() + 1
+
 	local user <const> = Core.getUser(_source)
 	if not user then return cb(nil) end
 
@@ -449,6 +490,12 @@ end
 
 function InventoryService.onPickup(data)
 	local _source <const> = source
+	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
+		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+	end
+
+	Cooldowns[_source] = os.time() + 1
+
 	local uid <const> = data.uid
 	local user <const> = Core.getUser(_source)
 	local pickup <const> = ItemPickUps[uid]
@@ -561,6 +608,13 @@ end
 
 function InventoryService.onPickupMoney(data)
 	local _source = source
+
+	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
+		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+	end
+
+	Cooldowns[_source] = os.time() + 1
+
 	local charname, _, steamname = getSourceInfo(_source)
 
 	data = MoneyPickUps[data.uuid]
@@ -587,6 +641,13 @@ end
 
 function InventoryService.onPickupGold(data)
 	local _source = source
+
+	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
+		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+	end
+
+	Cooldowns[_source] = os.time() + 1
+
 	data = GoldPickUps[data.uuid]
 	if not data then return end
 
@@ -630,6 +691,14 @@ end
 
 function InventoryService.sharePickupServerWeapon(data)
 	local _source = source
+
+	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
+		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+	end
+
+	Cooldowns[_source] = os.time() + 1
+
+
 	local weapon = UsersWeapons.default[data.weaponId]
 
 	if not weapon then
@@ -669,6 +738,14 @@ end
 
 function InventoryService.sharePickupServerItem(data)
 	local _source = source
+
+	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
+		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+	end
+
+	Cooldowns[_source] = os.time() + 1
+
+
 	local user = Core.getUser(_source)
 	if not user then return end
 
@@ -702,6 +779,13 @@ end
 
 function InventoryService.shareMoneyPickupServer(data)
 	local _source = source
+
+	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
+		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+	end
+
+	Cooldowns[_source] = os.time() + 1
+
 	local user = Core.getUser(_source)
 	if not user then return end
 
@@ -728,6 +812,13 @@ end
 
 function InventoryService.shareGoldPickupServer(data)
 	local _source = source
+
+	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
+		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+	end
+
+	Cooldowns[_source] = os.time() + 1
+
 	local user = Core.getUser(_source)
 	if not user then return end
 
@@ -751,6 +842,14 @@ end
 
 function InventoryService.DropWeapon(weaponId)
 	local _source = source
+
+	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
+		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+	end
+
+	Cooldowns[_source] = os.time() + 1
+
+
 	if not SvUtils.InProcessing(_source) then
 		SvUtils.ProcessUser(_source)
 		local userWeapons = UsersWeapons.default
@@ -769,6 +868,12 @@ end
 
 function InventoryService.DropItem(itemName, itemId, amount, metadata, degradation)
 	local _source <const> = source
+
+	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
+		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+	end
+
+	Cooldowns[_source] = os.time() + 1
 
 	local doesExist <const> = SvUtils.DoesItemExist(itemName, "InventoryService.DropItem")
 	if not doesExist then return end
@@ -798,6 +903,13 @@ end
 
 function InventoryService.GiveWeapon(weaponId, target)
 	local _source = source
+
+	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
+		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+	end
+
+	Cooldowns[_source] = os.time() + 1
+
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local charid = sourceCharacter.charIdentifier
 
@@ -820,6 +932,13 @@ end
 
 function InventoryService.giveWeapon2(player, weaponId, target)
 	local _source = player
+
+	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
+		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+	end
+
+	Cooldowns[_source] = os.time() + 1
+
 	local sourceCharacter = Core.getUser(_source).getUsedCharacter
 	local sourceIdentifier = sourceCharacter.identifier
 	local sourceCharId = sourceCharacter.charIdentifier
@@ -905,6 +1024,13 @@ end
 
 function InventoryService.GiveItem(itemId, amount, target)
 	local _source = source
+
+	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
+		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+	end
+
+	Cooldowns[_source] = os.time() + 1
+
 	local _target = target
 	local user = Core.getUser(_source)
 	local user1 = Core.getUser(_target)
@@ -1145,6 +1271,13 @@ end)
 -- give ammo to player
 function InventoryService.serverGiveAmmo(ammotype, amount, target, maxcount)
 	local _source = source
+
+	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
+		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+	end
+
+	Cooldowns[_source] = os.time() + 1
+
 	local player1ammo = AmmoData[_source].ammo[ammotype]
 	local player2ammo = AmmoData[target].ammo[ammotype]
 
@@ -1520,6 +1653,13 @@ end
 
 function InventoryService.MoveToCustom(obj)
 	local _source = source
+
+	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
+		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+	end
+
+	Cooldowns[_source] = os.time() + 1
+
 	local data = json.decode(obj)
 	local invId <const> = tostring(data.id)
 	if not CustomInventoryInfos[invId] then return end
@@ -1602,6 +1742,12 @@ end
 
 function InventoryService.TakeFromCustom(obj)
 	local _source = source
+
+	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
+		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+	end
+
+	Cooldowns[_source] = os.time() + 1
 
 	local data = json.decode(obj)
 	local invId <const> = tostring(data.id)
@@ -1717,6 +1863,12 @@ end
 function InventoryService.MoveToPlayer(obj)
 	local _source = source
 
+	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
+		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+	end
+
+	Cooldowns[_source] = os.time() + 1
+
 	local data = json.decode(obj)
 	local item = data.item
 	local amount = tonumber(data.number)
@@ -1791,6 +1943,13 @@ end
 
 function InventoryService.TakeFromPlayer(obj)
 	local _source = source
+
+	if Cooldowns[_source] and Cooldowns[_source] > os.time() then
+		return Core.NotifyRightTip(_source, T.cooldown, 5000)
+	end
+
+	Cooldowns[_source] = os.time() + 1
+
 	local data = json.decode(obj)
 	local item = data.item
 	local amount = tonumber(data.number)
