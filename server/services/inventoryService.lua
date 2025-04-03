@@ -1475,7 +1475,7 @@ function InventoryService.DiscordLogs(inventory, itemName, amount, playerName, t
 	local names = Logs.WebHook.cuswebhookname
 	local webhook = CustomInventoryInfos[inventory]
 
-	if webhook then
+	if webhook and inventory ~= "default" then
 		local wh = webhook:getWebhook()
 		webhook = (wh and wh ~= "") and wh or false
 	end
