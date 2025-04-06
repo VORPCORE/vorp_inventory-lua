@@ -1466,7 +1466,7 @@ function InventoryService.DoesHavePermission(invId, jobPerm, charidPerm)
 	end
 
 	if next(jobPerm.data) then
-		if jobPerm.data[jobPerm.job] and jobPerm.data[jobPerm.job] >= jobPerm.grade then
+		if jobPerm.data[jobPerm.job] and jobPerm.grade >= jobPerm.data[jobPerm.job] then
 			return true
 		end
 	end
