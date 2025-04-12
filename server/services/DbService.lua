@@ -34,42 +34,58 @@ function DBService.SetItemMetadata(sourceCharIdentifier, itemCraftedId, metadata
 end
 
 function DBService.DeleteItem(sourceCharIdentifier, itemCraftedId)
-    MySQL.query("DELETE FROM character_inventories WHERE character_id = @charid AND item_crafted_id = @itemid;", {
-        charid = tonumber(sourceCharIdentifier),
-        itemid = tonumber(itemCraftedId)
-    })
-    MySQL.query("DELETE FROM items_crafted WHERE id = @itemid;", { itemid = tonumber(itemCraftedId) })
+    local queries = {
+        {
+            query = "DELETE FROM character_inventories WHERE character_id = ? AND item_crafted_id = ?",
+            values = { tonumber(sourceCharIdentifier), tonumber(itemCraftedId) }
+        },
+        {
+            query = "DELETE FROM items_crafted WHERE id = ?",
+            values = { tonumber(itemCraftedId) }
+        }
+    }
+
+    MySQL.transaction.await(queries)
 end
 
 function DBService.CreateItem(sourceCharIdentifier, itemId, amount, metadata, name, degradation, cb, invId)
-    MySQL.insert.await("INSERT INTO items_crafted (character_id, item_id, metadata,item_name) VALUES (@charid, @itemid, @metadata,@item_name);", {
-        charid = tonumber(sourceCharIdentifier),
-        itemid = tonumber(itemId),
-        metadata = json.encode(metadata),
-        item_name = name,
-    })
+    local metadataJson = json.encode(metadata)
+    local queries = {
+        {
+            query = "INSERT INTO items_crafted (character_id, item_id, metadata, item_name) VALUES (?, ?, ?, ?)",
+            values = { tonumber(sourceCharIdentifier), tonumber(itemId), metadataJson, name }
+        },
+        {
+            query = "SELECT id FROM items_crafted WHERE character_id = ? AND item_id = ? AND JSON_CONTAINS(metadata, ?)",
+            values = { tonumber(sourceCharIdentifier), tonumber(itemId), metadataJson }
+        }
+    }
 
-    local result = MySQL.query.await("SELECT id FROM items_crafted WHERE character_id = @charid AND item_id = @itemid AND JSON_CONTAINS(metadata, @metadata);", {
-        charid = tonumber(sourceCharIdentifier),
-        itemid = tonumber(itemId),
-        metadata = json.encode(metadata)
-    })
+    local success, results = MySQL.transaction.await(queries)
+    if not success then
+        print("Transaction failed: " .. tostring(results))
+        return cb(nil)
+    end
 
-    if result and result[1] then
-        local item = result[#result]
-
-        MySQL.insert.await("INSERT INTO character_inventories (character_id, item_crafted_id, amount, inventory_type,item_name, degradation) VALUES (@charid, @itemid, @amount, @invId,@item_name, @degradation);", {
-            charid = tonumber(sourceCharIdentifier),
-            itemid = item.id,
-            amount = tonumber(amount),
-            invId = invId or "default",
-            item_name = name,
-            degradation = degradation
+    local selectResult = results[2]
+    if selectResult and selectResult[1] then
+        local item = selectResult[#selectResult]
+        
+        MySQL.insert.await("INSERT INTO character_inventories (character_id, item_crafted_id, amount, inventory_type, item_name, degradation) VALUES (?, ?, ?, ?, ?, ?)", {
+            tonumber(sourceCharIdentifier),
+            item.id,
+            tonumber(amount),
+            invId or "default",
+            name,
+            degradation
         })
 
-        cb({ id = item.id })
+        return cb({ id = item.id })
     end
+
+    return cb(nil)
 end
+
 
 function DBService.GetTotalItemsInCustomInventory(id)
     local result = MySQL.query.await("SELECT SUM(amount) as total_amount FROM character_inventories WHERE inventory_type = @invType;", { invType = id })
