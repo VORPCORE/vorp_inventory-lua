@@ -213,7 +213,7 @@ function Item:getCount()
 end
 
 function Item:addCount(amount, ignoreStackLimit)
-	if (self.count + amount <= self.limit) or ignoreStackLimit or self.limit == -1 then
+	if self.limit == -1 or (self.count + amount <= self.limit) or ignoreStackLimit then
 		self.count = self.count + amount
 		return true
 	end
