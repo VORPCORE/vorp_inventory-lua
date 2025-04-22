@@ -2061,8 +2061,7 @@ end
 
 --todo allow metadata to be passed
 function InventoryService.removeItemFromCustomInventory(invId, item_name, amount)
-	local result = DBService.queryAwait("SELECT amount, item_crafted_id FROM character_inventories WHERE item_name = @itemname AND inventory_type = @inventory_type ORDER BY amount DESC",
-		{ itemname = item_name, inventory_type = invId })
+	local result = DBService.queryAwait("SELECT amount, item_crafted_id FROM character_inventories WHERE item_name = @itemname AND inventory_type = @inventory_type ORDER BY amount DESC", { itemname = item_name, inventory_type = invId })
 	if not result[1] then
 		return false
 	end
@@ -2182,7 +2181,7 @@ end
 
 function InventoryService.updateItemInCustomInventory(invId, item_crafted_id, metadata, amount)
 	local result = DBService.queryAwait("SELECT amount FROM character_inventories WHERE item_crafted_id = @item_crafted_id AND inventory_type = @inventory_type", { item_crafted_id = item_crafted_id, inventory_type = invId })
-	if not result[1] or not metadata then
+	if not result[1] then
 		return false
 	end
 
