@@ -71,6 +71,16 @@ local function respond(cb, result)
 	return result
 end
 
+local function checkMetadataImage(source, metadata)
+	if metadata and next(metadata) and metadata.image and type(metadata.image) == "string" then
+		local image = {
+			[metadata.image] = metadata.image
+		}
+		local packedImage = msgpack.pack(image) -- just to reuse the event
+		TriggerClientEvent("vorp_inventory:server:CacheImages", source, packedImage)
+	end
+end
+
 ---private function to check if item exist
 function InventoryAPI.canCarryAmountItem(player, amount, cb)
 	local _source = player
@@ -502,8 +512,11 @@ function InventoryAPI.addItem(source, name, amount, metadata, cb, allow, degrada
 			DBService.queryAwait('UPDATE character_inventories SET percentage = @percentage WHERE item_crafted_id = @id', { percentage = item.percentage, id = craftedItem.id })
 		end
 
+		checkMetadataImage(_source, item:getMetadata())
+
 		userInventory[craftedItem.id] = item
 		TriggerClientEvent("vorpCoreClient:addItem", _source, item)
+
 
 		if not allow then
 			local data = { name = item:getName(), count = amount, metadata = item:getMetadata() }
@@ -828,13 +841,7 @@ function InventoryAPI.setItemMetadata(player, itemId, metadata, amount, cb)
 			item:setMetadata(metadata)
 			TriggerClientEvent("vorpCoreClient:SetItemMetadata", _source, itemId, metadata)
 			-- allow to update image cache for images that dont have items.
-			if metadata and metadata.image and type(metadata.image) == "string" then
-				local image = {
-					[metadata.image] = metadata.image
-				}
-				local packedImage = msgpack.pack(image) -- just to reuse the event
-				TriggerClientEvent("vorp_inventory:server:CacheImages", _source, packedImage)
-			end
+			checkMetadataImage(_source, metadata)
 		end
 	else
 		item:quitCount(amountRemove)
