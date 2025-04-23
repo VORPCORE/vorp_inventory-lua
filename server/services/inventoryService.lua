@@ -1984,11 +1984,14 @@ local function updateItem(itemcraftedid, value, item, charid, isExpired, id, ide
 	end
 end
 
-local function updateItemAmount(id, identifier, amount, itemcraftedid)
+local function updateItemAmount(id, identifier, amount, itemcraftedid, metadata)
 	local isShared <const> = CustomInventoryInfos[id]:isShared()
 	if isShared then
 		local customInventory <const> = CustomInventoryInfos[id]
 		customInventory[itemcraftedid].amount = customInventory[itemcraftedid].amount + amount
+		if metadata then
+			customInventory[itemcraftedid].metadata = metadata
+		end
 	else
 		if not identifier then
 			return print("inventory is not shared and you didnt pass identifier")
@@ -1999,6 +2002,9 @@ local function updateItemAmount(id, identifier, amount, itemcraftedid)
 			return print("non shared inventory does not exist for this identifier")
 		end
 		customInventory[itemcraftedid].amount = customInventory[itemcraftedid].amount + amount
+		if metadata then
+			customInventory[itemcraftedid].metadata = metadata
+		end
 	end
 end
 
@@ -2189,7 +2195,8 @@ function InventoryService.getAllItemsFromCustomInventory(invId)
 					name = value.item_name,
 					amount = value.amount,
 					metadata = itemMetadata,
-					percentage = value.percentage
+					percentage = value.percentage,
+					charid = value.character_id
 				}
 			else
 				if itemsMap[value.item_name] then
@@ -2200,7 +2207,8 @@ function InventoryService.getAllItemsFromCustomInventory(invId)
 						name = value.item_name,
 						amount = value.amount,
 						metadata = itemMetadata,
-						percentage = value.percentage
+						percentage = value.percentage,
+						charid = value.character_id,
 					}
 					items[#items + 1] = itemsMap[value.item_name]
 				end
@@ -2239,7 +2247,7 @@ function InventoryService.removeWeaponsByIdFromCustomInventory(invId, weaponId)
 	return true
 end
 
-function InventoryService.updateItemInCustomInventory(invId, item_crafted_id, metadata, amount)
+function InventoryService.updateItemInCustomInventory(invId, item_crafted_id, metadata, amount, identifier)
 	local result = DBService.queryAwait("SELECT amount FROM character_inventories WHERE item_crafted_id = @item_crafted_id AND inventory_type = @inventory_type", { item_crafted_id = item_crafted_id, inventory_type = invId })
 	if not result[1] then
 		return false
@@ -2257,10 +2265,12 @@ function InventoryService.updateItemInCustomInventory(invId, item_crafted_id, me
 
 	DBService.updateAsync("UPDATE character_inventories SET amount = @amount WHERE item_crafted_id = @item_crafted_id AND inventory_type = @inventory_type", { amount = itemAmount, item_crafted_id = item_crafted_id, inventory_type = invId })
 
-
 	if metadata then
 		DBService.updateAsync("UPDATE items_crafted SET metadata = @metadata WHERE id = @id", { metadata = metadata, id = item_crafted_id })
 	end
+
+	updateItemAmount(invId, nil, itemAmount, item_crafted_id, metadata)
+
 	return true
 end
 

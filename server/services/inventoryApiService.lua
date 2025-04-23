@@ -2240,13 +2240,14 @@ exports("removeCustomInventoryWeaponById", InventoryAPI.removeWeaponByIdFromCust
 ---@param metadata table? metadata
 ---@param amount number? amount
 ---@param callback fun(success: boolean)? async or sync callback
+---@param identifier string? identifier of the owner of the storage if custom inv is not shared , if its shared dont need one
 ---@return boolean
-function InventoryAPI.updateItemInCustomInventory(id, item_id, metadata, amount, callback)
+function InventoryAPI.updateItemInCustomInventory(id, item_id, metadata, amount, callback, identifier)
 	if not CustomInventoryInfos[id] then
 		return respond(callback, false)
 	end
 
-	if InventoryService.updateItemInCustomInventory(id, item_id, metadata, amount) then
+	if InventoryService.updateItemInCustomInventory(id, item_id, metadata, amount, identifier) then
 		return respond(callback, true)
 	end
 
