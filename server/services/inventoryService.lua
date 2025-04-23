@@ -1442,14 +1442,19 @@ function InventoryService.canStoreItem(identifier, charIdentifier, invId, name, 
 
 	if not invData:getIgnoreItemStack() then
 		local item = SvUtils.FindItemByNameAndMetadata(invId, identifier, name, metadata)
-		if not item then return false, "Item not found" end
+		if not item then
+			local svItem = ServerItems[name]
+			if amount > svItem:getLimit() then
+				return false, "Item limit reached"
+			end
+			return true
+		end
 
 		local totalCount = item:getCount() + amount -- count how many items there is in custom inv + what we want to allow
 		if totalCount > item:getLimit() then  -- check if stack is full
 			return false, "Item limit reached"
 		end
 	end
-
 
 	return true, ""
 end
