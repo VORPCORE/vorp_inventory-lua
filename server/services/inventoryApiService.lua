@@ -2040,7 +2040,8 @@ end
 ---@param items table items
 ---@param charid number charidentifier of the owner of the storage if custom inv is not shared , if its shared can be any characteridentifer
 ---@param callback fun(success: boolean)? async or sync callback
-function InventoryAPI.addItemsToCustomInventory(id, items, charid, callback)
+---@param identifier string? identifier of the owner of the storage if custom inv is not shared , if its shared dont need one
+function InventoryAPI.addItemsToCustomInventory(id, items, charid, callback, identifier)
 	if not CustomInventoryInfos[id] then
 		return respond(callback, false)
 	end
@@ -2071,7 +2072,7 @@ function InventoryAPI.addItemsToCustomInventory(id, items, charid, callback)
 		return respond(callback, false)
 	end
 
-	InventoryService.addItemsToCustomInventory(id, items, charid)
+	InventoryService.addItemsToCustomInventory(id, items, charid, identifier)
 
 	return respond(callback, true)
 end

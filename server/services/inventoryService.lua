@@ -1948,16 +1948,71 @@ function InventoryService.TakeFromPlayer(obj)
 	end
 end
 
-function InventoryService.addItemsToCustomInventory(id, items, charid)
+-- to update custom inv cache
+local function updateItem(itemcraftedid, value, item, charid, isExpired, id, identifier)
+	local item_add <const> = Item:New({
+		id = itemcraftedid,
+		count = value.amount,
+		limit = item:getLimit(),
+		label = item:getLabel(),
+		metadata = SharedUtils.MergeTables(item.metadata, value.metadata or {}),
+		name = value.name,
+		type = "item_standard",
+		canUse = item:getCanUse(),
+		canRemove = item:getCanRemove(),
+		owner = charid,
+		desc = item:getDesc(),
+		group = item:getGroup(),
+		weight = item:getWeight(),
+		maxDegradation = isExpired,
+	})
+
+	local isShared <const> = CustomInventoryInfos[id]:isShared()
+	if isShared then
+		local customInventory <const> = CustomInventoryInfos[id]
+		customInventory[itemcraftedid] = item_add
+	else
+		if not identifier then
+			return print("inventory is not shared and you didnt pass identifier")
+		end
+
+		local customInventory <const> = CustomInventoryInfos[id][identifier]
+		if not customInventory then
+			return print("non shared inventory does not exist for this identifier")
+		end
+		customInventory[itemcraftedid] = item_add
+	end
+end
+
+local function updateItemAmount(id, identifier, amount, itemcraftedid)
+	local isShared <const> = CustomInventoryInfos[id]:isShared()
+	if isShared then
+		local customInventory <const> = CustomInventoryInfos[id]
+		customInventory[itemcraftedid].amount = customInventory[itemcraftedid].amount + amount
+	else
+		if not identifier then
+			return print("inventory is not shared and you didnt pass identifier")
+		end
+
+		local customInventory <const> = CustomInventoryInfos[id][identifier]
+		if not customInventory then
+			return print("non shared inventory does not exist for this identifier")
+		end
+		customInventory[itemcraftedid].amount = customInventory[itemcraftedid].amount + amount
+	end
+end
+
+function InventoryService.addItemsToCustomInventory(id, items, charid, identifier)
 	local newTable = {}
-	local result = DBService.queryAwait("SELECT inventory_type FROM character_inventories WHERE inventory_type = @id", { id = id })
+	local result <const> = DBService.queryAwait("SELECT inventory_type FROM character_inventories WHERE inventory_type = @id", { id = id })
 
 	if not result[1] then
 		for _, value in ipairs(items) do
 			local item = ServerItems[value.name]
 			if item and value.amount > 0 then
 				local isExpired = item:getMaxDegradation() ~= 0 and item:getDegradation() or nil
-				DBService.CreateItem(charid, item:getId(), value.amount, (value.metadata or {}), value.name, isExpired, function()
+				DBService.CreateItem(charid, item:getId(), value.amount, (value.metadata or {}), value.name, isExpired, function(itemcraftedid)
+					updateItem(itemcraftedid, value, item, charid, isExpired, id, identifier)
 				end, id)
 			end
 		end
@@ -1969,7 +2024,8 @@ function InventoryService.addItemsToCustomInventory(id, items, charid)
 				local result1 = DBService.queryAwait("SELECT amount, item_crafted_id FROM character_inventories WHERE item_name =@itemname AND inventory_type = @inventory_type", { itemname = value.name, inventory_type = id })
 				local isExpired = item:getMaxDegradation() ~= 0 and item:getDegradation() or nil
 				if not result1[1] then
-					DBService.CreateItem(charid, item:getId(), value.amount, itemMetadata, value.name, isExpired, function()
+					DBService.CreateItem(charid, item:getId(), value.amount, itemMetadata, value.name, isExpired, function(itemcraftedid)
+						updateItem(itemcraftedid, value, item, charid, isExpired, id, identifier)
 					end, id)
 				else
 					local resulItems = {}
@@ -1983,10 +2039,12 @@ function InventoryService.addItemsToCustomInventory(id, items, charid)
 
 					if #resulItems == 0 then
 						if next(itemMetadata) then
-							DBService.CreateItem(charid, item:getId(), value.amount, itemMetadata, value.name, isExpired, function()
+							DBService.CreateItem(charid, item:getId(), value.amount, itemMetadata, value.name, isExpired, function(itemcraftedid)
+								updateItem(itemcraftedid, value, item, charid, isExpired, id, identifier)
 							end, id)
 						else
 							DBService.updateAsync("UPDATE character_inventories SET amount = amount + @amount WHERE item_name = @itemname AND inventory_type = @inventory_type", { amount = value.amount, itemname = value.name, inventory_type = id })
+							updateItemAmount(id, identifier, value.amount, result1[1].item_crafted_id)
 						end
 					else
 						for _, v in ipairs(resulItems) do
@@ -1999,11 +2057,13 @@ function InventoryService.addItemsToCustomInventory(id, items, charid)
 						end
 
 						if #newTable == 0 then -- metadata of any of the items dont match new one so we create new one
-							DBService.CreateItem(charid, item:getId(), value.amount, itemMetadata, value.name, isExpired, function()
+							DBService.CreateItem(charid, item:getId(), value.amount, itemMetadata, value.name, isExpired, function(itemcraftedid)
+								updateItem(itemcraftedid, value, item, charid, isExpired, id, identifier)
 							end, id)
 						else
 							-- means we have a match so we update the amount
 							DBService.updateAsync("UPDATE character_inventories SET amount = amount + @amount WHERE item_name = @itemname AND inventory_type = @inventory_type", { amount = value.amount, itemname = value.name, inventory_type = id })
+							updateItemAmount(id, identifier, value.amount, result1[1].item_crafted_id)
 						end
 					end
 				end
