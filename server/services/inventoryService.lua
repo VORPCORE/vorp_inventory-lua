@@ -1405,7 +1405,7 @@ function InventoryService.canStoreWeapon(identifier, charIdentifier, invId, name
 	return true
 end
 
-function InventoryService.canStoreItem(identifier, charIdentifier, invId, name, amount)
+function InventoryService.canStoreItem(identifier, charIdentifier, invId, name, amount, metadata)
 	local invData = CustomInventoryInfos[invId]
 
 	if invData:getLimit() > 0 then
@@ -1441,7 +1441,7 @@ function InventoryService.canStoreItem(identifier, charIdentifier, invId, name, 
 	end
 
 	if not invData:getIgnoreItemStack() then
-		local item = SvUtils.FindItemByNameAndMetadata(invId, identifier, name, nil)
+		local item = SvUtils.FindItemByNameAndMetadata(invId, identifier, name, metadata)
 		if not item then return false, "Item not found" end
 
 		local totalCount = item:getCount() + amount -- count how many items there is in custom inv + what we want to allow
@@ -1630,7 +1630,7 @@ function InventoryService.MoveToCustom(obj)
 			return print(T.itemExceedsLimit)
 		end
 
-		local result, message = InventoryService.canStoreItem(sourceIdentifier, sourceCharIdentifier, invId, item.name, amount)
+		local result, message = InventoryService.canStoreItem(sourceIdentifier, sourceCharIdentifier, invId, item.name, amount, item.metadata)
 		if not result then
 			SvUtils.Trem(_source)
 			return Core.NotifyObjective(_source, message, 2000)
