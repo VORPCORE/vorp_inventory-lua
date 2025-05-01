@@ -1781,6 +1781,8 @@ function InventoryAPI.getCustomInventorySlots(id, cb)
 	return respond(cb, slots)
 end
 
+exports("getCustomInventorySlots", InventoryAPI.getCustomInventorySlots)
+
 ---set custom inventory item limit
 ---@param id string inventory id
 ---@param itemName string item name
