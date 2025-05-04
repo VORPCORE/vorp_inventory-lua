@@ -1517,14 +1517,14 @@ function InventoryService.DiscordLogs(inventory, itemName, amount, playerName, a
 	end
 
 	if action == "Move" then
-		webhook = type(webhook) == "table" and false or webhook
+		webhook = type(webhook) ~= "string" and false or webhook
 		webhook = webhook or Logs.WebHook.CustomInventoryMoveTo
 		local description = "**Player:**`" .. playerName .. "`\n **Moved to:** `" .. inventory .. "` \n**Weapon** `" .. itemName .. "`\n **Count:** `" .. amount .. "`"
 		Core.AddWebhook(title, webhook, description, color, names, logo, footerlogo, avatar)
 	end
 
 	if action == "Take" then
-		webhook = type(webhook) == "table" and false or webhook
+		webhook = type(webhook) ~= "string" and false or webhook
 		webhook = webhook or Logs.WebHook.CustomInventoryTakeFrom
 		local description = "**Player:**`" .. playerName .. "`\n **Took from:** `" .. inventory .. "`\n **item** `" .. itemName .. "`\n **amount:** `" .. amount .. "`"
 		Core.AddWebhook(title, webhook, description, color, names, logo, footerlogo, avatar)
