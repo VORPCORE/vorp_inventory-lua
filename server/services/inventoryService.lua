@@ -1830,6 +1830,7 @@ function InventoryService.MoveToPlayer(obj)
 					if result then
 						InventoryService.reloadInventory(target, "default", "player", _source)
 						InventoryService.DiscordLogs("default", item.name, amount, sourceName, "Move")
+						SvUtils.Trem(_source)
 					end
 				end)
 			else
