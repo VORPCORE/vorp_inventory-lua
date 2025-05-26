@@ -14,7 +14,6 @@ shared_scripts {
   "config/groups.lua",
   "config/weapons.lua",
   "config/ammo.lua",
-  "config/logs.lua",
   "languages/*.lua",
   "shared/models/*.lua",
   'shared/handler/*.lua',
@@ -32,7 +31,7 @@ client_scripts {
 }
 
 server_scripts {
-
+  "config/logs.lua",
   '@oxmysql/lib/MySQL.lua',
   'server/vorpInventoryApi.lua',
   'server/server.lua',
