@@ -454,8 +454,9 @@ local function loadItems()
 			end
 		end
 
-		if GenSynInfo.buyitems and next(GenSynInfo.buyitems) then
-			local buyitems = GenSynInfo.buyitems
+		
+		local buyitems = GenSynInfo.buyitems
+		if buyitems and next(buyitems) then
 			for _, item in pairs(UserInventory) do
 				for k, v in ipairs(buyitems) do
 					if item.name == v.name then
