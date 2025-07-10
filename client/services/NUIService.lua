@@ -538,6 +538,8 @@ function NUIService.LoadInv()
 	local payload = {}
 
 	Core.Callback.TriggerAsync("vorpinventory:get_slots", function(result)
+		if not result then return end
+		
 		SendNUIMessage({ action = "changecheck", check = string.format("%.1f", result.totalInvWeight), info = string.format("%.1f", result.slots) })
 		SendNUIMessage({
 			action = "updateStatusHud",
