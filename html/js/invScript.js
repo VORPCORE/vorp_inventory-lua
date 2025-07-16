@@ -387,8 +387,7 @@ function addData(index, item) {
     }
 
     if (item.metadata?.context) {
-        for (let i = 0; i < item.metadata.context.length; i++) {
-            const option = item.metadata.context[i];
+        item.metadata.context.forEach(option => {
             data.push({
                 text: option.text,
                 action: function () {
@@ -397,7 +396,7 @@ function addData(index, item) {
                     );
                 }
             });
-        }
+        });
     }
 
     if (data.length > 0) {
