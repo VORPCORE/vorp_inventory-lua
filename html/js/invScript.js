@@ -387,7 +387,7 @@ function addData(index, item) {
     }
 
     if (item.metadata?.context) {
-        contextMenuData.forEach(option => {
+        item.metadata.context.forEach(option => {
             data.push({
                 text: option.text,
                 action: function () {
