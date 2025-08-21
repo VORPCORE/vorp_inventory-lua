@@ -1667,7 +1667,7 @@ function InventoryService.MoveToCustom(obj)
 			InventoryService.subItem(_source, "default", item.id, amount)
 			TriggerClientEvent("vorpInventory:removeItem", _source, item.name, item.id, amount)
 			Core.NotifyRightTip(_source, T.movedToStorage .. " " .. amount .. " " .. metadataLabel, 2000)
-			
+
 			InventoryService.reloadInventory(_source, invId)
 			InventoryService.DiscordLogs(invId, item.name, amount, sourceName, "Move")
 			SvUtils.Trem(_source)
@@ -1879,8 +1879,9 @@ function InventoryService.MoveToPlayer(obj)
 						SetTimeout(400, function()
 							InventoryService.reloadInventory(target, "default", "player", _source)
 							InventoryService.DiscordLogs(invId, item.name, amount, sourceName, "Move")
-							Core.NotifyRightTip(_source, T.movedToPlayer .. amount .. " " .. item.label, 2000)
-							Core.NotifyRightTip(target, T.itemGivenToPlayer .. " " .. item.label, 2000)
+							local metadataLabel = item.metadata?.label or item.label
+							Core.NotifyRightTip(_source, T.movedToPlayer .. amount .. " " .. metadataLabel, 2000)
+							Core.NotifyRightTip(target, T.itemGivenToPlayer .. " " .. metadataLabel, 2000)
 							SvUtils.Trem(_source)
 						end)
 					else
@@ -1957,8 +1958,9 @@ function InventoryService.TakeFromPlayer(obj)
 					if result2 then
 						InventoryService.reloadInventory(target, "default", "player", _source)
 						InventoryService.DiscordLogs(invId, item.name, amount, sourceName, "Take")
-						Core.NotifyRightTip(_source, T.takenFromPlayer .. " " .. amount .. " " .. item.label, 2000)
-						Core.NotifyRightTip(target, T.itemsTakenFromPlayer .. " " .. item.label, 2000)
+						local metadataLabel = item.metadata?.label or item.label
+						Core.NotifyRightTip(_source, T.takenFromPlayer .. " " .. amount .. " " .. metadataLabel, 2000)
+						Core.NotifyRightTip(target, T.itemsTakenFromPlayer .. " " .. metadataLabel, 2000)
 					end
 					SvUtils.Trem(_source)
 				end, true)
