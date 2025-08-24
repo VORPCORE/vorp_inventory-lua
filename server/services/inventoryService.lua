@@ -1648,6 +1648,7 @@ function InventoryService.MoveToCustom(obj)
 			end
 
 			InventoryService.subItem(_source, "default", item.id, amount)
+			TriggerEvent("vorp_inventory:Server:OnItemMovedToCustomInventory", {id = item.id, name = item.name, amount = amount}, invId, _source)
 			TriggerClientEvent("vorpInventory:removeItem", _source, item.name, item.id, amount)
 			Core.NotifyRightTip(_source, T.movedToStorage .. " " .. amount .. " " .. item.label, 2000)
 			InventoryService.reloadInventory(_source, invId)
@@ -1748,6 +1749,7 @@ function InventoryService.TakeFromCustom(obj)
 				return Core.NotifyObjective(_source, T.cantRemoveItem, 2000)
 			end
 
+			TriggerEvent("vorp_inventory:Server:OnItemTakenFromCustomInventory", {id = item:getId(), name = item.name, amount = amount}, invId, _source)
 			TriggerClientEvent("vorpInventory:receiveItem", _source, item.name, itemAdded:getId(), amount, itemAdded:getMetadata(), itemAdded:getDegradation(), itemAdded:getPercentage())
 			InventoryService.reloadInventory(_source, invId)
 			InventoryService.DiscordLogs(invId, item.name, amount, sourceName, "Take")
