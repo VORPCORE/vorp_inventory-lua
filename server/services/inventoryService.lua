@@ -1749,7 +1749,7 @@ function InventoryService.TakeFromCustom(obj)
 				return Core.NotifyObjective(_source, T.cantRemoveItem, 2000)
 			end
 
-			TriggerEvent("vorp_inventory:Server:OnItemTakenFromCustomInventory", {id = item:getId(), name = item.name, amount = amount}, invId, _source)
+			TriggerEvent("vorp_inventory:Server:OnItemTakenFromCustomInventory", {id = itemAdded:getId(), name = item.name, amount = amount}, invId, _source)
 			TriggerClientEvent("vorpInventory:receiveItem", _source, item.name, itemAdded:getId(), amount, itemAdded:getMetadata(), itemAdded:getDegradation(), itemAdded:getPercentage())
 			InventoryService.reloadInventory(_source, invId)
 			InventoryService.DiscordLogs(invId, item.name, amount, sourceName, "Take")
