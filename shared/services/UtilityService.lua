@@ -70,7 +70,7 @@ function SharedUtils.MergeTables(a, b)
     b = type(b) == 'string' and json.decode(b) or b
 
     local newTable = {}
-    if type(a) == "string" then
+    if type(a) == "string" or type(a) == "number" then
         print("item metadata was not table a", a)
         return {}
     end
