@@ -123,7 +123,7 @@ local function cacheImages()
 		newtable[k] = v.item
 	end
 	-- all weapon images from config because items folder can contain duplicates or unused images
-	for k, v in pairs(SharedData.Weapons) do
+	for k, _ in pairs(SharedData.Weapons) do
 		newtable[k] = k
 	end
 	local packed = msgpack.pack(newtable)
