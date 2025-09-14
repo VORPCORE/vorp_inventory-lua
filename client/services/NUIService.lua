@@ -411,7 +411,7 @@ exports("useWeapon", useWeapon)
 local function useItem(data)
 	if timerUse <= 0 then
 		TriggerServerEvent("vorp_inventory:useItem", data)
-		timerUse = 2000
+		timerUse = Config.SpamDelay
 	else
 		Core.NotifyRightTip(T.slow, 5000)
 	end
