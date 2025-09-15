@@ -2,26 +2,6 @@ local Core   = exports.vorp_core:GetCore()
 ServerItems  = {}
 UsersWeapons = { default = {} }
 
--- temporary just to assing serial numbers to old weapons and labels will be removed eventually
-MySQL.ready(function()
-	DBService.queryAsync('SELECT name,id,label,serial_number FROM loadout', {},
-		function(result)
-			if next(result) then
-				for _, db_weapon in pairs(result) do
-					local label = db_weapon.label or SvUtils.GenerateWeaponLabel(db_weapon.name)
-					local serialNumber = db_weapon.serial_number or SvUtils.GenerateSerialNumber(db_weapon.name)
-					if not db_weapon.serial_number then
-						DBService.updateAsync('UPDATE loadout SET serial_number = @serial_number WHERE id = @id', { id = db_weapon.id, serial_number = serialNumber }, function() end)
-					end
-					if not db_weapon.label then
-						DBService.updateAsync('UPDATE loadout SET label = @label WHERE id = @id', { id = db_weapon.id, label = label }, function() end)
-					end
-				end
-			end
-		end)
-end)
-
-
 --- load all player weapons
 ---@param db_weapon table
 local function loadAllWeapons(db_weapon)
