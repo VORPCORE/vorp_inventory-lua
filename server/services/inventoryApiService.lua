@@ -429,6 +429,13 @@ function InventoryAPI.addItem(source, name, amount, metadata, cb, allow, degrada
 		return respond(cb, false)
 	end
 
+	-- support metadata from default items table
+	if not metadata then
+		if svItem.metadata and next(svItem.metadata) then
+			metadata = svItem.metadata
+		end
+	end
+
 	--local metadata_merged = SharedUtils.MergeTables(svItem.metadata, metadata or {})
 	local item = SvUtils.FindItemByNameAndMetadata("default", identifier, name, metadata or {}) -- get item
 	-- items that cant degrade we add ammount and items that exist

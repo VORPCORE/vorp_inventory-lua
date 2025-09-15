@@ -80,13 +80,29 @@ local function loadPlayerWeapons(source, character)
 		end)
 end
 
+-- convert json string to pure lua table
+local function luaTable(value)
+	if type(value) == "table" then
+		local t = {}
+		for k, v in pairs(value) do
+			t[k] = luaTable(v)
+		end
+		return t
+	else
+		return value
+	end
+end
+
 
 MySQL.ready(function()
 	-- load all items from database
 	DBService.queryAsync("SELECT * FROM items", {}, function(result)
 		for _, db_item in pairs(result) do
 			if db_item.id then
-				local meta = type(db_item.metadata) == "string" and json.decode(db_item.metadata) or db_item.metadata or {}
+				local meta = {}
+				if db_item.metadata ~= "{}" then
+					meta = luaTable(json.decode(db_item.metadata))
+				end
 				local item = Item:New({
 					id = db_item.id,
 					item = db_item.item,
